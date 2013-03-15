@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Project;
+namespace Sidekick;
 
 class Project extends \Cubex\Core\Project\Project
 {

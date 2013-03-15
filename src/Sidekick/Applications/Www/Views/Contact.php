@@ -2,16 +2,16 @@
 /**
  * @author  brooke.bryan
  */
-namespace Project\Applications\Www\Views;
+namespace Sidekick\Applications\Www\Views;
 
 use Cubex\View\HtmlElement;
 use Cubex\View\TemplatedViewModel;
-use Project\Applications\Www\Forms\ContactUs;
+use Sidekick\Applications\Www\Forms\ContactUs;
 
 class Contact extends TemplatedViewModel
 {
   /**
-   * @var \Project\Applications\Www\Forms\ContactUs
+   * @var \Sidekick\Applications\Www\Forms\ContactUs
    */
   protected $_form;
 

@@ -1,8 +1,8 @@
 {
-  "name":              "cubex/project",
-  "description":       "Base Cubex Framework Project",
+  "name":              "cubex/sidekick",
+  "description":       "Cubex Sidekick",
   "version":           "1.0.0",
-  "keywords":          ["framework", "cubex", "project"],
+  "keywords":          ["cubex", "sidekick"],
   "homepage":          "http://cubex.io",
   "license":           "BSD-3-Clause",
   "authors":           [
@@ -12,18 +12,16 @@
       "homepage": "http://www.bajb.net"
     },
     {
-      "name":  "Gareth Evans",
-      "email": "garoevans@gmail.com"
+      "name": "Richard Gooding"
     }
   ],
   "require":           {
-    "php":            ">=5.4.0",
-    "cubex/cubex":    "*",
-    "bundl/debugger": "*"
+    "php":         ">=5.4.0",
+    "cubex/cubex": "*"
   },
   "autoload":          {
     "psr-0": {
-      "Project\\": "src/"
+      "Sidekick\\": "src/"
     }
   },
   "minimum-stability": "dev"

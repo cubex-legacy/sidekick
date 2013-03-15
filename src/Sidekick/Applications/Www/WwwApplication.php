@@ -2,7 +2,7 @@
 /**
  * @author  brooke.bryan
  */
-namespace Project\Applications\Www;
+namespace Sidekick\Applications\Www;
 
 use Cubex\Core\Application\Application;
 

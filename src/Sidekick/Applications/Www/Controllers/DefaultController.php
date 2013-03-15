@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Project\Applications\Www\Controllers;
+namespace Sidekick\Applications\Www\Controllers;
 
 use Cubex\Core\Controllers\WebpageController;
 use Cubex\Database\ConnectionMode;
@@ -11,10 +11,10 @@ use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\View\HtmlElement;
 use Cubex\View\Templates\Errors\Error404;
-use Project\Applications\Www\Forms\ContactUs;
-use Project\Applications\Www\Views\Contact;
-use Project\Applications\Www\Views\Section\Header;
-use Project\Applications\Www\Views\Index;
+use Sidekick\Applications\Www\Forms\ContactUs;
+use Sidekick\Applications\Www\Views\Contact;
+use Sidekick\Applications\Www\Views\Section\Header;
+use Sidekick\Applications\Www\Views\Index;
 
 class DefaultController extends WebpageController
 {

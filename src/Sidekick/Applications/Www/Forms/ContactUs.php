@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Project\Applications\Www\Forms;
+namespace Sidekick\Applications\Www\Forms;
 
 use Cubex\Data\Filter\Filter;
 use Cubex\Data\Validator\Validator;

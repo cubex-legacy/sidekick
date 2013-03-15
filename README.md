@@ -1,0 +1,4 @@
+sidekick
+========
+
+Cubex Sidekick

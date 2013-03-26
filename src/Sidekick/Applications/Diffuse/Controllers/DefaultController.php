@@ -6,6 +6,7 @@
 namespace Sidekick\Applications\Diffuse\Controllers;
 
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\Diffuse\Mappers\Commit;
 use Sidekick\Applications\Diffuse\Mappers\PushType;
 use Sidekick\Applications\Diffuse\Mappers\Release;
 use Sidekick\Applications\Diffuse\Mappers\Repository;
@@ -52,6 +53,13 @@ class DefaultController extends BaseControl
     $repoUser           = new RespositoriesUsers($repo, $user);
     $repoUser->userRole = UserRole::MANAGER;
     $repoUser->saveChanges();
+
+    $commit = new Commit(1);
+    $commit->author = 'gareth';
+    $commit->message = "Some Update";
+    $commit->commitHash = '0a4521';
+    $commit->repositoryId = 1;
+    $commit->saveChanges();
 
     $proj       = new Project(1);
     $proj->name = "JDI Backup : Wilma";

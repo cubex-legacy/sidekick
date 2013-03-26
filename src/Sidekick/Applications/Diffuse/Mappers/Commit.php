@@ -7,7 +7,7 @@ namespace Sidekick\Applications\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
 
-class Commits extends RecordMapper
+class Commit extends RecordMapper
 {
   public $repositoryId;
   public $commitHash;

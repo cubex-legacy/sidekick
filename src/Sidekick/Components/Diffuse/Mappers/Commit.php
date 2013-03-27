@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Applications\Diffuse\Mappers;
+namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
 
@@ -13,4 +13,5 @@ class Commit extends RecordMapper
   public $commitHash;
   public $message;
   public $author;
+  public $commitedAt;
 }

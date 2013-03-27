@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Applications\Diffuse\Mappers;
+namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\PivotMapper;
 use Sidekick\Components\Users\Mappers\User;

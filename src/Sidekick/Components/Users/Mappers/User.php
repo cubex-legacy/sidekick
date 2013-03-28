@@ -5,6 +5,7 @@
 
 namespace Sidekick\Components\Users\Mappers;
 
+use Cubex\Data\Validator\Validator;
 use Cubex\Mapper\Database\RecordMapper;
 
 class User extends RecordMapper

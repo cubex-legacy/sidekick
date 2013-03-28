@@ -7,6 +7,9 @@ namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
 
+/**
+ * Class Version
+ */
 class Version extends RecordMapper
 {
   public $projectId;
@@ -29,7 +32,8 @@ class Version extends RecordMapper
   public $stageReleaseDate;
   public $changeLog;
   /**
-   * @enumclass \Sidekick\Applications\Diffuse\Mappers\VersionState
+   * @enumclass \Sidekick\Components\Diffuse\Mappers\VersionState
    */
   public $versionState;
+
 }

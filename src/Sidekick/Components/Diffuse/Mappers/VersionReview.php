@@ -16,7 +16,7 @@ class VersionReview extends RecordMapper
   public $approverId;
   public $message;
   /**
-   * @enumclass \Sidekick\Applications\Diffuse\Mappers\VersionState
+   * @enumclass \Sidekick\Components\Diffuse\Mappers\VersionState
    */
   public $reviewStatus;
 }

@@ -11,7 +11,7 @@ use Sidekick\Components\Users\Mappers\User;
 class RespositoriesUsers extends PivotMapper
 {
   /**
-   * @enumclass \Sidekick\Applications\Diffuse\Mappers\UserRole
+   * @enumclass \Sidekick\Components\Diffuse\Mappers\UserRole
    */
   public $userRole;
   public $description;

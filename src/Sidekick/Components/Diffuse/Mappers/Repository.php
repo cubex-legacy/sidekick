@@ -13,7 +13,7 @@ class Repository extends RecordMapper
   public $versionControlSystem;
   public $path;
   /**
-   * @enumclass \Sidekick\Applications\Diffuse\Mappers\PushType
+   * @enumclass \Sidekick\Components\Diffuse\Mappers\PushType
    */
   public $pushType;
 }

@@ -5,6 +5,7 @@
 
 namespace Sidekick\Applications\Diffuse\Controllers;
 
+use Cubex\Form\Form;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Components\Diffuse\Mappers\Commit;
 use Sidekick\Components\Diffuse\Mappers\PushType;
@@ -22,6 +23,10 @@ class DefaultController extends BaseControl
 {
   public function renderIndex()
   {
+    $form = new Form("jkh");
+    $form->buildFromMapper(new User());
+    echo $form;
+
     $ver              = new Version(1);
     $ver->major       = 1;
     $ver->releaseDate = time();

@@ -6,7 +6,6 @@
 namespace Sidekick\Applications\Diffuse\Controllers;
 
 use Cubex\Form\Form;
-use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Components\Diffuse\Mappers\Commit;
 use Sidekick\Components\Diffuse\Mappers\PushType;
 use Sidekick\Components\Diffuse\Mappers\Release;
@@ -19,7 +18,7 @@ use Sidekick\Components\Diffuse\Mappers\VersionState;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Users\Mappers\User;
 
-class DefaultController extends BaseControl
+class DefaultController extends DiffuseController
 {
   public function renderIndex()
   {

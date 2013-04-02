@@ -10,6 +10,15 @@ use Sidekick\Applications\Diffuse\Controllers\DefaultController;
 
 class DiffuseApp extends BaseApp
 {
+  public function getRoutes()
+  {
+    return [
+      '/diffuse/' => [
+        'projects/:projectName' => 'ProjectController@index'
+      ]
+    ];
+  }
+
   public function defaultController()
   {
     return new DefaultController();

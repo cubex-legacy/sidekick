@@ -5,7 +5,6 @@
 
 namespace Sidekick\Cli\Diffuse;
 
-use Bundl\Debugger\DebuggerBundle;
 use Cubex\Cli\CliCommand;
 use Sidekick\Components\Diffuse\Mappers\Commit;
 
@@ -14,8 +13,6 @@ class UpdateRepo extends CliCommand
   public function execute()
   {
     $repositoryId = 2;
-    $x            = new DebuggerBundle();
-    //$x->init();
 
     $fromHash   = '';
     $lastCommit = Commit::max(

@@ -23,4 +23,17 @@ class BuildLog extends RecordMapper
    * @datatype MediumText
    */
   public $errorOut;
+
+  public function writeBuffer($type, $buffer)
+  {
+    if('err' === $type)
+    {
+      $this->errorOut .= "\n$buffer";
+    }
+    else
+    {
+      $this->output .= "\n$buffer";
+    }
+    $this->saveChanges();
+  }
 }

@@ -79,25 +79,12 @@ class Build extends CliCommand
 
       chdir('../Cubex/bin');
       $process = new Process($run);
-      $process->run(
-        function ($type, $buffer)
-        {
-          if('err' === $type)
-          {
-            echo 'ERR > ' . $buffer;
-          }
-          else
-          {
-            echo 'OUT > ' . $buffer;
-          }
-        }
-      );
+      $process->run([$log, 'writeBuffer']);
 
       $returnValue = $process->getExitCode();
       if($returnValue === 0)
       {
         echo "Passed Test: $command->command\n";
-        //Test Passed
       }
       else
       {

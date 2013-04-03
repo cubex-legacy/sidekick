@@ -6,6 +6,7 @@
 namespace Sidekick\Cli\Diffuse;
 
 use Cubex\Cli\CliCommand;
+use Cubex\FileSystem\FileSystem;
 use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
 use Sidekick\Components\Diffuse\Mappers\BuildCommand;
@@ -71,7 +72,8 @@ class Build extends CliCommand
 
       $run = $command->command . $args;
 
-      $log            = new BuildLog();
+      $log = new BuildLog();
+      $log->setId(1);
       $log->buildId   = $build->id();
       $log->commandId = $command->id();
       $log->exitCode  = -1;

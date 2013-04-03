@@ -5,9 +5,9 @@
 
 namespace Sidekick\Components\Diffuse\Mappers;
 
-use Cubex\Mapper\Database\RecordMapper;
+use Cubex\Mapper\Cassandra\CassandraMapper;
 
-class BuildLog extends RecordMapper
+class BuildLog extends CassandraMapper
 {
   public $buildId;
   public $commandId;
@@ -26,13 +26,14 @@ class BuildLog extends RecordMapper
 
   public function writeBuffer($type, $buffer)
   {
+    $this->setData((string)microtime(true), $buffer);
     if('err' === $type)
     {
-      $this->errorOut .= $buffer;
+      //$this->errorOut .= $buffer;
     }
     else
     {
-      $this->output .= $buffer;
+      //$this->output .= $buffer;
     }
     $this->saveChanges();
   }

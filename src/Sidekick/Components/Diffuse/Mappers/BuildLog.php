@@ -28,11 +28,11 @@ class BuildLog extends RecordMapper
   {
     if('err' === $type)
     {
-      $this->errorOut .= "\n$buffer";
+      $this->errorOut .= $buffer;
     }
     else
     {
-      $this->output .= "\n$buffer";
+      $this->output .= $buffer;
     }
     $this->saveChanges();
   }

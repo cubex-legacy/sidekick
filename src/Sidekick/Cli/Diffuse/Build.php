@@ -77,7 +77,7 @@ class Build extends CliCommand
       $log->exitCode  = -1;
       $log->saveChanges();
 
-      chdir('../Cubex/bin');
+      chdir('../Cubex');
       $process = new Process($run);
       $process->run([$log, 'writeBuffer']);
 

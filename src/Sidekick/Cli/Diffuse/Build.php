@@ -143,7 +143,7 @@ class Build extends CliCommand
     echo "\n\n\n$lineSplitter\n";
 
     echo Shell::colourText(
-      "                    Build Results",
+      "         Build Results",
       Shell::COLOUR_FOREGROUND_LIGHT_PURPLE
     );
     echo "\n$lineSplitter\n\n";
@@ -168,8 +168,7 @@ class Build extends CliCommand
     }
 
     echo "\n$lineSplitter\n";
-
-    echo "\nFinal Result: ";
+    echo "Final Result: ";
 
     if($buildRun->result !== BuildResult::PASS)
     {

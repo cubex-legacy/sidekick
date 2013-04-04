@@ -70,11 +70,14 @@ class Build extends CliCommand
       );
     }
 
+    $testsRun = $testsPass = $testsFailed = $testsCritical = 0;
+
     $buildRun->result = BuildResult::PASS;
 
     $commandList = $dependencies->getLoadOrder();
     foreach($commandList as $commandId)
     {
+      $testsRun++;
       $command = new BuildCommand($commandId);
 
       echo "\n\n==========================================================\n";
@@ -114,12 +117,15 @@ class Build extends CliCommand
       $returnValue = $process->getExitCode();
       if($returnValue === 0)
       {
+        $testsPass++;
         echo Shell::colourText("PASS", Shell::COLOUR_FOREGROUND_GREEN);
       }
       else
       {
+        $testsFailed++;
         if($command->causeBuildFailure)
         {
+          $testsCritical++;
           $buildRun->result = BuildResult::FAIL;
         }
         echo Shell::colourText(
@@ -136,5 +142,39 @@ class Build extends CliCommand
 
     $buildRun->endTime = time();
     $buildRun->saveChanges();
+
+    echo "\n\n\n";
+    echo Shell::colourText("Build Results", Shell::COLOUR_FOREGROUND_PURPLE);
+    echo "\n";
+
+    $results = [
+      'Tests Run'      => $testsRun,
+      'Tests Passed'   => $testsPass,
+      'Tests Failed'   => $testsFailed,
+      'Tests Critical' => $testsCritical
+    ];
+
+    foreach($results as $name => $value)
+    {
+      echo Shell::colourText(
+        str_pad($name, 30, STR_PAD_RIGHT) . ' : ',
+        Shell::COLOUR_FOREGROUND_WHITE
+      );
+      echo Shell::colourText($value, Shell::COLOUR_FOREGROUND_YELLOW);
+      echo "\n";
+    }
+
+    echo "Final Result: ";
+
+    if($buildRun->result !== BuildResult::PASS)
+    {
+      echo Shell::colourText("FAIL", Shell::COLOUR_FOREGROUND_RED);
+    }
+    else
+    {
+      echo Shell::colourText("PASS", Shell::COLOUR_FOREGROUND_GREEN);
+    }
+
+    echo "\n";
   }
 }

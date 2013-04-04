@@ -108,11 +108,6 @@ class Build extends CliCommand
 
       $process->run([$log, 'writeBuffer']);
 
-      if($this->verbose)
-      {
-        echo "\n";
-      }
-
       echo "\n$command->name Result: ";
       $returnValue = $process->getExitCode();
       if($returnValue === 0)

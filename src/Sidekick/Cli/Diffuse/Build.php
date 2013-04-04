@@ -141,7 +141,7 @@ class Build extends CliCommand
     echo "\n\n\n==========================================================\n";
 
     echo Shell::colourText(
-      "Build Results",
+      "                    Build Results",
       Shell::COLOUR_FOREGROUND_LIGHT_PURPLE
     );
     echo "\n==========================================================\n\n";
@@ -159,11 +159,13 @@ class Build extends CliCommand
     {
       if($value !== null)
       {
-        echo " " . str_pad($name, 20, STR_PAD_RIGHT, ' ') . ' : ';
+        echo " " . str_pad($name, 20, ' ', STR_PAD_RIGHT) . ' : ';
         echo Shell::colourText($value, Shell::COLOUR_FOREGROUND_YELLOW);
       }
       echo "\n";
     }
+
+    echo "\n==========================================================\n";
 
     echo "\nFinal Result: ";
 

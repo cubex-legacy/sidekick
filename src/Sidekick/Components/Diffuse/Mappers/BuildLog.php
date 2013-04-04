@@ -42,14 +42,7 @@ class BuildLog extends CassandraMapper
 
     if($this->isOutputEnabled())
     {
-      if('err' === $type)
-      {
-        echo "ERR] " . $buffer;
-      }
-      else
-      {
-        echo "OUT]" . $buffer;
-      }
+      echo $buffer;
     }
 
     return $this;

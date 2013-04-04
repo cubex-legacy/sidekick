@@ -18,6 +18,7 @@ class BuildCommand extends RecordMapper
    * @length 255
    */
   public $args;
+  public $name;
   public $description;
 
   public $successExitCodes = [0];

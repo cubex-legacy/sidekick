@@ -9,8 +9,10 @@ use Cubex\Cli\CliCommand;
 use Cubex\FileSystem\FileSystem;
 use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
+use Sidekick\Components\Diffuse\Enums\BuildResult;
 use Sidekick\Components\Diffuse\Mappers\BuildCommand;
 use Sidekick\Components\Diffuse\Mappers\BuildLog;
+use Sidekick\Components\Diffuse\Mappers\BuildRun;
 use Sidekick\Components\Diffuse\Mappers\BuildsCommands;
 use Sidekick\Components\Projects\Mappers\Project;
 use Symfony\Component\Process\Process;
@@ -43,7 +45,13 @@ class Build extends CliCommand
 
     echo "\n";
     echo "Starting Build for: " . $project->name . " (" . $build->name . ")";
-    echo "\n\n";
+
+    $buildRun            = new BuildRun();
+    $buildRun->buildId   = $build->id();
+    $buildRun->projectId = $project->id();
+    $buildRun->startTime = time();
+    $buildRun->result    = BuildResult::RUNNING;
+    $buildRun->saveChanges();
 
     $commands     = BuildsCommands::collectionOn($build);
     $dependencies = new DependencyArray();
@@ -59,6 +67,8 @@ class Build extends CliCommand
       );
     }
 
+    $buildRun->result = BuildResult::PASS;
+
     $commandList = $dependencies->getLoadOrder();
     foreach($commandList as $commandId)
     {
@@ -73,11 +83,8 @@ class Build extends CliCommand
       $run = $command->command . $args;
 
       $log = new BuildLog();
-      $log->setId(1);
-      $log->buildId   = $build->id();
-      $log->commandId = $command->id();
-      $log->exitCode  = -1;
-      $log->saveChanges();
+      $log->setId($buildRun->id() . '-' . $command->id());
+      $log->startTime = microtime(true);
 
       chdir('../Cubex');
       $process = new Process($run);
@@ -86,17 +93,20 @@ class Build extends CliCommand
       $returnValue = $process->getExitCode();
       if($returnValue === 0)
       {
-        echo "Passed Test: $command->command\n";
+        echo "Passed Test: $command->name\n";
       }
       else
       {
-        echo "FAILED Test: $command->command with code $returnValue\n";
+        $buildRun->result = BuildResult::FAIL;
+        echo "FAILED Test: $command->name with code $returnValue\n";
       }
 
       $log->exitCode = (int)$process->getExitCode();
-      $log->errorOut = $process->getErrorOutput();
-      $log->output   = $process->getOutput();
+      $log->endTime  = microtime(true);
       $log->saveChanges();
     }
+
+    $buildRun->endTime = time();
+    $buildRun->saveChanges();
   }
 }

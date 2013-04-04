@@ -9,32 +9,49 @@ use Cubex\Mapper\Cassandra\CassandraMapper;
 
 class BuildLog extends CassandraMapper
 {
-  public $buildId;
-  public $commandId;
+  protected $_outputBuffers = false;
+  public $buildRunId;
   /**
    * @datatype smallint
    */
   public $exitCode;
-  /**
-   * @datatype MediumText
-   */
-  public $output;
-  /**
-   * @datatype MediumText
-   */
-  public $errorOut;
+  public $startTime;
+  public $endTime;
+
+  public function enableOutput()
+  {
+    $this->_outputBuffers = true;
+    return $this;
+  }
+
+  public function disableOutput()
+  {
+    $this->_outputBuffers = false;
+    return $this;
+  }
+
+  public function isOutputEnabled()
+  {
+    return $this->_outputBuffers;
+  }
 
   public function writeBuffer($type, $buffer)
   {
-    $this->setData((string)microtime(true), $buffer);
-    if('err' === $type)
-    {
-      //$this->errorOut .= $buffer;
-    }
-    else
-    {
-      //$this->output .= $buffer;
-    }
+    $this->setData("output:" . (string)microtime(true) . ':' . $type, $buffer);
     $this->saveChanges();
+
+    if($this->isOutputEnabled())
+    {
+      if('err' === $type)
+      {
+        echo "ERR] " . $buffer;
+      }
+      else
+      {
+        echo "OUT]" . $buffer;
+      }
+    }
+
+    return $this;
   }
 }

@@ -215,7 +215,7 @@ class Build extends CliCommand
        * @var $file \SplFileInfo
        */
       $filePath = $file->getRealPath();
-      if($file->isDir())
+      if($file->isDir() && !in_array($file->getFilename(), ['.', '..']))
       {
         $files = array_merge(
           $files,

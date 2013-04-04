@@ -103,7 +103,7 @@ class ProjectController extends DiffuseController
     $command->args        = [
       '--report=checkstyle',
       '--report-file=../build/checkstyle.xml',
-      '--standard=../cubex_code_standards/ruleset.xml',
+      '--standard=phpcs.xml',
       './src'
     ];
     $command->description = "Check Code Standards";

@@ -100,7 +100,10 @@ class Build extends CliCommand
       }
       else
       {
-        $buildRun->result = BuildResult::FAIL;
+        if($command->causeBuildFailure)
+        {
+          $buildRun->result = BuildResult::FAIL;
+        }
         echo "FAILED Test: $command->name with code $returnValue\n";
         echo "Failed Command:\n$run\n";
       }

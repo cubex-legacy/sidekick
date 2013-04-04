@@ -21,6 +21,8 @@ class BuildCommand extends RecordMapper
   public $name;
   public $description;
 
+  public $causeBuildFailure = true;
+
   public $successExitCodes = [0];
 
   protected function _configure()

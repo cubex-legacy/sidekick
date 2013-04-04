@@ -87,6 +87,7 @@ class Build extends CliCommand
       $log->startTime = microtime(true);
 
       chdir('../Cubex');
+
       $process = new Process($run);
       $process->run([$log, 'writeBuffer']);
 
@@ -99,6 +100,7 @@ class Build extends CliCommand
       {
         $buildRun->result = BuildResult::FAIL;
         echo "FAILED Test: $command->name with code $returnValue\n";
+        echo "Failed Command:\n$run\n";
       }
 
       $log->exitCode = (int)$process->getExitCode();

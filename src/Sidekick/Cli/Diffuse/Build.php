@@ -35,6 +35,8 @@ class Build extends CliCommand
    */
   public $build;
 
+  public $verbose;
+
   public function execute()
   {
     $projectId = (int)$this->project;
@@ -83,6 +85,10 @@ class Build extends CliCommand
       $run = $command->command . $args;
 
       $log = new BuildLog();
+      if($this->verbose)
+      {
+        $log->enableOutput();
+      }
       $log->setId($buildRun->id() . '-' . $command->id());
       $log->startTime = microtime(true);
       $log->exitCode  = -1;
@@ -93,10 +99,12 @@ class Build extends CliCommand
       $process = new Process($run);
       $process->run([$log, 'writeBuffer']);
 
+      echo "\nRunning $command->name: ";
+
       $returnValue = $process->getExitCode();
       if($returnValue === 0)
       {
-        echo "Passed Test: $command->name\n";
+        echo "Passed\n";
       }
       else
       {
@@ -104,7 +112,7 @@ class Build extends CliCommand
         {
           $buildRun->result = BuildResult::FAIL;
         }
-        echo "FAILED Test: $command->name with code $returnValue\n";
+        echo "FAILED ($returnValue)\n";
         echo "Failed Command:\n$run\n";
       }
 

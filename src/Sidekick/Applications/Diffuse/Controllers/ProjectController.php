@@ -33,7 +33,7 @@ class ProjectController extends DiffuseController
 
     $command              = new BuildCommand(1);
     $command->command     = 'find';
-    $command->args        = ['. -name *.php', '-exec php-win -l {} ";"'];
+    $command->args        = ['. -name *.php', '-exec php -l {} ";"'];
     $command->name        = 'PHP Lint';
     $command->description = "PHP Lint Check Directory";
     $command->saveChanges();

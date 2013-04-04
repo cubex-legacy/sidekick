@@ -74,15 +74,17 @@ class Build extends CliCommand
 
     $buildRun->result = BuildResult::PASS;
 
+    $lineSplitter = str_repeat('=', 80);
+
     $commandList = $dependencies->getLoadOrder();
     foreach($commandList as $commandId)
     {
       $testsRun++;
       $command = new BuildCommand($commandId);
 
-      echo "\n\n==========================================================\n";
+      echo "\n\n$lineSplitter\n";
       echo " Running " . $command->name;
-      echo "\n==========================================================\n";
+      echo "\n$lineSplitter\n";
 
       $args = $returnVar = $output = null;
       if(is_array($command->args))
@@ -138,13 +140,13 @@ class Build extends CliCommand
     $buildRun->endTime = time();
     $buildRun->saveChanges();
 
-    echo "\n\n\n==========================================================\n";
+    echo "\n\n\n$lineSplitter\n";
 
     echo Shell::colourText(
       "                    Build Results",
       Shell::COLOUR_FOREGROUND_LIGHT_PURPLE
     );
-    echo "\n==========================================================\n\n";
+    echo "\n$lineSplitter\n\n";
 
     $results = [
       'Tests Run'      => $testsRun,
@@ -165,7 +167,7 @@ class Build extends CliCommand
       echo "\n";
     }
 
-    echo "\n==========================================================\n";
+    echo "\n$lineSplitter\n";
 
     echo "\nFinal Result: ";
 
@@ -178,6 +180,6 @@ class Build extends CliCommand
       echo Shell::colourText("PASS", Shell::COLOUR_FOREGROUND_GREEN);
     }
 
-    echo "\n==========================================================\n\n";
+    echo "\n$lineSplitter\n\n";
   }
 }

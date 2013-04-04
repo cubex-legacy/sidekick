@@ -85,6 +85,8 @@ class Build extends CliCommand
       $log = new BuildLog();
       $log->setId($buildRun->id() . '-' . $command->id());
       $log->startTime = microtime(true);
+      $log->exitCode  = -1;
+      $log->saveChanges();
 
       chdir('../Cubex');
 

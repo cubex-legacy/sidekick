@@ -138,28 +138,34 @@ class Build extends CliCommand
     $buildRun->endTime = time();
     $buildRun->saveChanges();
 
-    echo "\n\n\n";
-    echo Shell::colourText("Build Results", Shell::COLOUR_FOREGROUND_PURPLE);
-    echo "\n";
+    echo "\n\n\n==========================================================\n";
+
+    echo Shell::colourText(
+      "Build Results",
+      Shell::COLOUR_FOREGROUND_LIGHT_PURPLE
+    );
+    echo "\n==========================================================\n\n";
 
     $results = [
       'Tests Run'      => $testsRun,
       'Tests Passed'   => $testsPass,
       'Tests Failed'   => $testsFailed,
-      'Tests Critical' => $testsCritical
+      'Tests Critical' => $testsCritical,
+      ''               => null,
+      'Total Duration' => $buildRun->endTime - $buildRun->startTime . ' (seconds)'
     ];
 
     foreach($results as $name => $value)
     {
-      echo Shell::colourText(
-        str_pad($name, 30, STR_PAD_RIGHT) . ' : ',
-        Shell::COLOUR_FOREGROUND_WHITE
-      );
-      echo Shell::colourText($value, Shell::COLOUR_FOREGROUND_YELLOW);
+      if($value !== null)
+      {
+        echo " " . str_pad($name, 20, STR_PAD_RIGHT, ' ') . ' : ';
+        echo Shell::colourText($value, Shell::COLOUR_FOREGROUND_YELLOW);
+      }
       echo "\n";
     }
 
-    echo "Final Result: ";
+    echo "\nFinal Result: ";
 
     if($buildRun->result !== BuildResult::PASS)
     {
@@ -170,6 +176,6 @@ class Build extends CliCommand
       echo Shell::colourText("PASS", Shell::COLOUR_FOREGROUND_GREEN);
     }
 
-    echo "\n";
+    echo "\n==========================================================\n\n";
   }
 }

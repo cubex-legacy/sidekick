@@ -23,6 +23,11 @@ class BuildCommand extends RecordMapper
 
   public $causeBuildFailure = true;
 
+  public $runOnFileSet = false;
+  public $fileSetDirectory;
+  public $filePattern;
+
+
   public $successExitCodes = [0];
 
   protected function _configure()

@@ -31,11 +31,14 @@ class ProjectController extends DiffuseController
     $proBuild = new BuildsProjects($build, $project);
     $proBuild->saveChanges();
 
-    $command              = new BuildCommand(1);
-    $command->command     = 'find';
-    $command->args        = ['. -name *.php', '-exec php -l {} ";"'];
-    $command->name        = 'PHP Lint';
-    $command->description = "PHP Lint Check Directory";
+    $command                   = new BuildCommand(1);
+    $command->command          = 'php';
+    $command->args             = ['-l'];
+    $command->name             = 'PHP Lint';
+    $command->description      = "PHP Lint Check Directory";
+    $command->runOnFileSet     = true;
+    $command->filePattern      = '.*\.php$';
+    $command->fileSetDirectory = 'src';
     $command->saveChanges();
 
     $bc               = new BuildsCommands($build, $command);
@@ -43,7 +46,6 @@ class ProjectController extends DiffuseController
     $bc->saveChanges();
 
     $command              = new BuildCommand(2);
-    $bc->dependencies     = [1];
     $command->name        = 'PHP Unit';
     $command->command     = 'phpunit';
     $command->args        = [
@@ -71,7 +73,6 @@ class ProjectController extends DiffuseController
     $bc->saveChanges();
 
     $command              = new BuildCommand(4);
-    $bc->dependencies     = [1];
     $command->command     = 'phploc';
     $command->args        = [
       '--log-csv ../build/phploc.csv',
@@ -81,11 +82,11 @@ class ProjectController extends DiffuseController
     $command->description = "Generate PHP Information (csv out)";
     $command->saveChanges();
 
-    $bc = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands($build, $command);
+    $bc->dependencies = [1];
     $bc->saveChanges();
 
     $command              = new BuildCommand(5);
-    $bc->dependencies     = [1];
     $command->name        = 'PHP MD';
     $command->command     = 'phpmd';
     $command->args        = [
@@ -97,11 +98,11 @@ class ProjectController extends DiffuseController
     $command->description = "Generate PHP Mess Detection";
     $command->saveChanges();
 
-    $bc = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands($build, $command);
+    $bc->dependencies = [1];
     $bc->saveChanges();
 
     $command              = new BuildCommand(6);
-    $bc->dependencies     = [1];
     $command->name        = 'PHPCS';
     $command->command     = 'phpcs';
     $command->args        = [
@@ -113,11 +114,11 @@ class ProjectController extends DiffuseController
     $command->description = "Check Code Standards";
     $command->saveChanges();
 
-    $bc = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands($build, $command);
+    $bc->dependencies = [1];
     $bc->saveChanges();
 
     $command              = new BuildCommand(7);
-    $bc->dependencies     = [1];
     $command->name        = 'PHPCPD';
     $command->command     = 'phpcpd';
     $command->args        = [
@@ -127,11 +128,11 @@ class ProjectController extends DiffuseController
     $command->description = "Check Code Duplication";
     $command->saveChanges();
 
-    $bc = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands($build, $command);
+    $bc->dependencies = [1];
     $bc->saveChanges();
 
     $command              = new BuildCommand(8);
-    $bc->dependencies     = [1];
     $command->name        = 'PDepend';
     $command->command     = 'pdepend';
     $command->args        = [
@@ -144,7 +145,8 @@ class ProjectController extends DiffuseController
     $command->description = "Generate PHP Dependancy information";
     $command->saveChanges();
 
-    $bc = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands($build, $command);
+    $bc->dependencies = [1];
     $bc->saveChanges();
 
     $source                 = new BuildSource(1);

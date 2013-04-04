@@ -78,7 +78,7 @@ class Build extends CliCommand
       $command = new BuildCommand($commandId);
 
       echo "\n\n==========================================================\n";
-      echo "Running " . $command->name;
+      echo " Running " . $command->name;
       echo "\n==========================================================\n";
 
       $args = $returnVar = $output = null;
@@ -107,9 +107,10 @@ class Build extends CliCommand
 
       if($this->verbose)
       {
+        echo "\n";
       }
 
-      echo "\nTest Result: ";
+      echo "\n$command->name Result: ";
       $returnValue = $process->getExitCode();
       if($returnValue === 0)
       {
@@ -121,12 +122,12 @@ class Build extends CliCommand
         {
           $buildRun->result = BuildResult::FAIL;
         }
-        echo Shell::colourText("FAIL", Shell::COLOUR_FOREGROUND_RED);
-        echo "($returnValue)\n";
-        echo "Failed Command:\n$run";
+        echo Shell::colourText(
+          "FAIL ($returnValue)",
+          Shell::COLOUR_FOREGROUND_RED
+        );
+        Shell::colourText($run, Shell::COLOUR_FOREGROUND_LIGHT_BLUE);
       }
-
-      echo "\n";
 
       $log->exitCode = (int)$process->getExitCode();
       $log->endTime  = microtime(true);

@@ -6,6 +6,7 @@
 namespace Sidekick\Cli\Diffuse;
 
 use Cubex\Cli\CliCommand;
+use Cubex\Cli\Shell;
 use Cubex\FileSystem\FileSystem;
 use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
@@ -74,9 +75,13 @@ class Build extends CliCommand
     $commandList = $dependencies->getLoadOrder();
     foreach($commandList as $commandId)
     {
-      echo "\n\n==========================================================\n\n";
       $command = new BuildCommand($commandId);
-      $args    = $returnVar = $output = null;
+
+      echo "\n\n==========================================================\n";
+      echo "Running " . $command->name;
+      echo "\n==========================================================\n";
+
+      $args = $returnVar = $output = null;
       if(is_array($command->args))
       {
         $args = ' ' . implode(" ", $command->args);
@@ -97,14 +102,18 @@ class Build extends CliCommand
       chdir('../Cubex');
 
       $process = new Process($run);
+
       $process->run([$log, 'writeBuffer']);
 
-      echo "\nRunning $command->name: ";
+      if($this->verbose)
+      {
+      }
 
+      echo "\nTest Result: ";
       $returnValue = $process->getExitCode();
       if($returnValue === 0)
       {
-        echo "Passed\n";
+        echo Shell::colourText("PASS", Shell::COLOUR_FOREGROUND_GREEN);
       }
       else
       {
@@ -112,9 +121,12 @@ class Build extends CliCommand
         {
           $buildRun->result = BuildResult::FAIL;
         }
-        echo "FAILED ($returnValue)\n";
-        echo "Failed Command:\n$run\n";
+        echo Shell::colourText("FAIL", Shell::COLOUR_FOREGROUND_RED);
+        echo "($returnValue)\n";
+        echo "Failed Command:\n$run";
       }
+
+      echo "\n";
 
       $log->exitCode = (int)$process->getExitCode();
       $log->endTime  = microtime(true);

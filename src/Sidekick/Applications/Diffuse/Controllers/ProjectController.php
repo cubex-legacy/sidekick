@@ -43,6 +43,7 @@ class ProjectController extends DiffuseController
     $bc->saveChanges();
 
     $command              = new BuildCommand(2);
+    $bc->dependencies     = [1];
     $command->name        = 'PHP Unit';
     $command->command     = 'phpunit';
     $command->args        = [
@@ -70,6 +71,7 @@ class ProjectController extends DiffuseController
     $bc->saveChanges();
 
     $command              = new BuildCommand(4);
+    $bc->dependencies     = [1];
     $command->command     = 'phploc';
     $command->args        = [
       '--log-csv ../build/phploc.csv',
@@ -83,6 +85,7 @@ class ProjectController extends DiffuseController
     $bc->saveChanges();
 
     $command              = new BuildCommand(5);
+    $bc->dependencies     = [1];
     $command->name        = 'PHP MD';
     $command->command     = 'phpmd';
     $command->args        = [
@@ -98,6 +101,7 @@ class ProjectController extends DiffuseController
     $bc->saveChanges();
 
     $command              = new BuildCommand(6);
+    $bc->dependencies     = [1];
     $command->name        = 'PHPCS';
     $command->command     = 'phpcs';
     $command->args        = [
@@ -113,6 +117,7 @@ class ProjectController extends DiffuseController
     $bc->saveChanges();
 
     $command              = new BuildCommand(7);
+    $bc->dependencies     = [1];
     $command->name        = 'PHPCPD';
     $command->command     = 'phpcpd';
     $command->args        = [
@@ -126,6 +131,7 @@ class ProjectController extends DiffuseController
     $bc->saveChanges();
 
     $command              = new BuildCommand(8);
+    $bc->dependencies     = [1];
     $command->name        = 'PDepend';
     $command->command     = 'pdepend';
     $command->args        = [

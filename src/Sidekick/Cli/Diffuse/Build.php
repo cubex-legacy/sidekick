@@ -70,7 +70,8 @@ class Build extends CliCommand
       );
     }
 
-    $testsRun = $testsPass = $testsFailed = $testsCritical = 0;
+    $totalTests = count($commands);
+    $testsRun   = $testsPass = $testsFailed = 0;
 
     $buildRun->result = BuildResult::PASS;
 
@@ -111,7 +112,12 @@ class Build extends CliCommand
       $process->run([$log, 'writeBuffer']);
 
       echo "\n$command->name Result: ";
-      $returnValue = $process->getExitCode();
+
+      $returnValue   = $process->getExitCode();
+      $log->exitCode = (int)$returnValue;
+      $log->endTime  = microtime(true);
+      $log->saveChanges();
+
       if($returnValue === 0)
       {
         $testsPass++;
@@ -119,11 +125,11 @@ class Build extends CliCommand
       }
       else
       {
-        $testsFailed++;
         if($command->causeBuildFailure)
         {
-          $testsCritical++;
+          $testsFailed++;
           $buildRun->result = BuildResult::FAIL;
+          break;
         }
         echo Shell::colourText(
           "FAIL ($returnValue)",
@@ -131,10 +137,6 @@ class Build extends CliCommand
         );
         Shell::colourText($run, Shell::COLOUR_FOREGROUND_LIGHT_BLUE);
       }
-
-      $log->exitCode = (int)$process->getExitCode();
-      $log->endTime  = microtime(true);
-      $log->saveChanges();
     }
 
     $buildRun->endTime = time();
@@ -149,10 +151,9 @@ class Build extends CliCommand
     echo "\n$lineSplitter\n\n";
 
     $results = [
-      'Tests Run'      => $testsRun,
+      'Tests Run'      => $testsRun . '/' . $totalTests,
       'Tests Passed'   => $testsPass,
       'Tests Failed'   => $testsFailed,
-      'Tests Critical' => $testsCritical,
       ''               => null,
       'Total Duration' => $buildRun->endTime - $buildRun->startTime . ' (seconds)'
     ];

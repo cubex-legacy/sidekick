@@ -320,7 +320,13 @@ class Build extends CliCommand
     {
       case RepositoryProvider::GIT:
         echo "\nCloning Repo\n";
-        $process = new Process('git clone ' . $source->fetchUrl . ' ' . $location);
+
+        $cloneCommand = 'git clone';
+        $cloneCommand .= " $source->fetchUrl";
+        $cloneCommand .= " --branch " . $source->branch;
+        $cloneCommand .= " $location";
+
+        $process = new Process($cloneCommand);
         $process->run([$log, 'writeBuffer']);
         $log->exitCode = $process->getExitCode();
     }

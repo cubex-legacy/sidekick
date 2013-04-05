@@ -104,7 +104,7 @@ class ProjectController extends DiffuseController
     $command->saveChanges();
 
     $bc               = new BuildsCommands($build, $command);
-    $bc->dependencies = [1];
+    $bc->dependencies = [7];
     $bc->saveChanges();
 
     $command              = new BuildCommand(6);
@@ -112,6 +112,7 @@ class ProjectController extends DiffuseController
     $command->command     = 'phpcs';
     $command->args        = [
       '--report=checkstyle',
+      '--warning-severity=0',
       '--report-file=logs/checkstyle.xml',
       '--standard={sourcedirectory}phpcs.xml',
       '{sourcedirectory}src',

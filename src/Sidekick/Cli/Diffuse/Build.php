@@ -162,9 +162,10 @@ class Build extends CliCommand
         Shell::COLOUR_FOREGROUND_RED
       );
 
+      $this->_testsFail++;
+
       if($command->causeBuildFailure)
       {
-        $this->_testsFail++;
         $this->_buildResult = BuildResult::FAIL;
         return false;
       }

@@ -272,10 +272,12 @@ class Build extends CliCommand
     echo "\n$lineSplitter\n\n";
 
     $results = [
+      'Build ID'       => $this->_buildId,
+      null,
       'Tests Run'      => $this->_testsRun . '/' . $this->_totalTests,
       'Tests Passed'   => $this->_testsPass,
       'Tests Failed'   => $this->_testsFail,
-      ''               => null,
+      null,
       'Total Duration' => $buildRun->endTime - $buildRun->startTime . ' (seconds)'
     ];
 

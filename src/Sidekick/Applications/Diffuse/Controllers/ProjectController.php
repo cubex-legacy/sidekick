@@ -90,16 +90,17 @@ class ProjectController extends DiffuseController
     $bc->dependencies = [1];
     $bc->saveChanges();
 
-    $command              = new BuildCommand(5);
-    $command->name        = 'PHP MD';
-    $command->command     = 'phpmd';
-    $command->args        = [
+    $command                    = new BuildCommand(5);
+    $command->name              = 'PHP MD';
+    $command->causeBuildFailure = false;
+    $command->command           = 'phpmd';
+    $command->args              = [
       '{sourcedirectory}src',
       'xml',
       '{sourcedirectory}phpmd.xml',
       '--reportfile logs/pmd.report.xml',
     ];
-    $command->description = "Generate PHP Mess Detection";
+    $command->description       = "Generate PHP Mess Detection";
     $command->saveChanges();
 
     $bc               = new BuildsCommands($build, $command);

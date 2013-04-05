@@ -64,7 +64,7 @@ class Build extends CliCommand
     $buildRun            = new BuildRun();
     $buildRun->buildId   = $build->id();
     $buildRun->projectId = $project->id();
-    $buildRun->startTime = time();
+    $buildRun->startTime = new \DateTime();
     $buildRun->result    = BuildResult::RUNNING;
     $buildRun->saveChanges();
     $this->_buildId = $buildRun->id();
@@ -102,11 +102,11 @@ class Build extends CliCommand
       $this->_totalTests++;
     }
 
-    $this->_buildResult = BuildResult::PASS;
-
     $commandList = $dependencies->getLoadOrder();
     foreach($commandList as $commandId)
     {
+      $buildRun->endTime = new \DateTime();
+      $buildRun->saveChanges();
       $pass = $this->runCommand($commandId);
       if(!$pass)
       {
@@ -114,8 +114,13 @@ class Build extends CliCommand
       }
     }
 
+    if($this->_buildResult === BuildResult::RUNNING)
+    {
+      $this->_buildResult = BuildResult::PASS;
+    }
+
     $buildRun->result  = $this->_buildResult;
-    $buildRun->endTime = time();
+    $buildRun->endTime = new \DateTime();
     $buildRun->saveChanges();
 
     $this->_buildResults($buildRun);

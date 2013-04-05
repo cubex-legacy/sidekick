@@ -284,9 +284,10 @@ class Build extends CliCommand
       'Tests Passed'   => $this->_testsPass,
       'Tests Failed'   => $this->_testsFail,
       null,
-      'Start Time'     => $buildRun->startTime,
-      'End Time'       => $buildRun->endTime,
-      'Total Duration' => $buildRun->startTime->diff($buildRun->endTime),
+      'Start Time'     => $buildRun->startTime->format(),
+      'End Time'       => $buildRun->endTime->format(),
+      'Total Duration' => $buildRun->startTime->diff($buildRun->endTime)
+      ->format(),
     ];
 
     foreach($results as $name => $value)

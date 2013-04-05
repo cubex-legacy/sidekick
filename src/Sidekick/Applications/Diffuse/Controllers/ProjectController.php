@@ -51,8 +51,8 @@ class ProjectController extends DiffuseController
     $command->name        = 'PHP Unit';
     $command->command     = 'phpunit';
     $command->args        = [
-      '--coverage-clover ../build/clover.sml',
-      '--log-junit ../build/junit.xml',
+      '--coverage-clover logs/clover.sml',
+      '--log-junit logs/junit.xml',
       ' -c {sourcedirectory}phpunit.xml.dist',
       '{sourcedirectory}',
     ];
@@ -79,7 +79,7 @@ class ProjectController extends DiffuseController
     $command              = new BuildCommand(4);
     $command->command     = 'phploc';
     $command->args        = [
-      '--log-csv ../build/phploc.csv',
+      '--log-csv logs/phploc.csv',
       '{sourcedirectory}src',
     ];
     $command->name        = 'PHPLoc';
@@ -96,8 +96,8 @@ class ProjectController extends DiffuseController
     $command->args        = [
       '{sourcedirectory}src',
       'xml',
-      './phpmd.xml',
-      '--reportfile ../build/pmd.report.xml',
+      '{sourcedirectory}phpmd.xml',
+      '--reportfile logs/pmd.report.xml',
     ];
     $command->description = "Generate PHP Mess Detection";
     $command->saveChanges();
@@ -111,8 +111,8 @@ class ProjectController extends DiffuseController
     $command->command     = 'phpcs';
     $command->args        = [
       '--report=checkstyle',
-      '--report-file=../build/checkstyle.xml',
-      '--standard=phpcs.xml',
+      '--report-file=logs/checkstyle.xml',
+      '--standard={sourcedirectory}phpcs.xml',
       '{sourcedirectory}src',
     ];
     $command->description = "Check Code Standards";
@@ -126,7 +126,7 @@ class ProjectController extends DiffuseController
     $command->name        = 'PHPCPD';
     $command->command     = 'phpcpd';
     $command->args        = [
-      '--log-pmd ../build/pmd-cpd.xml',
+      '--log-pmd logs/pmd-cpd.xml',
       '{sourcedirectory}src',
     ];
     $command->description = "Check Code Duplication";
@@ -140,10 +140,10 @@ class ProjectController extends DiffuseController
     $command->name        = 'PDepend';
     $command->command     = 'pdepend';
     $command->args        = [
-      '--jdepend-xml=../build/depend.xml',
-      '--summary-xml=../build/depend-summary.xml',
-      '--jdepend-chart=../build/depend.svg',
-      '--overview-pyramid=../build/depend-pyramid.svg',
+      '--jdepend-xml=logs/depend.xml',
+      '--summary-xml=logs/depend-summary.xml',
+      '--jdepend-chart=logs/depend.svg',
+      '--overview-pyramid=logs/depend-pyramid.svg',
       '{sourcedirectory}src',
     ];
     $command->description = "Generate PHP Dependancy information";

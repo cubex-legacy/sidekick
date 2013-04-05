@@ -65,7 +65,7 @@ class Build extends CliCommand
     $buildRun->buildId   = $build->id();
     $buildRun->projectId = $project->id();
     $buildRun->startTime = new \DateTime();
-    $buildRun->result    = BuildResult::RUNNING;
+    $this->_buildResult  = $buildRun->result = BuildResult::RUNNING;
     $buildRun->saveChanges();
     $this->_buildId = $buildRun->id();
 

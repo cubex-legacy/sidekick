@@ -11,9 +11,11 @@ use Cubex\FileSystem\FileSystem;
 use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
 use Sidekick\Components\Diffuse\Enums\BuildResult;
+use Sidekick\Components\Diffuse\Enums\RepositoryProvider;
 use Sidekick\Components\Diffuse\Mappers\BuildCommand;
 use Sidekick\Components\Diffuse\Mappers\BuildLog;
 use Sidekick\Components\Diffuse\Mappers\BuildRun;
+use Sidekick\Components\Diffuse\Mappers\BuildSource;
 use Sidekick\Components\Diffuse\Mappers\BuildsCommands;
 use Sidekick\Components\Projects\Mappers\Project;
 use Symfony\Component\Process\Process;
@@ -40,6 +42,8 @@ class Build extends CliCommand
 
   protected $_buildId;
   protected $_buildResult;
+  protected $_buildSourceDir;
+  protected $_buildPath;
 
   protected $_totalTests = 0;
   protected $_testsRun = 0;
@@ -57,9 +61,6 @@ class Build extends CliCommand
     $project = new Project($projectId);
     $build   = new \Sidekick\Components\Diffuse\Mappers\Build($buildId);
 
-    echo "\n";
-    echo "Starting Build for: " . $project->name . " (" . $build->name . ")";
-
     $buildRun            = new BuildRun();
     $buildRun->buildId   = $build->id();
     $buildRun->projectId = $project->id();
@@ -67,6 +68,24 @@ class Build extends CliCommand
     $buildRun->result    = BuildResult::RUNNING;
     $buildRun->saveChanges();
     $this->_buildId = $buildRun->id();
+
+    echo "\n";
+    echo "Starting Build for: " . $project->name . " (" . $build->name . ")\n";
+    echo Shell::colourText(
+      "Build ID: " . $this->_buildId,
+      Shell::COLOUR_FOREGROUND_LIGHT_BLUE
+    );
+    echo "\n";
+
+    $buildPath = '../builds/' . $buildRun->id();
+    mkdir($buildPath, 0777, true);
+    chdir($buildPath);
+    $buildPath             = getcwd();
+    $this->_buildPath      = $buildPath;
+    $this->_buildSourceDir = $build->sourceDirectory;
+
+    $buildSource = new BuildSource($build->buildSourceId);
+    $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
 
     $commands     = BuildsCommands::collectionOn($build);
     $dependencies = new DependencyArray();
@@ -122,8 +141,6 @@ class Build extends CliCommand
     $log->exitCode  = -1;
     $log->saveChanges();
 
-    chdir('../Cubex');
-
     $exitCode = $this->_processCommand($log, $command);
 
     echo "\n$command->name Result: ";
@@ -165,10 +182,21 @@ class Build extends CliCommand
 
     $runCommand = $command->command . $args;
 
+    $runCommand = str_replace(
+      '{sourcedirectory}',
+      $this->_buildSourceDir,
+      $runCommand
+    );
+
     if($command->runOnFileSet)
     {
-      $returnExitCode = -1;
-      $files          = $this->_getFullFilelisting(
+      $command->fileSetDirectory = str_replace(
+        '{sourcedirectory}',
+        $this->_buildSourceDir,
+        $command->fileSetDirectory
+      );
+      $returnExitCode            = -1;
+      $files                     = $this->_getFullFilelisting(
         $command->fileSetDirectory,
         $command->filePattern
       );
@@ -199,6 +227,7 @@ class Build extends CliCommand
     else
     {
       $process = new Process($runCommand);
+      echo "\nRunning: " . $runCommand . "\n";
       $process->run([$log, 'writeBuffer']);
       return $process->getExitCode();
     }
@@ -273,5 +302,32 @@ class Build extends CliCommand
     }
 
     echo "\n$lineSplitter\n\n";
+  }
+
+  protected function _downloadSourceCode(BuildSource $source, $location)
+  {
+    $log = new BuildLog();
+    if($this->verbose)
+    {
+      $log->enableOutput();
+    }
+    $log->setId($this->_buildId . '-source');
+    $log->startTime = microtime(true);
+    $log->exitCode  = -1;
+    $log->saveChanges();
+
+    switch($source->repositoryType)
+    {
+      case RepositoryProvider::GIT:
+        echo "\nCloning Repo\n";
+        $process = new Process('git clone ' . $source->fetchUrl . ' ' . $location);
+        $process->run([$log, 'writeBuffer']);
+        $log->exitCode = $process->getExitCode();
+    }
+
+    $log->endTime = microtime(true);
+    $log->saveChanges();
+
+    return $log->exitCode;
   }
 }

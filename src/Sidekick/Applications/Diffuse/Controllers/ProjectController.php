@@ -23,9 +23,11 @@ class ProjectController extends DiffuseController
     $project->description = "Cubex Build";
     $project->saveChanges();
 
-    $build             = new Build(1);
-    $build->buildLevel = BuildLevel::MINOR;
-    $build->name       = "Minor Build";
+    $build                = new Build(1);
+    $build->buildLevel    = BuildLevel::MINOR;
+    $build->name          = "Minor Build";
+    $build->buildSourceId = 1;
+    $build->sourceDirectory = 'sourcecode/';
     $build->saveChanges();
 
     $proBuild = new BuildsProjects($build, $project);
@@ -38,7 +40,7 @@ class ProjectController extends DiffuseController
     $command->description      = "PHP Lint Check Directory";
     $command->runOnFileSet     = true;
     $command->filePattern      = '.*\.php$';
-    $command->fileSetDirectory = 'src';
+    $command->fileSetDirectory = '{sourcedirectory}src';
     $command->saveChanges();
 
     $bc               = new BuildsCommands($build, $command);
@@ -49,6 +51,7 @@ class ProjectController extends DiffuseController
     $command->name        = 'PHP Unit';
     $command->command     = 'phpunit';
     $command->args        = [
+      '{sourcedirectory}',
       '--coverage-clover ../build/clover.sml',
       '--log-junit ../build/junit.xml'
     ];
@@ -63,7 +66,7 @@ class ProjectController extends DiffuseController
     $command->name        = 'Make Build Directory';
     $command->command     = 'mkdir';
     $command->args        = [
-      '../build',
+      'logs',
       '-p'
     ];
     $command->description = "Make Build Directory";
@@ -76,7 +79,7 @@ class ProjectController extends DiffuseController
     $command->command     = 'phploc';
     $command->args        = [
       '--log-csv ../build/phploc.csv',
-      './'
+      '{sourcedirectory}'
     ];
     $command->name        = 'PHPLoc';
     $command->description = "Generate PHP Information (csv out)";
@@ -90,7 +93,7 @@ class ProjectController extends DiffuseController
     $command->name        = 'PHP MD';
     $command->command     = 'phpmd';
     $command->args        = [
-      './',
+      '{sourcedirectory}',
       'xml',
       './phpmd.xml',
       '--reportfile ../build/pmd.report.xml'
@@ -109,7 +112,7 @@ class ProjectController extends DiffuseController
       '--report=checkstyle',
       '--report-file=../build/checkstyle.xml',
       '--standard=phpcs.xml',
-      './src'
+      '{sourcedirectory}src'
     ];
     $command->description = "Check Code Standards";
     $command->saveChanges();
@@ -123,7 +126,7 @@ class ProjectController extends DiffuseController
     $command->command     = 'phpcpd';
     $command->args        = [
       '--log-pmd ../build/pmd-cpd.xml',
-      './src'
+      '{sourcedirectory}src'
     ];
     $command->description = "Check Code Duplication";
     $command->saveChanges();
@@ -140,7 +143,7 @@ class ProjectController extends DiffuseController
       '--summary-xml=../build/depend-summary.xml',
       '--jdepend-chart=../build/depend.svg',
       '--overview-pyramid=../build/depend-pyramid.svg',
-      './'
+      '{sourcedirectory}'
     ];
     $command->description = "Generate PHP Dependancy information";
     $command->saveChanges();

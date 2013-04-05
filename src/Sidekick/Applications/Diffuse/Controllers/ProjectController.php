@@ -23,10 +23,10 @@ class ProjectController extends DiffuseController
     $project->description = "Cubex Build";
     $project->saveChanges();
 
-    $build                = new Build(1);
-    $build->buildLevel    = BuildLevel::MINOR;
-    $build->name          = "Minor Build";
-    $build->buildSourceId = 1;
+    $build                  = new Build(1);
+    $build->buildLevel      = BuildLevel::MINOR;
+    $build->name            = "Minor Build";
+    $build->buildSourceId   = 1;
     $build->sourceDirectory = 'sourcecode/';
     $build->saveChanges();
 
@@ -44,16 +44,17 @@ class ProjectController extends DiffuseController
     $command->saveChanges();
 
     $bc               = new BuildsCommands($build, $command);
-    $bc->dependencies = [3];
+    $bc->dependencies = [3, 9];
     $bc->saveChanges();
 
     $command              = new BuildCommand(2);
     $command->name        = 'PHP Unit';
     $command->command     = 'phpunit';
     $command->args        = [
-      '{sourcedirectory}',
       '--coverage-clover ../build/clover.sml',
-      '--log-junit ../build/junit.xml'
+      '--log-junit ../build/junit.xml',
+      ' -c {sourcedirectory}phpunit.xml.dist',
+      '{sourcedirectory}',
     ];
     $command->description = "Run PHPUnit Tests";
     $command->saveChanges();
@@ -67,7 +68,7 @@ class ProjectController extends DiffuseController
     $command->command     = 'mkdir';
     $command->args        = [
       'logs',
-      '-p'
+      '-p',
     ];
     $command->description = "Make Build Directory";
     $command->saveChanges();
@@ -79,7 +80,7 @@ class ProjectController extends DiffuseController
     $command->command     = 'phploc';
     $command->args        = [
       '--log-csv ../build/phploc.csv',
-      '{sourcedirectory}'
+      '{sourcedirectory}src',
     ];
     $command->name        = 'PHPLoc';
     $command->description = "Generate PHP Information (csv out)";
@@ -93,10 +94,10 @@ class ProjectController extends DiffuseController
     $command->name        = 'PHP MD';
     $command->command     = 'phpmd';
     $command->args        = [
-      '{sourcedirectory}',
+      '{sourcedirectory}src',
       'xml',
       './phpmd.xml',
-      '--reportfile ../build/pmd.report.xml'
+      '--reportfile ../build/pmd.report.xml',
     ];
     $command->description = "Generate PHP Mess Detection";
     $command->saveChanges();
@@ -112,7 +113,7 @@ class ProjectController extends DiffuseController
       '--report=checkstyle',
       '--report-file=../build/checkstyle.xml',
       '--standard=phpcs.xml',
-      '{sourcedirectory}src'
+      '{sourcedirectory}src',
     ];
     $command->description = "Check Code Standards";
     $command->saveChanges();
@@ -126,7 +127,7 @@ class ProjectController extends DiffuseController
     $command->command     = 'phpcpd';
     $command->args        = [
       '--log-pmd ../build/pmd-cpd.xml',
-      '{sourcedirectory}src'
+      '{sourcedirectory}src',
     ];
     $command->description = "Check Code Duplication";
     $command->saveChanges();
@@ -143,13 +144,28 @@ class ProjectController extends DiffuseController
       '--summary-xml=../build/depend-summary.xml',
       '--jdepend-chart=../build/depend.svg',
       '--overview-pyramid=../build/depend-pyramid.svg',
-      '{sourcedirectory}'
+      '{sourcedirectory}src',
     ];
     $command->description = "Generate PHP Dependancy information";
     $command->saveChanges();
 
     $bc               = new BuildsCommands($build, $command);
     $bc->dependencies = [1];
+    $bc->saveChanges();
+
+    $command              = new BuildCommand(9);
+    $command->name        = 'Composer Install';
+    $command->command     = 'composer';
+    $command->args        = [
+      'install',
+      '-o',
+      '--working-dir {sourcedirectory}',
+    ];
+    $command->description = "Install Project Dependencies";
+    $command->saveChanges();
+
+    $bc               = new BuildsCommands($build, $command);
+    $bc->dependencies = [3];
     $bc->saveChanges();
 
     $source                 = new BuildSource(1);

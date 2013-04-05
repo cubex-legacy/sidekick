@@ -69,13 +69,13 @@ class Build extends CliCommand
     $buildRun->saveChanges();
     $this->_buildId = $buildRun->id();
 
-    echo "\n";
-    echo "Starting Build for: " . $project->name . " (" . $build->name . ")\n";
     echo Shell::colourText(
-      "Build ID: " . $this->_buildId,
+      "\n" .
+      "Starting Build for: " . $project->name . " (" . $build->name . ")\n" .
+      "Build ID: " . $this->_buildId .
+      "\n",
       Shell::COLOUR_FOREGROUND_LIGHT_BLUE
     );
-    echo "\n";
 
     $buildPath = '../builds/' . $buildRun->id();
     mkdir($buildPath, 0777, true);

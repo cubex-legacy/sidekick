@@ -287,7 +287,7 @@ class Build extends CliCommand
       'Start Time'     => $buildRun->startTime->format('Y-m-d H:i:s'),
       'End Time'       => $buildRun->endTime->format('Y-m-d H:i:s'),
       'Total Duration' => $buildRun->startTime->diff($buildRun->endTime)
-      ->format("H:i:s"),
+      ->format("%h:%i:%s"),
     ];
 
     foreach($results as $name => $value)

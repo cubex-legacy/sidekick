@@ -15,6 +15,5 @@ class Build extends RecordMapper
    * @enumclass \Sidekick\Components\Diffuse\Enum\BuildLevel
    */
   public $buildLevel;
-  public $buildSourceId;
   public $sourceDirectory = 'sourcecode/';
 }

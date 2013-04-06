@@ -26,11 +26,11 @@ class ProjectController extends DiffuseController
     $build                  = new Build(1);
     $build->buildLevel      = BuildLevel::MINOR;
     $build->name            = "Minor Build";
-    $build->buildSourceId   = 1;
     $build->sourceDirectory = 'sourcecode/';
     $build->saveChanges();
 
-    $proBuild = new BuildsProjects($build, $project);
+    $proBuild                = new BuildsProjects($build, $project);
+    $proBuild->buildSourceId = 1;
     $proBuild->saveChanges();
 
     $command                   = new BuildCommand(1);

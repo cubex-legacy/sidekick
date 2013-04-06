@@ -17,17 +17,4 @@ class BuildRun extends RecordMapper
   public $result;
   public $startTime;
   public $endTime;
-
-  /**
-   * @datatype tinyint
-   */
-  public $versionMinor;
-  /**
-   * @datatype smallint
-   */
-  public $versionMajor;
-  /**
-   * @datatype smallint
-   */
-  public $versionBuild;
 }

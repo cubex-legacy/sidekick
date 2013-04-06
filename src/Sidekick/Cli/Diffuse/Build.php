@@ -17,6 +17,7 @@ use Sidekick\Components\Diffuse\Mappers\BuildLog;
 use Sidekick\Components\Diffuse\Mappers\BuildRun;
 use Sidekick\Components\Diffuse\Mappers\BuildSource;
 use Sidekick\Components\Diffuse\Mappers\BuildsCommands;
+use Sidekick\Components\Diffuse\Mappers\BuildsProjects;
 use Sidekick\Components\Projects\Mappers\Project;
 use Symfony\Component\Process\Process;
 
@@ -58,8 +59,9 @@ class Build extends CliCommand
     $projectId = (int)$this->project;
     $buildId   = (int)$this->build;
 
-    $project = new Project($projectId);
-    $build   = new \Sidekick\Components\Diffuse\Mappers\Build($buildId);
+    $project      = new Project($projectId);
+    $build        = new \Sidekick\Components\Diffuse\Mappers\Build($buildId);
+    $buildProject = new BuildsProjects($project, $build);
 
     $buildRun            = new BuildRun();
     $buildRun->buildId   = $build->id();
@@ -84,7 +86,7 @@ class Build extends CliCommand
     $this->_buildPath      = $buildPath;
     $this->_buildSourceDir = $build->sourceDirectory;
 
-    $buildSource = new BuildSource($build->buildSourceId);
+    $buildSource = new BuildSource($buildProject->buildSourceId);
     $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
 
     $commands     = BuildsCommands::collectionOn($build);

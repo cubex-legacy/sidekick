@@ -8,6 +8,7 @@ namespace Sidekick\Components\Diffuse\Mappers;
 use Cubex\Data\Attribute;
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Diffuse\Enums\BuildResult;
+use Sidekick\Components\Diffuse\Enums\BuildType;
 
 class BuildRun extends RecordMapper
 {
@@ -17,6 +18,10 @@ class BuildRun extends RecordMapper
    * @enumclass \Sidekick\Components\Diffuse\Enums\BuildResult
    */
   public $result;
+  /**
+   * @enumclass \Sidekick\Components\Diffuse\Enums\BuildType
+   */
+  public $buildType = BuildType::REPOSITORY;
   public $startTime;
   public $endTime;
   public $commands;

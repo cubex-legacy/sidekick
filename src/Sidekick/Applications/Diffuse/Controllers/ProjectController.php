@@ -12,6 +12,7 @@ use Sidekick\Components\Diffuse\Mappers\BuildCommand;
 use Sidekick\Components\Diffuse\Mappers\BuildSource;
 use Sidekick\Components\Diffuse\Mappers\BuildsCommands;
 use Sidekick\Components\Diffuse\Mappers\BuildsProjects;
+use Sidekick\Components\Diffuse\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
 
 class ProjectController extends DiffuseController
@@ -174,5 +175,15 @@ class ProjectController extends DiffuseController
     $source->fetchUrl       = "https://github.com/qbex/Cubex.git";
     $source->repositoryType = RepositoryProvider::GIT;
     $source->saveChanges();
+
+    $patch                 = new Patch(1);
+    $patch->author         = 1;
+    $patch->patch          = file_get_contents(
+      'C:\Websites\qbex\Cubex\Break_Loader.patch'
+    );
+    $patch->name           = "Break_Loader";
+    $patch->filename       = "Break_Loader.patch";
+    $patch->leadingSlashes = 0;
+    $patch->saveChanges();
   }
 }

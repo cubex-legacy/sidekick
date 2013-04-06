@@ -19,6 +19,7 @@ use Sidekick\Components\Diffuse\Mappers\BuildRun;
 use Sidekick\Components\Diffuse\Mappers\BuildSource;
 use Sidekick\Components\Diffuse\Mappers\BuildsCommands;
 use Sidekick\Components\Diffuse\Mappers\BuildsProjects;
+use Sidekick\Components\Diffuse\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
 use Symfony\Component\Process\Process;
 
@@ -39,6 +40,13 @@ class Build extends CliCommand
    * @example BIDX
    */
   public $build;
+
+  /**
+   * The Patch ID you wish to build with
+   * @valuerequired
+   * @example 1
+   */
+  public $patch;
 
   public $verbose;
 
@@ -104,6 +112,11 @@ class Build extends CliCommand
 
     $buildSource = new BuildSource($buildProject->buildSourceId);
     $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
+
+    if($this->patch !== null)
+    {
+      $this->_applyPatch($this->patch, $this->_buildSourceDir);
+    }
 
     $commands     = BuildsCommands::collectionOn($build);
     $dependencies = new DependencyArray();
@@ -349,7 +362,7 @@ class Build extends CliCommand
     switch($source->repositoryType)
     {
       case RepositoryProvider::GIT:
-        echo "\nCloning Repo\n";
+        $this->_outputStep("Cloning Repo");
 
         $cloneCommand = 'git clone';
         $cloneCommand .= " $source->fetchUrl";
@@ -365,5 +378,45 @@ class Build extends CliCommand
     $log->saveChanges();
 
     return $log->exitCode;
+  }
+
+  protected function _applyPatch($patchId)
+  {
+    $log = new BuildLog();
+    if($this->verbose)
+    {
+      $log->enableOutput();
+    }
+    $log->setId($this->_buildId . '-patch');
+    $log->startTime = microtime(true);
+    $log->exitCode  = -1;
+    $log->saveChanges();
+
+    $patch = new Patch($patchId);
+    if($patch->exists())
+    {
+      $this->_outputStep("Applying Patch");
+
+      $patchPath = $this->_buildPath . DS . $patch->filename;
+      file_put_contents($patchPath, $patch->patch);
+
+      $cwd = getcwd();
+      chdir($this->_buildSourceDir);
+      $runCommand = "git apply -v " . $patchPath . ' -p' . $patch->leadingSlashes;
+      $process    = new Process($runCommand);
+      $process->run([$log, 'writeBuffer']);
+      $log->exitCode = $process->getExitCode();
+      chdir($cwd);
+    }
+
+    $log->endTime = microtime(true);
+    $log->saveChanges();
+
+    return $log->exitCode;
+  }
+
+  protected function _outputStep($message)
+  {
+    echo Shell::colourText("\n  $message\n", Shell::COLOUR_FOREGROUND_CYAN);
   }
 }

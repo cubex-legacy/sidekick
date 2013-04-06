@@ -68,6 +68,7 @@ class Build extends CliCommand
     $buildRun->buildId   = $build->id();
     $buildRun->projectId = $project->id();
     $buildRun->startTime = new \DateTime();
+    $buildRun->commands  = [];
     $this->_buildResult  = $buildRun->result = BuildResult::RUNNING;
     $buildRun->saveChanges();
     $this->_buildId = $buildRun->id();
@@ -97,6 +98,10 @@ class Build extends CliCommand
     $this->_buildPath      = $buildPath;
     $this->_buildSourceDir = $build->sourceDirectory;
 
+    $buildRun->commands = array_merge($buildRun->commands, ['source']);
+    $buildRun->endTime  = new \DateTime();
+    $buildRun->saveChanges();
+
     $buildSource = new BuildSource($buildProject->buildSourceId);
     $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
 
@@ -118,7 +123,8 @@ class Build extends CliCommand
     $commandList = $dependencies->getLoadOrder();
     foreach($commandList as $commandId)
     {
-      $buildRun->endTime = new \DateTime();
+      $buildRun->commands = array_merge($buildRun->commands, [$commandId]);
+      $buildRun->endTime  = new \DateTime();
       $buildRun->saveChanges();
       $pass = $this->runCommand($commandId);
       if(!$pass)

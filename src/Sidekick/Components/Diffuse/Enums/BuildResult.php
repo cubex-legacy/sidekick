@@ -13,4 +13,5 @@ class BuildResult extends Enum
   const FAIL      = 'fail';
   const PASS      = 'pass';
   const RUNNING   = 'running';
+  const ERROR     = 'error';
 }

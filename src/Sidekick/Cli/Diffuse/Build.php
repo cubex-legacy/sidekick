@@ -10,6 +10,7 @@ use Cubex\Cli\Shell;
 use Cubex\FileSystem\FileSystem;
 use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
+use Cubex\Helpers\System;
 use Sidekick\Components\Diffuse\Enums\BuildResult;
 use Sidekick\Components\Diffuse\Enums\RepositoryProvider;
 use Sidekick\Components\Diffuse\Mappers\BuildCommand;
@@ -70,6 +71,16 @@ class Build extends CliCommand
     $this->_buildResult  = $buildRun->result = BuildResult::RUNNING;
     $buildRun->saveChanges();
     $this->_buildId = $buildRun->id();
+
+    if(!System::isWindows())
+    {
+      declare(ticks = 1);
+      pcntl_signal(SIGINT, array($buildRun, "exited"));
+      pcntl_signal(SIGTERM, array($buildRun, "exited"));
+      pcntl_signal(SIGHUP, array($buildRun, "exited"));
+      pcntl_signal(SIGUSR1, array($buildRun, "exited"));
+      pcntl_signal(SIGKILL, array($buildRun, "exited"));
+    }
 
     echo Shell::colourText(
       "\n" .

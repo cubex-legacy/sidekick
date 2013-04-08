@@ -1,5 +1,4 @@
-<phpunit bootstrap="phpunit.autoload.php.dist"
-         backupGlobals="false"
+<phpunit backupGlobals="false"
          backupStaticAttributes="false"
          strict="true"
          verbose="true">

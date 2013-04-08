@@ -70,7 +70,7 @@ class Build extends CliCommand
 
     $project      = new Project($projectId);
     $build        = new \Sidekick\Components\Diffuse\Mappers\Build($buildId);
-    $buildProject = new BuildsProjects($project, $build);
+    $buildProject = new BuildsProjects($build, $project);
 
     $buildRun            = new BuildRun();
     $buildRun->buildId   = $build->id();
@@ -364,7 +364,7 @@ class Build extends CliCommand
       case RepositoryProvider::GIT:
         $this->_outputStep("Cloning Repo");
 
-        $cloneCommand = 'git clone';
+        $cloneCommand = 'git clone -v';
         $cloneCommand .= " $source->fetchUrl";
         $cloneCommand .= " --branch " . $source->branch;
         $cloneCommand .= " $location";

@@ -24,6 +24,11 @@ class ProjectController extends DiffuseController
     $project->description = "Cubex Build";
     $project->saveChanges();
 
+    $project2              = new Project(2);
+    $project2->name        = "Bedrock";
+    $project2->description = "Main JDI Backup Service";
+    $project2->saveChanges();
+
     $build                  = new Build(1);
     $build->buildLevel      = BuildLevel::MINOR;
     $build->name            = "Minor Build";
@@ -32,6 +37,10 @@ class ProjectController extends DiffuseController
 
     $proBuild                = new BuildsProjects($build, $project);
     $proBuild->buildSourceId = 1;
+    $proBuild->saveChanges();
+
+    $proBuild                = new BuildsProjects($build, $project2);
+    $proBuild->buildSourceId = 2;
     $proBuild->saveChanges();
 
     $command                   = new BuildCommand(1);
@@ -55,7 +64,6 @@ class ProjectController extends DiffuseController
       '--coverage-clover logs/clover.sml',
       '--log-junit logs/junit.xml',
       ' -c {sourcedirectory}phpunit.xml.dist',
-      '{sourcedirectory}',
     ];
     $command->description = "Run PHPUnit Tests";
     $command->saveChanges();
@@ -173,6 +181,11 @@ class ProjectController extends DiffuseController
 
     $source                 = new BuildSource(1);
     $source->fetchUrl       = "https://github.com/qbex/Cubex.git";
+    $source->repositoryType = RepositoryProvider::GIT;
+    $source->saveChanges();
+
+    $source                 = new BuildSource(2);
+    $source->fetchUrl       = "git://git.jdiuk.com/backupweb/bedrock.git";
     $source->repositoryType = RepositoryProvider::GIT;
     $source->saveChanges();
 

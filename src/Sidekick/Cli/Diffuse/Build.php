@@ -139,7 +139,7 @@ class Build extends CliCommand
       $buildRun->commands = array_merge($buildRun->commands, [$commandId]);
       $buildRun->endTime  = new \DateTime();
       $buildRun->saveChanges();
-      $pass = $this->runCommand($commandId);
+      $pass = $this->_runCommand($commandId);
       if(!$pass)
       {
         break;
@@ -158,7 +158,7 @@ class Build extends CliCommand
     $this->_buildResults($buildRun);
   }
 
-  protected function runCommand($commandId)
+  protected function _runCommand($commandId)
   {
     $lineSplitter = $this->_lineSplit;
     $this->_testsRun++;
@@ -242,11 +242,13 @@ class Build extends CliCommand
       {
         if(stristr($runCommand, '{iteratedFilePath}'))
         {
-          $process = new Process(str_replace(
-            '{iteratedFilePath}',
-            $file,
-            $runCommand
-          ));
+          $process = new Process(
+            str_replace(
+              '{iteratedFilePath}',
+              $file,
+              $runCommand
+            )
+          );
         }
         else
         {

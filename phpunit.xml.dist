@@ -1,0 +1,21 @@
+<phpunit bootstrap="phpunit.autoload.php.dist"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         strict="true"
+         verbose="true">
+  <php>
+    <env name="CUBEX_ENV" value="development"/>
+    <env name="CUBEX_UNITTEST" value="true"/>
+    <ini name="display_errors" value="-1"/>
+  </php>
+
+  <testsuites>
+    <testsuite name="Sidekick Test Suite">
+      <directory>./src/Sidekick/Tests</directory>
+      <directory>./src/Sidekick/*/Tests</directory>
+      <directory>./src/Sidekick/*/*/Tests</directory>
+    </testsuite>
+  </testsuites>
+
+</phpunit>
+

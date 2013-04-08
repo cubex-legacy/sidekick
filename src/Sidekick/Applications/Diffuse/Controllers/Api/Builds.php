@@ -6,6 +6,8 @@
 namespace Sidekick\Applications\Diffuse\Controllers\Api;
 
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
+use Sidekick\Components\Diffuse\Enums\BuildResult;
+use Sidekick\Components\Diffuse\Mappers\BuildCommand;
 use Sidekick\Components\Diffuse\Mappers\BuildRun;
 
 class Builds extends DiffuseController
@@ -23,12 +25,29 @@ class Builds extends DiffuseController
       /**
        * @var $buildRun BuildRun
        */
+
+      $msg = '';
+      if($buildRun->result == BuildResult::RUNNING)
+      {
+        $runningCommand = end($buildRun->commands);
+        if(is_int($runningCommand))
+        {
+          $command = new BuildCommand($runningCommand);
+          $msg     = $command->name;
+        }
+        else
+        {
+          $msg = $runningCommand;
+        }
+      }
+
       return [
         'runId'     => $buildRun->id,
         'result'    => $buildRun->result,
         'startTime' => $buildRun->startTime,
         'endTime'   => $buildRun->endTime,
         'commands'  => $buildRun->commands,
+        'msg'       => $msg,
       ];
     }
     return [];

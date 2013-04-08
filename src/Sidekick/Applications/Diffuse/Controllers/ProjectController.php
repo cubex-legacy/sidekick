@@ -19,29 +19,11 @@ class ProjectController extends DiffuseController
 {
   public function renderIndex()
   {
-    $project              = new Project(1);
-    $project->name        = "Cubex";
-    $project->description = "Cubex Build";
-    $project->saveChanges();
-
-    $project2              = new Project(2);
-    $project2->name        = "Bedrock";
-    $project2->description = "Main JDI Backup Service";
-    $project2->saveChanges();
-
     $build                  = new Build(1);
     $build->buildLevel      = BuildLevel::MINOR;
     $build->name            = "Minor Build";
     $build->sourceDirectory = 'sourcecode/';
     $build->saveChanges();
-
-    $proBuild                = new BuildsProjects($build, $project);
-    $proBuild->buildSourceId = 1;
-    $proBuild->saveChanges();
-
-    $proBuild                = new BuildsProjects($build, $project2);
-    $proBuild->buildSourceId = 2;
-    $proBuild->saveChanges();
 
     $command                   = new BuildCommand(1);
     $command->command          = 'php';
@@ -120,6 +102,7 @@ class ProjectController extends DiffuseController
     $command->name        = 'PHPCS';
     $command->command     = 'phpcs';
     $command->args        = [
+      '--extensions=php',
       '--report=checkstyle',
       '--warning-severity=0',
       '--report-file=logs/checkstyle.xml',
@@ -179,15 +162,33 @@ class ProjectController extends DiffuseController
     $bc->dependencies = [3];
     $bc->saveChanges();
 
-    $source                 = new BuildSource(1);
-    $source->fetchUrl       = "https://github.com/qbex/Cubex.git";
-    $source->repositoryType = RepositoryProvider::GIT;
-    $source->saveChanges();
+    /***
+     * [build_projects]
+     * cubex[name] = Cubex
+     * cubex[description] = Cubex Framework
+     * cubex[repository] = https://github.com/qbex/Cubex.git
+     * cubex[repo_type] = git
+     */
 
-    $source                 = new BuildSource(2);
-    $source->fetchUrl       = "git://git.jdiuk.com/backupweb/bedrock.git";
-    $source->repositoryType = RepositoryProvider::GIT;
-    $source->saveChanges();
+    $i = 0;
+    $builds = $this->config('build_projects');
+    foreach($builds as $buildInfo)
+    {
+      $i++;
+      $project              = new Project($i);
+      $project->name        = $buildInfo['name'];
+      $project->description = $buildInfo['description'];
+      $project->saveChanges();
+
+      $source                 = new BuildSource($i);
+      $source->fetchUrl       = $buildInfo['repository'];
+      $source->repositoryType = RepositoryProvider::fromValue($buildInfo['repo_type']);
+      $source->saveChanges();
+
+      $proBuild                = new BuildsProjects($build, $project);
+      $proBuild->buildSourceId = $source->id();
+      $proBuild->saveChanges();
+    }
 
     $patch                 = new Patch(1);
     $patch->author         = 1;

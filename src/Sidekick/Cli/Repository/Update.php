@@ -67,7 +67,12 @@ class Update extends CliCommand
 
       chdir($repo->localpath);
       $process = new Process("git pull");
-      $process->run(function ($type, $data) { echo $data; });
+      $process->run(
+        function ($type, $data)
+        {
+          echo $data;
+        }
+      );
 
       echo "Repository up to date.\n";
 

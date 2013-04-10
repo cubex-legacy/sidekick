@@ -113,6 +113,13 @@ class Build extends CliCommand
     $buildSource = new Source($buildProject->buildSourceId);
     $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
 
+    echo "Getting Build Repo Hash\n";
+    chdir($this->_buildSourceDir);
+    $process = new Process("git rev-parse --verify HEAD");
+    $process->run();
+    $buildRun->commitHash = $process->getOutput();
+    chdir($buildPath);
+
     if($this->patch !== null)
     {
       $this->_applyPatch($this->patch, $this->_buildSourceDir);

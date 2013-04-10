@@ -32,6 +32,8 @@ class BuildRun extends RecordMapper
   public $endTime;
   public $commands;
 
+  public $commitHash;
+
   protected function _configure()
   {
     $this->_attribute("commands")->setSerializer(

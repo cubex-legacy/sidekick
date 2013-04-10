@@ -12,15 +12,15 @@ use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
 use Cubex\Helpers\System;
 use Sidekick\Components\Diffuse\Enums\BuildResult;
-use Sidekick\Components\Diffuse\Enums\RepositoryProvider;
 use Sidekick\Components\Diffuse\Mappers\BuildCommand;
 use Sidekick\Components\Diffuse\Mappers\BuildLog;
 use Sidekick\Components\Diffuse\Mappers\BuildRun;
-use Sidekick\Components\Diffuse\Mappers\BuildSource;
 use Sidekick\Components\Diffuse\Mappers\BuildsCommands;
 use Sidekick\Components\Diffuse\Mappers\BuildsProjects;
 use Sidekick\Components\Diffuse\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Repository\Enums\RepositoryProvider;
+use Sidekick\Components\Repository\Mappers\Source;
 use Symfony\Component\Process\Process;
 
 class Build extends CliCommand
@@ -110,7 +110,7 @@ class Build extends CliCommand
     $buildRun->endTime  = new \DateTime();
     $buildRun->saveChanges();
 
-    $buildSource = new BuildSource($buildProject->buildSourceId);
+    $buildSource = new Source($buildProject->buildSourceId);
     $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
 
     if($this->patch !== null)
@@ -349,7 +349,7 @@ class Build extends CliCommand
     echo "\n$lineSplitter\n\n";
   }
 
-  protected function _downloadSourceCode(BuildSource $source, $location)
+  protected function _downloadSourceCode(Source $source, $location)
   {
     $log = new BuildLog();
     if($this->verbose)

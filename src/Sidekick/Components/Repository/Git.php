@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Applications\Diffuse\Components\Repositories;
+namespace Sidekick\Applications\Repository\Components\Repositories;
 
 class Git implements Repository
 {

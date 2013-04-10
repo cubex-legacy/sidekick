@@ -22,7 +22,13 @@ class BuildRun extends RecordMapper
    * @enumclass \Sidekick\Components\Diffuse\Enums\BuildType
    */
   public $buildType = BuildType::REPOSITORY;
+  /**
+   * @var \DateTime
+   */
   public $startTime;
+  /**
+   * @var \DateTime
+   */
   public $endTime;
   public $commands;
 

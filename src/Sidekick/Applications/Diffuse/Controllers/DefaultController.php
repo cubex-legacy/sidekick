@@ -31,13 +31,6 @@ class DefaultController extends DiffuseController
     $ver->releaseDate = time();
     $ver->saveChanges();
 
-    $repo                       = new Repository(1);
-    $repo->projectId            = 1;
-    $repo->versionControlSystem = 'git';
-    $repo->path                 = 'git://jdi';
-    $repo->pushType             = PushType::DOUBLE_AUTH_OR_MANAGER;
-    $repo->saveChanges();
-
     $review               = new VersionReview(1);
     $review->reviewStatus = VersionState::PASSED;
     $review->approverId   = 1;

@@ -50,6 +50,12 @@ class Build extends CliCommand
 
   public $verbose;
 
+  /**
+   * Number of seconds before a single process will timeout
+   * @valuerequired
+   */
+  public $timeout = 120;
+
   protected $_buildId;
   protected $_buildResult;
   protected $_buildSourceDir;
@@ -116,6 +122,7 @@ class Build extends CliCommand
     echo "Getting Build Repo Hash\n";
     chdir($this->_buildSourceDir);
     $process = new Process("git rev-parse --verify HEAD");
+    $process->setTimeout($this->timeout);
     $process->run();
     $buildRun->commitHash = $process->getOutput();
     chdir($buildPath);
@@ -262,6 +269,7 @@ class Build extends CliCommand
           $process = new Process($runCommand . ' ' . $file);
         }
 
+        $process->setTimeout($this->timeout);
         $process->run([$log, 'writeBuffer']);
         $exitCode = $process->getExitCode();
         if($exitCode > $returnExitCode)
@@ -274,6 +282,7 @@ class Build extends CliCommand
     else
     {
       $process = new Process($runCommand);
+      $process->setTimeout($this->timeout);
       echo "\nRunning: " . $runCommand . "\n";
       $process->run([$log, 'writeBuffer']);
       return $process->getExitCode();
@@ -379,6 +388,7 @@ class Build extends CliCommand
         $cloneCommand .= " $location";
 
         $process = new Process($cloneCommand);
+        $process->setTimeout($this->timeout);
         $process->run([$log, 'writeBuffer']);
         $log->exitCode = $process->getExitCode();
     }
@@ -413,6 +423,7 @@ class Build extends CliCommand
       chdir($this->_buildSourceDir);
       $runCommand = "git apply -v " . $patchPath . ' -p' . $patch->leadingSlashes;
       $process    = new Process($runCommand);
+      $process->setTimeout($this->timeout);
       $process->run([$log, 'writeBuffer']);
       $log->exitCode = $process->getExitCode();
       chdir($cwd);

@@ -175,6 +175,7 @@ class SampleData extends CliCommand
     $builds = $this->config('build_projects');
     foreach($builds as $buildInfo)
     {
+      echo "Adding " . $buildInfo['name'] . "\n";
       $i++;
       $project              = new Project($i);
       $project->name        = $buildInfo['name'];

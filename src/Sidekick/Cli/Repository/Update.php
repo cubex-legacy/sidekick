@@ -5,10 +5,13 @@
 
 namespace Sidekick\Cli\Repository;
 
+use Bundl\Debugger\DebuggerBundle;
 use Cubex\Cli\CliCommand;
 use Cubex\Cli\Shell;
+use Cubex\Facade\Queue;
 use Cubex\Helpers\Strings;
 use Cubex\I18n\TranslateTraits;
+use Cubex\Queue\StdQueue;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Sidekick\Components\Repository\Mappers\Source;
 use Symfony\Component\Process\Process;
@@ -28,7 +31,21 @@ class Update extends CliCommand
   public $repositories;
   public $verbose;
 
+  /**
+   * @valuerequired
+   */
+  public $longInterval = 10;
+
   protected $_currentRepoId;
+
+  public function longRun()
+  {
+    while(true)
+    {
+      $this->execute();
+      sleep($this->longInterval);
+    }
+  }
 
   public function execute()
   {
@@ -161,5 +178,12 @@ class Update extends CliCommand
       " Commit(s) added\n",
       $commitCount
     );
+
+    if($commitCount > 0)
+    {
+      echo "Writing to queue";
+      $queue = new StdQueue('buildRequest');
+      Queue::push($queue, ['respositoryId' => $this->_currentRepoId]);
+    }
   }
 }

@@ -27,7 +27,7 @@ class Builds extends DiffuseController
        */
 
       $msg = '';
-      if($buildRun->result == BuildResult::RUNNING)
+      if($buildRun->result !== BuildResult::PASS)
       {
         $runningCommand = end($buildRun->commands);
         if(is_int($runningCommand))

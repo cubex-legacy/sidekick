@@ -17,6 +17,8 @@ use Cubex\Queue\StdQueue;
  */
 class BuildQueue extends CliCommand
 {
+  public $verbose;
+
   public function execute()
   {
     if(!System::isWindows())
@@ -40,6 +42,10 @@ class BuildQueue extends CliCommand
   {
     $cwd     = getcwd();
     $rawArgs = ['Diffuse.Build', '-b', '1', '-p', $data->respositoryId];
+    if($this->verbose)
+    {
+      $rawArgs[] = '-v';
+    }
     $build   = new Build($this->_loader, $rawArgs);
     $build->execute();
     chdir($cwd);

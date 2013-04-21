@@ -17,8 +17,6 @@ use Cubex\Queue\StdQueue;
  */
 class BuildQueue extends CliCommand
 {
-  public $prop;
-
   public function execute()
   {
     if(!System::isWindows())

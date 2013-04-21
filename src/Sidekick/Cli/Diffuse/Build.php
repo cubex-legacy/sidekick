@@ -170,6 +170,8 @@ class Build extends CliCommand
     $buildRun->saveChanges();
 
     $this->_buildResults($buildRun);
+
+    return true;
   }
 
   protected function _runCommand($commandId)

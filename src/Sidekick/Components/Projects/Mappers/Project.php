@@ -11,4 +11,5 @@ class Project extends RecordMapper
 {
   public $name;
   public $description;
+  public $parentId;
 }

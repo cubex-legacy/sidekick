@@ -11,4 +11,12 @@ class ConfigurationGroup extends RecordMapper
 {
   public $groupName;
   public $entry;
+
+
+  protected function _configure()
+  {
+    $this->_setRequired('groupName');
+    $this->_setRequired('entry');
+  }
+
 }

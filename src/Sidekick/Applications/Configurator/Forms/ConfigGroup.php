@@ -1,10 +1,9 @@
 <?php
 /**
- * @author  oke.ugwu 
+ * @author  oke.ugwu
  */
 
 namespace Sidekick\Applications\Configurator\Forms;
-
 
 use Cubex\Data\Validator\Validator;
 use Cubex\Form\Form;
@@ -25,7 +24,8 @@ class ConfigGroup extends Form
   {
     $this->setDefaultElementTemplate('<dt>{{label}}</dt><dd>{{input}}</dd>');
 
-    $this->get("groupName")->setType(FormElement::TEXT)
+    $this->get("groupName")
+    ->setType(FormElement::TEXT)
     ->addValidator(Validator::VALIDATE_NOTEMPTY);
 
     $this->get("entry")->setType(FormElement::TEXT)
@@ -39,9 +39,7 @@ class ConfigGroup extends Form
     }
     else
     {
-
       $this->addSubmitElement("Update", "Update");
     }
-
   }
 }

@@ -16,7 +16,9 @@ class DiffuseApp extends BaseApp
     return [
       '/diffuse/' => [
         'api/builds.*'            => 'Api\Builds',
-        'projects/:projectName' => 'ProjectController@index'
+        'projects/:projectName' => 'ProjectController@index',
+        'projects' => 'ProjectController@index',
+        '' => 'ProjectController'
       ]
     ];
   }

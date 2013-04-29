@@ -11,6 +11,7 @@ class ConfigurationGroup extends RecordMapper
 {
   public $groupName;
   public $entry;
+  public $projectId;
 
 
   protected function _configure()

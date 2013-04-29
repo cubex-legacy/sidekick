@@ -28,10 +28,12 @@ class ConfigGroup extends Form
     ->setType(FormElement::TEXT)
     ->addValidator(Validator::VALIDATE_NOTEMPTY);
 
-    $this->get("entry")->setType(FormElement::TEXT)
+    $this->get("entry")
+    ->setType(FormElement::TEXT)
     ->addValidator(Validator::VALIDATE_NOTEMPTY);
 
-    $this->get("id")->setType(FormElement::HIDDEN);
+    $this->get("id")
+    ->setType(FormElement::HIDDEN);
 
     if($this->id === null)
     {

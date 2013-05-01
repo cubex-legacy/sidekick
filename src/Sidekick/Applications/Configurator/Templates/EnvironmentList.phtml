@@ -1,0 +1,29 @@
+<?php
+/**
+ * @author: oke.ugwu
+ * Application: Configurator/Templates
+ * @var $this \Sidekick\Applications\Configurator\Views\ProjectList
+ */
+?>
+<h1>Environments</h1>
+<p class="muted">
+  <em>Manage the different environments your projects run in, so
+    can you generate configs for all of 'em!</em>
+</p>
+<p>
+  <button class="btn">Add Environment</button>
+</p>
+<?php foreach($this->environments as $env): ?>
+  <div class="well boxed">
+    <h3><?php echo ucwords($env->name); ?></a></h3>
+
+    <p>Filename: <?php echo $env->filename; ?></p>
+
+    <p class="pull-right" style="margin-top:-10px;">
+      <a href="" class="text-error badge badge-important"><b>x</b></a>
+      <a href="" class="text-info badge badge-info"><b>...</b></a>
+    </p>
+  </div>
+<?php endforeach; ?>
+
+

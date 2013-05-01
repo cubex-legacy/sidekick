@@ -8,7 +8,7 @@ namespace Sidekick\Applications\Projects;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Projects\Controllers\DefaultController;
 
-class projectsApp extends BaseApp
+class ProjectsApp extends BaseApp
 {
   public function defaultController()
   {

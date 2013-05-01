@@ -5,10 +5,7 @@
 
 namespace Sidekick\Applications\Projects;
 
-use Sidekick\Applications\BaseApp\BaseApp;
-use Sidekick\Applications\Projects\Controllers\DefaultController;
-
-class ProjectsApp extends BaseApp
+class ProjectsApp
 {
   public function defaultController()
   {

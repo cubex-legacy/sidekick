@@ -12,9 +12,10 @@ class ConfigGroupView extends ViewModel
 {
   protected $_form;
 
-  public function __construct()
+  public function __construct($projectId)
   {
     $this->_form = new ConfigGroup("/configurator/addingConfigGroup");
+    $this->_form->addHiddenElement('projectId', $projectId);
   }
 
 

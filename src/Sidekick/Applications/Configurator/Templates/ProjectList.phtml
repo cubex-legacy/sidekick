@@ -1,0 +1,51 @@
+<?php
+/**
+ * @author: oke.ugwu
+ * Application: Configurator/Templates
+ * @var $this \Sidekick\Applications\Configurator\Views\ProjectList
+ */
+?>
+<h1>Projects</h1>
+<p class="muted"><em>Manage configurations across all your projects!</em></p>
+<?php foreach($this->projects as $project): ?>
+  <?php
+  $subProjects  = $this->subProjects[$project->id];
+  $configGroups = isset($this->configGroups[$project->id]) ? $this->configGroups[$project->id] : null;
+  ?>
+  <div class="well boxed">
+    <h3><a href="/configurator/project-configs/<?php echo $project->id; ?>"><?php echo $project->name; ?></a></h3>
+    <?php if ($subProjects > 0): ?>
+  <p>
+  <small><a href="/configurator/<?php echo $project->id; ?>">
+      <?php echo $subProjects; ?> Sub Projects
+    </a>
+  </small>
+  <?php else: ?>
+    <p>
+      <small>No Sub Projects</small>
+      <?php endif; ?>,
+
+      <small><?php echo ($configGroups !== null) ? $configGroups : 'No' ?>
+        Config Groups
+      </small>
+    </p>
+
+    <?php if($configGroups === null): ?>
+      <p class="text-error">
+        <small>This project has no config groups setup yet, you need to create
+          some config groups first. Config group help you group you individual
+          configuration key and value pair
+        </small>
+      </p>
+    <?php endif; ?>
+
+    <a class="label" href="/configurator/config-groups/<?php echo $project->id; ?>">Config
+      Groups</a>
+
+    <p><a href="/configurator/build-ini/<?php echo $project->id; ?>/"
+          class="btn btn-primary pull-right preview-ini">Preview ini</a></p>
+
+  </div>
+<?php endforeach; ?>
+
+

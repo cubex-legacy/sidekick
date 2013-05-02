@@ -36,10 +36,13 @@
                   <small>
                     [<a
                     href="/configurator/add-project-config-item/<?php echo $this->project->id(
-                    ) . '/' . $this->currentEnvironment->id() . '/' . $item->id; ?>"
+                    ) . '/' . $this->currentEnvironment->id(
+                    ) . '/' . $item->id; ?>"
                     style="color:green; font-weight:bold; font-size:12px;">+</a>]
 
-                    <?php echo "$item->key = <b>$item->value</b>"; ?>
+                    <?php echo "$item->key = <b>" . $item->prepValueOut(
+                      $item->value, $item->type
+                    ) . "</b>"; ?>
                   </small>
                 </p>
               <?php endforeach; ?>
@@ -83,7 +86,9 @@
               $itemObj->id; ?>"
               style="color:red; font-weight:bold; font-size:12px;">x</a>]
 
-              <?php echo "$itemObj->key = <b>$itemObj->value</b>"; ?>
+              <?php echo "$itemObj->key = <b>" . $itemObj->prepValueOut(
+                $itemObj->value, $itemObj->type
+              ) . "</b>"; ?>
             </small>
           </p>
         <?php endforeach; ?>

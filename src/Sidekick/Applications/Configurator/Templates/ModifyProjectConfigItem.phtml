@@ -1,0 +1,31 @@
+<?php
+/**
+ * @author: oke.ugwu
+ * Application: Configurator
+ * @var $this \Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem
+ */
+?>
+<h1><?php echo $this->project->name; ?> >
+  <?php echo ucwords($this->env->name); ?>
+  > <?php echo $this->configGroup->groupName; ?></h1>
+
+<?php echo $this->form()->open(); ?>
+<?php
+echo $this->form()->getElement('projectId');
+echo $this->form()->getElement('envId');
+echo $this->form()->getElement('itemId');
+?>
+<table>
+  <tr>
+    <td>Key</td>
+    <td>Value</td>
+  </tr>
+  <tr>
+    <td><?php echo $this->form()->getElement('key'); ?></td>
+    <td><?php echo $this->form()->getElement('value'); ?></td>
+  </tr>
+  <tr>
+    <td colspan="2"><?php echo $this->form()->getElement('submit'); ?></td>
+  </tr>
+</table>
+<?php echo $this->form()->close();

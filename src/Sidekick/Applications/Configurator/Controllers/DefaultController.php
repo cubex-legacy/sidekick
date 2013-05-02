@@ -187,7 +187,7 @@ class DefaultController extends ConfiguratorController
     echo "<table><tr><td>Key</td><td>Value</td></tr>";
     echo "<tr>";
     echo "<td><input type='text' name='key' value='$item->key' readonly></td>";
-    echo "<td><input type='text' name='value' value='$item->value'></td>";
+    echo "<td><input type='text' name='value' value='".$item->prepValueOut($item->value, $item->type)."'></td>";
     echo "</tr>";
     echo '<tr><td colspan="2"><input type="submit" value="Update" /></td></tr>';
     echo "</table>";
@@ -199,7 +199,7 @@ class DefaultController extends ConfiguratorController
     if(isset($postData['key']))
     {
       $item        = new ConfigurationItem($postData['itemId']);
-      $item->value = json_encode($postData['value']);
+      $item->value = $item->prepValueIn($postData['value'], $item->type);
 
       $key = $postData['key'];
       if($item->getAttribute('value')->isModified())
@@ -218,7 +218,7 @@ class DefaultController extends ConfiguratorController
           //create new custom item
           $customItem         = new CustomConfigurationItem();
           $customItem->itemId = $postData['itemId'];
-          $customItem->value  = $postData['value'];
+          $customItem->value  = $item->value;
           $customItem->saveChanges();
         }
 

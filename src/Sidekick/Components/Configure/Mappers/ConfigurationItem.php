@@ -28,4 +28,53 @@ class ConfigurationItem extends RecordMapper
   {
     return $this->belongsTo(new ConfigurationGroup());
   }
+
+  public function prepValueIn($input, $type)
+  {
+    $value = null;
+    switch($type)
+    {
+      case ConfigItemType::SIMPLE:
+        $value = $input;
+        break;
+      case ConfigItemType::MULTI_ITEM:
+        $value = implode(',', $input);
+        break;
+      case ConfigItemType::MULTI_KEYED:
+        $value = [];
+        foreach($input as $k => $v)
+        {
+          $value[] = "$k=$v";
+        }
+        $value = implode(',', $value);
+        break;
+    }
+
+    return $value;
+  }
+
+  public function prepValueOut($input, $type)
+  {
+    $value = null;
+    switch($type)
+    {
+      case ConfigItemType::SIMPLE:
+        $value = $input;
+        break;
+      case ConfigItemType::MULTI_ITEM:
+        $value = explode(',', $input);
+        break;
+      case ConfigItemType::MULTI_KEYED:
+        $value = [];
+        $input = explode(',', $input);
+        foreach($input as $pair)
+        {
+          $kv            = explode('=', $pair);
+          $value[$kv[0]] = $kv[1];
+        }
+        break;
+    }
+
+    return $value;
+  }
 }

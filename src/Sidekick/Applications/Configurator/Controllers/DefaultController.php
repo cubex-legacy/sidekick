@@ -11,6 +11,7 @@ use Cubex\Mapper\Database\RecordCollection;
 use Sidekick\Applications\Configurator\Views\ConfigGroupView;
 use Sidekick\Applications\Configurator\Views\ConfigItemsManager;
 use Sidekick\Applications\Configurator\Views\EnvironmentList;
+use Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem;
 use Sidekick\Applications\Configurator\Views\ProjectConfigurator;
 use Sidekick\Applications\Configurator\Views\ProjectList;
 use Sidekick\Components\Configure\ConfigWriter;
@@ -154,43 +155,7 @@ class DefaultController extends ConfiguratorController
     $envId     = $this->getInt('envId');
     $itemId    = $this->getInt('itemId');
 
-    $project     = new Project($projectId);
-    $item        = new ConfigurationItem($itemId);
-    $configGroup = new ConfigurationGroup($item->configurationGroupId);
-    $env         = new Environment($envId);
-
-    $projectConfig = EnvironmentConfigurationItem::collection()
-    ->loadOneWhere(
-      [
-      'project_id'            => $projectId,
-      'environment_id'        => $envId,
-      'configuration_item_id' => $itemId
-      ]
-    );
-
-    if($projectConfig->customItemId !== null)
-    {
-      $customItem = CustomConfigurationItem::collection()->loadOneWhere(
-        ['id' => $projectConfig->customItemId]
-      );
-
-      $item->value = $customItem->value;
-    }
-
-    echo "<h1>$project->name > ";
-    echo ($env->exists()) ? ucwords($env->name) . ' >' : "";
-    echo " $configGroup->groupName</h1>";
-    echo "<form method='post' action='/configurator/modifyProjectConfigItem'>";
-    echo "<input type='hidden' name='projectId' value='$projectId'>";
-    echo "<input type='hidden' name='envId' value='$envId'>";
-    echo "<input type='hidden' name='itemId' value='$itemId'>";
-    echo "<table><tr><td>Key</td><td>Value</td></tr>";
-    echo "<tr>";
-    echo "<td><input type='text' name='key' value='$item->key' readonly></td>";
-    echo "<td><input type='text' name='value' value='".$item->prepValueOut($item->value, $item->type)."'></td>";
-    echo "</tr>";
-    echo '<tr><td colspan="2"><input type="submit" value="Update" /></td></tr>';
-    echo "</table>";
+    return new ModifyProjectConfigItem($projectId, $envId, $itemId);
   }
 
   public function postModifyProjectConfigItem()
@@ -241,6 +206,7 @@ class DefaultController extends ConfiguratorController
       else
       {
         echo "key <b>$key</b> did not change<br/>";
+        //var_dump($item);
       }
     }
   }

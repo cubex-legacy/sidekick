@@ -1,0 +1,33 @@
+<?php
+/**
+ * @author: oke.ugwu
+ * Application: Configurator/Views
+ * @var $this \Sidekick\Applications\Configurator\Views\ConfigItemsManager
+ */
+?>
+<h1>Config Items (<?php echo $this->configGroup->groupName; ?>)</h1>
+<p><em>For multi items specify values like this a,b,c. For multi keyed specify
+    values like a=1,b=2,c=3</em></p>
+<?php echo $this->form()->open(); ?>
+<?php echo $this->form()->getElement('groupId'); ?>
+<table>
+  <tr>
+    <td>Key</td>
+    <td>Type</td>
+    <td>Value</td>
+  </tr>
+  <?php foreach($this->configItems as $item): ?>
+    <tr>
+      <td><?php echo $this->form()->getElement("kv[$item->id][key]"); ?></td>
+      <td><?php echo $this->form()->getElement("kv[$item->id][type]"); ?></td>
+      <td><?php echo $this->form()->getElement("kv[$item->id][value]"); ?></td>
+    </tr>
+  <?php endforeach; ?>
+  <tr>
+    <td><?php echo $this->form()->getElement("kv[*][key]"); ?></td>
+    <td><?php echo $this->form()->getElement("kv[*][type]"); ?></td>
+    <td><?php echo $this->form()->getElement("kv[*][value]"); ?></td>
+  </tr>
+</table>
+<?php echo $this->form()->getElement('submit'); ?>
+<?php echo $this->form()->close(); ?>

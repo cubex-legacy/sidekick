@@ -29,7 +29,7 @@ class ConfigurationItem extends RecordMapper
     return $this->belongsTo(new ConfigurationGroup());
   }
 
-  public function prepValueIn($input, $type)
+  public function prepValueOut($input, $type)
   {
     $value = null;
     switch($type)
@@ -53,7 +53,7 @@ class ConfigurationItem extends RecordMapper
     return $value;
   }
 
-  public function prepValueOut($input, $type)
+  public function prepValueIn($input, $type)
   {
     $value = null;
     switch($type)

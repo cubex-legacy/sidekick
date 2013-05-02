@@ -8,8 +8,11 @@ namespace Sidekick\Applications\Configurator\Controllers;
 use Cubex\Form\Form;
 use Cubex\Facade\Redirect;
 use Cubex\Mapper\Database\RecordCollection;
-use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\Configurator\Views\ConfigGroupView;
+use Sidekick\Applications\Configurator\Views\ConfigItemsManager;
+use Sidekick\Applications\Configurator\Views\EnvironmentList;
+use Sidekick\Applications\Configurator\Views\ProjectConfigurator;
+use Sidekick\Applications\Configurator\Views\ProjectList;
 use Sidekick\Components\Configure\ConfigWriter;
 use Sidekick\Components\Configure\Mappers\ConfigurationGroup;
 use Sidekick\Components\Configure\Mappers\ConfigurationItem;
@@ -19,92 +22,73 @@ use Sidekick\Components\Configure\Mappers\EnvironmentConfigurationItem;
 use Sidekick\Components\Configure\Mappers\ProjectConfigurationItem;
 use Sidekick\Components\Projects\Mappers\Project;
 
-class DefaultController extends BaseControl
+class DefaultController extends ConfiguratorController
 {
   public function renderIndex()
   {
-    echo "<h1>Projects</h1>";
+    $projectId         = $this->getInt('projectId');
     $projectCollection = new RecordCollection(new Project());
-    $projects          = $projectCollection->loadAll();
-    foreach($projects as $project)
+
+    if($projectId === null)
     {
-      echo '<li><a href="/configurator/project-configs/' .
-      $project->id . '">' . $project->name . '</a></li>';
+      $projects = $projectCollection->loadWhere("parent_id IS NULL");
+    }
+    else
+    {
+      $projects = $projectCollection->loadWhere(["parent_id" => $projectId]);
     }
 
+    $subProjects = Project::conn()->getKeyedRows(
+      "SELECT id, (
+        SELECT count(*) FROM projects_projects WHERE parent_id= p.id
+        ) as sub_projects
+        FROM projects_projects p
+      "
+    );
+
+    $configGroups = ConfigurationGroup::conn()->getKeyedRows(
+      "SELECT project_id, count(*)
+       FROM configure_configuration_groups GROUP BY project_id
+      "
+    );
+
+    $pl = new ProjectList();
+    $pl->setProjects($projects)
+    ->setSubProjects($subProjects)
+    ->setConfigGroups($configGroups);
+
+    return $pl;
+  }
+
+  public function renderEnvironments()
+  {
+    $envs = Environment::collection()->loadAll();
+    return new EnvironmentList($envs);
+  }
+
+  public function renderConfigGroups()
+  {
+    $projectId = $this->getInt('projectId');
     echo "<h1>Config Groups</h1>";
-    echo "<span><a href='/configurator/add-config-group'>Add New Group</a>";
-    $configGroups = ConfigurationGroup::collection()->loadAll();
+    echo "<span><a href='/configurator/add-config-group/$projectId'>Add New Group</a>";
+    $configGroups = ConfigurationGroup::collection()->loadWhere(
+      [
+      'project_id' => $projectId
+      ]
+    );
     foreach($configGroups as $group)
     {
-      echo '<li><a href="/configurator/config-items/' . $group->id . '/' .
-      $group->groupName . '">' . $group->groupName . '</a></li>';
+      echo '<li><a href="/configurator/config-items/' .
+      $group->id . '">' . $group->groupName . '</a></li>';
     }
   }
 
   public function renderProjectConfigs()
   {
     $projectId = $this->getInt('projectId');
-    $project   = new Project($projectId);
-    $envId     = $this->getInt('envId', 0);
-    $env       = new Environment($envId);
+    $envId     = $this->getInt('envId', 1);
 
-    $envs = array(
-      1 => "defaults",
-      "development",
-      "live",
-      "stage"
-    );
-
-    $configGroups = ConfigurationGroup::collection()
-    ->loadAll()->setOrderBy("group_name");
-
-    echo "<h1><a href='/configurator/project-configs/$projectId'>$project->name</a>";
-    echo ($env->exists()) ? ' > ' . ucwords($env->name) : "";
-    echo "</h1>";
-    foreach($envs as $enviId => $envName)
-    {
-      echo "<p style='float:left; margin-right:10px;'>
-      <a href='/configurator/project-configs/$projectId/$enviId'>";
-      echo ucwords($envName);
-      echo "</a></p>";
-    }
-    echo "<div style='clear:both;'></div>";
-    echo "<em>Add config items on project level</em>";
-
-    echo "<div>";
-
-    foreach($configGroups as $group)
-    {
-      $configItems = ConfigurationItem::collection()
-      ->loadWhere(['configuration_group_id' => $group->id]);
-
-      echo "<div style='width:400px; height:200px; padding:10px; float:left;
-      border:1px solid #ccc; border-radius: 5px;
-      margin-bottom:5px; margin-right:5px;'>";
-      echo "<p><b>$group->groupName</b></p>";
-      if($configItems->count() > 0)
-      {
-        foreach($configItems as $item)
-        {
-          echo "<p style='width:100%;word-wrap:break-word;margin:0;'><small>";
-          echo "[<a href='/configurator/add-project-config-item/" .
-          $projectId . "/" . $envId . "/" .
-          $item->id . "' style='color:green; font-weight:bold; font-size:12px;'>+</a>] ";
-
-          echo "$item->key = <b>$item->value</b></small></p>";
-        }
-      }
-      echo "</div>";
-    }
-    echo "</div>";
-    echo "<div style='clear:both;'></div>";
-
-    echo "<a class='btn'
-    href='/configurator/build-ini/$projectId/$envId'>Build $env->filename</a>";
-
-    //show actual config
-    $this->_displayConfig($projectId, $envId);
+    return new ProjectConfigurator($projectId, $envId);
   }
 
   public function addProjectConfigItem()
@@ -184,7 +168,14 @@ class DefaultController extends BaseControl
       ]
     );
 
-    $item = new ConfigurationItem($projectConfig->configurationItemId);
+    if($projectConfig->customItemId !== null)
+    {
+      $customItem = CustomConfigurationItem::collection()->loadOneWhere(
+        ['id' => $projectConfig->customItemId]
+      );
+
+      $item->value = $customItem->value;
+    }
 
     echo "<h1>$project->name > ";
     echo ($env->exists()) ? ucwords($env->name) . ' >' : "";
@@ -254,54 +245,80 @@ class DefaultController extends BaseControl
     }
   }
 
+  private function _arrayMergeIni(array &$arrayOne, array &$arrayTwo)
+  {
+    $merged = $arrayOne;
+    foreach($arrayTwo as $key => &$value)
+    {
+      if(is_array($value) && isset ($merged[$key]) && is_array($merged[$key]))
+      {
+        $merged[$key] = $this->_arrayMergeIni($merged[$key], $value);
+      }
+      else
+      {
+        $merged[$key] = $value;
+      }
+    }
+    return $merged;
+  }
+
   public function buildIni()
   {
     $projectId = $this->getInt('projectId');
-    $envId     = $this->getInt('envId');
+    $project   = new Project($projectId);
 
-    //load config in cascade fashion
-    $cascade = ($envId > 0) ? [
-      0,
-      1,
-      $envId
-    ] : [0];
-    $cascade = array_unique($cascade);
+    echo "<h1>$project->name</h1>";
 
+    //load config in cascade fashion, parent comes first
+    if($project->parentId !== null)
+    {
+      $cascade[] = $project->parentId;
+    }
+    $cascade[] = $projectId;
+
+    $envs        = Environment::collection()->loadAll();
     $configArray = [];
     foreach($cascade as $level)
     {
-      $projectConfigs = EnvironmentConfigurationItem::collection()
-      ->loadWhere(
-        [
-        'project_id'     => $projectId,
-        'environment_id' => $level,
-        ]
-      );
+      foreach($envs as $env)
+      {
+        $projectConfigs = EnvironmentConfigurationItem::collection()
+        ->loadWhere(
+          [
+          'project_id'     => $level,
+          'environment_id' => $env->id,
+          ]
+        );
 
-      $configArray = array_merge(
-        $configArray, $this->buildCascadeConfig($projectConfigs)
-      );
+        $configArray = $this->_arrayMergeIni(
+          $configArray, $this->buildCascadeConfig($projectConfigs)
+        );
+      }
     }
 
     ksort($configArray);
 
-    $env = new Environment($envId);
-
-    echo "<h1>$env->filename</h1>";
-    $cw = new ConfigWriter();
-    echo "<pre>";
-    $cw->buildIni($configArray, true);
+    foreach($envs as $env)
+    {
+      echo "<h3>$env->filename</h3>";
+      $cw = new ConfigWriter();
+      echo "<pre>";
+      $cw->buildIni($configArray[$env->name], true);
+      echo "</pre>";
+    }
   }
 
   public function buildCascadeConfig($projectConfigs)
   {
     $configArray = array();
+
     foreach($projectConfigs as $config)
     {
       $item  = new ConfigurationItem($config->configurationItemId);
       $group = new ConfigurationGroup($item->configurationGroupId);
+      $env   = new Environment($config->environmentId);
 
-      //check if custom value assign
+      //check if custom value assigned
       if($config->customItemId !== null)
       {
         //override value before displaying
@@ -309,7 +326,7 @@ class DefaultController extends BaseControl
         $item->value = $customItem->value;
       }
 
-      $configArray[$group->entry][$item->key] = is_object(
+      $configArray[$env->name][$group->entry][$item->key] = is_object(
         $item->value
       ) ? (array)$item->value : $item->value;
     }
@@ -320,39 +337,13 @@ class DefaultController extends BaseControl
 
   public function renderAddConfigGroup()
   {
-    return new ConfigGroupView();
+    return new ConfigGroupView($this->getInt('projectId'));
   }
 
   public function renderConfigItems()
   {
-    $groupID   = $this->getInt("groupID");
-    $groupName = $this->getStr("groupName");
-    echo "<h1>Config Items ($groupName)</h1>";
-
-    $configItems = ConfigurationItem::collection()->loadWhere(
-      "configuration_group_id=$groupID"
-    );
-
-    echo "<table><tr><td>Key</td><td>Value</td></tr>";
-    foreach($configItems as $item)
-    {
-      echo "<tr>";
-      echo "<td><input type='text' value='$item->key'></td>";
-      echo "<td><input type='text' value='" . json_encode(
-        $item->value
-      ) . "'></td>";
-      echo "</tr>";
-    }
-    echo "</table>";
-    echo '<form action="/configurator/addingConfigItem" method="post">';
-    echo '<input type="hidden" name="configurationGroupID" value="' . $groupID . '" >';
-    echo "<table>";
-    echo "<tr>";
-    echo "<td><input type='text' name='key' value=''></td>";
-    echo "<td><input type='text' name='value' value=''></td>";
-    echo "<td><input type='submit' value='Add'></td>";
-    echo "</tr>";
-    echo "</form>";
+    $groupId = $this->getInt("groupId");
+    return new ConfigItemsManager($groupId);
   }
 
   public function postAddingConfigGroup()
@@ -368,91 +359,68 @@ class DefaultController extends BaseControl
 
   public function postAddingConfigItem()
   {
-    $postData          = $this->request()->postVariables();
-    $postData['value'] = json_encode($postData['value']);
-    $configItem        = new ConfigurationItem();
-    $configItem->hydrate($postData);
-    $configItem->saveChanges();
+    $postData = $this->request()->postVariables();
+    if(isset($postData['kv']))
+    {
+      foreach($postData['kv'] as $itemId => $data)
+      {
+        if($data['key'] != '' && $data['value'] != '')
+        {
+          if($itemId != '*')
+          {
+            $item                       = new ConfigurationItem($itemId);
+            $item->key                  = $data['key'];
+            $item->value                = $item->prepValueIn(
+              $data['value'], $data['type']
+            );
+            $item->type                 = $data['type'];
+            $item->configurationGroupId = $postData['groupId'];
+            if($item->isModified())
+            {
+              //update existing item
+              $item->saveChanges();
+            }
+          }
+          else
+          {
+            //new item
+            $item                       = new ConfigurationItem();
+            $item->key                  = $data['key'];
+            $item->value                = $item->prepValueIn(
+              $data['value'], $data['type']
+            );
+            $item->type                 = $data['type'];
+            $item->configurationGroupId = $postData['groupId'];
+            $item->saveChanges();
+          }
+        }
+      }
+    }
 
     Redirect::to(
-      '/configurator/config-items/' . $configItem->configurationGroupId
+      '/configurator/config-items/' . $postData['groupId']
     )->now();
   }
 
-  private function _displayConfig($projectId, $envId)
-  {
-    $projectConfigs = EnvironmentConfigurationItem::collection()
-    ->loadWhere(
-      [
-      'project_id'     => $projectId,
-      'environment_id' => $envId,
-      ]
-    );
-
-    $groupedConfig = array();
-    $configArray   = array();
-    foreach($projectConfigs as $config)
-    {
-      $item  = new ConfigurationItem($config->configurationItemId);
-      $group = new ConfigurationGroup($item->configurationGroupId);
-      $env   = new Environment($config->environmentId);
-      $env   = ($env->exists()) ? $env->name : 'global';
-
-      //check if custom value assign
-      if($config->customItemId !== null)
-      {
-        //override value before displaying
-        $customItem  = new CustomConfigurationItem($config->customItemId);
-        $item->value = $customItem->value;
-      }
-
-      $configArray[$env][$group->groupName][$item->key] = is_object(
-        $item->value
-      ) ? (array)$item->value : $item->value;
-
-      $groupedConfig[$group->groupName][$item->key] = $item;
-    }
-    ksort($groupedConfig);
-
-    echo "<hr/>";
-    foreach($groupedConfig as $groupName => $items)
-    {
-      echo "<div style='margin-bottom:5px;'>";
-      echo "<p style='margin:0;'><b>$groupName</b></p>";
-
-      foreach($items as $itemObj)
-      {
-        echo "<p style='width:100%;word-wrap:break-word;margin:0;'><small>";
-        echo "[<a href='/configurator/modify-project-config-item/" .
-        $projectId . "/" . $envId . "/" .
-        $itemObj->id . "' style='color:blue; font-weight:bold; font-size:12px;'>...</a>] ";
-
-        echo "[<a href='/configurator/remove-project-config-item/" .
-        $projectId . "/" . $envId . "/" .
-        $itemObj->id . "' style='color:red; font-weight:bold; font-size:12px;'>x</a>] ";
-
-        echo "$itemObj->key = <b>$itemObj->value</b></small></p>";
-      }
-
-      echo "</div>";
-    }
-  }
 
   public function getRoutes()
   {
     return array(
+      '/configurator/add-project'                                          => 'addProject',
+      '/configurator/:projectId'                                           => 'index',
       '/configurator/project-configs/:projectId'                           => 'projectConfigs',
-      '/configurator/build-ini/:projectId/:envId'                          => 'buildIni',
+      '/configurator/config-groups/:projectId'                             => 'configGroups',
+      '/configurator/build-ini/:projectId/'                                => 'buildIni',
       '/configurator/project-configs/:projectId/:envId'                    => 'projectConfigs',
       '/configurator/add-project-config-item/:projectId/:envId/:itemId'    => 'addProjectConfigItem',
       '/configurator/remove-project-config-item/:projectId/:envId/:itemId' => 'removeProjectConfigItem',
       '/configurator/modify-project-config-item/:projectId/:envId/:itemId' => 'modifyProjectConfigItem',
-      '/configurator/add-config-group'                                     => 'addConfigGroup',
-      '/configurator/config-items/:groupID/:groupName'                     => 'configItems',
-      '/configurator/config-items/:groupID'                                => 'configItems',
+      '/configurator/add-config-group/:projectId'                          => 'addConfigGroup',
+      '/configurator/config-items/:groupId'                                => 'configItems',
       '/configurator/addingConfigGroup'                                    => 'addingConfigGroup',
       '/configurator/addingConfigItem'                                     => 'addingConfigItem',
       '/configurator/modifyProjectConfigItem'                              => 'modifyProjectConfigItem',
+      '/configurator/environments'                                         => 'environments',
     );
   }
 }

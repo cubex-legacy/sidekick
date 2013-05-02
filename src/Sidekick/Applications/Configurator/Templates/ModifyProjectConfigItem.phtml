@@ -9,8 +9,10 @@
   <?php echo ucwords($this->env->name); ?>
   > <?php echo $this->configGroup->groupName; ?></h1>
 
-<?php echo $this->form()->open(); ?>
 <?php
+echo $this->form()->open();
+echo $this->form()->token();
+echo $this->form()->formNameInput();
 echo $this->form()->getElement('projectId');
 echo $this->form()->getElement('envId');
 echo $this->form()->getElement('itemId');

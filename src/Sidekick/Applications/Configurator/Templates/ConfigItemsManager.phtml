@@ -8,7 +8,8 @@
 <h1>Config Items (<?php echo $this->configGroup->groupName; ?>)</h1>
 <p><em>For multi items specify values like this a,b,c. For multi keyed specify
     values like a=1,b=2,c=3</em></p>
-<?php echo $this->form()->open();
+<?php
+echo $this->form()->open();
 echo $this->form()->token();
 echo $this->form()->formNameInput();
 ?>

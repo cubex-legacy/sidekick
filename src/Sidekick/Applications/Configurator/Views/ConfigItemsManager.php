@@ -7,7 +7,6 @@ namespace Sidekick\Applications\Configurator\Views;
 
 use Cubex\Form\Form;
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Components\Configure\Enums\ConfigItemType;
 use Sidekick\Components\Configure\Mappers\ConfigurationGroup;
 use Sidekick\Components\Configure\Mappers\ConfigurationItem;
 
@@ -32,21 +31,26 @@ class ConfigItemsManager extends TemplatedViewModel
     {
       $form->addTextElement("kv[$item->id][key]", $item->key);
       $form->addSelectElement(
-        "kv[$item->id][type]", [
-                           'simple'     => 'Simple',
-                           'multiitem'  => 'Multi Item',
-                           'multikeyed' => 'Multi Keyed'
-                           ]
+        "kv[$item->id][type]",
+        [
+        'simple'     => 'Simple',
+        'multiitem'  => 'Multi Item',
+        'multikeyed' => 'Multi Keyed'
+        ],
+        $item->type
       );
-      $form->addTextElement("kv[$item->id][value]", $item->prepValueOut($item->value, $item->type));
+      $form->addTextElement(
+        "kv[$item->id][value]", $item->prepValueOut($item->value, $item->type)
+      );
     }
     $form->addTextElement('kv[*][key]', '');
     $form->addSelectElement(
-      "kv[*][type]", [
-                         'simple'     => 'Simple',
-                         'multiitem'  => 'Multi Item',
-                         'multikeyed' => 'Multi Keyed'
-                         ]
+      "kv[*][type]",
+      [
+      'simple'     => 'Simple',
+      'multiitem'  => 'Multi Item',
+      'multikeyed' => 'Multi Keyed'
+      ]
     );
     $form->addTextElement('kv[*][value]', '');
     $form->addSubmitElement('Save', 'submit');
@@ -58,6 +62,4 @@ class ConfigItemsManager extends TemplatedViewModel
   {
     return $this->_form;
   }
-
-
 }

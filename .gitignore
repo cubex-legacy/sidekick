@@ -4,4 +4,3 @@ composer.phar
 composer.lock
 .DS_Store
 .idea
-/src/Sidekick/Cli/Configurator/Test.php

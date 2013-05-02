@@ -8,18 +8,16 @@
 <h1>Projects</h1>
 <p class="muted"><em>Manage configurations across all your projects!</em></p>
 <?php foreach($this->getProjects() as $project): ?>
-  <?php
-  $subProjects  = $this->getSubProjectsCount($project->id);
-  $configGroups = $this->getConfigGroupsCount($project->id);
-  ?>
   <div class="well boxed">
-    <h3><a
-      href="/configurator/project-configs/<?php echo $project->id; ?>"><?php echo $project->name; ?></a>
+    <h3>
+      <a href="/configurator/project-configs/<?php echo $project->id; ?>">
+        <?php echo $project->name; ?>
+      </a>
     </h3>
-    <?php if ($subProjects > 0): ?>
+    <?php if ($this->getSubProjectsCount($project->id) > 0): ?>
   <p>
   <small><a href="/configurator/<?php echo $project->id; ?>">
-      <?php echo $subProjects; ?> Sub Projects
+      <?php echo $this->getSubProjectsCount($project->id); ?> Sub Projects
     </a>
   </small>
   <?php else: ?>
@@ -27,12 +25,14 @@
       <small>No Sub Projects</small>
       <?php endif; ?>,
 
-      <small><?php echo ($configGroups > 0) ? $configGroups : 'No' ?>
+      <small>
+        <?php echo ($this->getConfigGroupsCount($project->id) > 0) ?
+        $this->getConfigGroupsCount($project->id) : 'No' ?>
         Config Groups
       </small>
     </p>
 
-    <?php if($configGroups == 0): ?>
+    <?php if($this->getConfigGroupsCount($project->id) == 0): ?>
       <p class="text-error">
         <small>This project has no config groups setup yet, you need to create
           some config groups first. Config group help you group you individual

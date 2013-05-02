@@ -9,7 +9,7 @@ use Cubex\Core\Application\Application;
 use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
-use Sidekick\Applications\Projects\projectsApp;
+use Sidekick\Applications\Projects\ProjectsApp;
 
 class Project extends \Cubex\Core\Project\Project
 {
@@ -20,7 +20,7 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('diffuse', new DiffuseApp());
     $this->addApplication('dispatcher', new DispatcherApp());
     $this->addApplication('configurator', new ConfiguratorApp());
-    $this->addApplication('projects', new projectsApp());
+    $this->addApplication('projects', new ProjectsApp());
   }
 
   public function addApplication($path, Application $application)

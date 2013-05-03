@@ -166,17 +166,17 @@ class DefaultController extends ConfiguratorController
         //then don't create a new customItem, just reuse its ID
         //on new EnvironmentConfiguration
 
-        $customItem = CustomConfigurationItem::collection()->loadOneWhere(
+        $customItem = CustomConfigurationItem::loadWhereOrNew(
           [
           'item_id' => $postData['itemId'],
           'value'   => $item->value
           ]
         );
-
-        if($customItem === null)
+        /**
+         * @var $customItem CustomConfigurationItem
+         */
+        if(!$customItem->exists())
         {
-          //create new custom item
-          $customItem         = new CustomConfigurationItem();
           $customItem->itemId = $postData['itemId'];
           $customItem->value  = $item->value;
           $customItem->saveChanges();
@@ -199,23 +199,6 @@ class DefaultController extends ConfiguratorController
         Redirect::to($url)->now();
       }
     }
-  }
-
-  private function _arrayMergeIni(array &$arrayOne, array &$arrayTwo)
-  {
-    $merged = $arrayOne;
-    foreach($arrayTwo as $key => &$value)
-    {
-      if(is_array($value) && isset ($merged[$key]) && is_array($merged[$key]))
-      {
-        $merged[$key] = $this->_arrayMergeIni($merged[$key], $value);
-      }
-      else
-      {
-        $merged[$key] = $value;
-      }
-    }
-    return $merged;
   }
 
   public function buildIni()
@@ -244,7 +227,7 @@ class DefaultController extends ConfiguratorController
           ]
         );
 
-        $configArray = $this->_arrayMergeIni(
+        $configArray = array_replace_recursive(
           $configArray, $this->buildCascadeConfig($projectConfigs)
         );
       }

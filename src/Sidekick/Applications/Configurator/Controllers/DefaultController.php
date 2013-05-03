@@ -326,39 +326,37 @@ class DefaultController extends ConfiguratorController
   public function postAddingConfigItem()
   {
     $postData = $this->request()->postVariables();
-    if(isset($postData['kv']))
+    $kv       = $this->request()->postVariables('kv', []);
+    foreach($kv as $itemId => $data)
     {
-      foreach($postData['kv'] as $itemId => $data)
+      if($data['key'] != '' && $data['value'] != '')
       {
-        if($data['key'] != '' && $data['value'] != '')
+        if($itemId != '*')
         {
-          if($itemId != '*')
+          $item                       = new ConfigurationItem($itemId);
+          $item->key                  = $data['key'];
+          $item->value                = $item->prepValueIn(
+            $data['value'], $data['type']
+          );
+          $item->type                 = $data['type'];
+          $item->configurationGroupId = $postData['groupId'];
+          if($item->isModified())
           {
-            $item                       = new ConfigurationItem($itemId);
-            $item->key                  = $data['key'];
-            $item->value                = $item->prepValueIn(
-              $data['value'], $data['type']
-            );
-            $item->type                 = $data['type'];
-            $item->configurationGroupId = $postData['groupId'];
-            if($item->isModified())
-            {
-              //update existing item
-              $item->saveChanges();
-            }
-          }
-          else
-          {
-            //new item
-            $item                       = new ConfigurationItem();
-            $item->key                  = $data['key'];
-            $item->value                = $item->prepValueIn(
-              $data['value'], $data['type']
-            );
-            $item->type                 = $data['type'];
-            $item->configurationGroupId = $postData['groupId'];
+            //update existing item
             $item->saveChanges();
           }
+        }
+        else
+        {
+          //new item
+          $item                       = new ConfigurationItem();
+          $item->key                  = $data['key'];
+          $item->value                = $item->prepValueIn(
+            $data['value'], $data['type']
+          );
+          $item->type                 = $data['type'];
+          $item->configurationGroupId = $postData['groupId'];
+          $item->saveChanges();
         }
       }
     }

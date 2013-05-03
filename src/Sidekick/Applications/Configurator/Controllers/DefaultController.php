@@ -20,11 +20,15 @@ use Sidekick\Components\Configure\Mappers\ConfigurationItem;
 use Sidekick\Components\Configure\Mappers\CustomConfigurationItem;
 use Sidekick\Components\Configure\Mappers\Environment;
 use Sidekick\Components\Configure\Mappers\EnvironmentConfigurationItem;
-use Sidekick\Components\Configure\Mappers\ProjectConfigurationItem;
 use Sidekick\Components\Projects\Mappers\Project;
 
 class DefaultController extends ConfiguratorController
 {
+  public function __construct()
+  {
+    $this->setBaseUri('/configurator');
+  }
+
   public function renderIndex()
   {
     $projectId         = $this->getInt('projectId');
@@ -32,7 +36,7 @@ class DefaultController extends ConfiguratorController
 
     if($projectId === null)
     {
-      $projects = $projectCollection->loadWhere("parent_id IS NULL");
+      $projects = $projectCollection->loadWhere("%C IS NULL", "parent_id");
     }
     else
     {
@@ -41,15 +45,15 @@ class DefaultController extends ConfiguratorController
 
     $subProjects = Project::conn()->getKeyedRows(
       "SELECT id, (
-        SELECT count(*) FROM projects_projects WHERE parent_id= p.id
+        SELECT count(*) FROM " . Project::tableName() . " WHERE parent_id= p.id
         ) as sub_projects
-        FROM projects_projects p
+        FROM " . Project::tableName() . " p
       "
     );
 
     $configGroups = ConfigurationGroup::conn()->getKeyedRows(
       "SELECT project_id, count(*)
-       FROM configure_configuration_groups GROUP BY project_id
+       FROM " . ConfigurationGroup::tableName() . " GROUP BY project_id
       "
     );
 
@@ -166,10 +170,11 @@ class DefaultController extends ConfiguratorController
       $item        = new ConfigurationItem($postData['itemId']);
       $item->value = $item->prepValueIn($postData['value'], $item->type);
 
-      $key = $postData['key'];
       if($item->getAttribute('value')->isModified())
       {
-        echo "key <b>$key</b> was modified<br/>";
+        //key was modified. If new value matches an existing customItem,
+        //then don't create a new customItem, just reuse its ID
+        //on new EnvironmentConfiguration
 
         $customItem = CustomConfigurationItem::collection()->loadOneWhere(
           [
@@ -202,11 +207,6 @@ class DefaultController extends ConfiguratorController
           $postData['projectId'] . '/' . $postData['envId'];
         }
         Redirect::to($url)->now();
-      }
-      else
-      {
-        echo "key <b>$key</b> did not change<br/>";
-        //var_dump($item);
       }
     }
   }
@@ -372,21 +372,21 @@ class DefaultController extends ConfiguratorController
   public function getRoutes()
   {
     return array(
-      '/configurator/add-project'                                          => 'addProject',
-      '/configurator/:projectId'                                           => 'index',
-      '/configurator/project-configs/:projectId'                           => 'projectConfigs',
-      '/configurator/config-groups/:projectId'                             => 'configGroups',
-      '/configurator/build-ini/:projectId/'                                => 'buildIni',
-      '/configurator/project-configs/:projectId/:envId'                    => 'projectConfigs',
-      '/configurator/add-project-config-item/:projectId/:envId/:itemId'    => 'addProjectConfigItem',
-      '/configurator/remove-project-config-item/:projectId/:envId/:itemId' => 'removeProjectConfigItem',
-      '/configurator/modify-project-config-item/:projectId/:envId/:itemId' => 'modifyProjectConfigItem',
-      '/configurator/add-config-group/:projectId'                          => 'addConfigGroup',
-      '/configurator/config-items/:groupId'                                => 'configItems',
-      '/configurator/addingConfigGroup'                                    => 'addingConfigGroup',
-      '/configurator/addingConfigItem'                                     => 'addingConfigItem',
-      '/configurator/modifyProjectConfigItem'                              => 'modifyProjectConfigItem',
-      '/configurator/environments'                                         => 'environments',
+      '/'                                                     => 'index',
+      '/project/:projectId'                                   => 'index',
+      '/project-configs/:projectId'                           => 'projectConfigs',
+      '/config-groups/:projectId'                             => 'configGroups',
+      '/build-ini/:projectId/'                                => 'buildIni',
+      '/project-configs/:projectId/:envId'                    => 'projectConfigs',
+      '/add-project-config-item/:projectId/:envId/:itemId'    => 'addProjectConfigItem',
+      '/remove-project-config-item/:projectId/:envId/:itemId' => 'removeProjectConfigItem',
+      '/modify-project-config-item/:projectId/:envId/:itemId' => 'modifyProjectConfigItem',
+      '/add-config-group/:projectId'                          => 'addConfigGroup',
+      '/config-items/:groupId'                                => 'configItems',
+      '/adding-config-group'                                  => 'addingConfigGroup',
+      '/adding-config-item'                                   => 'addingConfigItem',
+      '/modify-project-config-item'                           => 'modifyProjectConfigItem',
+      '/environments'                                         => 'environments',
     );
   }
 }

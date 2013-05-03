@@ -24,7 +24,7 @@ class ConfigItemsManager extends TemplatedViewModel
       ['configuration_group_id' => $groupId]
     );
 
-    $form = new Form('addConfigItem', '/configurator/addingConfigItem');
+    $form = new Form('addConfigItem', '/configurator/adding-config-item');
     $form->setDefaultElementTemplate("{{input}}");
     $form->addHiddenElement('groupId', $groupId);
     foreach($this->configItems as $item)

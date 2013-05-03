@@ -14,7 +14,7 @@ class ConfigGroupView extends ViewModel
 
   public function __construct($projectId)
   {
-    $this->_form = new ConfigGroup("/configurator/addingConfigGroup");
+    $this->_form = new ConfigGroup("/configurator/adding-config-group");
     $this->_form->addHiddenElement('projectId', $projectId);
   }
 

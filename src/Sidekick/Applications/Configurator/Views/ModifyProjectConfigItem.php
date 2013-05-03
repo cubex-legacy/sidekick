@@ -46,7 +46,7 @@ class ModifyProjectConfigItem extends TemplatedViewModel
       $item->value = $customItem->value;
     }
 
-    $this->_form = new Form('', '/configurator/modifyProjectConfigItem');
+    $this->_form = new Form('', '/configurator/modify-project-config-item');
     $this->_form->setDefaultElementTemplate("{{input}}");
     $this->_form->addHiddenElement('projectId', $projectId);
     $this->_form->addHiddenElement('envId', $envId);

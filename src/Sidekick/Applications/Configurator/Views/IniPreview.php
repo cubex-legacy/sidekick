@@ -10,6 +10,10 @@ use Sidekick\Components\Configure\ConfigWriter;
 
 class IniPreview extends ViewModel
 {
+  public $project;
+  public $envs;
+  public $configArray;
+
   public function __construct($project, $envs, $configArray)
   {
     $this->project     = $project;

@@ -5,17 +5,25 @@
  */
 namespace Sidekick\Applications\Configurator\Views;
 
-use Cubex\View\ViewModel;
+use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\Configurator\Forms\ConfigGroup;
+use Sidekick\Components\Configure\Mappers\ConfigurationGroup;
 
-class ConfigGroupView extends ViewModel
+class ConfigGroupView extends TemplatedViewModel
 {
   protected $_form;
+  public $configGroups;
 
   public function __construct($projectId)
   {
     $this->_form = new ConfigGroup("/configurator/adding-config-group");
     $this->_form->addHiddenElement('projectId', $projectId);
+
+    $this->configGroups = ConfigurationGroup::collection()->loadWhere(
+      [
+      'project_id' => $projectId
+      ]
+    );
   }
 
 
@@ -23,11 +31,4 @@ class ConfigGroupView extends ViewModel
   {
     return $this->_form;
   }
-
-  public function render()
-  {
-    echo "<h1>Add Config Group</h1>";
-    echo $this->form();
-  }
-
 }

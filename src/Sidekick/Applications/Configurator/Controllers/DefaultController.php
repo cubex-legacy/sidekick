@@ -74,18 +74,7 @@ class DefaultController extends ConfiguratorController
   public function renderConfigGroups()
   {
     $projectId = $this->getInt('projectId');
-    echo "<h1>Config Groups</h1>";
-    echo "<span><a href='/configurator/add-config-group/$projectId'>Add New Group</a>";
-    $configGroups = ConfigurationGroup::collection()->loadWhere(
-      [
-      'project_id' => $projectId
-      ]
-    );
-    foreach($configGroups as $group)
-    {
-      echo '<li><a href="/configurator/config-items/' .
-      $group->id . '">' . $group->groupName . '</a></li>';
-    }
+    return new ConfigGroupView($projectId);
   }
 
   public function renderProjectConfigs()
@@ -300,12 +289,6 @@ class DefaultController extends ConfiguratorController
     return $configArray;
   }
 
-
-  public function renderAddConfigGroup()
-  {
-    return new ConfigGroupView($this->getInt('projectId'));
-  }
-
   public function renderConfigItems()
   {
     $groupId = $this->getInt("groupId");
@@ -379,7 +362,6 @@ class DefaultController extends ConfiguratorController
       '/add-project-config-item/:projectId/:envId/:itemId'    => 'addProjectConfigItem',
       '/remove-project-config-item/:projectId/:envId/:itemId' => 'removeProjectConfigItem',
       '/modify-project-config-item/:projectId/:envId/:itemId' => 'modifyProjectConfigItem',
-      '/add-config-group/:projectId'                          => 'addConfigGroup',
       '/config-items/:groupId'                                => 'configItems',
       '/adding-config-group'                                  => 'addingConfigGroup',
       '/adding-config-item'                                   => 'addingConfigItem',

@@ -11,6 +11,7 @@ use Cubex\Mapper\Database\RecordCollection;
 use Sidekick\Applications\Configurator\Views\ConfigGroupView;
 use Sidekick\Applications\Configurator\Views\ConfigItemsManager;
 use Sidekick\Applications\Configurator\Views\EnvironmentList;
+use Sidekick\Applications\Configurator\Views\IniPreview;
 use Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem;
 use Sidekick\Applications\Configurator\Views\ProjectConfigurator;
 use Sidekick\Applications\Configurator\Views\ProjectList;
@@ -222,8 +223,6 @@ class DefaultController extends ConfiguratorController
     $projectId = $this->getInt('projectId');
     $project   = new Project($projectId);
 
-    echo "<h1>$project->name</h1>";
-
     //load config in cascade fashion, parent comes first
     if($project->parentId !== null)
     {
@@ -252,15 +251,7 @@ class DefaultController extends ConfiguratorController
     }
 
     ksort($configArray);
-
-    foreach($envs as $env)
-    {
-      echo "<h3>$env->filename</h3>";
-      $cw = new ConfigWriter();
-      echo "<pre>";
-      $cw->buildIni($configArray[$env->name], true);
-      echo "</pre>";
-    }
+    return new IniPreview($project, $envs, $configArray);
   }
 
   public function buildCascadeConfig($projectConfigs)

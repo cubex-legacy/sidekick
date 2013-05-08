@@ -95,8 +95,6 @@ class Build extends CliCommand
       pcntl_signal(SIGINT, array($buildRun, "exited"));
       pcntl_signal(SIGTERM, array($buildRun, "exited"));
       pcntl_signal(SIGHUP, array($buildRun, "exited"));
-      pcntl_signal(SIGUSR1, array($buildRun, "exited"));
-      pcntl_signal(SIGKILL, array($buildRun, "exited"));
     }
 
     echo Shell::colourText(

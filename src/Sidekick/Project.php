@@ -54,7 +54,12 @@ class Project extends \Cubex\Core\Project\Project
     {
       if(strpos($path, '/' . $appPath) === 0)
       {
-        return new $app();
+        $newApp = new $app();
+        if($newApp instanceof Application)
+        {
+          $newApp->setBaseUri('/' . $appPath);
+        }
+        return $newApp;
       }
     }
     return null;

@@ -24,16 +24,6 @@ class BuildQueue extends CliCommand
 
   public function execute()
   {
-    if(!System::isWindows())
-    {
-      declare(ticks = 1);
-      pcntl_signal(SIGINT, array($this, "exited"));
-      pcntl_signal(SIGTERM, array($this, "exited"));
-      pcntl_signal(SIGHUP, array($this, "exited"));
-      pcntl_signal(SIGUSR1, array($this, "exited"));
-      pcntl_signal(SIGKILL, array($this, "exited"));
-    }
-
     Log::debug("Starting Queue Consumer");
     $queue = new StdQueue('BuildRequest');
     Queue::consume(
@@ -59,11 +49,5 @@ class BuildQueue extends CliCommand
     chdir($cwd);
     Log::debug("Completed Build Run");
     return true;
-  }
-
-  public function exited()
-  {
-    echo Shell::colourText("\nLeaving Session\n", Shell::COLOUR_FOREGROUND_RED);
-    die;
   }
 }

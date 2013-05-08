@@ -171,6 +171,14 @@ class Build extends CliCommand
 
     $this->_buildResults($buildRun);
 
+    if(!System::isWindows())
+    {
+      //Unregister Signals
+      pcntl_signal(SIGINT, SIG_IGN);
+      pcntl_signal(SIGTERM, SIG_IGN);
+      pcntl_signal(SIGHUP, SIG_IGN);
+    }
+
     return true;
   }
 

@@ -5,9 +5,10 @@
  * @var $this \Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem
  */
 ?>
-<h1><?php echo $this->project->name; ?> >
-  <?php echo ucwords($this->env->name); ?>
-  > <?php echo $this->configGroup->groupName; ?></h1>
+<h1><?php echo $this->project->name; ?> /
+  <?php echo ucwords($this->env->name); ?> /
+  <?php echo $this->configGroup->groupName; ?>
+</h1>
 
 <?php
 echo $this->form()->open();

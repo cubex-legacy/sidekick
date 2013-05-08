@@ -12,6 +12,7 @@ class ProjectList extends TemplatedViewModel
   protected $_projects;
   protected $_subProjects;
   protected $_configGroups;
+  protected $_parentProject;
 
   public function setProjects($projects)
   {
@@ -31,9 +32,20 @@ class ProjectList extends TemplatedViewModel
     return $this;
   }
 
+  public function setParentProject($project)
+  {
+    $this->_parentProject = $project;
+    return $this;
+  }
+
   public function getProjects()
   {
     return $this->_projects;
+  }
+
+  public function getParentProject()
+  {
+    return $this->_parentProject;
   }
 
   public function getSubProjectsCount($projectId)

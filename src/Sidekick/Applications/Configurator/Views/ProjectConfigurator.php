@@ -16,6 +16,7 @@ use Sidekick\Components\Projects\Mappers\Project;
 class ProjectConfigurator extends TemplatedViewModel
 {
   public $project;
+  public $parentProject;
   public $currentEnvironment;
   public $environments;
   public $availableConfigs;
@@ -25,7 +26,8 @@ class ProjectConfigurator extends TemplatedViewModel
   {
     $this->project            = new Project($projectId);
     $this->currentEnvironment = new Environment($envId);
-    $this->environments        = Environment::collection()->loadAll();
+    $this->environments       = Environment::collection()->loadAll();
+    $this->parentProject      = new Project($this->project->parentId);
 
     $this->_getAvailableConfigs();
     $this->_getEnvironmentConfig();
@@ -40,14 +42,14 @@ class ProjectConfigurator extends TemplatedViewModel
     }
 
     $configGroups = ConfigurationGroup::collection()
-    ->loadWhere("project_id IN (" . implode(',', $in) . ")")
-    ->setOrderBy("group_name");
+      ->loadWhere("project_id IN (" . implode(',', $in) . ")")
+      ->setOrderBy("group_name");
 
     $this->availableConfigs = [];
     foreach($configGroups as $group)
     {
       $configItems = ConfigurationItem::collection()
-      ->loadWhere(['configuration_group_id' => $group->id]);
+        ->loadWhere(['configuration_group_id' => $group->id]);
 
       $this->availableConfigs[$group->groupName] = $configItems;
     }
@@ -56,12 +58,12 @@ class ProjectConfigurator extends TemplatedViewModel
   private function _getEnvironmentConfig()
   {
     $projectConfigs = EnvironmentConfigurationItem::collection()
-    ->loadWhere(
-      [
-      'project_id'     => $this->project->id(),
-      'environment_id' => $this->currentEnvironment->id(),
-      ]
-    );
+      ->loadWhere(
+        [
+        'project_id'     => $this->project->id(),
+        'environment_id' => $this->currentEnvironment->id(),
+        ]
+      );
 
     $this->environmentConfig = array();
     foreach($projectConfigs as $config)

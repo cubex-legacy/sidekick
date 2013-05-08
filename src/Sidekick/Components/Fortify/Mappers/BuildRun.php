@@ -3,23 +3,23 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Components\Diffuse\Mappers;
+namespace Sidekick\Components\Fortify\Mappers;
 
 use Cubex\Data\Attribute;
 use Cubex\Mapper\Database\RecordMapper;
-use Sidekick\Components\Diffuse\Enums\BuildResult;
-use Sidekick\Components\Diffuse\Enums\BuildType;
+use Sidekick\Components\Fortify\Enums\BuildResult;
+use Sidekick\Components\Fortify\Enums\BuildType;
 
 class BuildRun extends RecordMapper
 {
   public $projectId;
   public $buildId;
   /**
-   * @enumclass \Sidekick\Components\Diffuse\Enums\BuildResult
+   * @enumclass \Sidekick\Components\Fortify\Enums\BuildResult
    */
   public $result;
   /**
-   * @enumclass \Sidekick\Components\Diffuse\Enums\BuildType
+   * @enumclass \Sidekick\Components\Fortify\Enums\BuildType
    */
   public $buildType = BuildType::REPOSITORY;
   /**

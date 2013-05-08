@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Cli\Diffuse;
+namespace Sidekick\Cli\Fortify;
 
 use Cubex\Cli\CliCommand;
 use Cubex\Cli\Shell;
@@ -41,12 +41,12 @@ class BuildQueue extends CliCommand
   public function runBuild($queue, $data)
   {
     $cwd     = getcwd();
-    $rawArgs = ['Diffuse.Build', '-b', '1', '-p', $data->respositoryId];
+    $rawArgs = ['Fortify.Build', '-b', '1', '-p', $data->respositoryId];
     if($this->verbose)
     {
       $rawArgs[] = '-v';
     }
-    $build   = new Build($this->_loader, $rawArgs);
+    $build = new Build($this->_loader, $rawArgs);
     $build->execute();
     chdir($cwd);
     return true;

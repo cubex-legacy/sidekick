@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Cli\Diffuse;
+namespace Sidekick\Cli\Fortify;
 
 use Cubex\Cli\CliCommand;
 use Cubex\Cli\Shell;
@@ -11,13 +11,13 @@ use Cubex\FileSystem\FileSystem;
 use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
 use Cubex\Helpers\System;
-use Sidekick\Components\Diffuse\Enums\BuildResult;
-use Sidekick\Components\Diffuse\Mappers\BuildCommand;
-use Sidekick\Components\Diffuse\Mappers\BuildLog;
-use Sidekick\Components\Diffuse\Mappers\BuildRun;
-use Sidekick\Components\Diffuse\Mappers\BuildsCommands;
-use Sidekick\Components\Diffuse\Mappers\BuildsProjects;
-use Sidekick\Components\Diffuse\Mappers\Patch;
+use Sidekick\Components\Fortify\Enums\BuildResult;
+use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\BuildLog;
+use Sidekick\Components\Fortify\Mappers\BuildRun;
+use Sidekick\Components\Fortify\Mappers\BuildsCommands;
+use Sidekick\Components\Fortify\Mappers\BuildsProjects;
+use Sidekick\Components\Fortify\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Enums\RepositoryProvider;
 use Sidekick\Components\Repository\Mappers\Source;
@@ -75,8 +75,8 @@ class Build extends CliCommand
     $buildId   = (int)$this->build;
 
     $project      = new Project($projectId);
-    $build        = new \Sidekick\Components\Diffuse\Mappers\Build($buildId);
-    $buildProject = new BuildsProjects($build, $project);
+    $build        = new \Sidekick\Components\Fortify\Mappers\Build($buildId);
+    $buildProject = new BuildsProjects([$build, $project]);
 
     $buildRun            = new BuildRun();
     $buildRun->buildId   = $build->id();
@@ -99,9 +99,9 @@ class Build extends CliCommand
 
     echo Shell::colourText(
       "\n" .
-      "Starting Build for: " . $project->name . " (" . $build->name . ")\n" .
-      "Build ID: " . $this->_buildId .
-      "\n",
+        "Starting Build for: " . $project->name . " (" . $build->name . ")\n" .
+        "Build ID: " . $this->_buildId .
+        "\n",
       Shell::COLOUR_FOREGROUND_LIGHT_BLUE
     );
 
@@ -339,7 +339,7 @@ class Build extends CliCommand
       'Start Time'     => $buildRun->startTime->format('Y-m-d H:i:s'),
       'End Time'       => $buildRun->endTime->format('Y-m-d H:i:s'),
       'Total Duration' => $buildRun->startTime->diff($buildRun->endTime)
-      ->format("%H:%I:%S"),
+        ->format("%H:%I:%S"),
     ];
 
     foreach($results as $name => $value)

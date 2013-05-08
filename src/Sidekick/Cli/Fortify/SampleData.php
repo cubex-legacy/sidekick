@@ -3,15 +3,15 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Cli\Diffuse;
+namespace Sidekick\Cli\Fortify;
 
 use Cubex\Cli\CliCommand;
-use Sidekick\Components\Diffuse\Enums\BuildLevel;
-use Sidekick\Components\Diffuse\Mappers\Build;
-use Sidekick\Components\Diffuse\Mappers\BuildCommand;
-use Sidekick\Components\Diffuse\Mappers\BuildsCommands;
-use Sidekick\Components\Diffuse\Mappers\BuildsProjects;
-use Sidekick\Components\Diffuse\Mappers\Patch;
+use Sidekick\Components\Fortify\Enums\BuildLevel;
+use Sidekick\Components\Fortify\Mappers\Build;
+use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\BuildsCommands;
+use Sidekick\Components\Fortify\Mappers\BuildsProjects;
+use Sidekick\Components\Fortify\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Enums\RepositoryProvider;
 use Sidekick\Components\Repository\Mappers\Source;
@@ -36,7 +36,7 @@ class SampleData extends CliCommand
     $command->fileSetDirectory = '{sourcedirectory}src';
     $command->saveChanges();
 
-    $bc               = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [3, 9];
     $bc->saveChanges();
 
@@ -51,7 +51,7 @@ class SampleData extends CliCommand
     $command->description = "Run PHPUnit Tests";
     $command->saveChanges();
 
-    $bc               = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [1];
     $bc->saveChanges();
 
@@ -65,7 +65,7 @@ class SampleData extends CliCommand
     $command->description = "Make Build Directory";
     $command->saveChanges();
 
-    $bc = new BuildsCommands($build, $command);
+    $bc = new BuildsCommands([$build, $command]);
     $bc->saveChanges();
 
     $command              = new BuildCommand(4);
@@ -78,7 +78,7 @@ class SampleData extends CliCommand
     $command->description = "Generate PHP Information (csv out)";
     $command->saveChanges();
 
-    $bc               = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [1];
     $bc->saveChanges();
 
@@ -95,7 +95,7 @@ class SampleData extends CliCommand
     $command->description       = "Generate PHP Mess Detection";
     $command->saveChanges();
 
-    $bc               = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [7];
     $bc->saveChanges();
 
@@ -113,7 +113,7 @@ class SampleData extends CliCommand
     $command->description = "Check Code Standards";
     $command->saveChanges();
 
-    $bc               = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [1];
     $bc->saveChanges();
 
@@ -127,7 +127,7 @@ class SampleData extends CliCommand
     $command->description = "Check Code Duplication";
     $command->saveChanges();
 
-    $bc               = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [1];
     $bc->saveChanges();
 
@@ -144,7 +144,7 @@ class SampleData extends CliCommand
     $command->description = "Generate PHP Dependancy information";
     $command->saveChanges();
 
-    $bc               = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [1];
     $bc->saveChanges();
 
@@ -159,7 +159,7 @@ class SampleData extends CliCommand
     $command->description = "Install Project Dependencies";
     $command->saveChanges();
 
-    $bc               = new BuildsCommands($build, $command);
+    $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [3];
     $bc->saveChanges();
 
@@ -192,7 +192,7 @@ class SampleData extends CliCommand
       $source->localpath      = $buildInfo['localpath'];
       $source->saveChanges();
 
-      $proBuild                = new BuildsProjects($build, $project);
+      $proBuild                = new BuildsProjects([$build, $project]);
       $proBuild->buildSourceId = $source->id();
       $proBuild->saveChanges();
     }

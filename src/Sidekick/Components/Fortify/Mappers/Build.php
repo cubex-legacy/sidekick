@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Components\Diffuse\Mappers;
+namespace Sidekick\Components\Fortify\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
 
@@ -12,7 +12,7 @@ class Build extends RecordMapper
   public $name;
   public $description;
   /**
-   * @enumclass \Sidekick\Components\Diffuse\Enum\BuildLevel
+   * @enumclass \Sidekick\Components\Fortify\Enum\BuildLevel
    */
   public $buildLevel;
   public $sourceDirectory = 'sourcecode/';

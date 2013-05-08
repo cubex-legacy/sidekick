@@ -14,12 +14,8 @@ class DiffuseApp extends BaseApp
   public function getRoutes()
   {
     return [
-      '/diffuse/' => [
-        'api/builds.*'            => 'Api\Builds',
-        'projects/:projectName' => 'ProjectController@index',
-        'projects' => 'ProjectController@index',
-        '' => 'ProjectController'
-      ]
+      'api/builds(.*)' => 'Api\Builds',
+      'projects/(.*)'  => 'ProjectController',
     ];
   }
 

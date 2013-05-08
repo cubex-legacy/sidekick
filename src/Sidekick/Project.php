@@ -9,7 +9,9 @@ use Cubex\Core\Application\Application;
 use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
+use Sidekick\Applications\Fortify\FortifyApp;
 use Sidekick\Applications\Projects\ProjectsApp;
+use Sidekick\Applications\Repository\RepositoryApp;
 
 class Project extends \Cubex\Core\Project\Project
 {
@@ -17,10 +19,12 @@ class Project extends \Cubex\Core\Project\Project
 
   protected function _configure()
   {
+    $this->addApplication('projects', new ProjectsApp());
+    $this->addApplication('repository', new RepositoryApp());
+    $this->addApplication('configurator', new ConfiguratorApp());
+    $this->addApplication('fortify', new FortifyApp());
     $this->addApplication('diffuse', new DiffuseApp());
     $this->addApplication('dispatcher', new DispatcherApp());
-    $this->addApplication('configurator', new ConfiguratorApp());
-    $this->addApplication('projects', new ProjectsApp());
   }
 
   public function addApplication($path, Application $application)

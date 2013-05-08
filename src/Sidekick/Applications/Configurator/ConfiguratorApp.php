@@ -1,6 +1,6 @@
 <?php
 /**
- * @author  oke.ugwu 
+ * @author  oke.ugwu
  */
 
 namespace Sidekick\Applications\Configurator;
@@ -31,6 +31,14 @@ class ConfiguratorApp extends BaseApp
   {
     return [
 //      new DebuggerBundle()
+    ];
+  }
+
+  public function getRoutes()
+  {
+    return [
+      '/'          => 'DefaultController',
+      '/test/(.*)' => 'TestController',
     ];
   }
 

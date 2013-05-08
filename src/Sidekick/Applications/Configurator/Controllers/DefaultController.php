@@ -15,7 +15,6 @@ use Sidekick\Applications\Configurator\Views\IniPreview;
 use Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem;
 use Sidekick\Applications\Configurator\Views\ProjectConfigurator;
 use Sidekick\Applications\Configurator\Views\ProjectList;
-use Sidekick\Components\Configure\ConfigWriter;
 use Sidekick\Components\Configure\Mappers\ConfigurationGroup;
 use Sidekick\Components\Configure\Mappers\ConfigurationItem;
 use Sidekick\Components\Configure\Mappers\CustomConfigurationItem;
@@ -25,15 +24,11 @@ use Sidekick\Components\Projects\Mappers\Project;
 
 class DefaultController extends ConfiguratorController
 {
-  public function __construct()
-  {
-    $this->setBaseUri('/configurator');
-  }
-
   public function renderIndex()
   {
     $projectId         = $this->getInt('projectId');
     $projectCollection = new RecordCollection(new Project());
+    $parentProject     = null;
 
     if($projectId === null)
     {
@@ -41,7 +36,10 @@ class DefaultController extends ConfiguratorController
     }
     else
     {
-      $projects = $projectCollection->loadWhere(["parent_id" => $projectId]);
+      $projects      = $projectCollection->loadWhere(
+        ["parent_id" => $projectId]
+      );
+      $parentProject = new Project($projectId);
     }
 
     $subProjects = Project::conn()->getKeyedRows(
@@ -60,8 +58,9 @@ class DefaultController extends ConfiguratorController
 
     $pl = new ProjectList();
     $pl->setProjects($projects)
-    ->setSubProjects($subProjects)
-    ->setConfigGroups($configGroups);
+      ->setSubProjects($subProjects)
+      ->setConfigGroups($configGroups)
+      ->setParentProject($parentProject);
 
     return $pl;
   }
@@ -113,27 +112,7 @@ class DefaultController extends ConfiguratorController
     $itemId    = $this->getInt('itemId');
 
     //remove from environment specific items
-    $eci          = new EnvironmentConfigurationItem(
-      [
-      $projectId,
-      $envId,
-      $itemId
-      ]
-    );
-    $customItemId = $eci->customItemId;
-    $eci->delete();
-
-    if($customItemId !== null)
-    {
-      $itemInUse = EnvironmentConfigurationItem::collection()
-      ->whereEq('custom_item_id', $customItemId);
-
-      if($itemInUse->count() == 0)
-      {
-        $temp = new CustomConfigurationItem($customItemId);
-        $temp->delete();
-      }
-    }
+    $this->_removeConfig($projectId, $envId, $itemId);
 
     $url = '/configurator/project-configs/' . $projectId;
     if($envId)
@@ -169,7 +148,7 @@ class DefaultController extends ConfiguratorController
         $customItem = CustomConfigurationItem::loadWhereOrNew(
           [
           'item_id' => $postData['itemId'],
-          'value'   => $item->value
+          'value'   => json_encode($item->value)
           ]
         );
         /**
@@ -194,8 +173,31 @@ class DefaultController extends ConfiguratorController
         if($postData['envId'])
         {
           $url = '/configurator/project-configs/' .
-          $postData['projectId'] . '/' . $postData['envId'];
+            $postData['projectId'] . '/' . $postData['envId'];
         }
+        Redirect::to($url)->now();
+      }
+      else
+      {
+        //config item is being reverted.
+        //remove old one
+        $this->_removeConfig(
+          $postData['projectId'],
+          $postData['envId'],
+          $postData['itemId']
+        );
+
+        //create new one
+        $pe                      = new EnvironmentConfigurationItem();
+        $pe->projectId           = $postData['projectId'];
+        $pe->environmentId       = $postData['envId'];
+        $pe->configurationItemId = $postData['itemId'];
+        $pe->saveChanges();
+
+        $url = '/configurator/modify-project-config-item/' .
+          $postData['projectId'] . '/' .
+          $postData['envId'] . '/' .
+          $postData['itemId'];
         Redirect::to($url)->now();
       }
     }
@@ -220,15 +222,16 @@ class DefaultController extends ConfiguratorController
       foreach($envs as $env)
       {
         $projectConfigs = EnvironmentConfigurationItem::collection()
-        ->loadWhere(
-          [
-          'project_id'     => $level,
-          'environment_id' => $env->id,
-          ]
-        );
+          ->loadWhere(
+            [
+            'project_id'     => $level,
+            'environment_id' => $env->id,
+            ]
+          );
 
         $configArray = array_replace_recursive(
-          $configArray, $this->buildCascadeConfig($projectConfigs)
+          $configArray,
+          $this->buildCascadeConfig($projectConfigs)
         );
       }
     }
@@ -282,9 +285,11 @@ class DefaultController extends ConfiguratorController
 
   public function postAddingConfigItem()
   {
-    $postData = $this->request()->postVariables();
-    $kv       = $this->request()->postVariables('kv', []);
-    foreach($kv as $itemId => $data)
+    $postData = $this->request()->postVariables(
+      ['kv', 'groupId'],
+      [[], 0]
+    );
+    foreach($postData['kv'] as $itemId => $data)
     {
       if($data['key'] != '' && $data['value'] != '')
       {
@@ -293,7 +298,8 @@ class DefaultController extends ConfiguratorController
           $item                       = new ConfigurationItem($itemId);
           $item->key                  = $data['key'];
           $item->value                = $item->prepValueIn(
-            $data['value'], $data['type']
+            $data['value'],
+            $data['type']
           );
           $item->type                 = $data['type'];
           $item->configurationGroupId = $postData['groupId'];
@@ -309,7 +315,8 @@ class DefaultController extends ConfiguratorController
           $item                       = new ConfigurationItem();
           $item->key                  = $data['key'];
           $item->value                = $item->prepValueIn(
-            $data['value'], $data['type']
+            $data['value'],
+            $data['type']
           );
           $item->type                 = $data['type'];
           $item->configurationGroupId = $postData['groupId'];
@@ -321,6 +328,32 @@ class DefaultController extends ConfiguratorController
     Redirect::to(
       '/configurator/config-items/' . $postData['groupId']
     )->now();
+  }
+
+  //safely removes a config item, if it is not used in other projects
+  private function _removeConfig($projectId, $envId, $itemId)
+  {
+    $eci          = new EnvironmentConfigurationItem(
+      [
+      $projectId,
+      $envId,
+      $itemId
+      ]
+    );
+    $customItemId = $eci->customItemId;
+    $eci->delete();
+
+    if($customItemId !== null)
+    {
+      $itemInUse = EnvironmentConfigurationItem::collection()
+        ->whereEq('custom_item_id', $customItemId);
+
+      if($itemInUse->count() == 0)
+      {
+        $temp = new CustomConfigurationItem($customItemId);
+        $temp->delete();
+      }
+    }
   }
 
 

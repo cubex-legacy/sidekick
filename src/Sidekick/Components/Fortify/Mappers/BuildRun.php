@@ -49,5 +49,6 @@ class BuildRun extends RecordMapper
       $this->endTime = new \DateTime();
       $this->saveChanges();
     }
+    exit;
   }
 }

@@ -20,6 +20,8 @@ class BuildQueue extends CliCommand
 {
   public $verbose;
 
+  protected $_echoLevel = 'debug';
+
   public function execute()
   {
     if(!System::isWindows())

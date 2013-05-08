@@ -25,6 +25,8 @@ use Symfony\Component\Process\Process;
 
 class Build extends CliCommand
 {
+  protected $_echoLevel = 'debug';
+
   /**
    * The Project ID you wish to run a build for
    * @required
@@ -99,9 +101,9 @@ class Build extends CliCommand
 
     echo Shell::colourText(
       "\n" .
-        "Starting Build for: " . $project->name . " (" . $build->name . ")\n" .
-        "Build ID: " . $this->_buildId .
-        "\n",
+      "Starting Build for: " . $project->name . " (" . $build->name . ")\n" .
+      "Build ID: " . $this->_buildId .
+      "\n",
       Shell::COLOUR_FOREGROUND_LIGHT_BLUE
     );
 
@@ -339,7 +341,7 @@ class Build extends CliCommand
       'Start Time'     => $buildRun->startTime->format('Y-m-d H:i:s'),
       'End Time'       => $buildRun->endTime->format('Y-m-d H:i:s'),
       'Total Duration' => $buildRun->startTime->diff($buildRun->endTime)
-        ->format("%H:%I:%S"),
+      ->format("%H:%I:%S"),
     ];
 
     foreach($results as $name => $value)

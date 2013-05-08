@@ -6,9 +6,9 @@
 namespace Sidekick\Applications\Diffuse\Controllers\Api;
 
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
-use Sidekick\Components\Diffuse\Enums\BuildResult;
-use Sidekick\Components\Diffuse\Mappers\BuildCommand;
-use Sidekick\Components\Diffuse\Mappers\BuildRun;
+use Sidekick\Components\Fortify\Enums\BuildResult;
+use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\BuildRun;
 
 class Builds extends DiffuseController
 {

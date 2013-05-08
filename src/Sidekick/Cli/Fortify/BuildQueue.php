@@ -9,6 +9,7 @@ use Cubex\Cli\CliCommand;
 use Cubex\Cli\Shell;
 use Cubex\Facade\Queue;
 use Cubex\Helpers\System;
+use Cubex\Log\Log;
 use Cubex\Queue\CallableQueueConsumer;
 use Cubex\Queue\StdQueue;
 
@@ -31,24 +32,30 @@ class BuildQueue extends CliCommand
       pcntl_signal(SIGKILL, array($this, "exited"));
     }
 
+    Log::debug("Starting Queue Consumer");
     $queue = new StdQueue('BuildRequest');
     Queue::consume(
       $queue,
       new CallableQueueConsumer([$this, 'runBuild'], 10)
     );
+    Log::debug("Completed Consume");
   }
 
   public function runBuild($queue, $data)
   {
+    Log::debug("Entering Build Run for repo: " . $data->respositoryId);
     $cwd     = getcwd();
     $rawArgs = ['Fortify.Build', '-b', '1', '-p', $data->respositoryId];
     if($this->verbose)
     {
       $rawArgs[] = '-v';
     }
+    Log::debug("Starting Build");
     $build = new Build($this->_loader, $rawArgs);
     $build->execute();
+    Log::debug("Executed Build");
     chdir($cwd);
+    Log::debug("Completed Build Run");
     return true;
   }
 

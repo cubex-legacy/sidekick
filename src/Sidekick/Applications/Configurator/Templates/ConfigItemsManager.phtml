@@ -1,13 +1,31 @@
 <?php
 /**
  * @author: oke.ugwu
- * Application: Configurator/Views
+ *        Application: Configurator/Views
  * @var $this \Sidekick\Applications\Configurator\Views\ConfigItemsManager
  */
 ?>
 <h1>Config Items (<?php echo $this->configGroup->groupName; ?>)</h1>
 <p><em>For multi items specify values like this a,b,c. For multi keyed specify
-    values like a=1,b=2,c=3</em></p>
+       values like a=1,b=2,c=3</em></p>
+
+<?php if($this->itemInUse): ?>
+  <div class="alert alert-block" style="width:800px;">
+    <h4>Warning</h4>
+
+    <p>Some projects already use this item. Deleting it means every project
+       that use this item will no longer have it in their config</p>
+
+    <p><a href="/configurator/config-items/<?php echo $this->configGroup->id(
+      ); ?>">
+        Don't delete
+      </a> |
+      <a
+        href='/configurator/remove-config-item/<?php echo $this->itemInUse; ?>/force'>
+        Go ahead and delete it
+      </a>
+    </p></div>
+<?php endif; ?>
 <?php
 echo $this->form()->open();
 echo $this->form()->token();
@@ -19,18 +37,24 @@ echo $this->form()->formNameInput();
     <td>Key</td>
     <td>Type</td>
     <td>Value</td>
+    <td></td>
   </tr>
   <?php foreach($this->configItems as $item): ?>
     <tr>
       <td><?php echo $this->form()->getElement("kv[$item->id][key]"); ?></td>
       <td><?php echo $this->form()->getElement("kv[$item->id][type]"); ?></td>
       <td><?php echo $this->form()->getElement("kv[$item->id][value]"); ?></td>
+      <td>
+        <a href="/configurator/remove-config-item/<?php echo $item->id ?>"
+           class="text-error">&times;</a>
+      </td>
     </tr>
   <?php endforeach; ?>
   <tr>
     <td><?php echo $this->form()->getElement("kv[*][key]"); ?></td>
     <td><?php echo $this->form()->getElement("kv[*][type]"); ?></td>
     <td><?php echo $this->form()->getElement("kv[*][value]"); ?></td>
+    <td></td>
   </tr>
 </table>
 <?php echo $this->form()->getElement('submit'); ?>

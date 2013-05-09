@@ -15,6 +15,7 @@ class ConfigItemsManager extends TemplatedViewModel
   protected $_form;
   public $configGroup;
   public $configItems;
+  public $itemInUse = false;
 
   public function __construct($groupId)
   {
@@ -40,7 +41,8 @@ class ConfigItemsManager extends TemplatedViewModel
         $item->type
       );
       $form->addTextElement(
-        "kv[$item->id][value]", $item->prepValueOut($item->value, $item->type)
+        "kv[$item->id][value]",
+        $item->prepValueOut($item->value, $item->type)
       );
     }
     $form->addTextElement('kv[*][key]', '');

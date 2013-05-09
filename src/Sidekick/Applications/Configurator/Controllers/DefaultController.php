@@ -330,6 +330,40 @@ class DefaultController extends ConfiguratorController
     )->now();
   }
 
+  public function removeConfigItem()
+  {
+    $itemId = $this->getInt('itemId');
+
+    //check if item is safe to delete by making sure no other project is using it
+    $itemUse = EnvironmentConfigurationItem::collection()->loadWhere(
+      ['configuration_item_id' => $itemId]
+    );
+
+    $configItem = new ConfigurationItem($itemId);
+    if($itemUse->count() == 0 || $this->getStr('force') === 'force')
+    {
+      $configItem->delete();
+
+      /**
+       * @var $row EnvironmentConfigurationItem
+       */
+      foreach($itemUse as $row)
+      {
+        $row->delete();
+      }
+
+      Redirect::to(
+        '/configurator/config-items/' . $configItem->configurationGroupId
+      )->now();
+    }
+    else
+    {
+      $cim            = new ConfigItemsManager($configItem->configurationGroupId);
+      $cim->itemInUse = $itemId;
+      return $cim;
+    }
+  }
+
   //safely removes a config item, if it is not used in other projects
   private function _removeConfig($projectId, $envId, $itemId)
   {
@@ -372,6 +406,8 @@ class DefaultController extends ConfiguratorController
       '/config-items/:groupId'                                => 'configItems',
       '/adding-config-group'                                  => 'addingConfigGroup',
       '/adding-config-item'                                   => 'addingConfigItem',
+      '/remove-config-item/:itemId'                           => 'removeConfigItem',
+      '/remove-config-item/:itemId/:force'                    => 'removeConfigItem',
       '/modify-project-config-item'                           => 'modifyProjectConfigItem',
       '/environments'                                         => 'environments',
     );

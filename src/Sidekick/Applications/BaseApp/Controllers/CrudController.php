@@ -12,6 +12,7 @@ use Cubex\Mapper\Database\RecordMapper;
 use Cubex\Routing\Templates\ResourceTemplate;
 use Cubex\Text\TextTable;
 use Cubex\View\HtmlElement;
+use Cubex\View\RenderGroup;
 
 class CrudController extends WebpageController
 {
@@ -25,11 +26,12 @@ class CrudController extends WebpageController
 
   public function runHeader()
   {
-    return (new HtmlElement(
-      "a", ['href' => $this->baseUri()], 'Show List')
-    )->render() . ' | ' . (new HtmlElement(
-      "a", ['href' => $this->baseUri() . '/new'], 'Create New')
-    )->render() . "<hr/>";
+    return new RenderGroup(
+      new HtmlElement("a", ['href' => $this->baseUri()], 'Show List'),
+      " | ",
+      new HtmlElement("a", ['href' => $this->baseUri() . '/new'], 'Create New'),
+      "<hr/>"
+    );
   }
 
   public function renderNew()

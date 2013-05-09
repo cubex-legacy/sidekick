@@ -6,7 +6,10 @@
 namespace Sidekick\Applications\Fortify;
 
 use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\Controllers\CrudController;
 use Sidekick\Applications\Fortify\Controllers\DefaultController;
+use Sidekick\Components\Fortify\Mappers\Build;
+use Sidekick\Components\Fortify\Mappers\BuildCommand;
 
 class FortifyApp extends BaseApp
 {
@@ -23,5 +26,15 @@ class FortifyApp extends BaseApp
   public function defaultController()
   {
     return new DefaultController();
+  }
+
+  public function getRoutes()
+  {
+    return [
+      'builds/(.*)'   => new CrudController(new Build()),
+      'commands/(.*)' => new CrudController(
+        new BuildCommand(), ['id', 'name', 'command']
+      )
+    ];
   }
 }

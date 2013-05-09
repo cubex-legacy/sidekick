@@ -5,7 +5,6 @@
 
 namespace Sidekick\Applications\Configurator;
 
-
 use Bundl\Debugger\DebuggerBundle;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Configurator\Controllers\DefaultController;
@@ -30,16 +29,14 @@ class ConfiguratorApp extends BaseApp
   public function getBundles()
   {
     return [
-//      new DebuggerBundle()
+      /*new DebuggerBundle()*/
     ];
   }
 
   public function getRoutes()
   {
     return [
-      '/'          => 'DefaultController',
       '/test/(.*)' => 'TestController',
     ];
   }
-
 }

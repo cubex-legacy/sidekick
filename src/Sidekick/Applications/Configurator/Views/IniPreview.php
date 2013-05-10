@@ -7,6 +7,7 @@ namespace Sidekick\Applications\Configurator\Views;
 
 use Cubex\View\ViewModel;
 use Sidekick\Components\Configure\ConfigWriter;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class IniPreview extends ViewModel
 {
@@ -23,7 +24,18 @@ class IniPreview extends ViewModel
 
   public function render()
   {
-    echo "<h1>{$this->project->name}</h1>";
+    $parentProject = new Project($this->project->parentId);
+    echo "<h1 class='breadcrumbs'> ";
+    echo "<a href='/configurator'>All Projects</a> / ";
+    if($parentProject->exists())
+    {
+      echo "<a href='/configurator/project/'" . $parentProject->id() . "'>";
+      echo $parentProject->name;
+      echo "</a> / ";
+    }
+    echo $this->project->name . " <span class='muted'>Preview</span>";
+
+    echo "</h1>";
     $cw = new ConfigWriter();
     foreach($this->envs as $env)
     {

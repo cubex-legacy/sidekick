@@ -9,17 +9,22 @@ use Cubex\Form\Form;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Configure\Mappers\ConfigurationGroup;
 use Sidekick\Components\Configure\Mappers\ConfigurationItem;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class ConfigItemsManager extends TemplatedViewModel
 {
   protected $_form;
   public $configGroup;
+  public $project;
+  public $parentProject;
   public $configItems;
   public $itemInUse = false;
 
   public function __construct($groupId)
   {
-    $this->configGroup = new ConfigurationGroup($groupId);
+    $this->configGroup   = new ConfigurationGroup($groupId);
+    $this->project       = new Project($this->configGroup->projectId);
+    $this->parentProject = new Project($this->project->parentId);
 
     $this->configItems = ConfigurationItem::collection()->loadWhere(
       ['configuration_group_id' => $groupId]

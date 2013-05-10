@@ -1,14 +1,26 @@
 <?php
 /**
  * @author: oke.ugwu
- * Application: Configurator
+ *        Application: Configurator
  * @var $this \Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem
  */
 ?>
-<h1><?php echo $this->project->name; ?> /
-  <?php echo ucwords($this->env->name); ?> /
-  <?php echo $this->configGroup->groupName; ?>
-</h1>
+  <h1 class="breadcrumbs">
+    <a href="/configurator">All Projects</a> /
+    <?php if($this->parentProject->exists()): ?>
+      <a href="/configurator/project/<?php echo $this->parentProject->id(); ?>">
+        <?php echo $this->parentProject->name; ?>
+      </a> /
+    <?php endif; ?>
+    <a href="/configurator/project/<?php echo $this->project->id(); ?>">
+      <?php echo $this->project->name; ?>
+    </a> /
+    <a href="/configurator/project-configs/<?php echo $this->project->id(
+    ); ?>/<?php echo $this->env->id(); ?>">
+      <?php echo ucwords($this->env->name); ?>
+    </a> /
+    <?php echo $this->configGroup->groupName; ?>
+  </h1>
 
 <?php
 echo $this->form()->open();
@@ -18,17 +30,17 @@ echo $this->form()->getElement('projectId');
 echo $this->form()->getElement('envId');
 echo $this->form()->getElement('itemId');
 ?>
-<table>
-  <tr>
-    <td>Key</td>
-    <td>Value</td>
-  </tr>
-  <tr>
-    <td><?php echo $this->form()->getElement('key'); ?></td>
-    <td><?php echo $this->form()->getElement('value'); ?></td>
-  </tr>
-  <tr>
-    <td colspan="2"><?php echo $this->form()->getElement('submit'); ?></td>
-  </tr>
-</table>
+  <table>
+    <tr>
+      <td>Key</td>
+      <td>Value</td>
+    </tr>
+    <tr>
+      <td><?php echo $this->form()->getElement('key'); ?></td>
+      <td><?php echo $this->form()->getElement('value'); ?></td>
+    </tr>
+    <tr>
+      <td colspan="2"><?php echo $this->form()->getElement('submit'); ?></td>
+    </tr>
+  </table>
 <?php echo $this->form()->close();

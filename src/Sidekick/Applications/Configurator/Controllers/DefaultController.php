@@ -236,7 +236,6 @@ class DefaultController extends ConfiguratorController
       }
     }
 
-    ksort($configArray);
     return new IniPreview($project, $envs, $configArray);
   }
 
@@ -279,8 +278,7 @@ class DefaultController extends ConfiguratorController
     $configGroup->hydrate($postData);
     $configGroup->saveChanges();
 
-    var_dump($configGroup);
-    Redirect::to('/configurator')->now();
+    Redirect::to('/configurator/config-groups/'.$postData['projectId'])->now();
   }
 
   public function postAddingConfigItem()

@@ -18,24 +18,26 @@ class ModifyProjectConfigItem extends TemplatedViewModel
 {
   protected $_form;
   public $project;
+  public $parentProject;
   public $configGroup;
   public $env;
 
   public function __construct($projectId, $envId, $itemId)
   {
-    $item              = new ConfigurationItem($itemId);
-    $this->project     = new Project($projectId);
-    $this->configGroup = new ConfigurationGroup($item->configurationGroupId);
-    $this->env         = new Environment($envId);
+    $item                = new ConfigurationItem($itemId);
+    $this->project       = new Project($projectId);
+    $this->parentProject = new Project($this->project->parentId);
+    $this->configGroup   = new ConfigurationGroup($item->configurationGroupId);
+    $this->env           = new Environment($envId);
 
     $projectConfig = EnvironmentConfigurationItem::collection()
-    ->loadOneWhere(
-      [
-      'project_id'            => $projectId,
-      'environment_id'        => $envId,
-      'configuration_item_id' => $itemId
-      ]
-    );
+      ->loadOneWhere(
+        [
+        'project_id'            => $projectId,
+        'environment_id'        => $envId,
+        'configuration_item_id' => $itemId
+        ]
+      );
 
     if($projectConfig->customItemId !== null)
     {
@@ -56,7 +58,8 @@ class ModifyProjectConfigItem extends TemplatedViewModel
     $this->_form->addHiddenElement('itemId', $itemId);
     $this->_form->addTextElement('key', $item->key);
     $this->_form->addTextElement(
-      'value', $item->prepValueOut($item->value, $item->type)
+      'value',
+      $item->prepValueOut($item->value, $item->type)
     );
     $this->_form->addSubmitElement('Update', 'submit');
   }

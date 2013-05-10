@@ -5,7 +5,15 @@
  * @var $this \Sidekick\Applications\Configurator\Views\ConfigGroupView
  */
 ?>
-<h1>Config Groups</h1>
+<h1 class="breadcrumbs">
+  <a href='/configurator'>All Projects</a> /
+  <?php if($this->parentProject->exists()): ?>
+  <a href="/configurator/project/<?php echo $this->parentProject->id(); ?>">
+    <?php echo $this->parentProject->name; ?>
+  </a> /
+  <?php endif; ?>
+  <?php echo $this->project->name; ?> <span class="muted">Config Groups</span>
+</h1>
 <div class="row-fluid">
   <div class="span5 well">
     <h3>Add New Group</h3>

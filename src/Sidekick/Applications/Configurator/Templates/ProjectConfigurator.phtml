@@ -1,31 +1,28 @@
 <?php
 /**
  * @author: oke.ugwu
- * Application: Configurator\Views
+ *        Application: Configurator\Views
  * @var $this \Sidekick\Applications\Configurator\Views\ProjectConfigurator
  */
 ?>
 
-<h1><a href='/configurator'>All Projects</a> /
+<h1 class="breadcrumbs">
+  <a href='/configurator'>All Projects</a> /
   <?php if($this->parentProject->exists()): ?>
     <a href="/configurator/project/<?php echo $this->parentProject->id(); ?>">
       <?php echo $this->parentProject->name; ?>
     </a> /
-    <?php echo $this->project->name; ?>
-  <?php else: ?>
-    <a href="/configurator/project/<?php echo $this->project->id(); ?>">
-      <?php echo $this->project->name; ?>
-    </a>
   <?php endif; ?>
-
-  <?php echo ($this->currentEnvironment->exists()) ? ' / ' . ucwords(
-    $this->currentEnvironment->name
-  ) : ""; ?>
+  <?php echo $this->project->name; ?> <span class="muted">Configure</span>
 </h1>
 <?php foreach($this->environments as $env): ?>
   <p style='float:left; margin-right:10px;'>
     <a href="/configurator/project-configs/<?php echo $this->project->id(
-    ); ?>/<?php echo $env->id(); ?>">
+    ); ?>/<?php echo $env->id(); ?>"
+      <?php if($env->id() == $this->currentEnvironment->id()): ?>
+        class="label label-warning"
+      <?php endif; ?>
+      >
       <?php echo ucwords($env->name); ?>
     </a></p>
 <?php endforeach; ?>
@@ -34,7 +31,6 @@
 <div class="row-fluid">
   <div class="span7 well">
     <h3>Available Config</h3>
-
     <?php if(count($this->availableConfigs)): ?>
       <?php foreach($this->availableConfigs as $groupName => $configItems): ?>
         <div class="config-group">
@@ -64,11 +60,9 @@
       <?php endforeach; ?>
     <?php else: ?>
       <p class="text-error">
-        <small>This project has no config groups/items setup yet, you need to
-               create
-               some config groups first. Config group help you group you
-               individual
-               configuration key and value pair
+        <small>
+          This project has no config groups/items setup yet, you need to
+          create some config groups first.
         </small>
       </p>
 

@@ -5,7 +5,21 @@
  * @var $this \Sidekick\Applications\Configurator\Views\ConfigItemsManager
  */
 ?>
-<h1>Config Items (<?php echo $this->configGroup->groupName; ?>)</h1>
+<h1 class="breadcrumbs">
+  <a href='/configurator'>All Projects</a> /
+  <?php if($this->parentProject->exists()): ?>
+    <a href="/configurator/project/<?php echo $this->parentProject->id(); ?>">
+      <?php echo $this->parentProject->name; ?>
+    </a> /
+  <?php endif; ?>
+  <a href="/configurator/project/<?php echo $this->project->id(); ?>">
+    <?php echo $this->project->name; ?>
+  </a> /
+  <a href="/configurator/config-groups/<?php echo $this->project->id(); ?>">
+    Config Groups
+  </a> /
+  <?php echo $this->configGroup->groupName; ?>
+</h1>
 <p><em>For multi items specify values like this a,b,c. For multi keyed specify
        values like a=1,b=2,c=3</em></p>
 

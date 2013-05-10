@@ -56,7 +56,7 @@ class DefaultController extends ConfiguratorController
       "
     );
 
-    $pl = new ProjectList();
+    $pl = $this->createView(new ProjectList());
     $pl->setProjects($projects)
       ->setSubProjects($subProjects)
       ->setConfigGroups($configGroups)
@@ -68,13 +68,13 @@ class DefaultController extends ConfiguratorController
   public function renderEnvironments()
   {
     $envs = Environment::collection()->loadAll();
-    return new EnvironmentList($envs);
+    return $this->createView(new EnvironmentList($envs));
   }
 
   public function renderConfigGroups()
   {
     $projectId = $this->getInt('projectId');
-    return new ConfigGroupView($projectId);
+    return $this->createView(new ConfigGroupView($projectId));
   }
 
   public function renderProjectConfigs()
@@ -82,7 +82,7 @@ class DefaultController extends ConfiguratorController
     $projectId = $this->getInt('projectId');
     $envId     = $this->getInt('envId', 1);
 
-    return new ProjectConfigurator($projectId, $envId);
+    return $this->createView(new ProjectConfigurator($projectId, $envId));
   }
 
   public function addProjectConfigItem()
@@ -97,10 +97,10 @@ class DefaultController extends ConfiguratorController
     $ec->configurationItemId = $itemId;
     $ec->saveChanges();
 
-    $url = '/configurator/project-configs/' . $projectId;
+    $url = $this->baseUri() . '/project-configs/' . $projectId;
     if($envId)
     {
-      $url = '/configurator/project-configs/' . $projectId . '/' . $envId;
+      $url = $this->baseUri() . '/project-configs/' . $projectId . '/' . $envId;
     }
     Redirect::to($url)->now();
   }
@@ -114,10 +114,10 @@ class DefaultController extends ConfiguratorController
     //remove from environment specific items
     $this->_removeConfig($projectId, $envId, $itemId);
 
-    $url = '/configurator/project-configs/' . $projectId;
+    $url = $this->baseUri() . '/project-configs/' . $projectId;
     if($envId)
     {
-      $url = '/configurator/project-configs/' . $projectId . '/' . $envId;
+      $url = $this->baseUri() . '/project-configs/' . $projectId . '/' . $envId;
     }
     Redirect::to($url)->now();
   }
@@ -128,7 +128,9 @@ class DefaultController extends ConfiguratorController
     $envId     = $this->getInt('envId');
     $itemId    = $this->getInt('itemId');
 
-    return new ModifyProjectConfigItem($projectId, $envId, $itemId);
+    return $this->createView(
+      new ModifyProjectConfigItem($projectId, $envId, $itemId)
+    );
   }
 
   public function postModifyProjectConfigItem()
@@ -169,10 +171,10 @@ class DefaultController extends ConfiguratorController
         $pe->customItemId        = $customItem->id();
         $pe->saveChanges();
 
-        $url = '/configurator/project-configs/' . $postData['projectId'];
+        $url = $this->baseUri() . '/project-configs/' . $postData['projectId'];
         if($postData['envId'])
         {
-          $url = '/configurator/project-configs/' .
+          $url = $this->baseUri() . '/project-configs/' .
             $postData['projectId'] . '/' . $postData['envId'];
         }
         Redirect::to($url)->now();
@@ -194,7 +196,7 @@ class DefaultController extends ConfiguratorController
         $pe->configurationItemId = $postData['itemId'];
         $pe->saveChanges();
 
-        $url = '/configurator/modify-project-config-item/' .
+        $url = $this->baseUri() . '/modify-project-config-item/' .
           $postData['projectId'] . '/' .
           $postData['envId'] . '/' .
           $postData['itemId'];
@@ -236,7 +238,7 @@ class DefaultController extends ConfiguratorController
       }
     }
 
-    return new IniPreview($project, $envs, $configArray);
+    return $this->createView(new IniPreview($project, $envs, $configArray));
   }
 
   public function buildCascadeConfig($projectConfigs)
@@ -268,7 +270,7 @@ class DefaultController extends ConfiguratorController
   public function renderConfigItems()
   {
     $groupId = $this->getInt("groupId");
-    return new ConfigItemsManager($groupId);
+    return $this->createView(new ConfigItemsManager($groupId));
   }
 
   public function postAddingConfigGroup()
@@ -278,7 +280,8 @@ class DefaultController extends ConfiguratorController
     $configGroup->hydrate($postData);
     $configGroup->saveChanges();
 
-    Redirect::to('/configurator/config-groups/'.$postData['projectId'])->now();
+    Redirect::to($this->baseUri() . '/config-groups/' . $postData['projectId'])
+      ->now();
   }
 
   public function postAddingConfigItem()
@@ -324,7 +327,7 @@ class DefaultController extends ConfiguratorController
     }
 
     Redirect::to(
-      '/configurator/config-items/' . $postData['groupId']
+      $this->baseUri() . '/config-items/' . $postData['groupId']
     )->now();
   }
 
@@ -351,14 +354,14 @@ class DefaultController extends ConfiguratorController
       }
 
       Redirect::to(
-        '/configurator/config-items/' . $configItem->configurationGroupId
+        $this->baseUri() . '/config-items/' . $configItem->configurationGroupId
       )->now();
     }
     else
     {
       $cim            = new ConfigItemsManager($configItem->configurationGroupId);
       $cim->itemInUse = $itemId;
-      return $cim;
+      return $this->createView($cim);
     }
   }
 

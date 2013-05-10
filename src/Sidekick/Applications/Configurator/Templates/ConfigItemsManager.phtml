@@ -6,17 +6,14 @@
  */
 ?>
 <h1 class="breadcrumbs">
-  <a href='/configurator'>All Projects</a> /
+  <a href='<?php echo $this->baseUri(); ?>'>All Projects</a> /
   <?php if($this->parentProject->exists()): ?>
-    <a href="/configurator/project/<?php echo $this->parentProject->id(); ?>">
+    <a href="<?php echo $this->baseUri(); ?>/project/<?php echo $this->parentProject->id(); ?>">
       <?php echo $this->parentProject->name; ?>
     </a> /
   <?php endif; ?>
-  <a href="/configurator/project/<?php echo $this->project->id(); ?>">
-    <?php echo $this->project->name; ?>
-  </a> /
-  <a href="/configurator/config-groups/<?php echo $this->project->id(); ?>">
-    Config Groups
+  <a href="<?php echo $this->baseUri(); ?>/config-groups/<?php echo $this->project->id(); ?>">
+    <?php echo $this->project->name; ?> Config Groups
   </a> /
   <?php echo $this->configGroup->groupName; ?>
 </h1>
@@ -30,12 +27,12 @@
     <p>Some projects already use this item. Deleting it means every project
        that use this item will no longer have it in their config</p>
 
-    <p><a href="/configurator/config-items/<?php echo $this->configGroup->id(
+    <p><a href="<?php echo $this->baseUri(); ?>/config-items/<?php echo $this->configGroup->id(
       ); ?>">
         Don't delete
       </a> |
       <a
-        href='/configurator/remove-config-item/<?php echo $this->itemInUse; ?>/force'>
+        href='<?php echo $this->baseUri(); ?>/remove-config-item/<?php echo $this->itemInUse; ?>/force'>
         Go ahead and delete it
       </a>
     </p></div>
@@ -59,7 +56,7 @@ echo $this->form()->formNameInput();
       <td><?php echo $this->form()->getElement("kv[$item->id][type]"); ?></td>
       <td><?php echo $this->form()->getElement("kv[$item->id][value]"); ?></td>
       <td>
-        <a href="/configurator/remove-config-item/<?php echo $item->id ?>"
+        <a href="<?php echo $this->baseUri(); ?>/remove-config-item/<?php echo $item->id ?>"
            class="text-error">&times;</a>
       </td>
     </tr>

@@ -19,9 +19,6 @@ class ConfigGroupView extends TemplatedViewModel
 
   public function __construct($projectId)
   {
-    $this->_form = new ConfigGroup("/configurator/adding-config-group");
-    $this->_form->addHiddenElement('projectId', $projectId);
-
     $this->project       = new Project($projectId);
     $this->parentProject = new Project($this->project->parentId);
     $this->configGroups  = ConfigurationGroup::collection()->loadWhere(
@@ -31,9 +28,10 @@ class ConfigGroupView extends TemplatedViewModel
     );
   }
 
-
   public function form()
   {
+    $this->_form = new ConfigGroup($this->baseUri() . "/adding-config-group");
+    $this->_form->addHiddenElement('projectId', $this->project->id());
     return $this->_form;
   }
 }

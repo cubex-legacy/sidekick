@@ -7,9 +7,9 @@
 ?>
 
 <h1 class="breadcrumbs">
-  <a href='/configurator'>All Projects</a> /
+  <a href='<?php echo $this->baseUri(); ?>'>All Projects</a> /
   <?php if($this->parentProject->exists()): ?>
-    <a href="/configurator/project/<?php echo $this->parentProject->id(); ?>">
+    <a href="<?php echo $this->baseUri(); ?>/project/<?php echo $this->parentProject->id(); ?>">
       <?php echo $this->parentProject->name; ?>
     </a> /
   <?php endif; ?>
@@ -17,7 +17,7 @@
 </h1>
 <?php foreach($this->environments as $env): ?>
   <p style='float:left; margin-right:10px;'>
-    <a href="/configurator/project-configs/<?php echo $this->project->id(
+    <a href="<?php echo $this->baseUri(); ?>/project-configs/<?php echo $this->project->id(
     ); ?>/<?php echo $env->id(); ?>"
       <?php if($env->id() == $this->currentEnvironment->id()): ?>
         class="label label-warning"
@@ -42,7 +42,7 @@
                 <p style="width:100%;word-wrap:break-word;margin:0;">
                   <small>
                     [<a
-                      href="/configurator/add-project-config-item/<?php echo $this->project->id(
+                      href="<?php echo $this->baseUri(); ?>/add-project-config-item/<?php echo $this->project->id(
                       ) . '/' . $this->currentEnvironment->id(
                       ) . '/' . $item->id; ?>"
                       style="color:green; font-weight:bold; font-size:12px;">+</a>]
@@ -67,7 +67,7 @@
       </p>
 
       <p><a
-          href="/configurator/config-groups/<?php echo $this->project->id(); ?>"
+          href="<?php echo $this->baseUri(); ?>/config-groups/<?php echo $this->project->id(); ?>"
           class="btn btn-primary pull-right preview-ini">Add Config</a></p>
     <?php endif; ?>
 
@@ -83,12 +83,12 @@
           <p style="width:100%;word-wrap:break-word;margin:0;">
             <small>
               [<a
-                href="/configurator/modify-project-config-item/<?php echo $this->project->id(
+                href="<?php echo $this->baseUri(); ?>/modify-project-config-item/<?php echo $this->project->id(
                 ) . "/" . $this->currentEnvironment->id(
                 ) . "/" . $itemObj->id; ?>"
                 style="color:blue; font-weight:bold; font-size:12px;">...</a>]
               [<a
-                href="/configurator/remove-project-config-item/<?php echo $this->project->id(
+                href="<?php echo $this->baseUri(); ?>/remove-project-config-item/<?php echo $this->project->id(
                 ) . "/" . $this->currentEnvironment->id() . "/" .
                   $itemObj->id; ?>"
                 style="color:red; font-weight:bold; font-size:12px;">x</a>]

@@ -17,6 +17,7 @@ use Sidekick\Components\Projects\Mappers\Project;
 class ModifyProjectConfigItem extends TemplatedViewModel
 {
   protected $_form;
+  public $item;
   public $project;
   public $parentProject;
   public $configGroup;
@@ -24,10 +25,10 @@ class ModifyProjectConfigItem extends TemplatedViewModel
 
   public function __construct($projectId, $envId, $itemId)
   {
-    $item                = new ConfigurationItem($itemId);
+    $this->item          = new ConfigurationItem($itemId);
     $this->project       = new Project($projectId);
     $this->parentProject = new Project($this->project->parentId);
-    $this->configGroup   = new ConfigurationGroup($item->configurationGroupId);
+    $this->configGroup   = new ConfigurationGroup($this->item->configurationGroupId);
     $this->env           = new Environment($envId);
 
     $projectConfig = EnvironmentConfigurationItem::collection()
@@ -45,27 +46,26 @@ class ModifyProjectConfigItem extends TemplatedViewModel
         ['id' => $projectConfig->customItemId]
       );
 
-      $item->value = $customItem->value;
+      $this->item->value = $customItem->value;
     }
-
-    $this->_form = new Form(
-      'modifyProjectConfigItem',
-      '/configurator/modify-project-config-item'
-    );
-    $this->_form->setDefaultElementTemplate("{{input}}");
-    $this->_form->addHiddenElement('projectId', $projectId);
-    $this->_form->addHiddenElement('envId', $envId);
-    $this->_form->addHiddenElement('itemId', $itemId);
-    $this->_form->addTextElement('key', $item->key);
-    $this->_form->addTextElement(
-      'value',
-      $item->prepValueOut($item->value, $item->type)
-    );
-    $this->_form->addSubmitElement('Update', 'submit');
   }
 
   public function form()
   {
+    $this->_form = new Form(
+      'modifyProjectConfigItem',
+      $this->baseUri() . '/modify-project-config-item'
+    );
+    $this->_form->setDefaultElementTemplate("{{input}}");
+    $this->_form->addHiddenElement('projectId', $this->project->id());
+    $this->_form->addHiddenElement('envId', $this->env->id());
+    $this->_form->addHiddenElement('itemId', $this->item->id());
+    $this->_form->addTextElement('key', $this->item->key);
+    $this->_form->addTextElement(
+      'value',
+      $this->item->prepValueOut($this->item->value, $this->item->type)
+    );
+    $this->_form->addSubmitElement('Update', 'submit');
     return $this->_form;
   }
 }

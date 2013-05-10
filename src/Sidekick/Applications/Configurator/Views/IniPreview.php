@@ -26,10 +26,10 @@ class IniPreview extends ViewModel
   {
     $parentProject = new Project($this->project->parentId);
     echo "<h1 class='breadcrumbs'> ";
-    echo "<a href='/configurator'>All Projects</a> / ";
+    echo "<a href='".$this->baseUri()."'>All Projects</a> / ";
     if($parentProject->exists())
     {
-      echo "<a href='/configurator/project/'" . $parentProject->id() . "'>";
+      echo "<a href='".$this->baseUri()."/project/'" . $parentProject->id() . "'>";
       echo $parentProject->name;
       echo "</a> / ";
     }

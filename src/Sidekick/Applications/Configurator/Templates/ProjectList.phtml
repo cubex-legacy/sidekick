@@ -7,7 +7,7 @@
 ?>
 <h1 class="breadcrumbs">
   <?php if($this->getParentProject() !== null): ?>
-    <a href="/configurator">All Projects</a> /
+    <a href="<?php echo $this->baseUri(); ?>">All Projects</a> /
     <?php echo $this->getParentProject()->name; ?>
   <?php else: ?>
     All Projects
@@ -18,7 +18,7 @@
   <div class="well boxed">
     <?php if($this->getSubProjectsCount($project->id) > 0): ?>
       <h3>
-        <a href="/configurator/project/<?php echo $project->id; ?>">
+        <a href="<?php echo $this->baseUri(); ?>/project/<?php echo $project->id; ?>">
           <?php echo $project->name; ?>
         </a>
       </h3>
@@ -53,15 +53,15 @@
 
     <p style="margin-top:10px;">
 
-      <a href="/configurator/config-groups/<?php echo $project->id; ?>"
+      <a href="<?php echo $this->baseUri(); ?>/config-groups/<?php echo $project->id; ?>"
          class="btn btn-primary">
         Config Groups
       </a>
 
-      <a href="/configurator/project-configs/<?php echo $project->id; ?>/"
+      <a href="<?php echo $this->baseUri(); ?>/project-configs/<?php echo $project->id; ?>/"
          class="btn btn-primary">Configure</a>
 
-      <a href="/configurator/build-ini/<?php echo $project->id; ?>/"
+      <a href="<?php echo $this->baseUri(); ?>/build-ini/<?php echo $project->id; ?>/"
          class="btn btn-primary">Preview ini</a>
     </p>
 

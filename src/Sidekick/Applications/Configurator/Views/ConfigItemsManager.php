@@ -29,14 +29,20 @@ class ConfigItemsManager extends TemplatedViewModel
     $this->configItems = ConfigurationItem::collection()->loadWhere(
       ['configuration_group_id' => $groupId]
     );
+  }
 
-    $form = new Form('addConfigItem', '/configurator/adding-config-item');
-    $form->setDefaultElementTemplate("{{input}}");
-    $form->addHiddenElement('groupId', $groupId);
+  public function form()
+  {
+    $this->_form = new Form(
+      'addConfigItem',
+      $this->baseUri() . '/adding-config-item'
+    );
+    $this->_form->setDefaultElementTemplate("{{input}}");
+    $this->_form->addHiddenElement('groupId', $this->configGroup->id());
     foreach($this->configItems as $item)
     {
-      $form->addTextElement("kv[$item->id][key]", $item->key);
-      $form->addSelectElement(
+      $this->_form->addTextElement("kv[$item->id][key]", $item->key);
+      $this->_form->addSelectElement(
         "kv[$item->id][type]",
         [
         'simple'     => 'Simple',
@@ -45,13 +51,13 @@ class ConfigItemsManager extends TemplatedViewModel
         ],
         $item->type
       );
-      $form->addTextElement(
+      $this->_form->addTextElement(
         "kv[$item->id][value]",
         $item->prepValueOut($item->value, $item->type)
       );
     }
-    $form->addTextElement('kv[*][key]', '');
-    $form->addSelectElement(
+    $this->_form->addTextElement('kv[*][key]', '');
+    $this->_form->addSelectElement(
       "kv[*][type]",
       [
       'simple'     => 'Simple',
@@ -59,14 +65,8 @@ class ConfigItemsManager extends TemplatedViewModel
       'multikeyed' => 'Multi Keyed'
       ]
     );
-    $form->addTextElement('kv[*][value]', '');
-    $form->addSubmitElement('Save', 'submit');
-
-    $this->_form = $form;
-  }
-
-  public function form()
-  {
+    $this->_form->addTextElement('kv[*][value]', '');
+    $this->_form->addSubmitElement('Save', 'submit');
     return $this->_form;
   }
 }

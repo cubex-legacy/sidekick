@@ -6,20 +6,19 @@
  */
 ?>
   <h1 class="breadcrumbs">
-    <a href="/configurator">All Projects</a> /
+    <a href="<?php echo $this->baseUri(); ?>">All Projects</a> /
     <?php if($this->parentProject->exists()): ?>
-      <a href="/configurator/project/<?php echo $this->parentProject->id(); ?>">
+      <a href="<?php echo $this->baseUri(); ?>/project/<?php echo $this->parentProject->id(); ?>">
         <?php echo $this->parentProject->name; ?>
       </a> /
     <?php endif; ?>
-    <a href="/configurator/project/<?php echo $this->project->id(); ?>">
-      <?php echo $this->project->name; ?>
-    </a> /
-    <a href="/configurator/project-configs/<?php echo $this->project->id(
-    ); ?>/<?php echo $this->env->id(); ?>">
-      <?php echo ucwords($this->env->name); ?>
+    <a href="<?php echo $this->baseUri(); ?>/project-configs/<?php echo $this->project->id(); ?>">
+      <?php echo $this->project->name; ?> Configure
     </a> /
     <?php echo $this->configGroup->groupName; ?>
+    <small style="font-size:14px;"><?php echo ucwords(
+        $this->env->name
+      ); ?></small>
   </h1>
 
 <?php

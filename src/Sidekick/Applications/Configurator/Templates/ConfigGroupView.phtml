@@ -1,16 +1,17 @@
 <?php
 /**
  * @author: oke.ugwu
- * Application: Configurator
+ *        Application: Configurator
  * @var $this \Sidekick\Applications\Configurator\Views\ConfigGroupView
  */
 ?>
 <h1 class="breadcrumbs">
-  <a href='/configurator'>All Projects</a> /
+  <a href='<?php echo $this->baseUri(); ?>'>All Projects</a> /
   <?php if($this->parentProject->exists()): ?>
-  <a href="/configurator/project/<?php echo $this->parentProject->id(); ?>">
-    <?php echo $this->parentProject->name; ?>
-  </a> /
+    <a href="<?php echo $this->baseUri(
+    ); ?>/project/<?php echo $this->parentProject->id(); ?>">
+      <?php echo $this->parentProject->name; ?>
+    </a> /
   <?php endif; ?>
   <?php echo $this->project->name; ?> <span class="muted">Config Groups</span>
 </h1>
@@ -21,10 +22,12 @@
   </div>
   <div class="span5 well">
     <h3>Groups</h3>
+
     <p class="muted"><em>Click on group name to add items to group</em></p>
     <?php foreach($this->configGroups as $group): ?>
       <li>
-        <a href="/configurator/config-items/<?php echo $group->id; ?>">
+        <a href="<?php echo $this->baseUri(
+        ); ?>/config-items/<?php echo $group->id; ?>">
           <?php echo $group->groupName; ?>
         </a>
       </li>

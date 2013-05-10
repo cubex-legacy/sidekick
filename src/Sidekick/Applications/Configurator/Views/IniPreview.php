@@ -30,7 +30,9 @@ class IniPreview extends ViewModel
       //make input safe, incase we don't have any config defined
       //for a particular environment
       $input = isset($this->configArray[$env->name]) ?
-      $this->configArray[$env->name] : [];
+        $this->configArray[$env->name] : [];
+
+      ksort($input);
 
       echo "<h3>$env->filename</h3>";
       echo "<pre>";

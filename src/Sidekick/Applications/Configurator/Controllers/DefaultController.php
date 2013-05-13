@@ -65,12 +65,6 @@ class DefaultController extends ConfiguratorController
     return $pl;
   }
 
-  public function renderEnvironments()
-  {
-    $envs = Environment::collection()->loadAll();
-    return $this->createView(new EnvironmentList($envs));
-  }
-
   public function renderConfigGroups()
   {
     $projectId = $this->getInt('projectId');

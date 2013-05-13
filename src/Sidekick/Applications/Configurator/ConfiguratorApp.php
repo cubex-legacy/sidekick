@@ -36,7 +36,8 @@ class ConfiguratorApp extends BaseApp
   public function getRoutes()
   {
     return [
-      '/test/(.*)' => 'TestController',
+      '/environments'      => 'EnvironmentsController',
+      '/environments/(.*)' => 'EnvironmentsController',
     ];
   }
 }

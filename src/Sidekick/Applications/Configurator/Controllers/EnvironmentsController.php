@@ -32,7 +32,6 @@ class EnvironmentsController extends ConfiguratorController
     $env->filename = strtolower(str_replace(' ', '_', $value)) . '.ini';
     $env->saveChanges();
 
-    header('Content-Type; text/json');
     die(json_encode($env));
   }
 

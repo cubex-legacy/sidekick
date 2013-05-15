@@ -1,7 +1,7 @@
 <?php
 /**
  * @author: oke.ugwu
- * Application: Configurator/Views
+ *        Application: Configurator/Views
  */
 namespace Sidekick\Applications\Configurator\Views;
 
@@ -81,5 +81,23 @@ class ProjectConfigurator extends TemplatedViewModel
       $this->environmentConfig[$group->groupName][$item->key] = $item;
     }
     ksort($this->environmentConfig);
+  }
+
+  public function getBreadcrumbs()
+  {
+    $breadcrumbs = new Breadcrumbs();
+    $breadcrumbs->addItem('All Projects', $this->baseUri());
+    if($this->parentProject->exists())
+    {
+      $breadcrumbs->addItem(
+        $this->parentProject->name,
+        $this->baseUri() . '/project/' . $this->parentProject->id()
+      );
+    }
+    $breadcrumbs->addItem(
+      $this->project->name . ' <span class="muted">Configure</span>'
+    );
+
+    return $breadcrumbs;
   }
 }

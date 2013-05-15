@@ -6,19 +6,13 @@
  */
 ?>
 
-<h1 class="breadcrumbs">
-  <a href='<?php echo $this->baseUri(); ?>'>All Projects</a> /
-  <?php if($this->parentProject->exists()): ?>
-    <a href="<?php echo $this->baseUri(); ?>/project/<?php echo $this->parentProject->id(); ?>">
-      <?php echo $this->parentProject->name; ?>
-    </a> /
-  <?php endif; ?>
-  <?php echo $this->project->name; ?> <span class="muted">Configure</span>
-</h1>
+<h1>Configure</h1>
+<?php echo $this->getBreadcrumbs(); ?>
 <?php foreach($this->environments as $env): ?>
   <p style='float:left; margin-right:10px;'>
-    <a href="<?php echo $this->baseUri(); ?>/project-configs/<?php echo $this->project->id(
-    ); ?>/<?php echo $env->id(); ?>"
+    <a href="<?php echo $this->baseUri() .
+      '/project-configs/' .
+      $this->project->id() . '/' . $env->id(); ?>"
       <?php if($env->id() == $this->currentEnvironment->id()): ?>
         class="label label-warning"
       <?php endif; ?>
@@ -41,16 +35,16 @@
               <?php foreach($configItems as $item): ?>
                 <p style="width:100%;word-wrap:break-word;margin:0;">
                   <small>
-                    [<a
-                      href="<?php echo $this->baseUri(); ?>/add-project-config-item/<?php echo $this->project->id(
-                      ) . '/' . $this->currentEnvironment->id(
-                      ) . '/' . $item->id; ?>"
-                      style="color:green; font-weight:bold; font-size:12px;">+</a>]
+                    [<a href="<?php echo $this->baseUri() .
+                      '/add-project-config-item/' .
+                      $this->project->id() .
+                      '/' . $this->currentEnvironment->id() .
+                      '/' . $item->id; ?>"
+                        class="text-success">+</a>]
 
-                    <?php echo "$item->key = <b>" . $item->prepValueOut(
-                      $item->value,
-                      $item->type
-                    ) . "</b>"; ?>
+                    <?php echo "$item->key = <b>" .
+                      $item->prepValueOut($item->value, $item->type) .
+                      "</b>"; ?>
                   </small>
                 </p>
               <?php endforeach; ?>
@@ -66,9 +60,10 @@
         </small>
       </p>
 
-      <p><a
-          href="<?php echo $this->baseUri(); ?>/config-groups/<?php echo $this->project->id(); ?>"
-          class="btn btn-primary pull-right preview-ini">Add Config</a></p>
+      <p><a href="<?php echo $this->baseUri() .
+          '/config-groups/' .
+          $this->project->id(); ?>"
+            class="btn btn-primary pull-right preview-ini">Add Config</a></p>
     <?php endif; ?>
 
 
@@ -83,20 +78,21 @@
           <p style="width:100%;word-wrap:break-word;margin:0;">
             <small>
               [<a
-                href="<?php echo $this->baseUri(); ?>/modify-project-config-item/<?php echo $this->project->id(
-                ) . "/" . $this->currentEnvironment->id(
-                ) . "/" . $itemObj->id; ?>"
-                style="color:blue; font-weight:bold; font-size:12px;">...</a>]
-              [<a
-                href="<?php echo $this->baseUri(); ?>/remove-project-config-item/<?php echo $this->project->id(
-                ) . "/" . $this->currentEnvironment->id() . "/" .
-                  $itemObj->id; ?>"
-                style="color:red; font-weight:bold; font-size:12px;">x</a>]
+                href="<?php echo $this->baseUri() .
+                  '/modify-project-config-item/' .
+                  $this->project->id() .
+                  "/" . $this->currentEnvironment->id() .
+                  "/" . $itemObj->id; ?>"
+                class="text-info">...</a>]
+              [<a href="<?php echo $this->baseUri() .
+                '/remove-project-config-item/' .
+                $this->project->id() . "/" .
+                $this->currentEnvironment->id() . "/" . $itemObj->id; ?>"
+                  class="text-error">&times;</a>]
 
-              <?php echo "$itemObj->key = <b>" . $itemObj->prepValueOut(
-                $itemObj->value,
-                $itemObj->type
-              ) . "</b>"; ?>
+              <?php echo "$itemObj->key = <b>" .
+                $itemObj->prepValueOut($itemObj->value, $itemObj->type) .
+                "</b>"; ?>
             </small>
           </p>
         <?php endforeach; ?>

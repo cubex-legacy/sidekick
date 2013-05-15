@@ -1,7 +1,7 @@
 <?php
 /**
  * @author: oke.ugwu
- * Application:
+ *        Application:
  */
 namespace Sidekick\Applications\Configurator\Views;
 
@@ -64,5 +64,20 @@ class ProjectList extends TemplatedViewModel
       return $this->_configGroups[$projectId];
     }
     return 0;
+  }
+
+  public function getBreadcrumbs()
+  {
+    $breadcrumbs = new Breadcrumbs();
+    if($this->getParentProject() !== null)
+    {
+      $breadcrumbs->addItem('All Projects', $this->baseUri());
+      $breadcrumbs->addItem($this->getParentProject()->name);
+    }
+    else
+    {
+      $breadcrumbs->addItem('All Projects');
+    }
+    return $breadcrumbs;
   }
 }

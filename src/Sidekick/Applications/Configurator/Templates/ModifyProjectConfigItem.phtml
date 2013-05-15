@@ -5,22 +5,8 @@
  * @var $this \Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem
  */
 ?>
-  <h1 class="breadcrumbs">
-    <a href="<?php echo $this->baseUri(); ?>">All Projects</a> /
-    <?php if($this->parentProject->exists()): ?>
-      <a href="<?php echo $this->baseUri(); ?>/project/<?php echo $this->parentProject->id(); ?>">
-        <?php echo $this->parentProject->name; ?>
-      </a> /
-    <?php endif; ?>
-    <a href="<?php echo $this->baseUri(); ?>/project-configs/<?php echo $this->project->id(); ?>">
-      <?php echo $this->project->name; ?> Configure
-    </a> /
-    <?php echo $this->configGroup->groupName; ?>
-    <small style="font-size:14px;"><?php echo ucwords(
-        $this->env->name
-      ); ?></small>
-  </h1>
-
+<h1 class="breadcrumbs">Modify Config Items</h1>
+<?php echo $this->getBreadcrumbs(); ?>
 <?php
 echo $this->form()->open();
 echo $this->form()->token();
@@ -42,4 +28,4 @@ echo $this->form()->getElement('itemId');
       <td colspan="2"><?php echo $this->form()->getElement('submit'); ?></td>
     </tr>
   </table>
-<?php echo $this->form()->close();
+<?php echo $this->form()->close(); ?>

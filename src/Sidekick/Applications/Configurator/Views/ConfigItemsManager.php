@@ -13,7 +13,6 @@ use Sidekick\Components\Projects\Mappers\Project;
 
 class ConfigItemsManager extends TemplatedViewModel
 {
-  protected $_form;
   public $configGroup;
   public $project;
   public $parentProject;
@@ -33,16 +32,16 @@ class ConfigItemsManager extends TemplatedViewModel
 
   public function form()
   {
-    $this->_form = new Form(
+    $form = new Form(
       'addConfigItem',
       $this->baseUri() . '/adding-config-item'
     );
-    $this->_form->setDefaultElementTemplate("{{input}}");
-    $this->_form->addHiddenElement('groupId', $this->configGroup->id());
+    $form->setDefaultElementTemplate("{{input}}");
+    $form->addHiddenElement('groupId', $this->configGroup->id());
     foreach($this->configItems as $item)
     {
-      $this->_form->addTextElement("kv[$item->id][key]", $item->key);
-      $this->_form->addSelectElement(
+      $form->addTextElement("kv[$item->id][key]", $item->key);
+      $form->addSelectElement(
         "kv[$item->id][type]",
         [
         'simple'     => 'Simple',
@@ -51,13 +50,13 @@ class ConfigItemsManager extends TemplatedViewModel
         ],
         $item->type
       );
-      $this->_form->addTextElement(
+      $form->addTextElement(
         "kv[$item->id][value]",
         $item->prepValueOut($item->value, $item->type)
       );
     }
-    $this->_form->addTextElement('kv[*][key]', '');
-    $this->_form->addSelectElement(
+    $form->addTextElement('kv[*][key]', '');
+    $form->addSelectElement(
       "kv[*][type]",
       [
       'simple'     => 'Simple',
@@ -65,8 +64,28 @@ class ConfigItemsManager extends TemplatedViewModel
       'multikeyed' => 'Multi Keyed'
       ]
     );
-    $this->_form->addTextElement('kv[*][value]', '');
-    $this->_form->addSubmitElement('Save', 'submit');
-    return $this->_form;
+    $form->addTextElement('kv[*][value]', '');
+    $form->addSubmitElement('Save', 'submit');
+    return $form;
+  }
+
+  public function getBreadcrumbs()
+  {
+    $breadcrumbs = new Breadcrumbs();
+    $breadcrumbs->addItem('All Projects', $this->baseUri());
+    if($this->parentProject->exists())
+    {
+      $breadcrumbs->addItem(
+        $this->parentProject->name,
+        $this->baseUri() . '/project/' . $this->parentProject->id()
+      );
+    }
+    $breadcrumbs->addItem(
+      $this->project->name . ' Config Groups',
+      $this->baseUri() . '/config-groups/' . $this->project->id()
+    );
+
+    $breadcrumbs->addItem($this->configGroup->groupName);
+    return $breadcrumbs;
   }
 }

@@ -16,7 +16,6 @@ use Sidekick\Components\Projects\Mappers\Project;
 
 class ModifyProjectConfigItem extends TemplatedViewModel
 {
-  protected $_form;
   public $item;
   public $project;
   public $parentProject;
@@ -28,8 +27,10 @@ class ModifyProjectConfigItem extends TemplatedViewModel
     $this->item          = new ConfigurationItem($itemId);
     $this->project       = new Project($projectId);
     $this->parentProject = new Project($this->project->parentId);
-    $this->configGroup   = new ConfigurationGroup($this->item->configurationGroupId);
     $this->env           = new Environment($envId);
+    $this->configGroup   = new ConfigurationGroup(
+      $this->item->configurationGroupId
+    );
 
     $projectConfig = EnvironmentConfigurationItem::collection()
       ->loadOneWhere(
@@ -52,20 +53,45 @@ class ModifyProjectConfigItem extends TemplatedViewModel
 
   public function form()
   {
-    $this->_form = new Form(
+    $form = new Form(
       'modifyProjectConfigItem',
       $this->baseUri() . '/modify-project-config-item'
     );
-    $this->_form->setDefaultElementTemplate("{{input}}");
-    $this->_form->addHiddenElement('projectId', $this->project->id());
-    $this->_form->addHiddenElement('envId', $this->env->id());
-    $this->_form->addHiddenElement('itemId', $this->item->id());
-    $this->_form->addTextElement('key', $this->item->key);
-    $this->_form->addTextElement(
+    $form->setDefaultElementTemplate("{{input}}");
+    $form->addHiddenElement('projectId', $this->project->id());
+    $form->addHiddenElement('envId', $this->env->id());
+    $form->addHiddenElement('itemId', $this->item->id());
+    $form->addTextElement('key', $this->item->key);
+    $form->addTextElement(
       'value',
       $this->item->prepValueOut($this->item->value, $this->item->type)
     );
-    $this->_form->addSubmitElement('Update', 'submit');
-    return $this->_form;
+    $form->addSubmitElement('Update', 'submit');
+    return $form;
+  }
+
+  public function getBreadcrumbs()
+  {
+    $breadcrumbs = new Breadcrumbs();
+    $breadcrumbs->addItem('All Projects', $this->baseUri());
+    if($this->parentProject->exists())
+    {
+      $breadcrumbs->addItem(
+        $this->parentProject->name,
+        $this->baseUri() . '/project/' . $this->parentProject->id()
+      );
+    }
+    $breadcrumbs->addItem(
+      $this->project->name . ' Configure',
+      $this->baseUri() . '/project-configs/' . $this->project->id()
+    );
+
+    $breadcrumbs->addItem(
+      $this->configGroup->groupName . ' <span class="muted">' . ucwords(
+        $this->env->name
+      ) . '</span>'
+    );
+
+    return $breadcrumbs;
   }
 }

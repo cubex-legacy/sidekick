@@ -5,20 +5,14 @@
  * @var $this \Sidekick\Applications\Configurator\Views\ProjectList
  */
 ?>
-<h1 class="breadcrumbs">
-  <?php if($this->getParentProject() !== null): ?>
-    <a href="<?php echo $this->baseUri(); ?>">All Projects</a> /
-    <?php echo $this->getParentProject()->name; ?>
-  <?php else: ?>
-    All Projects
-  <?php endif; ?>
-</h1>
+<h1>Projects</h1>
+<?php echo $this->getBreadcrumbs(); ?>
 <p class="muted"><em>Manage configurations across all your projects!</em></p>
 <?php foreach($this->getProjects() as $project): ?>
   <div class="well boxed">
     <?php if($this->getSubProjectsCount($project->id) > 0): ?>
       <h3>
-        <a href="<?php echo $this->baseUri(); ?>/project/<?php echo $project->id; ?>">
+        <a href="<?php echo $this->baseUri() . '/project/' . $project->id; ?>">
           <?php echo $project->name; ?>
         </a>
       </h3>
@@ -49,19 +43,19 @@
       </p>
     <?php endif; ?>
 
-
-
     <p style="margin-top:10px;">
 
-      <a href="<?php echo $this->baseUri(); ?>/config-groups/<?php echo $project->id; ?>"
+      <a href="<?php echo $this->baseUri() .
+        '/config-groups/' . $project->id; ?>"
          class="btn btn-primary">
         Config Groups
       </a>
 
-      <a href="<?php echo $this->baseUri(); ?>/project-configs/<?php echo $project->id; ?>/"
+      <a href="<?php echo $this->baseUri() .
+        '/project-configs/' . $project->id; ?>/"
          class="btn btn-primary">Configure</a>
 
-      <a href="<?php echo $this->baseUri(); ?>/build-ini/<?php echo $project->id; ?>/"
+      <a href="<?php echo $this->baseUri() . '/build-ini/' . $project->id; ?>/"
          class="btn btn-primary">Preview ini</a>
     </p>
 

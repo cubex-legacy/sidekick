@@ -24,18 +24,8 @@ class IniPreview extends ViewModel
 
   public function render()
   {
-    $parentProject = new Project($this->project->parentId);
-    echo "<h1 class='breadcrumbs'> ";
-    echo "<a href='".$this->baseUri()."'>All Projects</a> / ";
-    if($parentProject->exists())
-    {
-      echo "<a href='".$this->baseUri()."/project/'" . $parentProject->id() . "'>";
-      echo $parentProject->name;
-      echo "</a> / ";
-    }
-    echo $this->project->name . " <span class='muted'>Preview</span>";
-
-    echo "</h1>";
+    echo '<h1>Preview</h1>';
+    echo $this->getBreadcrumbs();
     $cw = new ConfigWriter();
     foreach($this->envs as $env)
     {
@@ -52,4 +42,24 @@ class IniPreview extends ViewModel
       echo "</pre>";
     }
   }
+
+  public function getBreadcrumbs()
+  {
+    $parentProject = new Project($this->project->parentId);
+
+    $breadcrumbs = new Breadcrumbs();
+    $breadcrumbs->addItem('All Projects', $this->baseUri());
+    if($parentProject->exists())
+    {
+      $breadcrumbs->addItem(
+        $parentProject->name,
+        $this->baseUri() . '/project/' . $parentProject->id()
+      );
+    }
+    $breadcrumbs->addItem(
+      $this->project->name . ' <span class="muted">Preview</span>'
+    );
+    return $breadcrumbs;
+  }
+
 }

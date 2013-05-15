@@ -1,27 +1,47 @@
 <?php
 /**
  * @author: oke.ugwu
- * Application: Configurator/Templates
+ *        Application: Configurator/Templates
  * @var $this \Sidekick\Applications\Configurator\Views\ProjectList
  */
 ?>
 <h1>Environments</h1>
 <p class="muted">
   <em>Manage the different environments your projects run in, so
-    can you generate configs for all of 'em!</em>
+      you can generate configs for all of 'em!</em>
 </p>
 <p>
-  <button class="btn">Add Environment</button>
-</p>
+<div>
+  <input type="text" name="name" placeholder="Name of Environment"
+         class="env-name pull-left"/>
+  <button type="submit" class="btn add-env">Add</button>
+</div>
+<div class="clearfix"></div>
+
 <?php foreach($this->environments as $env): ?>
   <div class="well boxed">
-    <h3><?php echo ucwords($env->name); ?></a></h3>
+    <h3 class="env-label"
+        id="env-label-<?php echo $env->id(); ?>"
+        onclick="toggleEdit('<?php echo $env->id(); ?>');"
+      >
+      <?php echo $env->name; ?>
+    </h3>
+    <input type="text" name="name"
+           value="<?php echo $env->name; ?>"
+           class="env-edit env-edit-<?php echo $env->id(); ?>"
+           id="<?php echo $env->id(); ?>"
+      />
 
-    <p>Filename: <?php echo $env->filename; ?></p>
+    <p>Filename: <span id="env-filename-<?php echo $env->id(); ?>">
+      <?php echo $env->filename; ?></span>
+    </p>
+
 
     <p class="pull-right" style="margin-top:-10px;">
-      <a href="" class="text-error badge badge-important"><b>x</b></a>
-      <a href="" class="text-info badge badge-info"><b>...</b></a>
+      <a href="<?php echo $this->baseUri(); ?>/delete/<?php echo $env->id(); ?>"
+         class="badge badge-important"><b>&times;</b></a>
+      <a href="#" class="badge badge-info"
+         onclick="toggleEdit('<?php echo $env->id(); ?>');"><b>...</b></a>
     </p>
   </div>
 <?php endforeach; ?>

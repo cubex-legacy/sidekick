@@ -22,3 +22,26 @@
 .breadcrumbs {
   font-size: 20px;
 }
+
+.env-label, .env-edit {
+  text-transform: capitalize;
+}
+
+.env-label {
+  cursor: pointer;
+}
+
+input.env-edit {
+  font-size:        25px;
+  font-weight:      bold;
+  height:           50px;
+  padding:          0px;
+  border:           0px;
+  outline:          none;
+  background-color: #fff;
+  display:          none;
+}
+
+input.env-edit:focus{
+outline: none;
+}

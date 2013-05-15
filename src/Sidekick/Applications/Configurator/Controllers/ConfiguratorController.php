@@ -15,7 +15,7 @@ class ConfiguratorController extends BaseControl
     parent::preRender();
     $this->requireCss('base');
     $this->requireJsLibrary("jquery");
-    $this->requireJs('base');
+    $this->requireJs('environment');
 
     $path      = $this->request()->path();
     $menuItems = [

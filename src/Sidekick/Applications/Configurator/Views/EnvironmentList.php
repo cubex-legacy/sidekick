@@ -1,7 +1,7 @@
 <?php
 /**
 * @author: oke.ugwu
-* Application: 
+* Application:
 */
 namespace Sidekick\Applications\Configurator\Views;
 

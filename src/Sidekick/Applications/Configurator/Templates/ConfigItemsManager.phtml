@@ -6,6 +6,11 @@
  */
 ?>
 <h1>Config Items</h1>
+<?php if(Session::getFlash('msg')): ?>
+<div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
+  <?php echo Session::getFlash('msg')->text; ?>
+</div>
+<?php endif; ?>
 <?php echo $this->getBreadcrumbs(); ?>
 <p><em>For multi items specify values like this a,b,c. For multi keyed specify
        values like a=1,b=2,c=3</em></p>

@@ -284,9 +284,19 @@ class DefaultController extends ConfiguratorController
       ['kv', 'groupId'],
       [[], 0]
     );
+
+    $error = false;
     foreach($postData['kv'] as $itemId => $data)
     {
-      if($data['key'] != '' && $data['value'] != '')
+      //helpful variable names to make complex conditions more readable
+      $emptyValueOnly      = $data['key'] != '' && $data['value'] == '';
+      $emptyKeyOnly        = $data['key'] == '' && $data['value'] != '';
+      $nonEmptyKeyAndValue = $data['key'] != '' && $data['value'] != '';
+      $emptyKeyAndValue    = $data['key'] == '' && $data['value'] == '';
+      $emptyKeyOrValue     = $data['key'] == '' || $data['value'] == '';
+      $isNewItem           = $itemId == '*';
+
+      if($nonEmptyKeyAndValue || ($data['type'] == 'multiitem' && $emptyValueOnly))
       {
         if($itemId != '*')
         {
@@ -318,11 +328,35 @@ class DefaultController extends ConfiguratorController
           $item->saveChanges();
         }
       }
+      elseif($isNewItem && ($emptyKeyOnly || $emptyValueOnly))
+      {
+        $error = true;
+      }
+      elseif(!$isNewItem && $emptyKeyAndValue)
+      {
+        $error = true;
+      }
+      elseif(!$isNewItem && $emptyKeyOrValue)
+      {
+        $error = true;
+      }
+    }
+
+    $msg = new \stdClass();
+    if(!$error)
+    {
+      $msg->type = 'success';
+      $msg->text = 'Config Items Saved';
+    }
+    else
+    {
+      $msg->type = 'error';
+      $msg->text = 'Config Items could not be saved';
     }
 
     Redirect::to(
       $this->baseUri() . '/config-items/' . $postData['groupId']
-    )->now();
+    )->with('msg', $msg)->now();
   }
 
   public function removeConfigItem()
@@ -384,7 +418,6 @@ class DefaultController extends ConfiguratorController
       }
     }
   }
-
 
   public function getRoutes()
   {

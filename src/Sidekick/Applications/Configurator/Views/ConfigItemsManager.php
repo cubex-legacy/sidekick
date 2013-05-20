@@ -27,7 +27,7 @@ class ConfigItemsManager extends TemplatedViewModel
 
     $this->configItems = ConfigurationItem::collection()->loadWhere(
       ['configuration_group_id' => $groupId]
-    );
+    )->setOrderBy('id');
   }
 
   public function form()

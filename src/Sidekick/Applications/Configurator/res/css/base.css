@@ -45,3 +45,16 @@ input.env-edit {
 input.env-edit:focus{
 outline: none;
 }
+
+/*override width of bootstrap ,.alert class*/
+.alert, .breadcrumb{
+  width:960px;
+}
+
+.breadcrumb{
+  background-color: #ddd;
+}
+
+span.divider{
+  color: #000 !important;
+}

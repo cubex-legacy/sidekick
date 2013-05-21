@@ -27,34 +27,16 @@ class DefaultController extends ConfiguratorController
   public function renderIndex()
   {
     $projectId         = $this->getInt('projectId');
-    $projectCollection = new RecordCollection(new Project());
     $parentProject     = null;
 
-    if($projectId === null)
+    $projects  = Project::getProjects($projectId);
+    if($projectId !== null)
     {
-      $projects = $projectCollection->loadWhere("%C IS NULL", "parent_id");
-    }
-    else
-    {
-      $projects      = $projectCollection->loadWhere(
-        ["parent_id" => $projectId]
-      );
       $parentProject = new Project($projectId);
     }
 
-    $subProjects = Project::conn()->getKeyedRows(
-      "SELECT id, (
-        SELECT count(*) FROM " . Project::tableName() . " WHERE parent_id= p.id
-        ) as sub_projects
-        FROM " . Project::tableName() . " p
-      "
-    );
-
-    $configGroups = ConfigurationGroup::conn()->getKeyedRows(
-      "SELECT project_id, count(*)
-       FROM " . ConfigurationGroup::tableName() . " GROUP BY project_id
-      "
-    );
+    $subProjects = Project::getSubProjectsCount();
+    $configGroups = ConfigurationGroup::getConfigGroupsCount();
 
     $pl = $this->createView(new ProjectList());
     $pl->setProjects($projects)

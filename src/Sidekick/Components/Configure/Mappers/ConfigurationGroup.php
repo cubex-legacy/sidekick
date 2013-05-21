@@ -20,4 +20,14 @@ class ConfigurationGroup extends RecordMapper
     $this->_setRequired('entry');
   }
 
+  public static function getConfigGroupsCount()
+  {
+    $result = self::conn()->getKeyedRows(
+      "SELECT project_id, count(*)
+       FROM " . self::tableName() . " GROUP BY project_id
+      "
+    );
+
+    return $result;
+  }
 }

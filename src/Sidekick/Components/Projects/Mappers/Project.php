@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Projects\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Cubex\Sprintf\ParseQuery;
 
 class Project extends RecordMapper
 {
@@ -17,16 +18,11 @@ class Project extends RecordMapper
   public static function getProjects($projectId = null)
   {
     $projectCollection = self::collection();
-    if($projectId === null)
-    {
-      $projects = $projectCollection->loadWhere("%C IS NULL", "parent_id");
-    }
-    else
-    {
-      $projects = $projectCollection->loadWhere(
-        ["parent_id" => $projectId]
-      );
-    }
+    $projects          = $projectCollection->loadWhere(
+      "%C %=d",
+      "parent_id",
+      $projectId
+    );
 
     return $projects;
   }
@@ -34,11 +30,16 @@ class Project extends RecordMapper
   public static function getSubProjectsCount()
   {
     $result = self::conn()->getKeyedRows(
-      "SELECT id, (
-        SELECT count(*) FROM " . self::tableName() . " WHERE parent_id= p.id
+      ParseQuery::parse(
+        self::conn(),
+        [
+        "SELECT id, (
+          SELECT count(*) FROM " . self::tableName() . "
+          WHERE parent_id= p.id
         ) as sub_projects
-        FROM " . self::tableName() . " p
-      "
+        FROM " . self::tableName() . " p"
+        ]
+      )
     );
 
     return $result;

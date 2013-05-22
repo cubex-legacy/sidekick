@@ -267,6 +267,8 @@ class DefaultController extends ConfiguratorController
       [[], 0]
     );
 
+    //here we save as we go, so if user has made multiple changes to config
+    //they don't lose it all because of a single error
     $error = false;
     foreach($postData['kv'] as $itemId => $data)
     {
@@ -274,51 +276,22 @@ class DefaultController extends ConfiguratorController
       $emptyValueOnly      = $data['key'] != '' && $data['value'] == '';
       $emptyKeyOnly        = $data['key'] == '' && $data['value'] != '';
       $nonEmptyKeyAndValue = $data['key'] != '' && $data['value'] != '';
-      $emptyKeyAndValue    = $data['key'] == '' && $data['value'] == '';
-      $emptyKeyOrValue     = $data['key'] == '' || $data['value'] == '';
-      $isNewItem           = $itemId == '*';
 
       if($nonEmptyKeyAndValue || ($data['type'] == 'multiitem' && $emptyValueOnly))
       {
-        if($itemId != '*')
-        {
-          $item                       = new ConfigurationItem($itemId);
-          $item->key                  = $data['key'];
-          $item->value                = $item->prepValueIn(
-            $data['value'],
-            $data['type']
-          );
-          $item->type                 = $data['type'];
-          $item->configurationGroupId = $postData['groupId'];
-          if($item->isModified())
-          {
-            //update existing item
-            $item->saveChanges();
-          }
-        }
-        else
-        {
-          //new item
-          $item                       = new ConfigurationItem();
-          $item->key                  = $data['key'];
-          $item->value                = $item->prepValueIn(
-            $data['value'],
-            $data['type']
-          );
-          $item->type                 = $data['type'];
-          $item->configurationGroupId = $postData['groupId'];
-          $item->saveChanges();
-        }
+        $itemId = ($itemId === '*')? null : $itemId;
+
+        $item                       = new ConfigurationItem($itemId);
+        $item->key                  = $data['key'];
+        $item->value                = $item->prepValueIn(
+          $data['value'],
+          $data['type']
+        );
+        $item->type                 = $data['type'];
+        $item->configurationGroupId = $postData['groupId'];
+        $item->saveChanges();
       }
-      elseif($isNewItem && ($emptyKeyOnly || $emptyValueOnly))
-      {
-        $error = true;
-      }
-      elseif(!$isNewItem && $emptyKeyAndValue)
-      {
-        $error = true;
-      }
-      elseif(!$isNewItem && $emptyKeyOrValue)
+      elseif($emptyKeyOnly || $emptyValueOnly)
       {
         $error = true;
       }

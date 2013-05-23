@@ -10,7 +10,6 @@ use Cubex\Facade\Redirect;
 use Cubex\Mapper\Database\RecordCollection;
 use Sidekick\Applications\Configurator\Views\ConfigGroupView;
 use Sidekick\Applications\Configurator\Views\ConfigItemsManager;
-use Sidekick\Applications\Configurator\Views\EnvironmentList;
 use Sidekick\Applications\Configurator\Views\IniPreview;
 use Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem;
 use Sidekick\Applications\Configurator\Views\ProjectConfigurator;
@@ -26,23 +25,23 @@ class DefaultController extends ConfiguratorController
 {
   public function renderIndex()
   {
-    $projectId         = $this->getInt('projectId');
-    $parentProject     = null;
+    $projectId     = $this->getInt('projectId');
+    $parentProject = null;
 
-    $projects  = Project::getProjects($projectId);
+    $projects = Project::getProjects($projectId);
     if($projectId !== null)
     {
       $parentProject = new Project($projectId);
     }
 
-    $subProjects = Project::getSubProjectsCount();
+    $subProjects  = Project::getSubProjectsCount();
     $configGroups = ConfigurationGroup::getConfigGroupsCount();
 
     $pl = $this->createView(new ProjectList());
     $pl->setProjects($projects)
-      ->setSubProjects($subProjects)
-      ->setConfigGroups($configGroups)
-      ->setParentProject($parentProject);
+    ->setSubProjects($subProjects)
+    ->setConfigGroups($configGroups)
+    ->setParentProject($parentProject);
 
     return $pl;
   }
@@ -199,13 +198,12 @@ class DefaultController extends ConfiguratorController
     {
       foreach($envs as $env)
       {
-        $projectConfigs = EnvironmentConfigurationItem::collection()
-          ->loadWhere(
-            [
-            'project_id'     => $level,
-            'environment_id' => $env->id,
-            ]
-          );
+        $projectConfigs = EnvironmentConfigurationItem::collection()->loadWhere(
+          [
+          'project_id'     => $level,
+          'environment_id' => $env->id,
+          ]
+        );
 
         $configArray = array_replace_recursive(
           $configArray,
@@ -257,7 +255,7 @@ class DefaultController extends ConfiguratorController
     $configGroup->saveChanges();
 
     Redirect::to($this->baseUri() . '/config-groups/' . $postData['projectId'])
-      ->now();
+    ->now();
   }
 
   public function postAddingConfigItem()
@@ -272,14 +270,19 @@ class DefaultController extends ConfiguratorController
     $error = false;
     foreach($postData['kv'] as $itemId => $data)
     {
-      //helpful variable names to make complex conditions more readable
-      $emptyValueOnly      = $data['key'] != '' && $data['value'] == '';
-      $emptyKeyOnly        = $data['key'] == '' && $data['value'] != '';
-      $nonEmptyKeyAndValue = $data['key'] != '' && $data['value'] != '';
-
-      if($nonEmptyKeyAndValue || ($data['type'] == 'multiitem' && $emptyValueOnly))
+      if(!isset($data['key'])
+        || !isset($data['value'])
+        || !isset($data['type'])
+      )
       {
-        $itemId = ($itemId === '*')? null : $itemId;
+        $error = true;
+      }
+
+      if(($data['key'] != '' && $data['value'] != '')
+        || ($data['type'] == 'multiitem' && $data['key'] != '')
+      )
+      {
+        $itemId = ($itemId === '*') ? null : $itemId;
 
         $item                       = new ConfigurationItem($itemId);
         $item->key                  = $data['key'];
@@ -291,7 +294,9 @@ class DefaultController extends ConfiguratorController
         $item->configurationGroupId = $postData['groupId'];
         $item->saveChanges();
       }
-      elseif($emptyKeyOnly || $emptyValueOnly)
+      elseif(($data['key'] != '' && $data['value'] == '')
+        || ($data['key'] == '' && $data['value'] != '')
+      )
       {
         $error = true;
       }
@@ -364,7 +369,7 @@ class DefaultController extends ConfiguratorController
     if($customItemId !== null)
     {
       $itemInUse = EnvironmentConfigurationItem::collection()
-        ->whereEq('custom_item_id', $customItemId);
+                   ->whereEq('custom_item_id', $customItemId);
 
       if($itemInUse->count() == 0)
       {

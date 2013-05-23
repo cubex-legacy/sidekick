@@ -32,13 +32,13 @@ class Project extends RecordMapper
     $result = self::conn()->getKeyedRows(
       ParseQuery::parse(
         self::conn(),
-        [
         "SELECT id, (
-          SELECT count(*) FROM " . self::tableName() . "
+          SELECT count(*) FROM %T
           WHERE parent_id= p.id
         ) as sub_projects
-        FROM " . self::tableName() . " p"
-        ]
+        FROM %T p",
+        self::tableName(),
+        self::tableName()
       )
     );
 

@@ -26,10 +26,10 @@ class ConfigurationGroup extends RecordMapper
     $result = self::conn()->getKeyedRows(
       ParseQuery::parse(
         self::conn(),
-        [
-        "SELECT project_id, count(*)
-        FROM " . self::tableName() . " GROUP BY project_id"
-        ]
+        "SELECT %C, count(*) FROM %T GROUP BY %C",
+        'project_id',
+        self::tableName(),
+        'project_id'
       )
     );
 

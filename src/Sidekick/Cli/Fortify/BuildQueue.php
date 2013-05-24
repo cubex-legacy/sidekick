@@ -12,6 +12,7 @@ use Cubex\Helpers\System;
 use Cubex\Log\Log;
 use Cubex\Queue\CallableQueueConsumer;
 use Cubex\Queue\StdQueue;
+use Symfony\Component\Process\Process;
 
 /**
  * Run Build Queue
@@ -43,6 +44,7 @@ class BuildQueue extends CliCommand
       $rawArgs[] = '-v';
     }
     Log::debug("Starting Build");
+    //TODO: Run in separate process
     $build = new Build($this->_loader, $rawArgs);
     $build->execute();
     Log::debug("Executed Build");

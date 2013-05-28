@@ -5,7 +5,7 @@
 
 namespace Sidekick\Components\Configure\Mappers;
 
-use Cubex\Data\Attribute;
+use Cubex\Data\Attribute\Attribute;
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Configure\Enums\ConfigItemType;
 

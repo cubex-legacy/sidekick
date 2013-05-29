@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Phuse\Controllers;
 use Bundl\Debugger\DebuggerBundle;
 use Cubex\Core\Http\Response;
 use Sidekick\Components\Phuse\Mappers\Package;
+use Sidekick\Components\Phuse\PhuseHelper;
 
 class ComposedController extends PhuseController
 {
@@ -26,12 +27,17 @@ class ComposedController extends PhuseController
       {
         $releases[] = ['name' => $pack->name, 'version' => $rel->version];
 
+        $updateTag = strtotime($rel->updatedAt);
+
         $versions[$rel->version] = [
           "name"    => $pack->name,
           "version" => $rel->version,
+          "time"    => date("Y-m-d H:i:s", $rel->updatedAt),
           "dist"    => [
-            'url'  => url() . '/download/' . $pack->name . '/' . $rel->version,
-            'type' => 'zip'
+            'url'       => url() . '/download/' .
+            ($pack->name . '/' . $rel->version . '/' . $updateTag),
+            'type'      => 'zip',
+            'reference' => $rel->zipHash
           ]
         ];
         $packages[$pack->name]   = $versions;
@@ -60,7 +66,8 @@ class ComposedController extends PhuseController
     }
     else
     {
-      $filename = str_replace('/', '_', $package) . '-' . $version . '.zip';
+      $filename = PhuseHelper::safePackageName($package);
+      $filename .= '-' . $version . '.zip';
       return $this->_response->createDownload($rel->zipLocation, $filename);
     }
   }
@@ -68,7 +75,7 @@ class ComposedController extends PhuseController
   public function getRoutes()
   {
     return [
-      '/download/(?P<package>.*)/(?P<version>[a-zA-Z0-9_\.\-]*)/' => 'download'
+      '/download/(?P<package>.*)/(?P<version>[a-zA-Z0-9_\.\-]*)/[0-9]+/' => 'download'
     ];
   }
 }

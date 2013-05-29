@@ -34,12 +34,41 @@
       </a>
     </p></div>
 <?php endif; ?>
+
+<!--Add Config Item Form-->
+<div class="well">
 <?php
-echo $this->form()->open();
-echo $this->form()->token();
-echo $this->form()->formNameInput();
+echo $this->addForm()->open();
+echo $this->addForm()->token();
+echo $this->addForm()->formNameInput();
 ?>
-<?php echo $this->form()->getElement('groupId'); ?>
+<?php echo $this->addForm()->getElement('groupId'); ?>
+<table>
+  <tr>
+    <td>Key</td>
+    <td>Type</td>
+    <td>Value</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><?php echo $this->addForm()->getElement("key"); ?></td>
+    <td><?php echo $this->addForm()->getElement("type"); ?></td>
+    <td><?php echo $this->addForm()->getElement("value"); ?></td>
+    <td></td>
+  </tr>
+</table>
+<?php echo $this->addForm()->getElement('submit'); ?>
+<?php echo $this->addForm()->close(); ?>
+</div>
+
+<!--Update Config Items Form-->
+<div class="well">
+<?php
+echo $this->updateForm()->open();
+echo $this->updateForm()->token();
+echo $this->updateForm()->formNameInput();
+?>
+<?php echo $this->updateForm()->getElement('groupId'); ?>
 <table>
   <tr>
     <td>Key</td>
@@ -49,9 +78,9 @@ echo $this->form()->formNameInput();
   </tr>
   <?php foreach($this->configItems as $item): ?>
     <tr>
-      <td><?php echo $this->form()->getElement("kv[$item->id][key]"); ?></td>
-      <td><?php echo $this->form()->getElement("kv[$item->id][type]"); ?></td>
-      <td><?php echo $this->form()->getElement("kv[$item->id][value]"); ?></td>
+      <td><?php echo $this->updateForm()->getElement("kv[$item->id][key]"); ?></td>
+      <td><?php echo $this->updateForm()->getElement("kv[$item->id][type]"); ?></td>
+      <td><?php echo $this->updateForm()->getElement("kv[$item->id][value]"); ?></td>
       <td>
         <a href="<?php echo $this->baseUri() .
           '/remove-config-item/' . $item->id ?>"
@@ -59,12 +88,9 @@ echo $this->form()->formNameInput();
       </td>
     </tr>
   <?php endforeach; ?>
-  <tr>
-    <td><?php echo $this->form()->getElement("kv[*][key]"); ?></td>
-    <td><?php echo $this->form()->getElement("kv[*][type]"); ?></td>
-    <td><?php echo $this->form()->getElement("kv[*][value]"); ?></td>
-    <td></td>
-  </tr>
 </table>
-<?php echo $this->form()->getElement('submit'); ?>
-<?php echo $this->form()->close(); ?>
+<?php echo $this->updateForm()->getElement('submit'); ?>
+<?php echo $this->updateForm()->close(); ?>
+</div>
+
+

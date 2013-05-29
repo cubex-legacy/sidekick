@@ -261,6 +261,47 @@ class DefaultController extends ConfiguratorController
   public function postAddingConfigItem()
   {
     $postData = $this->request()->postVariables(
+      ['key', 'type', 'value', 'groupId'],
+      ['', '', '', 0]
+    );
+
+    if(($postData['key'] != '' && $postData['value'] != '')
+      || ($postData['type'] == 'multiitem' && $postData['key'] != '')
+    )
+    {
+
+      $item                       = new ConfigurationItem();
+      $item->key                  = $postData['key'];
+      $item->value                = $item->prepValueIn(
+        $postData['value'],
+        $postData['type']
+      );
+      $item->type                 = $postData['type'];
+      $item->configurationGroupId = $postData['groupId'];
+      $item->saveChanges();
+    }
+    else
+    {
+      $error = true;
+    }
+
+    $msg       = new \stdClass();
+    $msg->type = 'error';
+    $msg->text = 'Config Item could not be added';
+    if(!$error)
+    {
+      $msg->type = 'success';
+      $msg->text = 'New Config Item Added';
+    }
+
+    Redirect::to(
+      $this->baseUri() . '/config-items/' . $postData['groupId']
+    )->with('msg', $msg)->now();
+  }
+
+  public function postUpdateConfigItems()
+  {
+    $postData = $this->request()->postVariables(
       ['kv', 'groupId'],
       [[], 0]
     );
@@ -270,20 +311,14 @@ class DefaultController extends ConfiguratorController
     $error = false;
     foreach($postData['kv'] as $itemId => $data)
     {
-      if(!isset($data['key'])
-        || !isset($data['value'])
-        || !isset($data['type'])
-      )
+      if(!isset($data['key']) || !isset($data['value']) || !isset($data['type']))
       {
         $error = true;
       }
-
-      if(($data['key'] != '' && $data['value'] != '')
+      elseif(($data['key'] != '' && $data['value'] != '')
         || ($data['type'] == 'multiitem' && $data['key'] != '')
       )
       {
-        $itemId = ($itemId === '*') ? null : $itemId;
-
         $item                       = new ConfigurationItem($itemId);
         $item->key                  = $data['key'];
         $item->value                = $item->prepValueIn(
@@ -294,24 +329,19 @@ class DefaultController extends ConfiguratorController
         $item->configurationGroupId = $postData['groupId'];
         $item->saveChanges();
       }
-      elseif(($data['key'] != '' && $data['value'] == '')
-        || ($data['key'] == '' && $data['value'] != '')
-      )
+      else
       {
         $error = true;
       }
     }
 
-    $msg = new \stdClass();
+    $msg       = new \stdClass();
+    $msg->type = 'error';
+    $msg->text = 'Config Items could not be saved';
     if(!$error)
     {
       $msg->type = 'success';
       $msg->text = 'Config Items Saved';
-    }
-    else
-    {
-      $msg->type = 'error';
-      $msg->text = 'Config Items could not be saved';
     }
 
     Redirect::to(
@@ -394,6 +424,7 @@ class DefaultController extends ConfiguratorController
       '/config-items/:groupId'                                => 'configItems',
       '/adding-config-group'                                  => 'addingConfigGroup',
       '/adding-config-item'                                   => 'addingConfigItem',
+      '/update-config-items'                                  => 'updateConfigItems',
       '/remove-config-item/:itemId'                           => 'removeConfigItem',
       '/remove-config-item/:itemId/:force'                    => 'removeConfigItem',
       '/modify-project-config-item'                           => 'modifyProjectConfigItem',

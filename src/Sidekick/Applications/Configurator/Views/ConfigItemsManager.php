@@ -30,11 +30,33 @@ class ConfigItemsManager extends TemplatedViewModel
     )->setOrderBy('id');
   }
 
-  public function form()
+  public function addForm()
   {
     $form = new Form(
       'addConfigItem',
       $this->baseUri() . '/adding-config-item'
+    );
+    $form->setDefaultElementTemplate("{{input}}");
+    $form->addHiddenElement('groupId', $this->configGroup->id());
+    $form->addTextElement('key', '');
+    $form->addSelectElement(
+      "type",
+      [
+      'simple'     => 'Simple',
+      'multiitem'  => 'Multi Item',
+      'multikeyed' => 'Multi Keyed'
+      ]
+    );
+    $form->addTextElement('value', '');
+    $form->addSubmitElement('Add', 'submit');
+    return $form;
+  }
+
+  public function updateForm()
+  {
+    $form = new Form(
+      'updateConfigItems',
+      $this->baseUri() . '/update-config-items'
     );
     $form->setDefaultElementTemplate("{{input}}");
     $form->addHiddenElement('groupId', $this->configGroup->id());
@@ -55,19 +77,10 @@ class ConfigItemsManager extends TemplatedViewModel
         $item->prepValueOut($item->value, $item->type)
       );
     }
-    $form->addTextElement('kv[*][key]', '');
-    $form->addSelectElement(
-      "kv[*][type]",
-      [
-      'simple'     => 'Simple',
-      'multiitem'  => 'Multi Item',
-      'multikeyed' => 'Multi Keyed'
-      ]
-    );
-    $form->addTextElement('kv[*][value]', '');
     $form->addSubmitElement('Save', 'submit');
     return $form;
   }
+
 
   public function getBreadcrumbs()
   {

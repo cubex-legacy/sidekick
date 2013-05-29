@@ -16,17 +16,16 @@
     }
   ],
   "require":           {
-    "php":                   ">=5.4.0",
-    "cubex/cubex":           "*",
-    "cubex/cassandra":       "*",
-    "symfony/process":       "*",
-    "codeless/ziparchiveex": "*",
-    "bundl/debugger":        "*"
+    "php":             ">=5.4.0",
+    "cubex/cubex":     "*",
+    "themed/sidekick": "*",
+    "cubex/cassandra": "*",
+    "symfony/process": "*",
+    "bundl/debugger":  "*"
   },
   "autoload":          {
     "psr-0": {
-      "Sidekick\\":         "src/",
-      "Themes\\Sidekick\\": "c:\\Websites\\themed\\sidekick\\src\\"
+      "Sidekick\\": "src/"
     }
   },
   "minimum-stability": "dev"

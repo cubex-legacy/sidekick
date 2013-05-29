@@ -55,7 +55,7 @@ class DefaultController extends ConfiguratorController
   public function renderProjectConfigs()
   {
     $projectId = $this->getInt('projectId');
-    $envId     = $this->getInt('envId', 1);
+    $envId     = $this->getInt('envId');
 
     return $this->createView(new ProjectConfigurator($projectId, $envId));
   }

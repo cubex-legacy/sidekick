@@ -24,10 +24,22 @@ class ProjectConfigurator extends TemplatedViewModel
 
   public function __construct($projectId, $envId)
   {
-    $this->project            = new Project($projectId);
-    $this->currentEnvironment = new Environment($envId);
-    $this->environments       = Environment::collection()->loadAll();
-    $this->parentProject      = new Project($this->project->parentId);
+    $this->project = new Project($projectId);
+
+    if($envId === null)
+    {
+      $this->currentEnvironment = Environment::collection()->loadAll()
+                                  ->setOrderBy('name')
+                                  ->setLimit(0, 1)
+                                  ->first();
+    }
+    else
+    {
+      $this->currentEnvironment = new Environment($envId);
+    }
+    $this->environments  = Environment::collection()->loadAll()
+                           ->setOrderBy('name');
+    $this->parentProject = new Project($this->project->parentId);
 
     $this->_getAvailableConfigs();
     $this->_getEnvironmentConfig();
@@ -42,14 +54,14 @@ class ProjectConfigurator extends TemplatedViewModel
     }
 
     $configGroups = ConfigurationGroup::collection()
-      ->loadWhere("project_id IN (" . implode(',', $in) . ")")
-      ->setOrderBy("group_name");
+                    ->loadWhere("project_id IN (" . implode(',', $in) . ")")
+                    ->setOrderBy("group_name");
 
     $this->availableConfigs = [];
     foreach($configGroups as $group)
     {
       $configItems = ConfigurationItem::collection()
-        ->loadWhere(['configuration_group_id' => $group->id]);
+                     ->loadWhere(['configuration_group_id' => $group->id]);
 
       $this->availableConfigs[$group->groupName] = $configItems;
     }
@@ -58,7 +70,7 @@ class ProjectConfigurator extends TemplatedViewModel
   private function _getEnvironmentConfig()
   {
     $projectConfigs = EnvironmentConfigurationItem::collection()
-      ->loadWhere(
+                      ->loadWhere(
         [
         'project_id'     => $this->project->id(),
         'environment_id' => $this->currentEnvironment->id(),

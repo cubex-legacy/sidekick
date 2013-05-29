@@ -10,6 +10,7 @@ use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
 use Sidekick\Applications\Fortify\FortifyApp;
+use Sidekick\Applications\Phuse\PhuseApp;
 use Sidekick\Applications\Projects\ProjectsApp;
 use Sidekick\Applications\Repository\RepositoryApp;
 
@@ -20,6 +21,7 @@ class Project extends \Cubex\Core\Project\Project
   protected function _configure()
   {
     $this->addApplication('projects', new ProjectsApp());
+    $this->addApplication('phuse', new PhuseApp());
     $this->addApplication('repository', new RepositoryApp());
     $this->addApplication('configurator', new ConfiguratorApp());
     $this->addApplication('fortify', new FortifyApp());
@@ -49,6 +51,15 @@ class Project extends \Cubex\Core\Project\Project
   public function getApplications()
   {
     return $this->_apps;
+  }
+
+  public function getBySubDomain($subdomain)
+  {
+    if($subdomain == 'phuse')
+    {
+      return new PhuseApp(true);
+    }
+    return null;
   }
 
   public function getByPath($path)

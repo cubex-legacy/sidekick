@@ -21,7 +21,8 @@
     "themed/sidekick": "*",
     "cubex/cassandra": "*",
     "symfony/process": "*",
-    "bundl/debugger":  "*"
+    "bundl/debugger":  "*",
+    "themed/sidekick": "*"
   },
   "autoload":          {
     "psr-0": {

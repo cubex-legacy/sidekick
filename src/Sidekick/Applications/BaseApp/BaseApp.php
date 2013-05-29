@@ -8,6 +8,7 @@ namespace Sidekick\Applications\BaseApp;
 
 use Cubex\Core\Application\Application;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Themed\Sidekick\SidekickTheme;
 
 class BaseApp extends Application
 {
@@ -20,5 +21,10 @@ class BaseApp extends Application
   public function defaultController()
   {
     return new BaseControl();
+  }
+
+  public function getTheme()
+  {
+    return new SidekickTheme();
   }
 }

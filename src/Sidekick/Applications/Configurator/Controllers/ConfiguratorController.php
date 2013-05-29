@@ -7,6 +7,7 @@ namespace Sidekick\Applications\Configurator\Controllers;
 
 use Cubex\View\Impart;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\Configurator\Views\Sidebar;
 
 class ConfiguratorController extends BaseControl
 {
@@ -14,32 +15,8 @@ class ConfiguratorController extends BaseControl
   {
     parent::preRender();
     $this->requireCss('base');
-    $this->requireJsLibrary("jquery");
     $this->requireJs('environment');
 
-    $path      = $this->request()->path();
-    $menuItems = [
-      'Projects'     => '/configurator',
-      'Environments' => '/configurator/environments',
-      'Settings'     => '/configurator/settings'
-    ];
-
-    $str = "<ul class='nav nav-tabs'>";
-    foreach($menuItems as $label => $href)
-    {
-      if($href == $path)
-      {
-        $str .= "<li class='active'>";
-      }
-      else
-      {
-        $str .= "<li>";
-      }
-      $str .= "<a href='$href'>$label</a>";
-      $str .= "</li>";
-    }
-    $str .= "</ul>";
-
-    $this->nest('tabnav', new Impart($str));
+    $this->nest('sidebar', new Sidebar());
   }
 }

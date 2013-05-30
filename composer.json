@@ -20,6 +20,7 @@
     "cubex/cubex":           "*",
     "codeless/ziparchiveex": "*",
     "themed/sidekick":       "*",
+    "dflydev/markdown":      "*",
     "cubex/cassandra":       "*",
     "symfony/process":       "*",
     "bundl/debugger":        "*",

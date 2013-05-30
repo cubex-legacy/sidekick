@@ -11,8 +11,8 @@ use Cubex\Sprintf\ParseQuery;
 class Project extends RecordMapper
 {
   public $name;
-  public $description;
   public $parentId;
+  public $description;
 
 
   public static function getProjects($projectId = null)
@@ -43,5 +43,10 @@ class Project extends RecordMapper
     );
 
     return $result;
+  }
+
+  public function parent()
+  {
+    return $this->belongsTo(new Project(), 'parent_id');
   }
 }

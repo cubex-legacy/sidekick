@@ -28,7 +28,7 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('fortify', new FortifyApp());
     $this->addApplication('diffuse', new DiffuseApp());
     $this->addApplication('dispatcher', new DispatcherApp());
-    $this->addApplication('Scripture', new ScriptureApp());
+    $this->addApplication('scripture', new ScriptureApp());
   }
 
   public function addApplication($path, Application $application)

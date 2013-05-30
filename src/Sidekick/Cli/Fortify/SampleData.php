@@ -37,7 +37,7 @@ class SampleData extends CliCommand
     $command->saveChanges();
 
     $bc               = new BuildsCommands([$build, $command]);
-    $bc->dependencies = [3, 9, 10];
+    $bc->dependencies = [3, 9];
     $bc->saveChanges();
 
     $command              = new BuildCommand(2);

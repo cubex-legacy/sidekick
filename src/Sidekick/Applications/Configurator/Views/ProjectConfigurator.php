@@ -22,7 +22,7 @@ class ProjectConfigurator extends TemplatedViewModel
   public $availableConfigs;
   public $environmentConfig;
 
-  public function __construct($projectId, $envId)
+  public function __construct($projectId, $envId = null)
   {
     $this->project = new Project($projectId);
 

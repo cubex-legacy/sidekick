@@ -165,12 +165,12 @@ class SampleData extends CliCommand
 
     $command              = new BuildCommand(10);
     $command->name        = 'Phuse';
-    $command->command     = 'php {CUBEX_BIN} Phuse.DevBuild';
+    $command->command     = 'php {CUBEX_BIN} Phuse.CreateBuild';
     $command->args        = [
       '--path={sourcedirectory}',
-      '--branch={branch}',
+      '--version=dev-{branch}'
     ];
-    $command->description = "Phuse Dev Build";
+    $command->description = "Phuse Build";
     $command->saveChanges();
 
     $bc               = new BuildsCommands([$build, $command]);

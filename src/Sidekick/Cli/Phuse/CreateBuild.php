@@ -10,7 +10,7 @@ use Sidekick\Components\Phuse\Mappers\Package;
 use Sidekick\Components\Phuse\Mappers\Release;
 use Sidekick\Components\Phuse\PhuseHelper;
 
-class DevBuild extends CliCommand
+class CreateBuild extends CliCommand
 {
   /**
    * @required
@@ -20,8 +20,9 @@ class DevBuild extends CliCommand
 
   /**
    * @valuerequired
+   * @required
    */
-  public $branch = 'master';
+  public $version = 'dev-master';
 
   public function execute()
   {
@@ -33,7 +34,6 @@ class DevBuild extends CliCommand
 
     $composer   = json_decode(file_get_contents($composerJson));
     $compileDir = PhuseHelper::getArchiveDir($this->config("phuse"));
-    $version    = 'dev-' . $this->branch;
 
     if(!file_exists($compileDir))
     {
@@ -41,7 +41,7 @@ class DevBuild extends CliCommand
     }
 
     $zipName = PhuseHelper::safePackageName($composer->name);
-    $zipName .= "-" . $version;
+    $zipName .= "-" . $this->version;
     $zipName .= ".zip";
     $zipLoc = $compileDir . $zipName;
 
@@ -57,9 +57,9 @@ class DevBuild extends CliCommand
     $package->name = $composer->name;
     $package->saveChanges();
 
-    $release              = new Release([$package->id(), $version]);
+    $release              = new Release([$package->id(), $this->version]);
     $release->packageId   = $package->id();
-    $release->version     = $version;
+    $release->version     = $this->version;
     $release->zipLocation = $zipLoc;
     $release->zipHash     = md5_file($zipLoc);
     $release->saveChanges();

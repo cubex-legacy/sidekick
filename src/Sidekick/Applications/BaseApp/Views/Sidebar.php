@@ -22,20 +22,19 @@ class Sidebar extends ViewModel
   public function render()
   {
     $navItems = new Partial(
-      '<li><a href="%s"><i class="icon-chevron-right"></i>' .
-      '%s<br/><small>%s</small></a></li>'
+      '<li><a href="%s">%s</a></li>'
     );
 
-    $apps = $this->_project->getApplications();
-    foreach($apps as $appPath => $app)
+    $apps = ['recent' => 'Recent Activity', 'search' => 'Search'];
+    foreach($apps as $appPath => $name)
     {
-      $navItems->addElement('/' . $appPath, $app->name(), $app->description());
+      $navItems->addElement('/' . $appPath, $name);
     }
 
     return new RenderGroup(
-      '<ul class="nav nav-list bs-docs-sidenav affix-top">',
+      '<div class="tabbable tabs-left"><ul class="nav nav-tabs">',
       $navItems,
-      '</ul>'
+      '</ul></div>'
     );
   }
 }

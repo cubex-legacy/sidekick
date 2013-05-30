@@ -71,11 +71,11 @@ class ProjectConfigurator extends TemplatedViewModel
   {
     $projectConfigs = EnvironmentConfigurationItem::collection()
                       ->loadWhere(
-        [
-        'project_id'     => $this->project->id(),
-        'environment_id' => $this->currentEnvironment->id(),
-        ]
-      );
+      [
+      'project_id'     => $this->project->id(),
+      'environment_id' => $this->currentEnvironment->id(),
+      ]
+    );
 
     $this->environmentConfig = array();
     foreach($projectConfigs as $config)
@@ -103,7 +103,7 @@ class ProjectConfigurator extends TemplatedViewModel
     {
       $breadcrumbs->addItem(
         $this->parentProject->name,
-        $this->baseUri() . '/project/' . $this->parentProject->id()
+        ($this->baseUri() . '/project/' . $this->parentProject->id())
       );
     }
     $breadcrumbs->addItem(

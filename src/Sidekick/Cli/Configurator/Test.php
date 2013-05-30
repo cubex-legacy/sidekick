@@ -74,11 +74,12 @@ class Test extends CliCommand
       $group   = new ConfigurationGroup($item->configurationGroupId);
       $env     = $this->envs[$config->environment_id];
 
-      $configArray[$project->name][$env][$group->entry][$item->key] = is_object($item->value)? (array)$item->value : $item->value;
+      $configArray[$project->name][$env][$group->entry][$item->key] =
+      is_object($item->value) ? (array)$item->value : $item->value;
     }
 
     $cw = new ConfigWriter();
-    echo ";Project Name: $project->name".PHP_EOL;
+    echo ";Project Name: $project->name" . PHP_EOL;
     echo $cw->buildIni($configArray[$project->name][$envName], true);
   }
 
@@ -96,6 +97,5 @@ class Test extends CliCommand
 
   public function buildTestData()
   {
-
   }
 }

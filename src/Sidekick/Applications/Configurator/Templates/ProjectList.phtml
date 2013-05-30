@@ -9,7 +9,7 @@
 <?php echo $this->getBreadcrumbs(); ?>
 <p class="muted"><em>Manage configurations across all your projects!</em></p>
 <?php foreach($this->getProjects() as $project): ?>
-  <div class="well boxed">
+  <div class="project well boxed">
     <?php if($this->getSubProjectsCount($project->id) > 0): ?>
       <h3>
         <a href="<?php echo $this->baseUri() . '/project/' . $project->id; ?>">
@@ -43,7 +43,7 @@
       </p>
     <?php endif; ?>
 
-    <p style="margin-top:10px;">
+    <p class="project-actions">
 
       <a href="<?php echo $this->baseUri() .
         '/config-groups/' . $project->id; ?>"

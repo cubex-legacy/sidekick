@@ -62,6 +62,7 @@ class Build extends CliCommand
   protected $_buildResult;
   protected $_buildSourceDir;
   protected $_buildPath;
+  protected $_branch = 'master';
 
   protected $_totalTests = 0;
   protected $_testsRun = 0;
@@ -105,10 +106,9 @@ class Build extends CliCommand
       Shell::COLOUR_FOREGROUND_LIGHT_BLUE
     );
 
-    $buildPath = '../builds/' . $buildRun->id();
+    $buildPath = dirname(WEB_ROOT) . '/builds/' . $buildRun->id();
     mkdir($buildPath, 0777, true);
     chdir($buildPath);
-    $buildPath             = getcwd();
     $this->_buildPath      = $buildPath;
     $this->_buildSourceDir = $build->sourceDirectory;
 
@@ -116,7 +116,8 @@ class Build extends CliCommand
     $buildRun->endTime  = new \DateTime();
     $buildRun->saveChanges();
 
-    $buildSource = new Source($buildProject->buildSourceId);
+    $buildSource   = new Source($buildProject->buildSourceId);
+    $this->_branch = $buildSource->branch;
     $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
 
     echo "Getting Build Repo Hash\n";
@@ -245,8 +246,16 @@ class Build extends CliCommand
     $runCommand = $command->command . $args;
 
     $runCommand = str_replace(
+      [
       '{sourcedirectory}',
-      $this->_buildSourceDir,
+      '{CUBEX_BIN}',
+      '{branch}'
+      ],
+      [
+      $this->_buildPath . DS . $this->_buildSourceDir,
+      WEB_ROOT . DS . 'cubex',
+      $this->_branch
+      ],
       $runCommand
     );
 
@@ -347,7 +356,7 @@ class Build extends CliCommand
       'Start Time'     => $buildRun->startTime->format('Y-m-d H:i:s'),
       'End Time'       => $buildRun->endTime->format('Y-m-d H:i:s'),
       'Total Duration' => $buildRun->startTime->diff($buildRun->endTime)
-      ->format("%H:%I:%S"),
+                          ->format("%H:%I:%S"),
     ];
 
     foreach($results as $name => $value)

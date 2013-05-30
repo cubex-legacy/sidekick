@@ -5,7 +5,6 @@
 
 namespace Sidekick\Components\Configure\Mappers;
 
-use Cubex\Data\Attribute;
 use Cubex\Mapper\Database\RecordMapper;
 
 class EnvironmentConfigurationItem extends RecordMapper

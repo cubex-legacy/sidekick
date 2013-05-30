@@ -37,7 +37,7 @@ class SampleData extends CliCommand
     $command->saveChanges();
 
     $bc               = new BuildsCommands([$build, $command]);
-    $bc->dependencies = [3, 9];
+    $bc->dependencies = [3, 9, 10];
     $bc->saveChanges();
 
     $command              = new BuildCommand(2);
@@ -161,6 +161,20 @@ class SampleData extends CliCommand
 
     $bc               = new BuildsCommands([$build, $command]);
     $bc->dependencies = [3];
+    $bc->saveChanges();
+
+    $command              = new BuildCommand(10);
+    $command->name        = 'Phuse';
+    $command->command     = 'php {CUBEX_BIN} Phuse.DevBuild';
+    $command->args        = [
+      '--path={sourcedirectory}',
+      '--branch={branch}',
+    ];
+    $command->description = "Phuse Dev Build";
+    $command->saveChanges();
+
+    $bc               = new BuildsCommands([$build, $command]);
+    $bc->dependencies = [8];
     $bc->saveChanges();
 
     /***

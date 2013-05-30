@@ -5,7 +5,7 @@
 
 namespace Sidekick\Components\Fortify\Mappers;
 
-use Cubex\Data\Attribute;
+use Cubex\Data\Attribute\Attribute;
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Fortify\Enums\BuildResult;
 use Sidekick\Components\Fortify\Enums\BuildType;

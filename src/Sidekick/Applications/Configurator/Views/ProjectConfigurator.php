@@ -69,8 +69,8 @@ class ProjectConfigurator extends TemplatedViewModel
 
   private function _getEnvironmentConfig()
   {
-    $projectConfigs = EnvironmentConfigurationItem::collection()
-                      ->loadWhere(
+    $projectConfigs = EnvironmentConfigurationItem::collection();
+    $projectConfigs->loadWhere(
       [
       'project_id'     => $this->project->id(),
       'environment_id' => $this->currentEnvironment->id(),

@@ -7,10 +7,10 @@
  */
 $('.project').mouseenter(function(){
   $('.project-actions').hide();
-  $('.project-actions', this).stop(true, true).slideDown('slow');
+  $('.project-actions', this).show();
 });
 
 $('.project').mouseleave(function(){
-  $('.project-actions').stop(true, true).slideUp();
+  $('.project-actions').hide();
 })
 

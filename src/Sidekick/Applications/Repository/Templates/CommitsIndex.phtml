@@ -1,0 +1,37 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: oke.ugwu
+ * Date: 31/05/13
+ * Time: 08:44
+ * @var $this \Sidekick\Applications\Repository\Views\CommitsIndex.
+ */
+?>
+<h1><?php echo $this->repo->name; ?> Commits</h1>
+<div style="margin-top:10px;"></div>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
+    <?php echo Session::getFlash('msg')->text; ?>
+  </div>
+<?php endif; ?>
+<table class="table table-striped table-bordered table-hover table-condensed">
+  <tr class="info">
+    <th>Hash</th>
+    <th>Date</th>
+    <th>Subject</th>
+    <th>Author</th>
+  </tr>
+  <?php foreach($this->getCommits() as $commit): ?>
+    <tr>
+      <td><a href="<?php echo $this->baseUri().'/src/'.$commit->id(); ?>">
+          <?php echo substr($commit->commit_hash, 0, 8); ?>
+        </a>
+      </td>
+      <td>
+        <?php echo date('d/M/Y H:i', strtotime($commit->committedAt)); ?>
+      </td>
+      <td><?php echo $commit->subject; ?></td>
+      <td><?php echo $commit->author; ?></td>
+    </tr>
+  <?php endforeach; ?>
+</table>

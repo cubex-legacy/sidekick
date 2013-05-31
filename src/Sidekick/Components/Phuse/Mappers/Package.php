@@ -10,6 +10,8 @@ use Cubex\Mapper\Database\RecordMapper;
 class Package extends RecordMapper
 {
   public $name;
+  public $description;
+  public $author;
 
   public function releases()
   {

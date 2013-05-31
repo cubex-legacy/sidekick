@@ -37,8 +37,8 @@ class Header extends ViewModel
     $path = $this->request()->path();
     foreach($apps as $appPath => $app)
     {
-      //look for appPath as the first substr in path
-      $state = (substr($path, 1, strlen($appPath)) == $appPath) ? 'active' : '';
+      //active if path starts with appPath
+      $state = starts_with($path, "/$appPath", false) ? 'active' : '';
       $navItems->addElement(
         $state,
         '/' . $appPath,

@@ -33,8 +33,9 @@ class CommitsController extends RepositoryController
   public function getRoutes()
   {
     return [
-      '/'        => 'index',
-      '/:repoId' => 'index'
+      '/'              => 'index',
+      '/:repoId'       => 'index',
+      '/src/:commitId' => 'commitSrc'
     ];
   }
 }

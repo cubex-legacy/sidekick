@@ -34,11 +34,17 @@ class Header extends ViewModel
     );
 
     $apps = $this->_project->getApplications();
-    $path      = $this->request()->path();
+    $path = $this->request()->path();
     foreach($apps as $appPath => $app)
     {
-      $state = (strcasecmp('/'.$appPath, $path) == 0)? 'active' : '';
-      $navItems->addElement($state, '/' . $appPath, $app->description(), $app->name());
+      //look for appPath as the first substr in path
+      $state = (substr($path, 1, strlen($appPath)) == $appPath) ? 'active' : '';
+      $navItems->addElement(
+        $state,
+        '/' . $appPath,
+        $app->description(),
+        $app->name()
+      );
     }
 
     return new RenderGroup(

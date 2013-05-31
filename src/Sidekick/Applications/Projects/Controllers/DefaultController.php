@@ -23,9 +23,7 @@ class DefaultController extends BaseControl
 
   public function renderIndex()
   {
-    $projects = Project::collection()->loadAll()
-                ->setOrderBy('name')->preFetch('parent');
-    return $this->createView(new ProjectsIndex($projects));
+    return $this->createView(new ProjectsIndex());
   }
 
   public function renderCreateProject()

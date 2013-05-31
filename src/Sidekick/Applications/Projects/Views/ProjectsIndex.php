@@ -10,14 +10,16 @@
 namespace Sidekick\Applications\Projects\Views;
 
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class ProjectsIndex extends TemplatedViewModel
 {
   protected $_projects;
 
-  public function __construct($projects)
+  public function __construct()
   {
-    $this->_projects = $projects;
+    $this->_projects = Project::collection()->loadAll()
+                       ->setOrderBy('name')->preFetch('parent');
   }
 
   public function getProjects()

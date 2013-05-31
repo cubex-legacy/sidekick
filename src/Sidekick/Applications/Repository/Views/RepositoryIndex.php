@@ -16,9 +16,8 @@ class RepositoryIndex extends TemplatedViewModel
 {
   protected $_repositories;
 
-  public function __construct()
+  public function __construct($repositories)
   {
-    $repositories = Source::collection()->loadAll();
     $this->_repositories = $repositories;
   }
 

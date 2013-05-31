@@ -33,7 +33,9 @@ class RepositoryApp extends BaseApp
 
   public function getRoutes()
   {
-    //this is here as a temp fix for bug http://phabricator.cubex.io/T105
-    return ['/' => ''];
+    return [
+      '/commits'     => 'CommitsController',
+      '/commits/(.*)' => 'CommitsController'
+    ];
   }
 }

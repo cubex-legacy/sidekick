@@ -6,7 +6,6 @@
 namespace Sidekick\Applications\Repository\Controllers;
 
 use Cubex\Facade\Redirect;
-use Sidekick\Applications\Repository\Views\CommitsIndex;
 use Sidekick\Applications\Repository\Views\RepositoryForm;
 use Sidekick\Applications\Repository\Views\RepositoryIndex;
 use Sidekick\Components\Repository\Mappers\Source;
@@ -15,7 +14,8 @@ class DefaultController extends RepositoryController
 {
   public function renderIndex()
   {
-    return $this->createView(new RepositoryIndex());
+    $repositories = Source::collection()->loadAll();
+    return $this->createView(new RepositoryIndex($repositories));
   }
 
   public function renderAddRepo()
@@ -73,17 +73,6 @@ class DefaultController extends RepositoryController
     Redirect::to($this->baseUri())->with('msg', $msg)->now();
   }
 
-  public function renderRepoCommits()
-  {
-    $repoId = $this->getInt('repoId');
-    return $this->createView(new CommitsIndex($repoId));
-  }
-
-  public function renderCommitSrc()
-  {
-    return 'Source Code to be displayed here. Maybe a diff';
-  }
-
   public function getRoutes()
   {
     return [
@@ -91,8 +80,6 @@ class DefaultController extends RepositoryController
       'update-repository' => 'updateRepo',
       'edit/:repoId'      => 'editRepo',
       'delete/:repoId'    => 'deleteRepo',
-      'commits/:repoId'   => 'repoCommits',
-      'src/:commitId'     => 'commitSrc'
     ];
   }
 }

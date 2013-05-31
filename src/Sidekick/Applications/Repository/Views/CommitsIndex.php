@@ -10,23 +10,16 @@
 namespace Sidekick\Applications\Repository\Views;
 
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Components\Repository\Mappers\Commit;
-use Sidekick\Components\Repository\Mappers\Source;
 
 class CommitsIndex extends TemplatedViewModel
 {
   public $repo;
   protected $_commits;
 
-  public function __construct($repoId)
+  public function __construct($repo, $commits)
   {
-    $this->_commits = Commit::collection()->loadWhere(
-                        ['repository_id' => $repoId]
-                      )
-                      ->setOrderBy('committed_at', 'DESC')
-                      ->setLimit(0, 50);
-
-    $this->repo = new Source($repoId);
+    $this->repo = $repo;
+    $this->_commits = $commits;
   }
 
   public function getCommits()

@@ -1,0 +1,24 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: oke.ugwu
+ * Date: 31/05/13
+ * Time: 12:45
+ * To change this template use File | Settings | File Templates.
+ *
+ * @var $this \Sidekick\Applications\Phuse\Views\PhuseResults
+ */
+?>
+<?php if(count($this->packages)): ?>
+  <?php foreach($this->packages as $package): ?>
+    <div class="phuse-result well">
+      <h3><a href="<?php echo $this->baseUri().'/view/'.$package->id; ?>"><?php echo $package->name; ?></a></h3>
+      <p><?php echo $package->description; ?></p>
+      <p>by <strong><?php echo $package->author; ?></strong></p>
+    </div>
+  <?php endforeach; ?>
+<?php else: ?>
+  <div class="phuse-result well">
+    <p>No packages found</p>
+  </div>
+<?php endif; ?>

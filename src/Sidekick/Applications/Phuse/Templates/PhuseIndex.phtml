@@ -1,0 +1,44 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: oke.ugwu
+ * Date: 31/05/13
+ * Time: 11:43
+ * var $this \Sidekick\Applications\Phuse\Views\PhuseIndex
+ */
+?>
+<div class="row-fluid">
+  <div class="well alert-info">
+    Phuse is Cubex's own packagists. It's a package manager that aggregates
+    all sorts of Cubex packages that are installable with Composer.
+    Phuse allows you browse and download packages
+  </div>
+  <input class="input-block-level phuse-search" type="text"
+         placeholder="Seek and you shall find...">
+
+  <div class="phuse-results well">
+  </div>
+  <div class="well">
+    <h2>Getting Started</h2>
+    <span class="lead">Thou shall Install Composer</span>
+
+    <p>Run this in your command line:<br/>
+      <code>curl -s http://getcomposer.org/installer | php</code>
+    </p>
+
+    <p>Or download composer.phar into your project root.</p>
+
+    <p>Put a file named composer.json at the root of your project,
+       containing your project dependencies:</p>
+
+    <span class="lead">...and Add Phuse Repository</span>
+
+    <p>Put a file named composer.json at the root of your project,
+       containing your project dependencies:</p>
+
+    <p><span class="label label-important">Important!</span>
+      Add the following line to composer.json</p>
+    <code>"repositories": [ { "type": "composer", "url":
+          "http://phuse.sidekick.tld/" } ]</code>
+  </div>
+</div>

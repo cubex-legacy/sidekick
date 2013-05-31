@@ -7,30 +7,20 @@
  * @link  https://packagist.org/packages/cubex/cubex
  */
 ?>
-<h2>PACKAGE/NAME</h2>
-<p>Description goes here</p>
+<h2><?php echo $this->package->name; ?></h2>
+<p><?php echo $this->package->description; ?></p>
 
+<?php foreach($this->releases as $release): ?>
 <fieldset>
-  <legend>dev-master</legend>
+  <legend><?php echo $release->version; ?></legend>
   <div>
-    <p>require: <code>"package/name" : "dev-master"</code></p>
+    <p>require: <code>"<?php echo $this->package->name; ?>" : "<?php echo $release->version; ?>"</code></p>
 
-    <p>Last Updated: XXX</p>
+    <p>Last Updated: <?php echo date('d/M/Y H:i', strtotime($release->updatedAt)); ?></p>
 
-    <p>Reference: XXX</p>
+    <p>Reference: <?php echo substr($release->zipHash, 0, 6); ?></p>
   </div>
 </fieldset>
-
-<fieldset>
-  <legend>Versions 1.0.0</legend>
-  <div>
-    <p>require: <code>"package/name" : "1.0.0"</code></p>
-
-    <p>Last Updated: XXX</p>
-
-    <p>Reference: XXX</p>
-  </div>
-</fieldset>
-
+<?php endforeach; ?>
 <p><a href="/scripture/1/README">View Documentation</a></p>
 

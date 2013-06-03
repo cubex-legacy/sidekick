@@ -24,6 +24,11 @@ class Source extends RecordMapper
   public $password;
   public $projectId;
 
+  protected function _configure()
+  {
+    $this->_setRequired('repositoryType');
+  }
+
   public function project()
   {
     return $this->belongsTo(new Project());

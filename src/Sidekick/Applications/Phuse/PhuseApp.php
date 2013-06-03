@@ -7,7 +7,7 @@ namespace Sidekick\Applications\Phuse;
 
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Phuse\Controllers\ComposedController;
-use Sidekick\Applications\Phuse\Controllers\PhuseController;
+use Sidekick\Applications\Phuse\Controllers\DefaultController;
 
 class PhuseApp extends BaseApp
 {
@@ -26,7 +26,7 @@ class PhuseApp extends BaseApp
     }
     else
     {
-      return new PhuseController();
+      return new DefaultController();
     }
   }
 

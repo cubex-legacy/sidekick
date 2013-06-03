@@ -9,5 +9,5 @@ use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 
 class FortifyController extends BaseControl
 {
-
+  protected $_titlePrefix = 'Fortify';
 }

@@ -36,7 +36,7 @@
           <?php echo $repo->name; ?></a>
       </td>
       <td><?php echo $repo->repositoryType; ?></td>
-      <td><?php echo $repo->commits()->count(); ?></td>
+      <td><?php echo number_format($repo->commits()->count(), 0); ?></td>
       <td><?php
         $phabricator = $repo->diffusionBaseUri;
         if(empty($phabricator))

@@ -15,6 +15,8 @@ use Sidekick\Components\Phuse\Mappers\Release;
 
 class PhuseController extends BaseControl
 {
+  protected $_titlePrefix = 'Phuse';
+
   public function preRender()
   {
     parent::preRender();
@@ -30,8 +32,8 @@ class PhuseController extends BaseControl
   public function renderViewPackage()
   {
     $packageId = $this->getInt('packageId');
-    $package = new Package($packageId);
-    $releases = Release::collection()->loadWhere(['package_id' => $packageId]);
+    $package   = new Package($packageId);
+    $releases  = Release::collection()->loadWhere(['package_id' => $packageId]);
     return new PackageView($package, $releases);
   }
 
@@ -49,9 +51,9 @@ class PhuseController extends BaseControl
   public function getRoutes()
   {
     return [
-      'search/'         => 'search',
-      'search/(?<query>.*)/'   => 'search',
-      'view/:packageId' => 'viewPackage'
+      'search/'              => 'search',
+      'search/(?<query>.*)/' => 'search',
+      'view/:packageId'      => 'viewPackage'
     ];
   }
 }

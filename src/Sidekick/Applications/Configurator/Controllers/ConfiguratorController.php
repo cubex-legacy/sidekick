@@ -11,6 +11,8 @@ use Sidekick\Applications\Configurator\Views\Sidebar;
 
 class ConfiguratorController extends BaseControl
 {
+  protected $_titlePrefix = 'Configurator';
+
   public function preRender()
   {
     parent::preRender();

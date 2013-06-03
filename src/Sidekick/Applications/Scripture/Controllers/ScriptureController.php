@@ -14,6 +14,8 @@ use Sidekick\Components\Repository\Mappers\Source;
 
 class ScriptureController extends BaseControl
 {
+  protected $_titlePrefix = 'Scripture';
+
   public function renderScripture($id = null, $file = 'README')
   {
     $this->setTitle('Scripture');

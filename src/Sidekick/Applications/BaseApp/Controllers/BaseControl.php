@@ -11,10 +11,29 @@ use Sidekick\Applications\BaseApp\Views\Sidebar;
 
 class BaseControl extends WebpageController
 {
+  protected $_titlePrefix;
+
   public function preRender()
   {
+    $this->setTitle("");
     $this->nest("sidebar", $this->getSidebar());
     $this->nest("header", $this->getHeader());
+  }
+
+  public function setTitle($title = '')
+  {
+    if(empty($title) && !empty($this->_titlePrefix))
+    {
+      parent::setTitle($this->_titlePrefix);
+    }
+    else if(empty($this->_titlePrefix))
+    {
+      parent::setTitle("Sidekick");
+    }
+    else
+    {
+      parent::setTitle(implode(' - ', [$this->_titlePrefix, $title]));
+    }
   }
 
   public function getSidebar()

@@ -5,9 +5,7 @@
 
 namespace Sidekick\Applications\Dispatcher\Controllers;
 
-use Sidekick\Applications\BaseApp\Controllers\BaseControl;
-
-class DefaultController extends BaseControl
+class DefaultController extends DispatcherController
 {
   public function renderIndex()
   {

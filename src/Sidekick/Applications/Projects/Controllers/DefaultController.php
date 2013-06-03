@@ -7,13 +7,12 @@ namespace Sidekick\Applications\Projects\Controllers;
 
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
-use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\Projects\Views\ProjectsForm;
 use Sidekick\Applications\Projects\Views\ProjectsIndex;
 use Sidekick\Applications\Projects\Views\ProjectsSidebar;
 use Sidekick\Components\Projects\Mappers\Project;
 
-class DefaultController extends BaseControl
+class DefaultController extends ProjectsController
 {
   public function preRender()
   {

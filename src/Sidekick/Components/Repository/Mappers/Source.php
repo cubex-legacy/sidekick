@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Repository\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class Source extends RecordMapper
 {
@@ -20,4 +21,10 @@ class Source extends RecordMapper
   public $branch = 'master';
   public $username;
   public $password;
+  public $projectId;
+
+  public function project()
+  {
+    return $this->belongsTo(new Project());
+  }
 }

@@ -12,11 +12,8 @@ use Sidekick\Project;
 
 class Sidebar extends ViewModel
 {
-  protected $_project;
-
-  public function __construct(Project $project)
+  public function __construct()
   {
-    $this->_project = $project;
   }
 
   public function render()
@@ -25,7 +22,7 @@ class Sidebar extends ViewModel
       '<li><a href="%s">%s</a></li>'
     );
 
-    $apps = ['recent' => 'Recent Activity', 'search' => 'Search'];
+    $apps = ['overview/releases' => 'Recent Releases'];
     foreach($apps as $appPath => $name)
     {
       $navItems->addElement('/' . $appPath, $name);

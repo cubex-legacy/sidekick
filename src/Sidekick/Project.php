@@ -10,6 +10,7 @@ use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
 use Sidekick\Applications\Fortify\FortifyApp;
+use Sidekick\Applications\Overview\OverviewApp;
 use Sidekick\Applications\Phuse\PhuseApp;
 use Sidekick\Applications\Projects\ProjectsApp;
 use Sidekick\Applications\Repository\RepositoryApp;
@@ -66,10 +67,17 @@ class Project extends \Cubex\Core\Project\Project
 
   public function getByPath($path)
   {
+    if(starts_with($path, '/overview'))
+    {
+      $app = new OverviewApp();
+      $app->setBaseUri('/' . 'overview');
+      return $app;
+    }
+
     $apps = $this->getApplications();
     foreach($apps as $appPath => $app)
     {
-      if(strpos($path, '/' . $appPath) === 0)
+      if(starts_with($path, '/' . $appPath))
       {
         $newApp = new $app();
         if($newApp instanceof Application)
@@ -87,6 +95,6 @@ class Project extends \Cubex\Core\Project\Project
    */
   public function defaultApplication()
   {
-    return new Applications\BaseApp\BaseApp();
+    return new OverviewApp();
   }
 }

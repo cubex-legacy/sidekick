@@ -13,6 +13,7 @@ use Cubex\Core\Http\Response;
 use Sidekick\Applications\Phuse\Views\PackageResults;
 use Sidekick\Applications\Phuse\Views\PackageView;
 use Sidekick\Applications\Phuse\Views\PhuseIndex;
+use Sidekick\Components\Diffuse\Mappers\Release;
 use Sidekick\Components\Phuse\Mappers\Package;
 
 class DefaultController extends PhuseController

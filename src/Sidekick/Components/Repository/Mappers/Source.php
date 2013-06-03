@@ -42,4 +42,9 @@ class Source extends RecordMapper
   {
     return new RepositoryProvider();
   }
+
+  public function commits()
+  {
+    return $this->hasMany(new Commit(),'repository_id');
+  }
 }

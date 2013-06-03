@@ -24,18 +24,37 @@
   <tr class="info">
     <th>Name</th>
     <th>Type</th>
-    <th>Description</th>
+    <th>Commits</th>
+    <th>Diffusion</th>
     <th>Created</th>
     <th>Last Update</th>
     <th></th>
   </tr>
   <?php foreach($this->getRepositories() as $repo): ?>
     <tr>
-      <td><a href="<?php echo $this->baseUri().'/commits/'.$repo->id(); ?>">
+      <td><a href="<?php echo $this->baseUri() . '/commits/' . $repo->id(); ?>">
           <?php echo $repo->name; ?></a>
       </td>
       <td><?php echo $repo->repositoryType; ?></td>
-      <td><?php echo $repo->description; ?></td>
+      <td><?php echo $repo->commits()->count(); ?></td>
+      <td><?php
+        $phabricator = $repo->diffusionBaseUri;
+        if(empty($phabricator))
+        {
+          echo 'Not Available';
+        }
+        else
+        {
+          list($phabUri, $callsign) = explode('/r', $phabricator);
+          $diffusionUri = "$phabUri/diffusion/$callsign/";
+          ?>
+          <a href="<?php echo $diffusionUri; ?>"
+             onclick="window.open(this.href); return false;">
+            Browse <?php echo $callsign; ?>
+          </a>
+        <?php
+        }
+        ?></td>
       <td><?php echo date('d/M/Y', strtotime($repo->createdAt)); ?></td>
       <td><?php echo date('d/M/Y', strtotime($repo->updatedAt)); ?></td>
       <td>

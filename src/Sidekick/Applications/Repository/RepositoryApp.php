@@ -28,13 +28,13 @@ class RepositoryApp extends BaseApp
 
   public function getBundles()
   {
-    //    return [new DebuggerBundle()];
+    //return [new DebuggerBundle()];
   }
 
   public function getRoutes()
   {
     return [
-      '/commits'     => 'CommitsController',
+      '/commits'      => 'CommitsController',
       '/commits/(.*)' => 'CommitsController'
     ];
   }

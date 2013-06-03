@@ -21,6 +21,9 @@ class RepositoryIndex extends TemplatedViewModel
     $this->_repositories = $repositories;
   }
 
+  /**
+   * @return Source[]
+   */
   public function getRepositories()
   {
     return $this->_repositories;

@@ -41,16 +41,26 @@ class Header extends ViewModel
       $state = starts_with($path, "/$appPath", false) ? 'active' : '';
       $navItems->addElement(
         $state,
-        '/' . $appPath,
+        ('/' . $appPath),
         $app->description(),
         $app->name()
       );
     }
 
     return new RenderGroup(
+      '<a class="muted brand" href="/">',
+      '<img style="margin-top: -5px;" src="',
+      $this->imgUrl('/logo.png'), '"/>',
+      '</a>',
       '<ul class="nav">',
       $navItems,
-      '</ul>'
+      '</ul>',
+      '<div class="nav-collapse collapse">
+        <ul class="nav pull-right">
+          <li><a href="/profile">John Doe</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </div>'
     );
   }
 }

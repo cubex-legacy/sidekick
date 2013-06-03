@@ -12,6 +12,11 @@ use Themed\Sidekick\SidekickTheme;
 
 class BaseApp extends Application
 {
+  public function __construct()
+  {
+    $this->_listen(__NAMESPACE__);
+  }
+
   public function getRoutes()
   {
     return [

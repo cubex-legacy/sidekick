@@ -48,8 +48,8 @@ class Header extends ViewModel
     }
 
     return new RenderGroup(
-      '<a class="muted brand" href="/">',
-      '<img style="margin-top: -5px;" src="',
+      '<a class="brand" href="/" style="width:190px;padding:0 0 0 16px;">',
+      '<img style="margin-top: 10px; height:25px;" src="',
       $this->imgUrl('/logo.png'), '"/>',
       '</a>',
       '<ul class="nav">',

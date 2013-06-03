@@ -38,20 +38,18 @@
       <td><?php echo $repo->repositoryType; ?></td>
       <td><?php echo number_format($repo->commits()->count(), 0); ?></td>
       <td><?php
-        $phabricator = $repo->diffusionBaseUri;
-        if(empty($phabricator))
+        $diffusion = $this->diffusionUrlCallsign($repo);
+        if($diffusion === null)
         {
           echo 'Not Available';
         }
         else
         {
-          list($phabUri, $callsign) = explode('/r', $phabricator);
-          $diffusionUri = "$phabUri/diffusion/$callsign/";
+          list($diffusionUri, $callsign) = $diffusion;
           ?>
           <a href="<?php echo $diffusionUri; ?>"
              onclick="window.open(this.href); return false;">
-            Browse <?php echo $callsign; ?>
-          </a>
+            Browse <?php echo $callsign; ?></a>
         <?php
         }
         ?></td>

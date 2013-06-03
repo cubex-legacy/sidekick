@@ -28,4 +28,18 @@ class RepositoryIndex extends TemplatedViewModel
   {
     return $this->_repositories;
   }
+
+  public function diffusionUrlCallsign(Source $repo)
+  {
+    $phabricator = $repo->diffusionBaseUri;
+    if(empty($phabricator))
+    {
+      return null;
+    }
+    else
+    {
+      list($phabUri, $callsign) = explode('/r', $phabricator);
+      return ["$phabUri/diffusion/$callsign/", $callsign];
+    }
+  }
 }

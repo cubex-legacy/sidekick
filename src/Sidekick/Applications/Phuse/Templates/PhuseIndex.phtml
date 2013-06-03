@@ -7,38 +7,50 @@
  * var $this \Sidekick\Applications\Phuse\Views\PhuseIndex
  */
 ?>
-<div class="row-fluid">
-  <div class="well alert-info">
-    Phuse is Cubex's own packagists. It's a package manager that aggregates
-    all sorts of Cubex packages that are installable with Composer.
-    Phuse allows you browse and download packages
-  </div>
-  <input class="input-block-level phuse-search" type="text"
-         placeholder="Seek and you shall find...">
+<div class="well alert-info">
+  <p>Phuse is a package manager for your private code repositories.</p>
 
-  <div class="phuse-results well">
-  </div>
-  <div class="well">
-    <h2>Getting Started</h2>
-    <span class="lead">Thou shall Install Composer</span>
+  <p>Versioning of packages is handled through Diffuse,
+     and dev builds can be built into your fortify builds.</p>
+</div>
 
-    <p>Run this in your command line:<br/>
+<input class="input-block-level phuse-search" type="text"
+       placeholder="Seek and you shall find...">
+
+<div class="phuse-results well">
+</div>
+
+<div class="well">
+  <h3>Getting Started</h3>
+
+  <div class="row-fluid">
+
+    <div class="span6">
+      <span class="lead">Thou shall install composer</span>
+
+      <p>Run this in your command line:</p>
       <code>curl -s http://getcomposer.org/installer | php</code>
-    </p>
 
-    <p>Or download composer.phar into your project root.</p>
+      <p><br/>Or download composer.phar into your project root.</p>
 
-    <p>Put a file named composer.json at the root of your project,
-       containing your project dependencies:</p>
+      <p>Put a file named composer.json at the root of your project,
+         containing your project dependencies:</p>
+    </div>
 
-    <span class="lead">...and Add Phuse Repository</span>
+    <div class="span6">
+      <span class="lead">...and add Phuse the repository</span>
 
-    <p>Put a file named composer.json at the root of your project,
-       containing your project dependencies:</p>
+      <p>Put a file named composer.json at the root of your project,
+         containing your project dependencies:</p>
 
-    <p><span class="label label-important">Important!</span>
-      Add the following line to composer.json</p>
-    <code>"repositories": [ { "type": "composer", "url":
-          "http://phuse.sidekick.tld/" } ]</code>
+      <p><span class="label label-important">Important!</span>
+        Add the following line to composer.json</p>
+
+      <code class="pre">"repositories": [{
+                 "type": "composer",
+                 "url": "http://phuse.sidekick.<?php echo url('%t'); ?>/"
+                 }]</code>
+    </div>
+
   </div>
 </div>

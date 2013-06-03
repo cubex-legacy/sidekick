@@ -7,6 +7,7 @@ namespace Sidekick\Components\Repository\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Repository\Enums\RepositoryProvider;
 
 class Source extends RecordMapper
 {
@@ -26,5 +27,10 @@ class Source extends RecordMapper
   public function project()
   {
     return $this->belongsTo(new Project());
+  }
+
+  public function repositoryTypes()
+  {
+    return new RepositoryProvider();
   }
 }

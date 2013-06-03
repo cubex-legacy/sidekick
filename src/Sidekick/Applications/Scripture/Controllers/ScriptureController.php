@@ -10,6 +10,7 @@ use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\Scripture\Views\Scripture;
 use Sidekick\Applications\Scripture\Views\ScriptureRepos;
+use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Mappers\Source;
 
 class ScriptureController extends BaseControl
@@ -61,7 +62,8 @@ class ScriptureController extends BaseControl
   {
     return $this->createView(
       new ScriptureRepos(
-        Source::collection()->setOrderBy("name"), $this->getInt('id')
+        Project::collection()->preFetch('repository')->setOrderBy("name"),
+        $this->getInt('id')
       )
     );
   }

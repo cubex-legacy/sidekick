@@ -5,6 +5,7 @@
 
 namespace Sidekick\Applications\Scripture;
 
+use Bundl\Debugger\DebuggerBundle;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Scripture\Controllers\ScriptureController;
 
@@ -20,6 +21,13 @@ class ScriptureApp extends BaseApp
   public function defaultController()
   {
     return new ScriptureController();
+  }
+
+  public function getBundles()
+  {
+    return [
+      //new DebuggerBundle()
+    ];
   }
 
   public function name()

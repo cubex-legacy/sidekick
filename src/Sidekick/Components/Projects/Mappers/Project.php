@@ -7,6 +7,7 @@ namespace Sidekick\Components\Projects\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
 use Cubex\Sprintf\ParseQuery;
+use Sidekick\Components\Repository\Mappers\Source;
 
 class Project extends RecordMapper
 {
@@ -48,5 +49,10 @@ class Project extends RecordMapper
   public function parent()
   {
     return $this->belongsTo(new Project(), 'parent_id');
+  }
+
+  public function repository()
+  {
+    return $this->hasMany(new Source());
   }
 }

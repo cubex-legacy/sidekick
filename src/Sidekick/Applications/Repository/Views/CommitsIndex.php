@@ -10,20 +10,33 @@
 namespace Sidekick\Applications\Repository\Views;
 
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Repository\Mappers\Commit;
+use Sidekick\Components\Repository\Mappers\Source;
 
 class CommitsIndex extends TemplatedViewModel
 {
-  public $repo;
+  protected $_repo;
   protected $_commits;
 
-  public function __construct($repo, $commits)
+  public function __construct(Source $repo, $commits)
   {
-    $this->repo = $repo;
+    $this->_repo    = $repo;
     $this->_commits = $commits;
   }
 
+  /**
+   * @return Commit[]
+   */
   public function getCommits()
   {
     return $this->_commits;
+  }
+
+  /**
+   * @return Source
+   */
+  public function getRepo()
+  {
+    return $this->_repo;
   }
 }

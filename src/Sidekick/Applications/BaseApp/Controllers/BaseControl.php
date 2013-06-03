@@ -16,6 +16,7 @@ class BaseControl extends WebpageController
   public function preRender()
   {
     $this->setTitle("");
+    $this->requireCss('/base');
     $this->nest("sidebar", $this->getSidebar());
     $this->nest("header", $this->getHeader());
   }

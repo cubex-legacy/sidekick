@@ -48,10 +48,8 @@ class Header extends ViewModel
     }
 
     return new RenderGroup(
-      '<a class="brand" href="/" style="width:190px;padding:0 0 0 16px;">',
-      '<img style="margin-top: 7px;" src="',
-      $this->imgUrl('/logo.png'), '"/>',
-      '</a>',
+      '<a id="sidekick-logo" class="brand" href="/">',
+      ('<img src="' . $this->imgUrl('/logo.png') . '"/></a>'),
       '<ul class="nav">',
       $navItems,
       '</ul>',

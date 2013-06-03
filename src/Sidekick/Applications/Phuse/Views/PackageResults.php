@@ -13,10 +13,15 @@ use Cubex\View\TemplatedViewModel;
 
 class PackageResults extends TemplatedViewModel
 {
-  public $packages;
+  protected $_packages;
 
   public function __construct($packages)
   {
-    $this->packages = $packages;
+    $this->_packages = $packages;
+  }
+
+  public function getPackages()
+  {
+    return $this->_packages;
   }
 }

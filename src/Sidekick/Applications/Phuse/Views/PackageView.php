@@ -9,12 +9,22 @@ use Cubex\View\TemplatedViewModel;
 
 class PackageView extends TemplatedViewModel
 {
-  public $package;
-  public $releases;
+  protected $_package;
+  protected $_releases;
 
   public function __construct($package, $releases)
   {
-    $this->package = $package;
-    $this->releases = $releases;
+    $this->_package = $package;
+    $this->_releases = $releases;
+  }
+
+  public function getPackage()
+  {
+    return $this->_package;
+  }
+
+  public function getReleases()
+  {
+    return $this->_releases;
   }
 }

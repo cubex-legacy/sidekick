@@ -7,20 +7,23 @@
  * @link  https://packagist.org/packages/cubex/cubex
  */
 ?>
-<h2><?php echo $this->package->name; ?></h2>
-<p><?php echo $this->package->description; ?></p>
+<h2><?php echo $this->getPackage()->name; ?></h2>
+<p><?php echo $this->getPackage()->description; ?></p>
 
-<?php foreach($this->releases as $release): ?>
-<fieldset>
-  <legend><?php echo $release->version; ?></legend>
-  <div>
-    <p>require: <code>"<?php echo $this->package->name; ?>" : "<?php echo $release->version; ?>"</code></p>
+<?php foreach($this->getReleases() as $release): ?>
+  <fieldset>
+    <legend><?php echo $release->version; ?></legend>
+    <div>
+      <p>require: <code>"<?php echo $this->getPackage()->name; ?>" :
+                        "<?php echo $release->version; ?>"</code></p>
 
-    <p>Last Updated: <?php echo date('d/M/Y H:i', strtotime($release->updatedAt)); ?></p>
+      <p>Last Updated: <?php echo date(
+          'd/M/Y H:i',
+          strtotime($release->updatedAt)
+        ); ?></p>
 
-    <p>Reference: <?php echo substr($release->zipHash, 0, 6); ?></p>
-  </div>
-</fieldset>
+      <p>Reference: <?php echo substr($release->zipHash, 0, 6); ?></p>
+    </div>
+  </fieldset>
 <?php endforeach; ?>
 <p><a href="/scripture/1/README">View Documentation</a></p>
-

@@ -5,6 +5,7 @@
  */
 namespace Sidekick\Applications\Scripture\Views;
 
+use Cubex\Data\Refine\Refinements\PropertyEqual;
 use Cubex\Helpers\Strings;
 use Cubex\View\HtmlElement;
 use Cubex\View\Partial;
@@ -34,14 +35,16 @@ class ScriptureRepos extends ViewModel
        * @var $project Project
        * @var $source  Source
        */
-      $source = $project->repository()->first();
+      $source = $project->repository()->get()->refine(
+                  [new PropertyEqual('branch', 'master')]
+                )->first();
       if($source !== null)
       {
         $link = $this->baseUri() . '/' . $source->id() . '/README';
         $partial->addElement(
           ($this->_currentRepo == $source->id() ? 'active' : 'inactive'),
           $link,
-          $source->name
+          $project->name
         );
       }
     }

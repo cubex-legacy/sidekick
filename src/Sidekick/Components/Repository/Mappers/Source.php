@@ -15,7 +15,11 @@ class Source extends RecordMapper
    * @enumclass \Sidekick\Components\Repository\Enum\RepositoryProvider
    */
   public $repositoryType;
+  public $diffusionBaseUri;
   public $name;
+  /**
+   * Phabricator Uri e.g. http://phabricator.cubex.io/r{CALLSIGN}
+   */
   public $description;
   public $localpath;
   public $fetchUrl;

@@ -38,7 +38,7 @@ class ScriptureRepos extends ViewModel
       $source = $project->repository()->get()->refine(
                   [new PropertyEqual('branch', 'master')]
                 )->first();
-      if($source !== null)
+      if($source instanceof Source)
       {
         $link = $this->baseUri() . '/' . $source->id() . '/README';
         $partial->addElement(

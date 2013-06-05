@@ -8,24 +8,27 @@ namespace Sidekick\Applications\BaseApp\Views;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
-use Sidekick\Project;
 
 class Sidebar extends ViewModel
 {
-  public function __construct()
+  public function __construct($path, $items = [])
   {
+    $this->_path  = $path;
+    $this->_items = empty($items) ?
+    ['overview/releases' => 'Recent Releases'] :
+    $items;
   }
 
   public function render()
   {
     $navItems = new Partial(
-      '<li><a href="%s">%s</a></li>'
+      '<li class="%s"><a href="%s">%s</a></li>'
     );
 
-    $apps = ['overview/releases' => 'Recent Releases'];
-    foreach($apps as $appPath => $name)
+    foreach($this->_items as $appPath => $name)
     {
-      $navItems->addElement('/' . $appPath, $name);
+      $active = $this->_path == $appPath ? 'active' : '';
+      $navItems->addElement($active, $appPath, $name);
     }
 
     return new RenderGroup(

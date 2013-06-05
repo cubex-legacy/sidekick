@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Fortify\Mappers;
 
 use Cubex\Data\Attribute\Attribute;
+use Cubex\Data\Validator\Validator;
 use Cubex\Mapper\Database\RecordMapper;
 
 class BuildCommand extends RecordMapper
@@ -27,7 +28,6 @@ class BuildCommand extends RecordMapper
   public $fileSetDirectory;
   public $filePattern;
 
-
   public $successExitCodes = [0];
 
   protected function _configure()
@@ -36,5 +36,7 @@ class BuildCommand extends RecordMapper
       Attribute::SERIALIZATION_JSON
     );
     $this->_attribute("args")->setSerializer(Attribute::SERIALIZATION_JSON);
+    $this->_attribute("name")->addValidator(Validator::VALIDATE_NOTEMPTY);
+    $this->_attribute("command")->addValidator(Validator::VALIDATE_NOTEMPTY);
   }
 }

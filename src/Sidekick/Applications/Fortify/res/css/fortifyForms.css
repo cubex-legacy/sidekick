@@ -1,0 +1,25 @@
+form[name='CrudForm']{
+  padding:10px 30px 0 25px;
+  border:1px solid #e3e3e3;
+  border-radius: 4px;
+  background: #f8f8f8;
+}
+
+form .btn {
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+dt{
+  clear:both
+}
+.checkbox label{
+  display:inline;
+}
+.checkbox{
+  margin-bottom: 10px;
+}
+
+.well{
+  box-shadow: none;
+  background: #f8f8f8;
+}

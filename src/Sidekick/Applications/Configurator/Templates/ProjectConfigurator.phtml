@@ -23,7 +23,7 @@
 <div class="clearfix"></div>
 
 <div class="row-fluid">
-  <div class="span7 well">
+  <div class="span8 well">
     <h3>Available Config</h3>
     <?php if(count($this->availableConfigs)): ?>
       <?php foreach($this->availableConfigs as $groupName => $configItems): ?>
@@ -68,8 +68,8 @@
 
 
   </div>
-  <div class="span3 well">
-    <h3>Your <?php echo ucwords($this->currentEnvironment->name) ?> Config</h3>
+  <div class="span4 well">
+    <h3><?php echo ucwords($this->currentEnvironment->name) ?> Config</h3>
     <?php foreach($this->environmentConfig as $groupName => $items): ?>
       <div style="margin-bottom:5px;">
         <p style="margin:0;"><b><?php echo $groupName; ?></b></p>

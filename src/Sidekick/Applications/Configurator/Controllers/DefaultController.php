@@ -7,7 +7,6 @@ namespace Sidekick\Applications\Configurator\Controllers;
 
 use Cubex\Form\Form;
 use Cubex\Facade\Redirect;
-use Cubex\Mapper\Database\RecordCollection;
 use Sidekick\Applications\Configurator\Views\ConfigGroupView;
 use Sidekick\Applications\Configurator\Views\ConfigItemsManager;
 use Sidekick\Applications\Configurator\Views\IniPreview;

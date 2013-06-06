@@ -16,6 +16,13 @@ use Sidekick\Components\Configure\Mappers\Environment;
 class EnvironmentsController extends ConfiguratorController
 {
 
+  public function preRender()
+  {
+    parent::preRender();
+    $this->requireCssPackage('environments');
+    $this->requireJs('environment');
+  }
+
   public function renderIndex()
   {
     $envs = Environment::collection()->loadAll();

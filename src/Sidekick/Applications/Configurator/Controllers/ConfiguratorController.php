@@ -16,8 +16,7 @@ class ConfiguratorController extends BaseControl
   public function preRender()
   {
     parent::preRender();
-    $this->requireCss('base');
-    $this->requireJs('environment');
+    $this->requireCssPackage('configurator');
     $this->requireJs('project');
 
     $this->nest('sidebar', new Sidebar());

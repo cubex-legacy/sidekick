@@ -1,0 +1,25 @@
+.jump-links{
+  font-size:11px;
+}
+.jump-links span{
+  font-weight: bold;
+  display: inline-block;
+}
+.jump-links ul
+{
+  margin:0;
+  padding:0;
+  list-style: none;
+  display: inline-block;
+
+}
+
+.jump-links li{
+  display: inline-block;
+  padding:2px;
+}
+
+.jump-links a{
+  color:#222;
+  text-decoration: underline;
+}

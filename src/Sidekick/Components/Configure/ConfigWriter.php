@@ -52,6 +52,6 @@ class ConfigWriter
       $content .= PHP_EOL;
     }
 
-    print_r($content);
+    return $content;
   }
 }

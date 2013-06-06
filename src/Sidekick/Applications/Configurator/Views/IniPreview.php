@@ -5,12 +5,17 @@
 
 namespace Sidekick\Applications\Configurator\Views;
 
+use Cubex\View\Partial;
+use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
 use Sidekick\Components\Configure\ConfigWriter;
 use Sidekick\Components\Projects\Mappers\Project;
 
 class IniPreview extends ViewModel
 {
+  /**
+   * @var $project Project
+   */
   public $project;
   public $envs;
   public $configArray;
@@ -24,32 +29,34 @@ class IniPreview extends ViewModel
 
   public function render()
   {
-    echo '<h1>Preview</h1>';
-    echo $this->getBreadcrumbs();
     $cw = new ConfigWriter();
+
+    $configOutput = new Partial("<h3>%s</h3><pre>%s</pre>");
     foreach($this->envs as $env)
     {
-      //make input safe, incase we don't have any config defined
+      //make $input safe, in case we don't have any config defined
       //for a particular environment
       $input = isset($this->configArray[$env->name]) ?
         $this->configArray[$env->name] : [];
 
       ksort($input);
-
-      echo "<h3>$env->filename</h3>";
-      echo "<pre>";
-      $cw->buildIni($input, true);
-      echo "</pre>";
+      $configOutput->addElement($env->filename, $cw->buildIni($input, true));
     }
+
+    return new RenderGroup(
+      '<h1>Preview</h1>',
+      $this->getBreadcrumbs(),
+      $configOutput
+    );
   }
 
   public function getBreadcrumbs()
   {
-    $parentProject = new Project($this->project->parentId);
+    $parentProject = $this->project->parent();
 
     $breadcrumbs = new Breadcrumbs();
     $breadcrumbs->addItem('All Projects', $this->baseUri());
-    if($parentProject->exists())
+    if($parentProject)
     {
       $breadcrumbs->addItem(
         $parentProject->name,

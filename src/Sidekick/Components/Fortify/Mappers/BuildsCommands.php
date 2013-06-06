@@ -14,7 +14,7 @@ class BuildsCommands extends PivotMapper
 
   protected function _configure()
   {
-    $this->pivotOn(new Build(), new BuildCommand());
+    $this->pivotOn(new Build(), new Command());
     $this->_attribute("dependencies")->setSerializer(
       Attribute::SERIALIZATION_JSON
     );

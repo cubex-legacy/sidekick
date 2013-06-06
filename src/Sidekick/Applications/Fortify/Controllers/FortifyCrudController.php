@@ -19,7 +19,7 @@ use Sidekick\Applications\BaseApp\Views\Alert;
 use Sidekick\Applications\Fortify\Views\CommandExample;
 use Sidekick\Applications\Fortify\Views\FortifyCommandForm;
 use Sidekick\Applications\Fortify\Views\FortifyForm;
-use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\Command;
 
 class FortifyCrudController extends MapperController
 {
@@ -61,7 +61,7 @@ class FortifyCrudController extends MapperController
       }
     }
     $this->_mapper->hydrate($post);
-    if($this->_mapper instanceof BuildCommand)
+    if($this->_mapper instanceof Command)
     {
       if(!$this->postVariables('cause_build_failure'))
       {
@@ -92,7 +92,7 @@ class FortifyCrudController extends MapperController
   {
     $this->_mapper->load($id);
     $example = '';
-    if($this->_mapper instanceof BuildCommand)
+    if($this->_mapper instanceof Command)
     {
       $example = new CommandExample($this->_mapper, false);
     }
@@ -116,7 +116,7 @@ class FortifyCrudController extends MapperController
 
   public function renderNew()
   {
-    if($this->_mapper instanceof BuildCommand)
+    if($this->_mapper instanceof Command)
     {
       $form = new FortifyCommandForm($this->_mapper, $this->baseUri());
     }
@@ -138,7 +138,7 @@ class FortifyCrudController extends MapperController
     $this->requireJs('addField');
 
     $this->_mapper->load($id);
-    if($this->_mapper instanceof BuildCommand)
+    if($this->_mapper instanceof Command)
     {
       $form = new CommandExample($this->_mapper, true);
       $form .= new FortifyCommandForm($this->_mapper, $this->baseUri());

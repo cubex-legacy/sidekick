@@ -7,14 +7,14 @@ namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\View\HtmlElement;
 use Cubex\View\ViewModel;
-use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\Command;
 
 class CommandExample extends ViewModel
 {
   protected $_mapper;
   protected $_float;
 
-  public function __construct(BuildCommand $mapper, $float = true)
+  public function __construct(Command $mapper, $float = true)
   {
     $this->_mapper = $mapper;
     $this->_float  = $float;

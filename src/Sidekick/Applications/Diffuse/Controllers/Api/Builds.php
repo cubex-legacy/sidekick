@@ -7,7 +7,7 @@ namespace Sidekick\Applications\Diffuse\Controllers\Api;
 
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use Sidekick\Components\Fortify\Enums\BuildResult;
-use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 
 class Builds extends DiffuseController
@@ -32,7 +32,7 @@ class Builds extends DiffuseController
         $runningCommand = end($buildRun->commands);
         if(is_int($runningCommand))
         {
-          $command = new BuildCommand($runningCommand);
+          $command = new Command($runningCommand);
           $msg     = $command->name;
         }
         else

@@ -8,7 +8,7 @@ namespace Sidekick\Cli\Fortify;
 use Cubex\Cli\CliCommand;
 use Sidekick\Components\Fortify\Enums\BuildLevel;
 use Sidekick\Components\Fortify\Mappers\Build;
-use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Fortify\Mappers\Patch;
@@ -26,7 +26,7 @@ class SampleData extends CliCommand
     $build->sourceDirectory = 'sourcecode/';
     $build->saveChanges();
 
-    $command                   = new BuildCommand(1);
+    $command                   = new Command(1);
     $command->command          = 'php';
     $command->args             = ['-l'];
     $command->name             = 'PHP Lint';
@@ -40,7 +40,7 @@ class SampleData extends CliCommand
     $bc->dependencies = [3, 9];
     $bc->saveChanges();
 
-    $command              = new BuildCommand(2);
+    $command              = new Command(2);
     $command->name        = 'PHP Unit';
     $command->command     = 'phpunit';
     $command->args        = [
@@ -55,7 +55,7 @@ class SampleData extends CliCommand
     $bc->dependencies = [1];
     $bc->saveChanges();
 
-    $command              = new BuildCommand(3);
+    $command              = new Command(3);
     $command->name        = 'Make Build Directory';
     $command->command     = 'mkdir';
     $command->args        = [
@@ -68,7 +68,7 @@ class SampleData extends CliCommand
     $bc = new BuildsCommands([$build, $command]);
     $bc->saveChanges();
 
-    $command              = new BuildCommand(4);
+    $command              = new Command(4);
     $command->command     = 'phploc';
     $command->args        = [
       '--log-csv logs/phploc.csv',
@@ -82,7 +82,7 @@ class SampleData extends CliCommand
     $bc->dependencies = [1];
     $bc->saveChanges();
 
-    $command                    = new BuildCommand(5);
+    $command                    = new Command(5);
     $command->name              = 'PHP MD';
     $command->causeBuildFailure = false;
     $command->command           = 'phpmd';
@@ -99,7 +99,7 @@ class SampleData extends CliCommand
     $bc->dependencies = [7];
     $bc->saveChanges();
 
-    $command              = new BuildCommand(6);
+    $command              = new Command(6);
     $command->name        = 'PHPCS';
     $command->command     = 'phpcs';
     $command->args        = [
@@ -117,7 +117,7 @@ class SampleData extends CliCommand
     $bc->dependencies = [1];
     $bc->saveChanges();
 
-    $command              = new BuildCommand(7);
+    $command              = new Command(7);
     $command->name        = 'PHPCPD';
     $command->command     = 'phpcpd';
     $command->args        = [
@@ -131,7 +131,7 @@ class SampleData extends CliCommand
     $bc->dependencies = [1];
     $bc->saveChanges();
 
-    $command              = new BuildCommand(8);
+    $command              = new Command(8);
     $command->name        = 'PDepend';
     $command->command     = 'pdepend';
     $command->args        = [
@@ -148,7 +148,7 @@ class SampleData extends CliCommand
     $bc->dependencies = [1];
     $bc->saveChanges();
 
-    $command              = new BuildCommand(9);
+    $command              = new Command(9);
     $command->name        = 'Composer Install';
     $command->command     = 'composer';
     $command->args        = [
@@ -163,7 +163,7 @@ class SampleData extends CliCommand
     $bc->dependencies = [3];
     $bc->saveChanges();
 
-    $command              = new BuildCommand(10);
+    $command              = new Command(10);
     $command->name        = 'Phuse';
     $command->command     = 'php {CUBEX_BIN} Phuse.CreateBuild';
     $command->args        = [

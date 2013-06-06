@@ -12,7 +12,7 @@ use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
 use Cubex\Helpers\System;
 use Sidekick\Components\Fortify\Enums\BuildResult;
-use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
@@ -187,7 +187,7 @@ class Build extends CliCommand
   {
     $lineSplitter = $this->_lineSplit;
     $this->_testsRun++;
-    $command = new BuildCommand($commandId);
+    $command = new Command($commandId);
 
     echo "\n\n$lineSplitter\n";
     echo " Running " . $command->name;
@@ -235,7 +235,7 @@ class Build extends CliCommand
     return true;
   }
 
-  protected function _processCommand(BuildLog $log, BuildCommand $command)
+  protected function _processCommand(BuildLog $log, Command $command)
   {
     $args = null;
     if(is_array($command->args))

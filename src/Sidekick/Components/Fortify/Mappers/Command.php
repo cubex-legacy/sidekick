@@ -9,7 +9,7 @@ use Cubex\Data\Attribute\Attribute;
 use Cubex\Data\Validator\Validator;
 use Cubex\Mapper\Database\RecordMapper;
 
-class BuildCommand extends RecordMapper
+class Command extends RecordMapper
 {
   /**
    * @length 255

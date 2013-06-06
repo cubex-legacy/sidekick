@@ -10,7 +10,7 @@ use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Fortify\Controllers\FortifyCrudController;
 use Sidekick\Applications\Fortify\Controllers\FortifyController;
 use Sidekick\Components\Fortify\Mappers\Build;
-use Sidekick\Components\Fortify\Mappers\BuildCommand;
+use Sidekick\Components\Fortify\Mappers\Command;
 
 class FortifyApp extends BaseApp
 {
@@ -36,7 +36,7 @@ class FortifyApp extends BaseApp
         new Build(), ['name', 'description', 'build_level', 'source_directory']
       ),
       'commands/(.*)' => new FortifyCrudController(
-        new BuildCommand(), ['id', 'name', 'command']
+        new Command(), ['id', 'name', 'command']
       )
     ];
   }

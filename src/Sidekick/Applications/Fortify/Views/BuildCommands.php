@@ -9,7 +9,9 @@
 
 namespace Sidekick\Applications\Fortify\Views;
 
+use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Fortify\Mappers\Command;
 
 class BuildCommands extends TemplatedViewModel
 {
@@ -23,5 +25,22 @@ class BuildCommands extends TemplatedViewModel
   public function getBuildCommands()
   {
     return $this->_buildCommands;
+  }
+
+  public function printDependencies($dependencies = [])
+  {
+    $output = '';
+    if(is_array($dependencies))
+    {
+      $c = Command::collection()->loadIds($dependencies);
+
+      $output = new RenderGroup(
+        '<ul><li>',
+        implode('</li><li>',$c->getUniqueField("name")),
+        '</li></ul>'
+      );
+    }
+
+    return $output;
   }
 }

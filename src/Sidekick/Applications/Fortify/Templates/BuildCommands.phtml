@@ -34,9 +34,9 @@
       <td><?= $command->command()->name; ?></td>
       <td><?= $command->command()->description; ?></td>
       <td>
-        <?php if(is_array($command->dependencies)): ?>
-        <?= implode(',', $command->dependencies); ?>
-        <?php endif; ?>
+        <small>
+          <?= $this->printDependencies($command->dependencies); ?>
+        </small>
       </td>
       <td>
         <a href="<?= '/fortify/buildCommands/' . $command->commandId.'/'.$command->buildId.'/delete'; ?>"

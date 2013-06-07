@@ -29,15 +29,23 @@ class FortifyApp extends BaseApp
     return new FortifyController();
   }
 
+  public function getBundles()
+  {
+    return [
+      //      new DebuggerBundle()
+    ];
+  }
+
   public function getRoutes()
   {
     return [
-      'builds/(.*)'   => new FortifyCrudController(
+      'builds/(.*)'        => new FortifyCrudController(
         new Build(), ['name', 'description', 'build_level', 'source_directory']
       ),
-      'commands/(.*)' => new FortifyCrudController(
+      'commands/(.*)'      => new FortifyCrudController(
         new Command(), ['id', 'name', 'command']
-      )
+      ),
+      'buildCommands/(.*)' => 'FortifyBuildCommandsController'
     ];
   }
 }

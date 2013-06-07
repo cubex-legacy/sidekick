@@ -1,0 +1,40 @@
+<?php
+/**
+ * @author: oke.ugwu
+ * @var $this \Sidekick\Applications\Fortify\Views\AddBuildCommandsForm
+ */
+?>
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+      ×
+    </button>
+    <h3 id="myModalLabel">Add Command to Build</h3>
+  </div>
+  <div class="modal-body">
+    <?= $this->form()->open(); ?>
+    <?= $this->form()->token(); ?>
+    <?= $this->form()->formNameInput(); ?>
+    <?= $this->form()->getElement('buildId'); ?>
+    <table>
+      <tr>
+        <td>Command</td>
+        <td><?= $this->form()->getElement('command_id'); ?></td>
+      </tr>
+      <tr>
+        <td colspan="2">Select Dependencies for command</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <?= $this->form()->getElement('dependencies[]'); ?>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary">Save changes</button>
+  </div>
+</div>
+<?= $this->form()->close(); ?>

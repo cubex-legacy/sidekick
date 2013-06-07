@@ -1,0 +1,11 @@
+/*style dependencies checkbox to float nicely into 3 columns*/
+.dep-checkboxes input
+{
+  margin-right:5px;
+}
+
+.dep-checkboxes label{
+  float:left;
+  padding:5px;
+  width:150px;
+}

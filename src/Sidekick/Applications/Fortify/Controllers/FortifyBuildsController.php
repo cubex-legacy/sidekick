@@ -1,0 +1,84 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: oke.ugwu
+ * Date: 07/06/13
+ * Time: 11:25
+ * To change this template use File | Settings | File Templates.
+ */
+
+namespace Sidekick\Applications\Fortify\Controllers;
+
+use Cubex\Mapper\Database\RecordCollection;
+use Cubex\View\RenderGroup;
+use Sidekick\Applications\BaseApp\Views\MappersTable;
+use Sidekick\Applications\Fortify\Views\AddBuildCommandsForm;
+use Sidekick\Applications\Fortify\Views\BuildCommands;
+use Sidekick\Applications\Fortify\Views\CommandExample;
+use Sidekick\Applications\Fortify\Views\FortifyForm;
+use Sidekick\Components\Fortify\Mappers\BuildsCommands;
+use Sidekick\Components\Fortify\Mappers\Command;
+
+class FortifyBuildsController extends FortifyCrudController
+{
+  public function renderShow($id = 0)
+  {
+    $this->_mapper->load($id);
+    $example = '';
+    if($this->_mapper instanceof Command)
+    {
+      $example = new CommandExample($this->_mapper, false);
+    }
+    $tbl = new MappersTable(
+      $this->baseUri(),
+      (new RecordCollection($this->_mapper, [$this->_mapper])),
+      $this->_listColumns
+    );
+    return new RenderGroup($this->mapperNav(), $example, $tbl);
+  }
+
+  public function setErrors($errors)
+  {
+    $this->_errors = $errors;
+  }
+
+  public function getErrors()
+  {
+    return $this->_errors;
+  }
+
+  public function renderNew()
+  {
+    $form = new FortifyForm($this->_mapper, $this->baseUri());
+
+    return new RenderGroup(
+      $this->mapperNav('/', 'Show List'),
+      $this->getAlert(),
+      $form
+    );
+  }
+
+  public function renderEdit($id = 0)
+  {
+    $this->requireJsLibrary('jquery');
+    $this->requireJs('addField');
+
+    $form                = new FortifyForm($this->_mapper, $this->baseUri());
+    $buildCommands       = BuildsCommands::collection(['build_id' => $id]);
+    $buildCommandsView   = $this->createView(
+      new BuildCommands($buildCommands)
+    );
+    $commands            = Command::collection()->loadAll()->getKeyPair(
+      'id',
+      'name'
+    );
+    $addCommandModalForm = new AddBuildCommandsForm($id, $commands);
+
+    return new RenderGroup(
+      $this->mapperNav(),
+      $form,
+      $addCommandModalForm,
+      $buildCommandsView
+    );
+  }
+}

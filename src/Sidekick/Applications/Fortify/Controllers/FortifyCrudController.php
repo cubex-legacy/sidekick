@@ -16,9 +16,12 @@ use Sidekick\Applications\BaseApp\Controllers\MapperController;
 use Sidekick\Applications\BaseApp\Views\MappersTable;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\BaseApp\Views\Alert;
+use Sidekick\Applications\Fortify\Views\AddBuildCommandsForm;
+use Sidekick\Applications\Fortify\Views\BuildCommands;
 use Sidekick\Applications\Fortify\Views\CommandExample;
 use Sidekick\Applications\Fortify\Views\FortifyCommandForm;
 use Sidekick\Applications\Fortify\Views\FortifyForm;
+use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 use Sidekick\Components\Fortify\Mappers\Command;
 
 class FortifyCrudController extends MapperController
@@ -133,10 +136,10 @@ class FortifyCrudController extends MapperController
 
   public function renderEdit($id = 0)
   {
-
     $this->requireJsLibrary('jquery');
     $this->requireJs('addField');
 
+    $buildCommandsView = $addCommandModalForm = '';
     $this->_mapper->load($id);
     if($this->_mapper instanceof Command)
     {
@@ -145,11 +148,20 @@ class FortifyCrudController extends MapperController
     }
     else
     {
-      $form = new FortifyForm($this->_mapper, $this->baseUri());
+      $form                = new FortifyForm($this->_mapper, $this->baseUri());
+      $buildCommands       = BuildsCommands::collection(['build_id' => $id]);
+      $buildCommandsView   = $this->createView(
+        new BuildCommands($buildCommands)
+      );
+      $commands    = Command::collection()->loadAll()->getKeyPair('id', 'name');
+      $addCommandModalForm = new AddBuildCommandsForm($id, $commands);
     }
+
     return new RenderGroup(
       $this->mapperNav(),
-      $form
+      $form,
+      $addCommandModalForm,
+      $buildCommandsView
     );
   }
 

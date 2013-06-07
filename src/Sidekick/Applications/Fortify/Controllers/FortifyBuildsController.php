@@ -56,6 +56,8 @@ class FortifyBuildsController extends FortifyCrudController
     $this->requireJs('addField');
     $this->requireCss('buildCommandModal');
 
+    $this->_mapper->load($id);
+
     $form                = new FortifyForm($this->_mapper, $this->baseUri());
     $buildCommands       = BuildsCommands::collection(['build_id' => $id]);
     $buildCommandsView   = $this->createView(

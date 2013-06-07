@@ -5,6 +5,7 @@
 
 namespace Sidekick\Applications\Fortify\Controllers;
 
+use Cubex\Routing\Templates\ResourceTemplate;
 use Cubex\View\Partial;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
@@ -25,5 +26,10 @@ class FortifyController extends BaseControl
     $p->addElement('/fortify/builds', 'Builds');
     $p->addElement('/fortify/commands', 'Commands');
     return '<h3 class="span12">Code Build and Testing</h3><br />'.$p;
+  }
+
+  public function getRoutes()
+  {
+    return ResourceTemplate::getRoutes();
   }
 }

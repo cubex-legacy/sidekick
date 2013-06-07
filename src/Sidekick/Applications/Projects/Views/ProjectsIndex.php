@@ -20,6 +20,9 @@ class ProjectsIndex extends TemplatedViewModel
     $this->_projects = $projects;
   }
 
+  /**
+   * @return \Sidekick\Components\Projects\Mappers\Project[]
+   */
   public function getProjects()
   {
     return $this->_projects;

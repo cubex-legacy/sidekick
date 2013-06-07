@@ -19,4 +19,9 @@ class BuildsCommands extends PivotMapper
       Attribute::SERIALIZATION_JSON
     );
   }
+
+  public function command()
+  {
+    return $this->belongsTo(new Command(), 'command_id');
+  }
 }

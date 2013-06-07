@@ -38,16 +38,6 @@ class FortifyCommandsController extends FortifyCrudController
     return new RenderGroup($this->mapperNav(), $example, $tbl);
   }
 
-  public function setErrors($errors)
-  {
-    $this->_errors = $errors;
-  }
-
-  public function getErrors()
-  {
-    return $this->_errors;
-  }
-
   public function renderNew()
   {
     $form = new FortifyCommandForm($this->_mapper, $this->baseUri());
@@ -61,7 +51,6 @@ class FortifyCommandsController extends FortifyCrudController
 
   public function renderEdit($id = 0)
   {
-    $this->requireJsLibrary('jquery');
     $this->requireJs('addField');
 
     $this->_mapper->load($id);

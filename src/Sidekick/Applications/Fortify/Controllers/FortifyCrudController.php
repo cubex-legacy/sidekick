@@ -136,7 +136,6 @@ class FortifyCrudController extends MapperController
 
   public function renderEdit($id = 0)
   {
-    $this->requireJsLibrary('jquery');
     $this->requireJs('addField');
 
     $buildCommandsView = $addCommandModalForm = '';

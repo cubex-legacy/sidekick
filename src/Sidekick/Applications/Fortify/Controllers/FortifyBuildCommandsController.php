@@ -31,6 +31,15 @@ class FortifyBuildCommandsController extends FortifyController
     $buildCommand->dependencies = $postData['dependencies'];
     $buildCommand->saveChanges();
 
+    //add dependencies to build commands
+    foreach($postData['dependencies'] as $depCommandId)
+    {
+      $buildCommand               = new BuildsCommands();
+      $buildCommand->commandId    = $depCommandId;
+      $buildCommand->buildId      = $postData['buildId'];
+      $buildCommand->saveChanges();
+    }
+
     Redirect::to('/fortify/builds/' . $postData['buildId'] . '/edit')->now();
   }
 

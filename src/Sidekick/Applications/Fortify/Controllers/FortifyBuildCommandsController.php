@@ -36,7 +36,7 @@ class FortifyBuildCommandsController extends FortifyController
 
   public function renderUpdate()
   {
-   //todo at some point, when it becomes an important feature :)
+    //todo at some point, when it becomes an important feature :)
   }
 
   public function renderDelete()
@@ -53,11 +53,14 @@ class FortifyBuildCommandsController extends FortifyController
   public function getRoutes()
   {
     //extending ResourceTemplate routes
-    $routes   = parent::getRoutes();
-    $routes[] = new StdRoute('/create', 'create');
-    $routes[] = new StdRoute('/:commandId/:buildId/delete', 'delete');
+    $routes         = parent::getRoutes();
 
-    //reverse array so override takes priority
-    return array_reverse($routes);
+    //put overrides on top of routes so they take priority
+    array_unshift($routes,
+      new StdRoute('/create', 'create'),
+      new StdRoute('/:commandId/:buildId/delete', 'delete')
+    );
+
+    return $routes;
   }
 }

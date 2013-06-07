@@ -51,8 +51,13 @@ class Project extends RecordMapper
     return $this->belongsTo(new Project(), 'parent_id');
   }
 
-  public function repository()
+  public function repositories()
   {
     return $this->hasMany(new Source());
+  }
+
+  public function repository()
+  {
+    return $this->hasMany(new Source())->whereEq("branch", "master")->first();
   }
 }

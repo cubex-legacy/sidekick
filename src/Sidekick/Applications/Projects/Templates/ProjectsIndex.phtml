@@ -35,11 +35,13 @@
         <div class="jump-links">
           <span>Jump to:</span>
           <ul>
+            <?php if($project->repository() !== null): ?>
             <li>
-              <a href="/repository/commits/<?= $project->id(); ?>">
+              <a href="/repository/commits/<?= $project->repository()->id(); ?>">
                 Repository
               </a>
             </li>
+            <?php endif; ?>
             <li>
               <a href="/configurator/project/<?= $project->id(); ?>">
                 Configurator

@@ -5,6 +5,7 @@
 
 namespace Sidekick\Applications\Fortify;
 
+use Bundl\Debugger\DebuggerBundle;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Fortify\Controllers\FortifyController;
 
@@ -28,7 +29,7 @@ class FortifyApp extends BaseApp
   public function getBundles()
   {
     return [
-      //      new DebuggerBundle()
+//      new DebuggerBundle()
     ];
   }
 

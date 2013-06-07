@@ -35,7 +35,7 @@ class ScriptureRepos extends ViewModel
        * @var $project Project
        * @var $source  Source
        */
-      $source = $project->repository()->get()->refine(
+      $source = $project->repositories()->get()->refine(
                   [new PropertyEqual('branch', 'master')]
                 )->first();
       if($source instanceof Source)

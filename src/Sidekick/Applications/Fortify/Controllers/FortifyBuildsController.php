@@ -16,11 +16,20 @@ use Sidekick\Applications\Fortify\Views\AddBuildCommandsForm;
 use Sidekick\Applications\Fortify\Views\BuildCommands;
 use Sidekick\Applications\Fortify\Views\CommandExample;
 use Sidekick\Applications\Fortify\Views\FortifyForm;
+use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 use Sidekick\Components\Fortify\Mappers\Command;
 
 class FortifyBuildsController extends FortifyCrudController
 {
+  public function __construct()
+  {
+    parent::__construct(
+      new Build(),
+      ['name', 'description', 'build_level', 'source_directory']
+    );
+  }
+
   public function renderShow($id = 0)
   {
     $this->_mapper->load($id);

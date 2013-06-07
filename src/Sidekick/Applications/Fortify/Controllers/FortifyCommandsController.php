@@ -14,9 +14,18 @@ use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Views\MappersTable;
 use Sidekick\Applications\Fortify\Views\CommandExample;
 use Sidekick\Applications\Fortify\Views\FortifyCommandForm;
+use Sidekick\Components\Fortify\Mappers\Command;
 
 class FortifyCommandsController extends FortifyCrudController
 {
+  public function __construct()
+  {
+    parent::__construct(
+      new Command(),
+      ['id', 'name', 'command']
+    );
+  }
+
   public function renderShow($id = 0)
   {
     $this->_mapper->load($id);

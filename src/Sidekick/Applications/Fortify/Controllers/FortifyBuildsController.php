@@ -14,7 +14,6 @@ use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Views\MappersTable;
 use Sidekick\Applications\Fortify\Views\AddBuildCommandsForm;
 use Sidekick\Applications\Fortify\Views\BuildCommands;
-use Sidekick\Applications\Fortify\Views\CommandExample;
 use Sidekick\Applications\Fortify\Views\FortifyForm;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
@@ -33,27 +32,12 @@ class FortifyBuildsController extends FortifyCrudController
   public function renderShow($id = 0)
   {
     $this->_mapper->load($id);
-    $example = '';
-    if($this->_mapper instanceof Command)
-    {
-      $example = new CommandExample($this->_mapper, false);
-    }
     $tbl = new MappersTable(
       $this->baseUri(),
       (new RecordCollection($this->_mapper, [$this->_mapper])),
       $this->_listColumns
     );
-    return new RenderGroup($this->mapperNav(), $example, $tbl);
-  }
-
-  public function setErrors($errors)
-  {
-    $this->_errors = $errors;
-  }
-
-  public function getErrors()
-  {
-    return $this->_errors;
+    return new RenderGroup($this->mapperNav(), $tbl);
   }
 
   public function renderNew()
@@ -69,7 +53,6 @@ class FortifyBuildsController extends FortifyCrudController
 
   public function renderEdit($id = 0)
   {
-    $this->requireJsLibrary('jquery');
     $this->requireJs('addField');
     $this->requireCss('buildCommandModal');
 

@@ -16,12 +16,14 @@ class AddBuildCommandsForm extends TemplatedViewModel
 {
   protected $_buildId;
   protected $_allCommands;
+  protected $_unAssignedCommits;
   protected $_form;
 
-  public function __construct($buildId, $allCommands)
+  public function __construct($buildId, $unAssignedCommits, $allCommands)
   {
     $this->_buildId     = $buildId;
     $this->_allCommands = $allCommands;
+    $this->_unAssignedCommits = $unAssignedCommits;
   }
 
   public function form()
@@ -29,7 +31,7 @@ class AddBuildCommandsForm extends TemplatedViewModel
     $this->_form = new Form('addBuildCommand', '/fortify/buildCommands/create');
     $this->_form->setDefaultElementTemplate('{{input}}');
     $this->_form->addHiddenElement('buildId', $this->_buildId);
-    $this->_form->addSelectElement('commandId', $this->_allCommands);
+    $this->_form->addSelectElement('commandId', $this->_unAssignedCommits);
 
     $this->_form->addCheckboxElements('dependencies[]', '', $this->_allCommands)
     ->setElementTemplate('<div class="dep-checkboxes">{{input}}</div>');

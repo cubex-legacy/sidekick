@@ -25,7 +25,7 @@ class FortifyController extends BaseControl
 
   public function getSidebar()
   {
-    $projects    = Project::collection()->loadAll();
+    $projects    = Project::collection()->loadAll()->setOrderBy('name');
     $sidebarMenu = [];
     foreach($projects as $project)
     {

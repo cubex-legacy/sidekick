@@ -72,8 +72,14 @@ class FortifyBuildsController extends FortifyCrudController
       'name'
     );
 
-    $buildCommandsView   = $this->createView(new BuildCommands($buildCommands));
-    $addCommandModalForm = new AddBuildCommandsForm($id, $unAssignedCommands, $allCommands);
+    $buildCommandsView   = $this->createView(
+      new BuildCommands($buildCommands)
+    );
+    $addCommandModalForm = new AddBuildCommandsForm(
+      $id,
+      $unAssignedCommands,
+      $allCommands
+    );
 
     return new RenderGroup(
       $this->mapperNav(),

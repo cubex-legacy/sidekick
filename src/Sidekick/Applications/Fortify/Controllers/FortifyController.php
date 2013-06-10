@@ -37,7 +37,7 @@ class FortifyController extends BaseControl
   public function renderIndex()
   {
     return new RenderGroup(
-      '<h1>Thou shall fortify their castle</h1>',
+      '<h1>Thou shall fortify thy castle</h1>',
       '<p>Select a Project to fortify from the left</p>'
     );
   }

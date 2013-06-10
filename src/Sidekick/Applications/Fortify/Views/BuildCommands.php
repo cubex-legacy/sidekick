@@ -10,6 +10,7 @@
 namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\Helpers\DependencyArray;
+use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\BaseApp\Views\Alert;
@@ -51,12 +52,12 @@ class BuildCommands extends TemplatedViewModel
     $output = '';
     if(is_array($dependencies))
     {
-      $c = Command::collection()->loadIds($dependencies);
-
+      $c      = Command::collection()->loadIds($dependencies);
+      $list   = new Partial('<li>%s</li>');
       $output = new RenderGroup(
-        '<ul><li>',
-        implode('</li><li>', $c->getUniqueField("name")),
-        '</li></ul>'
+        '<ul>',
+        $list->addElements($c->getUniqueField("name")),
+        '</ul>'
       );
     }
 

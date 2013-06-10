@@ -5,15 +5,23 @@
  */
 ?>
 <?php foreach($this->getCommandsRun() as $commandRun): ?>
-<b><?= $commandRun->command->command; ?><?= (is_array($commandRun->command->args))? implode(' ', $commandRun->command->args) : '' ?></b>
-<?php if($commandRun->passed): ?>
-<div class="well">
-  <strong>Exit Code:</strong><?= $commandRun->exitCode; ?>
-  <code class="console"><?= implode('<br/>', $commandRun->commandOutput); ?></code>
-</div>
-<?php else: ?>
-<div class="well">
-  <p class="text-success">Command Passed :)</p>
-</div>
-<?php endif; ?>
+  <strong>
+    <?= $commandRun->command->command; ?>
+    <?= (is_array($commandRun->command->args)) ? implode(
+      ' ',
+      $commandRun->command->args
+    ) : '' ?>
+  </strong>
+  <?php if($commandRun->passed): ?>
+    <div class="well">
+      <p class="text-success">Command Passed :)</p>
+    </div>
+  <?php else: ?>
+    <div class="well">
+      <strong>Exit Code:</strong><?= $commandRun->exitCode; ?>
+      <code class="console">
+        <?= implode('<br/>', $commandRun->commandOutput); ?>
+      </code>
+    </div>
+  <?php endif; ?>
 <?php endforeach; ?>

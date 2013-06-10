@@ -5,7 +5,7 @@
 
 namespace Sidekick\Components\Fortify\Mappers;
 
-use Cubex\Mapper\Cassandra\CassandraMapper;
+use Cubex\Cassandra\CassandraMapper;
 
 class BuildLog extends CassandraMapper
 {

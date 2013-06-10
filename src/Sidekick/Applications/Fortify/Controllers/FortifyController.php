@@ -6,7 +6,6 @@
 namespace Sidekick\Applications\Fortify\Controllers;
 
 use Cubex\Routing\StdRoute;
-use Cubex\Routing\Templates\ResourceTemplate;
 use Cubex\View\HtmlElement;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
@@ -62,16 +61,6 @@ class FortifyController extends BaseControl
       ['/builds' => 'Builds', '/commands' => 'Commands']
     );
 
-    //list failed builds
-    $failedBuilds     = BuildRun::collection(
-                          [
-                          'build_id'   => $buildType,
-                          'project_id' => $projectId,
-                          'result'     => 'fail'
-                          ]
-                        )->setOrderBy('created_at', 'DESC');
-    $failedBuildsList = new BuildRunsList($failedBuilds);
-
     //list all build runs
     $allBuilds     = BuildRun::collection(
                        ['build_id' => $buildType, 'project_id' => $projectId]
@@ -84,8 +73,6 @@ class FortifyController extends BaseControl
       '<ul class="nav nav-tabs">',
       $tabItems,
       '</ul>',
-      '<h1>Failed Builds</h1>',
-      $failedBuildsList,
       '<h1>Build History</h1>',
       $allBuildsList
     );
@@ -139,9 +126,9 @@ class FortifyController extends BaseControl
     //put overrides on top of routes so they take priority
     array_unshift(
       $routes,
-      new StdRoute('/buildRun/:runId', 'runDetails'),
       new StdRoute('/:projectId', 'fortify'),
-      new StdRoute('/:projectId/:buildType', 'fortify')
+      new StdRoute('/:projectId/:buildType', 'fortify'),
+      new StdRoute('/:projectId/:buildType/:runId', 'runDetails')
     );
 
     return $routes;

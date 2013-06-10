@@ -6,12 +6,14 @@
 namespace Sidekick;
 
 use Cubex\Core\Application\Application;
+use Cubex\Core\Http\Request;
 use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
 use Sidekick\Applications\Fortify\FortifyApp;
 use Sidekick\Applications\Overview\OverviewApp;
 use Sidekick\Applications\Phuse\PhuseApp;
+use Sidekick\Applications\PreviewApp\PreviewApp;
 use Sidekick\Applications\Projects\ProjectsApp;
 use Sidekick\Applications\Repository\RepositoryApp;
 use Sidekick\Applications\Scripture\ScriptureApp;
@@ -30,6 +32,16 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('diffuse', new DiffuseApp());
     $this->addApplication('dispatcher', new DispatcherApp());
     $this->addApplication('scripture', new ScriptureApp());
+  }
+
+  public function getApplication(Request $req)
+  {
+    if($_SERVER['HTTP_X_PURPOSE'] == 'preview' || $req->path() == '/preview')
+    {
+      return new PreviewApp();
+    }
+
+    return parent::getApplication($req);
   }
 
   public function addApplication($path, Application $application)

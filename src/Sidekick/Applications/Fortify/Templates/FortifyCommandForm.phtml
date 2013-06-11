@@ -1,0 +1,128 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 11/06/13 14:05
+ * @var $this \Sidekick\Applications\Fortify\Views\FortifyCommandForm
+ */
+?>
+<?= $this->form()->open(); ?>
+<div class="row-fluid">
+  <div class="well span12">
+    <fieldset class="span6">
+      <legend>About Command</legend>
+      <table>
+        <tr>
+          <td>Name:</td>
+          <td>
+            <?= $this->form()->getElement('name'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td>Description:</td>
+          <td>
+            <?= $this->form()->getElement('description'); ?>
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+
+    <fieldset class="span6">
+      <legend>Command Definition</legend>
+      <table>
+        <tr>
+          <td>Command:</td>
+          <td>
+            <?= $this->form()->getElement('command'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">Arguments:</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <?php if(is_array($this->_command->args)): ?>
+              <?php for($i = 0; $i <= count($this->_command->args); $i++): ?>
+                <?= $this->form()->getElement("args[$i]"); ?>
+              <?php endfor; ?>
+            <?php else: ?>
+              <?= $this->form()->getElement("args[0]"); ?>
+            <?php endif; ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><?= $this->form()->getElement('add_args'); ?></td>
+        </tr>
+      </table>
+    </fieldset>
+  </div>
+</div>
+<div class="row-fluid">
+  <div class="well span12">
+    <fieldset class="span6">
+      <legend>Build Files</legend>
+      <table>
+        <tr>
+          <td>File Set Directory:</td>
+          <td>
+            <?= $this->form()->getElement('file_set_directory'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td>File Pattern:</td>
+          <td>
+            <?= $this->form()->getElement('file_pattern'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td>Run on File Set:</td>
+          <td>
+            <?=
+            $this->form()->getElement('run_on_file_set')->setRenderTemplate(
+              '{{input}}'
+            ); ?>
+          </td>
+        </tr>
+      </table>
+    </fieldset>
+
+
+    <fieldset class="span6">
+      <legend>Build Runtime</legend>
+      <table>
+        <tr>
+          <td width="120">Cause Build Failure:</td>
+          <td>
+            <?= $this->form()->getElement('cause_build_failure'); ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">Success Exit Codes:</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <?php if($count = count($this->_command->success_exit_codes)): ?>
+              <?php for($i = 0; $i <= $count; $i++): ?>
+                <?= $this->form()->getElement("success_exit_codes[$i]") ?>
+              <?php endfor; ?>
+            <?php else: ?>
+              <?= $this->form()->getElement("success_exit_codes[0]"); ?>
+            <?php endif; ?>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><?=
+            $this->form()->getElement(
+              'add_success_exit_codes'
+            ); ?></td>
+        </tr>
+      </table>
+    </fieldset>
+  </div>
+  <?= $this->form()->getElement('submit')->addAttribute(
+    'class',
+    'btn btn-primary btn-large pull-right'
+  ); ?>
+</div>
+<?= $this->form()->close(); ?>

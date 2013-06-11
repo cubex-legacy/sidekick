@@ -7,46 +7,104 @@ namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\Form\Form;
 use Cubex\Form\FormElement;
+use Cubex\Helpers\Inflection;
 use Cubex\Helpers\Strings;
+use Cubex\View\TemplatedViewModel;
 
-class FortifyCommandForm extends FortifyForm
+class FortifyCommandForm extends TemplatedViewModel
 {
+  protected $_command;
+  /**
+   * @var $_form \Cubex\Form\Form
+   */
+  protected $_form;
 
-  protected function _buildForm($id = null)
+  public function __construct($command)
   {
-    $id   = $id ? $id : '';
-    $form = new Form("CrudForm", $this->_baseUri . '/' . $id);
-    $form->addAttribute('class', 'pull-left');
-    $form->addHiddenElement('id', $id);
-    $form->addTextElement('command', $this->_mapper->command);
-    $form->addTextElement('name', $this->_mapper->name);
-    $form->addTextElement('description', $this->_mapper->description);
-    $form->addTextElement(
-      'file_set_directory',
-      $this->_mapper->fileSetDirectory
-    );
-    $form->addTextElement('file_pattern', $this->_mapper->filePattern);
-
-    $this->_addArrayElementToForm($form, 'success_exit_codes');
-    $this->_addArrayElementToForm($form, 'args');
-
-    $form->addElement('cause_build_failure', FormElement::CHECKBOX);
-    $form->getElement('cause_build_failure')
-    ->setChecked($this->_mapper->causeBuildFailure)
-    ->setRenderTemplate("<dd class='checkbox'>{{input}}</dd>");
-
-    $form->addElement('run_on_file_set', FormElement::CHECKBOX);
-    $form->getElement('run_on_file_set')
-    ->setChecked($this->_mapper->runOnFileSet)
-    ->setRenderTemplate("<dd class='checkbox'>{{input}}</dd>");
-
-    $form->addSubmitElement('submit');
-    $form->getElement('submit')->addAttribute('class', 'btn btn-primary');
-    return $form;
+    $this->_command = $command;
   }
 
-  public function render()
+  public function form()
   {
-    return $this->_buildForm($this->_mapper->id());
+    $this->_form = new Form("fortifyCommandForm", $this->baseUri() . '/');
+    $this->_form->setDefaultElementTemplate('{{input}}');
+    $this->_form->setLabelPosition(Form::LABEL_NONE);
+
+    $this->_form->addHiddenElement('id', $this->_command->id());
+
+    $this->_form->addTextElement('name', $this->_command->name);
+    $this->_form->addTextElement('command', $this->_command->command);
+    $this->_form->addTextElement('description', $this->_command->description);
+    $this->_form->addTextElement('file_pattern', $this->_command->filePattern);
+    $this->_form->addTextElement(
+      'file_set_directory',
+      $this->_command->fileSetDirectory
+    );
+
+    $this->_addArrayElementToForm('success_exit_codes');
+    $this->_addArrayElementToForm('args');
+
+    $this->_form->addCheckboxElement(
+      'run_on_file_set',
+      $this->_command->runOnFileSet,
+      true
+    );
+    $this->_form->addCheckboxElement(
+      'cause_build_failure',
+      $this->_command->causeBuildFailure,
+      true
+    );
+
+    $this->_form->addSubmitElement('submit');
+    $this->_form->getElement('submit')->addAttribute(
+      'class',
+      'btn btn-primary'
+    );
+    return $this->_form;
+  }
+
+  protected function _addArrayElementToForm($elementName)
+  {
+    if(!empty($this->_command->$elementName))
+    {
+      $i = 0;
+      //not adding an index overwrites it
+      foreach($this->_command->$elementName as $arg)
+      {
+        $this->_form->addTextElement(
+          $elementName . '[' . $i . ']',
+          $arg
+        );
+        if($i == 0)
+        {
+          $this->_form->getElement($elementName . '[' . $i . ']')
+          ->setLabel(Strings::titleize($elementName))
+          ->setLabelPosition(Form::LABEL_BEFORE);
+        }
+        $i++;
+      }
+    }
+    else
+    {
+      $this->_form->addTextElement($elementName . '[0]');
+    }
+
+    $buttonText = 'Add ' . Inflection::singularise(
+        Strings::titleize($elementName)
+      );
+
+    $this->_form->addElement(
+      'add_' . $elementName,
+      FormElement::BUTTON,
+      $buttonText,
+      [],
+      Form::LABEL_NONE
+    );
+
+    $this->_form->getElement("add_$elementName")->addAttribute(
+      'class',
+      'btn btn-info'
+    )
+    ->addAttribute('data-field-to-add', $elementName);
   }
 }

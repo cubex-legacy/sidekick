@@ -7,6 +7,7 @@ namespace Sidekick\Applications\BaseApp\Controllers;
 
 use Cubex\Data\Attribute;
 use Cubex\Form\Form;
+use Cubex\Helpers\Inflection;
 use Cubex\Helpers\Strings;
 use Cubex\Mapper\Database\RecordCollection;
 use Cubex\Mapper\Database\RecordMapper;
@@ -18,11 +19,13 @@ use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Views\MappersTable;
 use Sidekick\Applications\BaseApp\Views\Alert;
+use Sidekick\Applications\Fortify\Views\FortifyMapperList;
 use Sidekick\Components\Helpers\Paginator;
 
 abstract class MapperController extends BaseControl
 {
   protected $_mapper;
+  protected $_title;
   protected $_listColumns;
 
   public function __construct(
@@ -31,6 +34,33 @@ abstract class MapperController extends BaseControl
   {
     $this->_mapper      = $mapper;
     $this->_listColumns = $listColumns;
+  }
+
+  public function renderIndex($page = 1)
+  {
+    $collection = new RecordCollection($this->_mapper);
+    $collection->loadAll();
+
+    $perpage = 5;
+    //cloning because if i count it loads the collection then i can't limit
+    $cloneToCount = clone $collection;
+    $count        = $cloneToCount->count();
+    $paginator    = $this->_getPaginator($page, $count, $perpage);
+    $offset       = $paginator->getOffset();
+    $collection->setLimit($offset, $perpage);
+
+    $mapperTable = new MappersTable(
+      $this->baseUri(), $collection, $this->_listColumns
+    );
+
+    return $this->createView(
+      new FortifyMapperList(
+        $this->_title,
+        $mapperTable,
+        $paginator,
+        $this->getAlert()
+      )
+    );
   }
 
   abstract public function renderEdit();
@@ -53,29 +83,6 @@ abstract class MapperController extends BaseControl
       $this->_listColumns
     );
     return new RenderGroup($this->mapperNav(), $tbl);
-  }
-
-  public function renderIndex($page = 1)
-  {
-    $collection = new RecordCollection($this->_mapper);
-    $collection->loadAll();
-
-    $perpage = 5;
-    //cloning because if i count it loads the collection then i can't limit
-    $cloneToCount = clone $collection;
-    $count        = $cloneToCount->count();
-    $paginator    = $this->_getPaginator($page, $count, $perpage);
-    $offset       = $paginator->getOffset();
-    $collection->setLimit($offset, $perpage);
-    return new RenderGroup(
-      $this->mapperNav(['/new' => 'Create New +']),
-      new MappersTable(
-        $this->baseUri(),
-        $collection,
-        $this->_listColumns
-      ),
-      $paginator->getPager()
-    );
   }
 
   protected function _getPaginator(

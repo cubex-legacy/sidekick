@@ -18,6 +18,8 @@ use Sidekick\Components\Fortify\Mappers\Command;
 
 class FortifyCommandsController extends FortifyCrudController
 {
+  protected $_title = 'Command';
+
   public function __construct()
   {
     parent::__construct(
@@ -40,27 +42,27 @@ class FortifyCommandsController extends FortifyCrudController
 
   public function renderNew()
   {
-    $form = new FortifyCommandForm($this->_mapper, $this->baseUri());
+    $view = $this->createView(new FortifyCommandForm($this->_mapper));
 
     return new RenderGroup(
-      $this->mapperNav('/', 'Show List'),
+      '<h1>New ' . $this->_title . '</h1>',
       $this->getAlert(),
-      $form
+      $view
     );
   }
 
   public function renderEdit($id = 0)
   {
     $this->requireJs('addField');
-
     $this->_mapper->load($id);
 
-    $form = new CommandExample($this->_mapper, true);
-    $form .= new FortifyCommandForm($this->_mapper, $this->baseUri());
+    $view    = $this->createView(new FortifyCommandForm($this->_mapper));
+    $example = new CommandExample($this->_mapper, true);
 
     return new RenderGroup(
-      $this->mapperNav(),
-      $form
+      '<h1>Edit '.$this->_title.'</h1>',
+      $example,
+      $view
     );
   }
 }

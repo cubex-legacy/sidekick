@@ -49,7 +49,14 @@ class Update extends CliCommand
 
   public function execute()
   {
-    $repos = Strings::stringToRange($this->repositories);
+    if($this->repositories === 'all')
+    {
+      $repos = Source::collection()->get()->loadedIds();
+    }
+    else
+    {
+      $repos = Strings::stringToRange($this->repositories);
+    }
     foreach($repos as $repoId)
     {
       $this->_currentRepoId = $repoId;

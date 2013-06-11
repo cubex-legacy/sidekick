@@ -30,12 +30,13 @@ class CommandExample extends ViewModel
     if(!empty($this->_mapper->successExitCodes))
     {
       $out .= '<br /><br />Success Exit Codes: ';
-
-        $out .= implode('&nbsp;&nbsp; , &nbsp;&nbsp;', $this->_mapper->successExitCodes);
-
+      $out .= implode(
+        '&nbsp;&nbsp; , &nbsp;&nbsp;',
+        $this->_mapper->successExitCodes
+      );
     }
-    $pull = $this->_float ? 'pull-right span6' : '';
-    $wrap = new HtmlElement('div', ['class' => "well $pull"], $out);
+
+    $wrap = new HtmlElement('div', ['class' => "well"], $out);
     return $wrap;
   }
 }

@@ -16,13 +16,11 @@ use Sidekick\Applications\BaseApp\Controllers\MapperController;
 use Sidekick\Applications\BaseApp\Views\MappersTable;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\BaseApp\Views\Alert;
-use Sidekick\Applications\Fortify\Views\AddBuildCommandsForm;
-use Sidekick\Applications\Fortify\Views\BuildCommands;
 use Sidekick\Applications\Fortify\Views\CommandExample;
 use Sidekick\Applications\Fortify\Views\FortifyCommandForm;
 use Sidekick\Applications\Fortify\Views\FortifyForm;
-use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 use Sidekick\Components\Fortify\Mappers\Command;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class FortifyCrudController extends MapperController
 {
@@ -33,13 +31,29 @@ class FortifyCrudController extends MapperController
   {
     parent::preRender();
     $this->requireCss('fortifyForms');
+    $this->requireJs('addField');
   }
 
   public function getSidebar()
   {
-    return new Sidebar(
+    $projects    = Project::collection()->loadAll()->setOrderBy('name');
+    $sidebarMenu = [];
+    foreach($projects as $project)
+    {
+      $sidebarMenu['/fortify/' . $project->id] = $project->name;
+    }
+
+    $main = new Sidebar(
       $this->request()->path(2),
-      ['/fortify/builds' => 'Builds', '/fortify/commands' => 'Commands']
+      ['/fortify/builds'  => 'Manage Builds',
+      '/fortify/commands' => 'Manage Commands'
+      ]
+    );
+
+    return new RenderGroup(
+      $main,
+      '<hr>',
+      new Sidebar($this->request()->path(2), $sidebarMenu)
     );
   }
 
@@ -136,32 +150,6 @@ class FortifyCrudController extends MapperController
 
   public function renderEdit($id = 0)
   {
-    $this->requireJs('addField');
-
-    $buildCommandsView = $addCommandModalForm = '';
-    $this->_mapper->load($id);
-    if($this->_mapper instanceof Command)
-    {
-      $form = new CommandExample($this->_mapper, true);
-      $form .= new FortifyCommandForm($this->_mapper, $this->baseUri());
-    }
-    else
-    {
-      $form                = new FortifyForm($this->_mapper, $this->baseUri());
-      $buildCommands       = BuildsCommands::collection(['build_id' => $id]);
-      $buildCommandsView   = $this->createView(
-        new BuildCommands($buildCommands)
-      );
-      $commands    = Command::collection()->loadAll()->getKeyPair('id', 'name');
-      $addCommandModalForm = new AddBuildCommandsForm($id, $commands);
-    }
-
-    return new RenderGroup(
-      $this->mapperNav(),
-      $form,
-      $addCommandModalForm,
-      $buildCommandsView
-    );
   }
 
   public function renderCreate()
@@ -170,7 +158,7 @@ class FortifyCrudController extends MapperController
     if($result === true)
     {
       $id = $this->_mapper->id();
-      \Redirect::to($this->baseUri() . '/' . $id)->now();
+      \Redirect::to($this->baseUri() . '/' . $id . '/edit')->now();
     }
     else
     {

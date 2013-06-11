@@ -8,11 +8,12 @@ namespace Sidekick\Cli\Fortify;
 use Cubex\Cli\CliCommand;
 use Cubex\Cli\Shell;
 use Cubex\Facade\Queue;
-use Cubex\Helpers\System;
 use Cubex\Log\Log;
 use Cubex\Queue\CallableQueueConsumer;
 use Cubex\Queue\StdQueue;
+use Sidekick\Components\Fortify\Enums\BuildLevel;
 use Symfony\Component\Process\Process;
+use Sidekick\Components\Fortify\Mappers\Build;
 
 /**
  * Run Build Queue
@@ -36,20 +37,64 @@ class BuildQueue extends CliCommand
 
   public function runBuild($queue, $data)
   {
-    Log::debug("Entering Build Run for repo: " . $data->respositoryId);
-    $cwd     = getcwd();
-    $rawArgs = ['Fortify.Build', '-b', '1', '-p', $data->respositoryId];
-    if($this->verbose)
+    if(isset($data->buildId))
     {
-      $rawArgs[] = '-v';
+      $buildIds = [$data->buildId];
     }
-    Log::debug("Starting Build");
-    //TODO: Run in separate process
-    $build = new Build($this->_loader, $rawArgs);
-    $build->execute();
-    Log::debug("Executed Build");
-    chdir($cwd);
-    Log::debug("Completed Build Run");
+    else if(isset($data->buildIds))
+    {
+      $buildIds = $data->buildIds;
+    }
+    else
+    {
+      $buildIds = Build::collection(['build_level' => BuildLevel::BUILD])
+                  ->get()->loadedIds();
+    }
+
+    Log::debug("Build IDs Available: " . implode(',', $buildIds));
+
+    foreach($buildIds as $buildId)
+    {
+      Log::debug("Entering Build Run for repo: " . $data->respositoryId);
+      $cwd     = getcwd();
+      $rawArgs = [
+        'Fortify.Build',
+        '-b',
+        $buildId,
+        '-p',
+        $data->respositoryId
+      ];
+
+      if($this->verbose)
+      {
+        $rawArgs[] = '-v';
+      }
+
+      Log::debug("Starting Build");
+
+      $command = 'php ' . WEB_ROOT . DS . 'cubex ' . implode(' ', $rawArgs);
+
+      Log::debug("Executing: $command");
+
+      $process = new Process($command);
+      if($this->verbose)
+      {
+        $process->run(
+          function ($type, $buffer)
+          {
+            echo $buffer;
+          }
+        );
+      }
+      else
+      {
+        $process->run();
+      }
+
+      Log::debug("Executed Build (Exit Code: " . $process->getExitCode() . ")");
+      chdir($cwd);
+      Log::debug("Completed Build Run");
+    }
     return true;
   }
 }

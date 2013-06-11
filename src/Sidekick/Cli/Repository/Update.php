@@ -37,11 +37,13 @@ class Update extends CliCommand
    */
   public $longInterval = 10;
 
+  protected $_pidFile;
+
   protected $_currentRepoId;
 
   public function longRun()
   {
-    new PidFile();
+    $this->_pidFile = new PidFile();
     while(true)
     {
       $this->execute();

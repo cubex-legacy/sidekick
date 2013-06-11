@@ -23,11 +23,13 @@ class BuildQueue extends CliCommand
 {
   public $verbose;
 
+  protected $_pidFile;
+
   protected $_echoLevel = 'debug';
 
   public function execute()
   {
-    new PidFile();
+    $this->_pidFile = new PidFile();
     Log::debug("Starting Queue Consumer");
     $queue = new StdQueue('BuildRequest');
     Queue::consume(

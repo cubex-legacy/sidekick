@@ -6,13 +6,11 @@
 namespace Sidekick\Applications\Fortify\Controllers;
 
 use Cubex\Routing\StdRoute;
-use Cubex\View\HtmlElement;
-use Cubex\View\Partial;
-use Cubex\View\RenderGroup;
+use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Fortify\Views\BuildRunDetails;
-use Sidekick\Applications\Fortify\Views\BuildRunsList;
+use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -35,62 +33,24 @@ class FortifyController extends BaseControl
 
   public function renderIndex()
   {
-    return new RenderGroup(
-      '<h1>Thou shall fortify thy castle</h1>',
-      '<p>Select a Project to fortify from the left</p>'
-    );
+    return new TemplatedView("Index", $this);
   }
 
   public function renderFortify()
   {
     $projectId = $this->getInt('projectId');
     $buildType = $this->getInt('buildType', 1);
-    $tabItems  = new Partial('<li class="%s"><a href="%s">%s</a></li>');
-    $builds    = Build::collection()->loadAll();
-    foreach($builds as $b)
-    {
-      $state = ($b->id() == $buildType) ? 'active' : '';
-      $tabItems->addElement(
-        $state,
-        '/fortify/' . $projectId . '/' . $b->id(),
-        $b->name
-      );
-    }
 
-    $buttonGroup = $this->_buttonGroup(
-      ['/builds' => 'Builds', '/commands' => 'Commands']
-    );
-
+    $builds = Build::collection()->loadAll();
     //list all build runs
-    $allBuilds     = BuildRun::collection(
-                       ['build_id' => $buildType, 'project_id' => $projectId]
-                     )->setOrderBy('created_at', 'DESC');
-    $allBuildsList = new BuildRunsList($allBuilds);
+    $allBuilds = BuildRun::collection(
+                   ['build_id' => $buildType, 'project_id' => $projectId]
+                 )->setOrderBy('created_at', 'DESC');
 
-    return new RenderGroup(
-      '<h1>Code Build and Testing</h1>',
-      $buttonGroup,
-      '<ul class="nav nav-tabs">',
-      $tabItems,
-      '</ul>',
-      '<h1>Build History</h1>',
-      $allBuildsList
-    );
-  }
-
-  private function _buttonGroup($buttons = [])
-  {
-    $partial = new Partial(
-      '<a class="btn" href="%s"><i class="icon-wrench"></i> %s</a>'
-    );
-
-    foreach($buttons as $href => $txt)
-    {
-      $partial->addElement($this->baseUri() . '/' . ltrim($href, '/'), $txt);
-    }
-
-    return new RenderGroup(
-      new HtmlElement('div', ['class' => "pull-right btn-group"], $partial)
+    return $this->createView(
+      new BuildsPage(
+        $projectId, $buildType, $builds, $allBuilds
+      )
     );
   }
 

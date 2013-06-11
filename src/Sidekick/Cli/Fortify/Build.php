@@ -170,6 +170,9 @@ class Build extends CliCommand
     $buildRun->endTime = new \DateTime();
     $buildRun->saveChanges();
 
+    $buildProject->lastCommitHash = $buildRun->commitHash;
+    $buildProject->saveChanges();
+
     $this->_buildResults($buildRun);
 
     if(!System::isWindows())

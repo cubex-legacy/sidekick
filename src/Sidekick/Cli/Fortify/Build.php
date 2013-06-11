@@ -80,6 +80,10 @@ class Build extends CliCommand
     $project      = new Project($projectId);
     $build        = new \Sidekick\Components\Fortify\Mappers\Build($buildId);
     $buildProject = new BuildsProjects([$build, $project]);
+    if($buildProject->buildSourceId < 1)
+    {
+      $buildProject->buildSourceId = $project->repository('master')->id();
+    }
 
     $buildRun            = new BuildRun();
     $buildRun->buildId   = $build->id();
@@ -417,6 +421,12 @@ class Build extends CliCommand
         $process->setTimeout($this->timeout);
         $process->run([$log, 'writeBuffer']);
         $log->exitCode = $process->getExitCode();
+        break;
+      default:
+        throw new \Exception(
+          "The repository type '" . $source->repositoryType . "' " .
+          "is currently unsupported"
+        );
     }
 
     $log->endTime = microtime(true);

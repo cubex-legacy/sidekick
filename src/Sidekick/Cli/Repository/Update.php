@@ -7,6 +7,7 @@ namespace Sidekick\Cli\Repository;
 
 use Bundl\Debugger\DebuggerBundle;
 use Cubex\Cli\CliCommand;
+use Cubex\Cli\PidFile;
 use Cubex\Cli\Shell;
 use Cubex\Facade\Queue;
 use Cubex\Helpers\Strings;
@@ -40,6 +41,7 @@ class Update extends CliCommand
 
   public function longRun()
   {
+    new PidFile();
     while(true)
     {
       $this->execute();

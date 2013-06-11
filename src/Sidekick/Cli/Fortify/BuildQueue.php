@@ -6,6 +6,7 @@
 namespace Sidekick\Cli\Fortify;
 
 use Cubex\Cli\CliCommand;
+use Cubex\Cli\PidFile;
 use Cubex\Cli\Shell;
 use Cubex\Facade\Queue;
 use Cubex\Log\Log;
@@ -26,6 +27,7 @@ class BuildQueue extends CliCommand
 
   public function execute()
   {
+    new PidFile();
     Log::debug("Starting Queue Consumer");
     $queue = new StdQueue('BuildRequest');
     Queue::consume(

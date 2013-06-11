@@ -27,10 +27,15 @@ class FortifyCommandForm extends TemplatedViewModel
   public function form()
   {
     $this->_form = new Form("fortifyCommandForm", $this->baseUri() . '/');
+    if($this->_command->id())
+    {
+      $this->_form = new Form("fortifyCommandForm", $this->baseUri(
+        ) . '/' . $this->_command->id());
+      $this->_form->addHiddenElement('id', $this->_command->id());
+    }
+
     $this->_form->setDefaultElementTemplate('{{input}}');
     $this->_form->setLabelPosition(Form::LABEL_NONE);
-
-    $this->_form->addHiddenElement('id', $this->_command->id());
 
     $this->_form->addTextElement('name', $this->_command->name);
     $this->_form->addTextElement('command', $this->_command->command);

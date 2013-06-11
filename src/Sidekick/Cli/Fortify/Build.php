@@ -142,7 +142,7 @@ class Build extends CliCommand
        * @var $com BuildsCommands
        */
       $dependencies->add(
-        $com->getData("buildcommand_id"),
+        $com->getData("command_id"),
         $com->getData("dependencies")
       );
       $this->_totalTests++;

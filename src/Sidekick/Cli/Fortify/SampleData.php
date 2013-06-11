@@ -165,8 +165,9 @@ class SampleData extends CliCommand
 
     $command              = new Command(10);
     $command->name        = 'Phuse';
-    $command->command     = 'php {CUBEX_BIN} Phuse.CreateBuild';
+    $command->command     = 'php {CUBEX_BIN} --cubex-env={CUBEX_ENV}';
     $command->args        = [
+      'Phuse.CreateBuild',
       '--path={sourcedirectory}',
       '--version=dev-{branch}'
     ];

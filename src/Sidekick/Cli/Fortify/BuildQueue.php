@@ -58,6 +58,7 @@ class BuildQueue extends CliCommand
       Log::debug("Entering Build Run for repo: " . $data->respositoryId);
       $cwd     = getcwd();
       $rawArgs = [
+        '--cubex-env=' . CUBEX_ENV,
         'Fortify.Build',
         '-b',
         $buildId,

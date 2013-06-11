@@ -260,11 +260,13 @@ class Build extends CliCommand
       [
       '{sourcedirectory}',
       '{CUBEX_BIN}',
+      '{CUBEX_ENV}',
       '{branch}'
       ],
       [
       $this->_buildPath . DS . $this->_buildSourceDir,
       WEB_ROOT . DS . 'cubex',
+      CUBEX_ENV,
       $this->_branch
       ],
       $runCommand

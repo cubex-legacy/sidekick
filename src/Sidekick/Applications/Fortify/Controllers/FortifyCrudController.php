@@ -175,7 +175,10 @@ class FortifyCrudController extends MapperController
     $result = $this->_saveMapper();
     if($result === true)
     {
-      \Redirect::to($this->baseUri() . '/' . $id)->now();
+      \Redirect::to($this->baseUri() . '/')->with(
+        'msg',
+        ['type' => Alert::TYPE_SUCCESS, 'msg' => 'Item Updated']
+      )->now();
     }
     else
     {

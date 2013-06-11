@@ -29,7 +29,7 @@ class FortifyApp extends BaseApp
   public function getBundles()
   {
     return [
-//      new DebuggerBundle()
+      //      new DebuggerBundle()
     ];
   }
 
@@ -38,7 +38,8 @@ class FortifyApp extends BaseApp
     return [
       'builds/(.*)'        => 'FortifyBuildsController',
       'commands/(.*)'      => 'FortifyCommandsController',
-      'buildCommands/(.*)' => 'FortifyBuildCommandsController'
+      'buildCommands/(.*)' => 'FortifyBuildCommandsController',
+      'repository/(.*)'    => 'FortifyRepositoryController'
     ];
   }
 }

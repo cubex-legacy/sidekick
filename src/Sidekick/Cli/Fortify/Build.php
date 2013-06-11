@@ -170,8 +170,12 @@ class Build extends CliCommand
     $buildRun->endTime = new \DateTime();
     $buildRun->saveChanges();
 
-    $buildProject->lastCommitHash = $buildRun->commitHash;
-    $buildProject->saveChanges();
+    //Only update commit hash if its the pure repo source
+    if($this->patch === null)
+    {
+      $buildProject->lastCommitHash = $buildRun->commitHash;
+      $buildProject->saveChanges();
+    }
 
     $this->_buildResults($buildRun);
 

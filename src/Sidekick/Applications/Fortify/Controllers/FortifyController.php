@@ -5,7 +5,9 @@
 
 namespace Sidekick\Applications\Fortify\Controllers;
 
+use Cubex\Form\Form;
 use Cubex\Routing\StdRoute;
+use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
@@ -14,8 +16,10 @@ use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
+use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Repository\Mappers\Source;
 
 class FortifyController extends BaseControl
 {
@@ -28,7 +32,20 @@ class FortifyController extends BaseControl
     {
       $sidebarMenu['/fortify/' . $project->id] = $project->name;
     }
-    return new Sidebar($this->request()->path(2), $sidebarMenu);
+
+    $main = new Sidebar(
+      $this->request()->path(2),
+      [
+      '/fortify/builds'   => 'Manage Builds',
+      '/fortify/commands' => 'Manage Commands'
+      ]
+    );
+
+    return new RenderGroup(
+      $main,
+      '<hr>',
+      new Sidebar($this->request()->path(2), $sidebarMenu)
+    );
   }
 
   public function renderIndex()

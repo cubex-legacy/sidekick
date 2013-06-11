@@ -21,6 +21,8 @@ use Sidekick\Components\Fortify\Mappers\Command;
 
 class FortifyBuildsController extends FortifyCrudController
 {
+  protected $_title = 'Build';
+
   public function __construct()
   {
     parent::__construct(
@@ -45,32 +47,37 @@ class FortifyBuildsController extends FortifyCrudController
     $form = new FortifyForm($this->_mapper, $this->baseUri());
 
     return new RenderGroup(
-      $this->mapperNav('/', 'Show List'),
-      $this->getAlert(),
+      '<h1>New ' . $this->_title . '</h1>',
       $form
     );
   }
 
   public function renderEdit($id = 0)
   {
-    $this->requireJs('addField');
     $this->requireCss('buildCommandModal');
 
     $this->_mapper->load($id);
 
-    $form               = new FortifyForm($this->_mapper, $this->baseUri());
-    $buildCommands      = BuildsCommands::collection(['build_id' => $id]);
-    $buildCommandsIds   = $buildCommands->getUniqueField("command_id");
-    $unAssignedCommands = Command::collection()->loadWhere(
-                            "%C NOT IN (%Ld)",
-                            "id",
-                            $buildCommandsIds
-                          )->getKeyPair('id', 'name');
-
-    $allCommands = Command::collection()->loadAll()->getKeyPair(
+    $form             = new FortifyForm($this->_mapper, $this->baseUri());
+    $allCommands      = Command::collection()->loadAll()->getKeyPair(
       'id',
       'name'
     );
+
+    $buildCommands    = BuildsCommands::collection(['build_id' => $id]);
+    if($buildCommands->count())
+    {
+      $buildCommandsIds = $buildCommands->getUniqueField("command_id");
+      $unAssignedCommands = Command::collection()->loadWhere(
+                              "%C NOT IN (%Ld)",
+                              "id",
+                              $buildCommandsIds
+                            )->getKeyPair('id', 'name');
+    }
+    else
+    {
+      $unAssignedCommands = $allCommands;
+    }
 
     $buildCommandsView   = $this->createView(
       new BuildCommands($buildCommands)

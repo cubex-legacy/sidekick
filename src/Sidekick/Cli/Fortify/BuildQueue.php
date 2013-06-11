@@ -13,6 +13,7 @@ use Cubex\Log\Log;
 use Cubex\Queue\CallableQueueConsumer;
 use Cubex\Queue\StdQueue;
 use Sidekick\Components\Fortify\Enums\BuildLevel;
+use Sidekick\Components\Repository\Mappers\Source;
 use Symfony\Component\Process\Process;
 use Sidekick\Components\Fortify\Mappers\Build;
 
@@ -57,6 +58,8 @@ class BuildQueue extends CliCommand
 
     Log::debug("Build IDs Available: " . implode(',', $buildIds));
 
+    $project = (new Source($data->respositoryId))->projectId;
+
     foreach($buildIds as $buildId)
     {
       Log::debug("Entering Build Run for repo: " . $data->respositoryId);
@@ -67,7 +70,7 @@ class BuildQueue extends CliCommand
         '-b',
         $buildId,
         '-p',
-        $data->respositoryId
+        $project
       ];
 
       if($this->verbose)

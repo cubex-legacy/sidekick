@@ -10,8 +10,8 @@ jQuery(document).ready(
           i++;
         }
         var field = $('[name="' + fieldToAdd + '[' + i + ']"]');
-        var clone = field.parent().clone();
-        clone.find('input').attr('name', fieldToAdd + '[' + (i + 1) + ']').val('');
-        clone.insertAfter(field.parent());
+        var clone = field.clone();
+        clone.attr('name', fieldToAdd + '[' + (i + 1) + ']').val('');
+        clone.insertAfter(field);
       });
   });

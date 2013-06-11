@@ -23,3 +23,15 @@ dt{
   box-shadow: none;
   background: #f8f8f8;
 }
+
+fieldset
+{
+  font-size:12px;
+}
+
+legend
+{
+  border-bottom: none;
+  font-size:16px;
+  font-weight:bold;
+}

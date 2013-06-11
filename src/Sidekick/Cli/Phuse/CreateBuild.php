@@ -58,8 +58,6 @@ class CreateBuild extends CliCommand
     $package->saveChanges();
 
     $release              = new Release([$package->id(), $this->version]);
-    $release->packageId   = $package->id();
-    $release->version     = $this->version;
     $release->zipLocation = $zipLoc;
     $release->zipHash     = md5_file($zipLoc);
     $release->saveChanges();

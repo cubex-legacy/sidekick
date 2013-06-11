@@ -51,14 +51,18 @@ class BuildsPage extends ViewModel
   private function _buttonGroup()
   {
     $partial = new Partial(
-      '<a class="btn" href="%s"><i class="icon-wrench"></i> %s</a>'
+      '<a class="btn" href="%s"> %s</a>'
     );
 
-    $buttons = ['/builds' => 'Builds', '/commands' => 'Commands'];
+    $repoLink = $this->_projectId . '/' . $this->_buildType . '/repository';
+    $buttons  = [$repoLink => 'Repository'];
+
     foreach($buttons as $href => $txt)
     {
       $partial->addElement($this->baseUri() . '/' . ltrim($href, '/'), $txt);
     }
+
+    $partial = '<span class="btn"><i class="icon-wrench"></i></span>' . $partial;
 
     return new RenderGroup(
       new HtmlElement('div', ['class' => "pull-right btn-group"], $partial)
@@ -68,7 +72,7 @@ class BuildsPage extends ViewModel
   public function render()
   {
     return new RenderGroup(
-      '<h1>Builds</h1>',
+      '<h1>Project Builds</h1>',
       $this->_buttonGroup(),
       $this->_tabs(),
       '<h1>Build History</h1>',

@@ -9,9 +9,13 @@ use dflydev\markdown\MarkdownExtraParser;
 
 class SiteMarkdown extends MarkdownExtraParser
 {
-  const DEFAULT_TAB_WIDTH = 2;
+  public function __construct(array $configuration = null)
+  {
+    parent::__construct($configuration);
+    $this->configureMarkdownParser(self::CONFIG_TAB_WIDTH, 2);
+  }
 
-  function _doCodeBlocks_callback($matches)
+  public function _doCodeBlocks_callback($matches)
   {
     $codeblock = $matches[1];
 
@@ -23,7 +27,7 @@ class SiteMarkdown extends MarkdownExtraParser
     return $this->wrapCodeBlock($codeblock);
   }
 
-  function _doFencedCodeBlocks_callback($matches)
+  public function _doFencedCodeBlocks_callback($matches)
   {
     $codeblock = $matches[2];
     $codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);

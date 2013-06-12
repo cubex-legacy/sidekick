@@ -51,7 +51,7 @@ class BuildsPage extends ViewModel
   private function _buttonGroup()
   {
     $partial = new Partial(
-      '<a class="btn" href="%s"> %s</a>'
+      '<a class="btn" href="%s"><i class="icon-wrench"></i> %s</a>'
     );
 
     $repoLink = $this->_projectId . '/' . $this->_buildType . '/repository';
@@ -61,8 +61,6 @@ class BuildsPage extends ViewModel
     {
       $partial->addElement($this->baseUri() . '/' . ltrim($href, '/'), $txt);
     }
-
-    $partial = '<span class="btn"><i class="icon-wrench"></i></span>' . $partial;
 
     return new RenderGroup(
       new HtmlElement('div', ['class' => "pull-right btn-group"], $partial)

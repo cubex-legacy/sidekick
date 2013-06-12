@@ -17,7 +17,7 @@ class FortifyCommandForm extends TemplatedViewModel
   /**
    * @var $_form \Cubex\Form\Form
    */
-  protected $_form;
+  protected $_form = null;
 
   public function __construct($command)
   {
@@ -26,45 +26,55 @@ class FortifyCommandForm extends TemplatedViewModel
 
   public function form()
   {
-    $this->_form = new Form("fortifyCommandForm", $this->baseUri() . '/');
-    if($this->_command->id())
+    if($this->_form === null)
     {
-      $this->_form = new Form("fortifyCommandForm", $this->baseUri(
-        ) . '/' . $this->_command->id());
-      $this->_form->addHiddenElement('id', $this->_command->id());
+      if($this->_command->id())
+      {
+        $this->_form = new Form("fortifyCommandForm", $this->baseUri(
+          ) . '/' . $this->_command->id());
+        $this->_form->addHiddenElement('id', $this->_command->id());
+      }
+      else
+      {
+        $this->_form = new Form("fortifyCommandForm", $this->baseUri() . '/');
+      }
+
+      $this->_form->setDefaultElementTemplate('{{input}}');
+      $this->_form->setLabelPosition(Form::LABEL_NONE);
+
+      $this->_form->addTextElement('name', $this->_command->name);
+      $this->_form->addTextElement('command', $this->_command->command);
+      $this->_form->addTextElement('description', $this->_command->description);
+      $this->_form->addTextElement(
+        'file_pattern',
+        $this->_command->filePattern
+      );
+      $this->_form->addTextElement(
+        'file_set_directory',
+        $this->_command->fileSetDirectory
+      );
+
+      $this->_addArrayElementToForm('success_exit_codes');
+      $this->_addArrayElementToForm('args');
+
+      $this->_form->addCheckboxElement(
+        'run_on_file_set',
+        $this->_command->runOnFileSet,
+        true
+      );
+      $this->_form->addCheckboxElement(
+        'cause_build_failure',
+        $this->_command->causeBuildFailure,
+        true
+      );
+
+      $this->_form->addSubmitElement('submit');
+      $this->_form->getElement('submit')->addAttribute(
+        'class',
+        'btn btn-primary'
+      );
     }
 
-    $this->_form->setDefaultElementTemplate('{{input}}');
-    $this->_form->setLabelPosition(Form::LABEL_NONE);
-
-    $this->_form->addTextElement('name', $this->_command->name);
-    $this->_form->addTextElement('command', $this->_command->command);
-    $this->_form->addTextElement('description', $this->_command->description);
-    $this->_form->addTextElement('file_pattern', $this->_command->filePattern);
-    $this->_form->addTextElement(
-      'file_set_directory',
-      $this->_command->fileSetDirectory
-    );
-
-    $this->_addArrayElementToForm('success_exit_codes');
-    $this->_addArrayElementToForm('args');
-
-    $this->_form->addCheckboxElement(
-      'run_on_file_set',
-      $this->_command->runOnFileSet,
-      true
-    );
-    $this->_form->addCheckboxElement(
-      'cause_build_failure',
-      $this->_command->causeBuildFailure,
-      true
-    );
-
-    $this->_form->addSubmitElement('submit');
-    $this->_form->getElement('submit')->addAttribute(
-      'class',
-      'btn btn-primary'
-    );
     return $this->_form;
   }
 

@@ -9,6 +9,8 @@ use dflydev\markdown\MarkdownExtraParser;
 
 class SiteMarkdown extends MarkdownExtraParser
 {
+  const DEFAULT_TAB_WIDTH = 2;
+
   public function __construct(array $configuration = null)
   {
     parent::__construct($configuration);

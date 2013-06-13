@@ -21,21 +21,28 @@ class AddBuildCommandsForm extends TemplatedViewModel
 
   public function __construct($buildId, $unAssignedCommits, $allCommands)
   {
-    $this->_buildId     = $buildId;
-    $this->_allCommands = $allCommands;
+    $this->_buildId           = $buildId;
+    $this->_allCommands       = $allCommands;
     $this->_unAssignedCommits = $unAssignedCommits;
   }
 
   public function form()
   {
-    $this->_form = new Form('addBuildCommand', '/fortify/buildCommands/create');
-    $this->_form->setDefaultElementTemplate('{{input}}');
-    $this->_form->addHiddenElement('buildId', $this->_buildId);
-    $this->_form->addSelectElement('commandId', $this->_unAssignedCommits);
+    if($this->_form === null)
+    {
+      $this->_form = new Form('addBuildCommand', '/fortify/buildCommands/create');
+      $this->_form->setDefaultElementTemplate('{{input}}');
+      $this->_form->addHiddenElement('buildId', $this->_buildId);
+      $this->_form->addSelectElement('commandId', $this->_unAssignedCommits);
 
-    $this->_form->addCheckboxElements('dependencies[]', '', $this->_allCommands)
-    ->setElementTemplate('<div class="dep-checkboxes">{{input}}</div>');
-    $this->_form->addSubmitElement('Add Command', 'add');
+      $this->_form->addCheckboxElements(
+        'dependencies[]',
+        '',
+        $this->_allCommands
+      )
+      ->setElementTemplate('<div class="dep-checkboxes">{{input}}</div>');
+      $this->_form->addSubmitElement('Add Command', 'add');
+    }
 
     return $this->_form;
   }

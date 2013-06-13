@@ -7,23 +7,57 @@
  * @link  https://packagist.org/packages/cubex/cubex
  */
 ?>
-<h2><?php echo $this->getPackage()->name; ?></h2>
-<p><?php echo $this->getPackage()->description; ?></p>
+<div class="page-header">
+  <h2><?= $this->getPackage()->name; ?>
+    <small>v<?= $this->getPackage()->version; ?></small>
+  </h2>
+</div>
+<div class="well">
+  <p><?= $this->getPackage()->description; ?></p>
 
-<?php foreach($this->getReleases() as $release): ?>
-  <fieldset>
-    <legend><?php echo $release->version; ?></legend>
-    <div>
-      <p>require: <code>"<?php echo $this->getPackage()->name; ?>" :
-                        "<?php echo $release->version; ?>"</code></p>
+  <p><strong>License:</strong> <?= $this->getPackage()->license; ?></p>
+</div>
+<div class="row-fluid">
+  <div class="well span4">
+    <h3>Authors</h3>
+    <ul>
+      <?php foreach($this->getPackage()->authors as $author): ?>
+        <li>
+          <?= $author->name; ?> <?= isset($author->email) ? '&lt;' . $author->email . '&gt;' : ''; ?>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+  </div>
 
-      <p>Last Updated: <?php echo date(
-          'd/M/Y H:i',
-          strtotime($release->updatedAt)
-        ); ?></p>
+  <div class="well span4">
+    <h3>Requires</h3>
+    <ul>
+      <?php foreach($this->getPackage()->require as $package => $require): ?>
+        <li><a
+            href="https://packagist.org/packages/<?= $package ?>"
+            target="_blank"><?= $package ?></a>:
+          <?= $require; ?>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+  </div>
 
-      <p>Reference: <?php echo substr($release->zipHash, 0, 6); ?></p>
-    </div>
-  </fieldset>
-<?php endforeach; ?>
+  <div class="well span4">
+    <h3>Releases</h3>
+    <?php foreach($this->getReleases() as $release): ?>
+        <strong><?php echo $release->version; ?></strong>
+        <div>
+          <p>require: <code>"<?php echo $this->getPackage()->name; ?>" :
+                            "<?php echo $release->version; ?>"</code></p>
+
+          <p>Last Updated: <?php echo date(
+              'd/M/Y H:i',
+              strtotime($release->updatedAt)
+            ); ?></p>
+
+          <p>Reference: <?php echo substr($release->zipHash, 0, 6); ?></p>
+        </div>
+    <?php endforeach; ?>
+  </div>
+</div>
 <p><a href="/scripture/1/README">View Documentation</a></p>

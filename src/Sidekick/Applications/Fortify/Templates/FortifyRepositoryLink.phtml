@@ -1,0 +1,31 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 13/06/13 16:36
+ * @var $this \Sidekick\Applications\Fortify\Views\FortifyRepositoryLink
+ */
+?>
+<h1>Link Project Build to a Repository</h1>
+<?php if($this->_repo->exists()): ?>
+  <p class='text-info'>
+    <?=
+    $this->_project->name . '[' . $this->_build->name . '] is currently linked to a '
+    . ucwords(strtolower($this->_repo->repository_type)) .
+    ' repository: <strong>' .
+    $this->_repo->name . '[' . $this->_repo->branch . ']</strong>'
+    ?>
+  </p>
+<?php else: ?>
+  <p class='text-warning'><?= $this->_project->name ?>
+    [<?= $this->_build->name ?>] is NOT currently linked to any repository</p>
+<?php endif; ?>
+<p>You can change this below:</p>
+
+<?= $this->_form()->open(); ?>
+<?= $this->_form()->token(); ?>
+<?= $this->_form()->formNameInput(); ?>
+<?= $this->_form()->getElement('projectId'); ?>
+<?= $this->_form()->getElement('buildId'); ?>
+<?= $this->_form()->getElement('repository'); ?>
+<?= $this->_form()->getElement('submit'); ?>
+<?= $this->_form()->close(); ?>

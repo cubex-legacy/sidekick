@@ -13,6 +13,7 @@ use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Fortify\Views\BuildRunDetails;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
+use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -95,6 +96,32 @@ class FortifyController extends BaseControl
     return $view;
   }
 
+  public function renderRepo()
+  {
+    $projectId = $this->getInt('projectId');
+    $buildId   = $this->getInt('buildType');
+
+    $buildRepo = BuildsProjects::collection()->loadOneWhere(
+      ['project_id' => $projectId, 'build_id' => $buildId]
+    );
+
+    $repos       = Source::collection()->loadAll()->getKeyedArray(
+      'id',
+      ['name', 'branch']
+    );
+    $repoOptions = [];
+    foreach($repos as $id => $info)
+    {
+      $repoOptions[$id] = $info['name'] . ' - ' . $info['branch'];
+    }
+
+    $project = new Project($projectId);
+    $repo    = new Source($buildRepo->buildSourceId);
+    $build   = new Build($buildId);
+
+    return new FortifyRepositoryLink($project, $repo, $build, $repoOptions);
+  }
+
   public function getRoutes()
   {
     //extending ResourceTemplate routes
@@ -105,6 +132,7 @@ class FortifyController extends BaseControl
       $routes,
       new StdRoute('/:projectId', 'fortify'),
       new StdRoute('/:projectId/:buildType', 'fortify'),
+      new StdRoute('/:projectId/:buildType/repository', 'renderRepo'),
       new StdRoute('/:projectId/:buildType/:runId', 'runDetails')
     );
 

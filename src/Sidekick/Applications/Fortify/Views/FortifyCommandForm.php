@@ -17,7 +17,7 @@ class FortifyCommandForm extends TemplatedViewModel
   /**
    * @var $_form \Cubex\Form\Form
    */
-  protected $_form = null;
+  protected $_form;
 
   public function __construct($command)
   {

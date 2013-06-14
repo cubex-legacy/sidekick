@@ -9,12 +9,12 @@
   <?php foreach($this->getCommandsRun() as $commandRun): ?>
     <p class="command-title <?= (!$commandRun->passed) ? 'error-text' : '' ?>">
       [<?= date('H:i:s', $commandRun->startTime); ?>]
-      <a href="#" id="<?= $commandRun->command->command ?>-trigger"
-         onclick="toggle('#<?= $commandRun->command->command; ?>');">
+      <a href="#" id="<?= md5($commandRun->command->command) ?>-trigger"
+         onclick="toggle('#<?= md5($commandRun->command->command); ?>');">
         <?= ($commandRun->passed) ? '+' : '-' ?></a>
       <?= $commandRun->command->name ?></p>
 
-    <div id="<?= $commandRun->command->command; ?>"
+    <div id="<?= md5($commandRun->command->command) ?>"
          class="cmdOutput <?= ($commandRun->passed) ? 'hide' : '' ?>">
       <p
         class="command <?= (!$commandRun->passed) ? 'error-text' : '' ?>">

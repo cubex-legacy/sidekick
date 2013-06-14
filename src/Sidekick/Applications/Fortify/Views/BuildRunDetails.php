@@ -17,16 +17,26 @@ class BuildRunDetails extends TemplatedViewModel
   protected $_commandsRun = [];
 
   public function addCommand(
-    Command $command, $passed = false, $exitCode = 0, $commandOutput = null
+    Command $command, $commandRun, $passed = false, $commandOutput = null
   )
   {
-    $obj = new \stdClass();
-    $obj->command = $command;
-    $obj->passed = $passed;
-    $obj->exitCode = $exitCode;
-    $obj->commandOutput = $commandOutput;
+    if($command->command !== null)
+    {
+      $obj                = new \stdClass();
+      $obj->command       = $command;
+      $obj->passed        = $passed;
+      $obj->exitCode      = $commandRun['exit_code'];
+      $obj->startTime     = $commandRun['start_time'];
+      $obj->commandOutput = $commandOutput;
+      $obj->argsLine      = '';
+      if(is_array($command->args))
+      {
+        $obj->args = implode(' ', $command->args);
+      }
 
-    $this->_commandsRun[] = $obj;
+      $this->_commandsRun[] = $obj;
+    }
+
     return $this;
   }
 

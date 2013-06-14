@@ -93,17 +93,18 @@ class FortifyController extends BaseControl
     foreach($buildRun->commands as $c)
     {
       $command       = new Command($c);
-      $commandRun    = BuildLog::cf()->get("$runId-$c", ['exit_code']);
-      $commandOutput = BuildLog::cf()->getSlice("$runId-$c", 'output:0');
+      $commandRun    = BuildLog::cf()->get("$runId-$c", ['exit_code','start_time']);
+      $commandOutput = BuildLog::cf()->getSlice("$runId-$c", 'output:0', '', false, 1000);
 
       $view->addCommand(
         new Command($c),
+        $commandRun,
         in_array($commandRun['exit_code'], $command->successExitCodes),
-        $commandRun['exit_code'],
         $commandOutput
       );
     }
 
+    $this->requireJs('buildLog');
     return $view;
   }
 

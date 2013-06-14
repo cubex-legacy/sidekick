@@ -19,6 +19,12 @@ class CreateBuild extends CliCommand
   public $path;
 
   /**
+   * @required
+   * @valuerequired
+   */
+  public $projectId;
+
+  /**
    * @valuerequired
    * @required
    */
@@ -53,13 +59,15 @@ class CreateBuild extends CliCommand
     /**
      * @var $package Package
      */
-    $package       = Package::loadWhereOrNew(['name' => $composer->name]);
-    $package->name = $composer->name;
+    $package              = Package::loadWhereOrNew(
+      ['name' => $composer->name]
+    );
+    $package->name        = $composer->name;
     $package->description = $composer->description;
-    $package->version = $composer->version;
-    $package->license = $composer->license;
-    $package->authors = $composer->authors;
-    $package->require = $composer->require;
+    $package->version     = $composer->version;
+    $package->license     = $composer->license;
+    $package->authors     = $composer->authors;
+    $package->require     = $composer->require;
     $package->saveChanges();
 
     $release              = new Release([$package->id(), $this->version]);

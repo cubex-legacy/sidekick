@@ -58,7 +58,7 @@ class Build extends CliCommand
    */
   public $timeout = 120;
 
-  protected $_buildId;
+  protected $_buildRunId;
   protected $_buildResult;
   protected $_buildSourceDir;
   protected $_buildPath;
@@ -92,7 +92,7 @@ class Build extends CliCommand
     $buildRun->commands  = [];
     $this->_buildResult  = $buildRun->result = BuildResult::RUNNING;
     $buildRun->saveChanges();
-    $this->_buildId = $buildRun->id();
+    $this->_buildRunId = $buildRun->id();
 
     if(!System::isWindows())
     {
@@ -105,7 +105,7 @@ class Build extends CliCommand
     echo Shell::colourText(
       "\n" .
       "Starting Build for: " . $project->name . " (" . $build->name . ")\n" .
-      "Build ID: " . $this->_buildId .
+      "Build ID: " . $this->_buildRunId .
       "\n",
       Shell::COLOUR_FOREGROUND_LIGHT_BLUE
     );
@@ -209,7 +209,7 @@ class Build extends CliCommand
     {
       $log->enableOutput();
     }
-    $log->setId($this->_buildId . '-' . $command->id());
+    $log->setId($this->_buildRunId . '-' . $command->id());
     $log->startTime = microtime(true);
     $log->exitCode  = -1;
     $log->saveChanges();
@@ -261,12 +261,16 @@ class Build extends CliCommand
       '{sourcedirectory}',
       '{CUBEX_BIN}',
       '{CUBEX_ENV}',
+      '{PROJECT_ID}',
+      '{BUILD_ID}',
       '{branch}'
       ],
       [
       $this->_buildPath . DS . $this->_buildSourceDir,
       WEB_ROOT . DS . 'cubex',
       CUBEX_ENV,
+      (int)$this->project,
+      (int)$this->build,
       $this->_branch
       ],
       $runCommand
@@ -360,7 +364,7 @@ class Build extends CliCommand
     echo "\n$lineSplitter\n\n";
 
     $results = [
-      'Build ID'       => $this->_buildId,
+      'Build ID'       => $this->_buildRunId,
       null,
       'Tests Run'      => $this->_testsRun . '/' . $this->_totalTests,
       'Tests Passed'   => $this->_testsPass,
@@ -404,7 +408,7 @@ class Build extends CliCommand
     {
       $log->enableOutput();
     }
-    $log->setId($this->_buildId . '-source');
+    $log->setId($this->_buildRunId . '-source');
     $log->startTime = microtime(true);
     $log->exitCode  = -1;
     $log->saveChanges();
@@ -444,7 +448,7 @@ class Build extends CliCommand
     {
       $log->enableOutput();
     }
-    $log->setId($this->_buildId . '-patch');
+    $log->setId($this->_buildRunId . '-patch');
     $log->startTime = microtime(true);
     $log->exitCode  = -1;
     $log->saveChanges();

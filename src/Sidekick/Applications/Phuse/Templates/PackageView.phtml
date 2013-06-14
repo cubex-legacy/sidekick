@@ -20,31 +20,40 @@
 <div class="row-fluid">
   <div class="well span4">
     <h3>Authors</h3>
-    <ul>
-      <?php foreach($this->getPackage()->authors as $author): ?>
-        <li>
-          <?= $author->name; ?> <?= isset($author->email) ? '&lt;' . $author->email . '&gt;' : ''; ?>
-        </li>
-      <?php endforeach; ?>
-    </ul>
+    <?php if($this->getPackage()->authors !== null): ?>
+      <ul>
+        <?php foreach($this->getPackage()->authors as $author): ?>
+          <li>
+            <?= $author->name; ?> <?= isset($author->email) ? '&lt;' . $author->email . '&gt;' : ''; ?>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php else: ?>
+      Information not available
+    <?php endif; ?>
   </div>
 
   <div class="well span4">
     <h3>Requires</h3>
-    <ul>
-      <?php foreach($this->getPackage()->require as $package => $require): ?>
-        <li><a
-            href="https://packagist.org/packages/<?= $package ?>"
-            target="_blank"><?= $package ?></a>:
-          <?= $require; ?>
-        </li>
-      <?php endforeach; ?>
-    </ul>
+    <?php if($this->getPackage()->require !== null): ?>
+      <ul>
+        <?php foreach($this->getPackage()->require as $package => $require): ?>
+          <li><a
+              href="https://packagist.org/packages/<?= $package ?>"
+              target="_blank"><?= $package ?></a>:
+            <?= $require; ?>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php else: ?>
+      Information not available
+    <?php endif; ?>
   </div>
 
   <div class="well span4">
     <h3>Releases</h3>
-    <?php foreach($this->getReleases() as $release): ?>
+    <?php if($this->getReleases() !== null): ?>
+      <?php foreach($this->getReleases() as $release): ?>
         <strong><?php echo $release->version; ?></strong>
         <div>
           <p>require: <code>"<?php echo $this->getPackage()->name; ?>" :
@@ -57,7 +66,10 @@
 
           <p>Reference: <?php echo substr($release->zipHash, 0, 6); ?></p>
         </div>
-    <?php endforeach; ?>
+      <?php endforeach; ?>
+    <?php else: ?>
+      No releases made yet
+    <?php endif; ?>
   </div>
 </div>
 <p><a href="/scripture/1/README">View Documentation</a></p>

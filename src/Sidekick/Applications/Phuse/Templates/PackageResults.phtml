@@ -20,10 +20,14 @@
 
       <p><strong>Authors:</strong><br>
         <?php $authors = $package->authors; ?>
-        <?php foreach($authors as $author): ?>
-        <strong><?= $author->name; ?></strong>
-        <?= (next($authors))? ',' : '' ?>
-        <?php endforeach; ?>
+        <?php if($authors !== null): ?>
+          <?php foreach($authors as $author): ?>
+            <strong><?= $author->name; ?></strong>
+            <?= (next($authors)) ? ',' : '' ?>
+          <?php endforeach; ?>
+        <?php else: ?>
+          Information not available
+        <?php endif; ?>
       </p>
     </div>
   <?php endforeach; ?>

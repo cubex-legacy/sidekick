@@ -56,14 +56,22 @@ class FortifyController extends BaseControl
 
   public function renderFortify()
   {
-    $projectId = $this->getInt('projectId');
-    $buildType = $this->getInt('buildType', 1);
+    $projectId    = $this->getInt('projectId');
+    $buildType    = $this->getInt('buildType', 1);
+    $resultFilter = $this->getStr('result');
+
+    $collectionFilter = ['build_id' => $buildType, 'project_id' => $projectId];
+    if($resultFilter !== null)
+    {
+      $collectionFilter['result'] = $resultFilter;
+    }
 
     $builds = Build::collection()->loadAll();
     //list all build runs
-    $allBuilds = BuildRun::collection(
-                   ['build_id' => $buildType, 'project_id' => $projectId]
-                 )->setOrderBy('created_at', 'DESC');
+    $allBuilds = BuildRun::collection($collectionFilter)->setOrderBy(
+      'created_at',
+      'DESC'
+    );
 
     return $this->createView(
       new BuildsPage(
@@ -133,6 +141,7 @@ class FortifyController extends BaseControl
       new StdRoute('/:projectId', 'fortify'),
       new StdRoute('/:projectId/:buildType', 'fortify'),
       new StdRoute('/:projectId/:buildType/repository', 'renderRepo'),
+      new StdRoute('/:projectId/:buildType/((?<result>.*))/', 'fortify'),
       new StdRoute('/:projectId/:buildType/:runId', 'runDetails')
     );
 

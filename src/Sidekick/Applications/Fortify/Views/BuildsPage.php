@@ -67,12 +67,57 @@ class BuildsPage extends ViewModel
     );
   }
 
+  private function _filters()
+  {
+    $baseUri = $this->baseUri(
+      ) . '/' . $this->_projectId . '/' . $this->_buildType;
+
+    return new RenderGroup(
+      '<small>',
+      new HtmlElement(
+        'a',
+        [
+        'href'  => $baseUri . '/fail',
+        'class' => "pull-right cushion"
+        ],
+        'Show Failed'
+      ),
+      new HtmlElement(
+        'a',
+        [
+        'href'  => $baseUri . '/pass',
+        'class' => "pull-right cushion"
+        ],
+        'Show Passed'
+      ),
+      new HtmlElement(
+        'a',
+        [
+        'href'  => $baseUri . '/running',
+        'class' => "pull-right cushion"
+        ],
+        'Show Running'
+      ),
+      new HtmlElement(
+        'a',
+        [
+        'href'  => $baseUri,
+        'class' => "pull-right cushion"
+        ],
+        'Show All'
+      ),
+      '</small>'
+    );
+  }
+
+
   public function render()
   {
     return new RenderGroup(
       '<h1>Project Builds</h1>',
       $this->_buttonGroup(),
       $this->_tabs(),
+      $this->_filters(),
       '<h1>Build History</h1>',
       new BuildRunsList($this->_buildRuns)
     );

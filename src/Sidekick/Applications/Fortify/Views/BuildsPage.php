@@ -6,6 +6,7 @@
 
 namespace Sidekick\Applications\Fortify\Views;
 
+use Cubex\Facade\Session;
 use Cubex\View\HtmlElement;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
@@ -48,18 +49,16 @@ class BuildsPage extends ViewModel
     );
   }
 
-  private function _buttonGroup()
+  private function _buttonGroup($baseUri)
   {
     $partial = new Partial(
       '<a class="btn" href="%s"><i class="icon-wrench"></i> %s</a>'
     );
 
-    $repoLink = $this->_projectId . '/' . $this->_buildType . '/repository';
-    $buttons  = [$repoLink => 'Repository'];
-
+    $buttons = [$baseUri . '/repository' => 'Repository'];
     foreach($buttons as $href => $txt)
     {
-      $partial->addElement($this->baseUri() . '/' . ltrim($href, '/'), $txt);
+      $partial->addElement($href, $txt);
     }
 
     return new RenderGroup(
@@ -67,11 +66,8 @@ class BuildsPage extends ViewModel
     );
   }
 
-  private function _filters()
+  private function _filters($baseUri)
   {
-    $baseUri = $this->baseUri(
-      ) . '/' . $this->_projectId . '/' . $this->_buildType;
-
     return new RenderGroup(
       '<small>',
       new HtmlElement(
@@ -113,13 +109,35 @@ class BuildsPage extends ViewModel
 
   public function render()
   {
+    $baseUri = $this->baseUri(
+      ) . '/' . $this->_projectId . '/' . $this->_buildType;
+
+    $alert = '';
+    if(Session::getFlash('msg'))
+    {
+      $alert = new HtmlElement(
+        'div',
+        ['class' => 'alert alert-'.Session::getFlash('msg')->type],
+        Session::getFlash('msg')->text
+      );
+    }
+
     return new RenderGroup(
       '<h1>Project Builds</h1>',
-      $this->_buttonGroup(),
+      $this->_buttonGroup($baseUri),
       $this->_tabs(),
-      $this->_filters(),
+      $alert,
+      $this->_filters($baseUri),
       '<h1>Build History</h1>',
-      new BuildRunsList($this->_buildRuns)
+      new BuildRunsList($this->_buildRuns),
+      new HtmlElement(
+        'a',
+        [
+        'href'  => $baseUri . '/build',
+        'class' => 'btn btn-primary btn-large pull-right'
+        ],
+        'Run Build'
+      )
     );
   }
 }

@@ -5,7 +5,10 @@
 
 namespace Sidekick\Applications\Fortify\Controllers;
 
+use Cubex\Facade\Queue;
+use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
+use Cubex\Queue\StdQueue;
 use Cubex\Routing\StdRoute;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedView;
@@ -130,6 +133,35 @@ class FortifyController extends BaseControl
     return new FortifyRepositoryLink($project, $repo, $build, $repoOptions);
   }
 
+  /*
+   * Run build process. Does not actually run the build, it only puts
+   * the request into a queue, which gets processed by cron script
+   */
+  public function renderBuild()
+  {
+    $projectId = $this->getInt('projectId');
+    $buildId   = $this->getInt('buildType');
+
+    $buildRepo = BuildsProjects::collection()->loadOneWhere(
+      ['project_id' => $projectId, 'build_id' => $buildId]
+    );
+
+    $queue = new StdQueue('buildRequest');
+    Queue::push(
+      $queue,
+      ['respositoryId' => $buildRepo->buildSourceId, 'buildId' => $buildId]
+    );
+
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Your Build Request has been queued up!';
+
+    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $buildId)->with(
+      'msg',
+      $msg
+    )->now();
+  }
+
   public function getRoutes()
   {
     //extending ResourceTemplate routes
@@ -141,6 +173,7 @@ class FortifyController extends BaseControl
       new StdRoute('/:projectId', 'fortify'),
       new StdRoute('/:projectId/:buildType', 'fortify'),
       new StdRoute('/:projectId/:buildType/repository', 'renderRepo'),
+      new StdRoute('/:projectId/:buildType/build', 'renderBuild'),
       new StdRoute('/:projectId/:buildType/:runId@num', 'runDetails'),
       new StdRoute('/:projectId/:buildType/(?<result>(pass|fail|running))/', 'fortify')
     );

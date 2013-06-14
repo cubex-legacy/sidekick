@@ -62,6 +62,7 @@ class CreateBuild extends CliCommand
     $package              = Package::loadWhereOrNew(
       ['name' => $composer->name]
     );
+    $package->projectId   = $this->projectId;
     $package->name        = $composer->name;
     $package->description = $composer->description;
     $package->version     = $composer->version;

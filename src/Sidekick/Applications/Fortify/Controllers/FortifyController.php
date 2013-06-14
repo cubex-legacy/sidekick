@@ -141,8 +141,8 @@ class FortifyController extends BaseControl
       new StdRoute('/:projectId', 'fortify'),
       new StdRoute('/:projectId/:buildType', 'fortify'),
       new StdRoute('/:projectId/:buildType/repository', 'renderRepo'),
-      new StdRoute('/:projectId/:buildType/:runId', 'runDetails'),
-      new StdRoute('/:projectId/:buildType/((?<result>.*))/', 'fortify')
+      new StdRoute('/:projectId/:buildType/:runId@num', 'runDetails'),
+      new StdRoute('/:projectId/:buildType/(?<result>(pass|fail|running))/', 'fortify')
     );
 
     return $routes;

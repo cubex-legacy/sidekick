@@ -72,4 +72,6 @@
     <?php endif; ?>
   </div>
 </div>
-<p><a href="/scripture/1/README">View Documentation</a></p>
+<?php if($this->getPackage()->projectId !== null): ?>
+<p><a href="/scripture/<?= $this->getPackage()->projectId ?>/README">View Documentation</a></p>
+<?php endif; ?>

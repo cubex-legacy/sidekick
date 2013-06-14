@@ -5,7 +5,7 @@
  */
 ?>
 <h1>Build Log</h1>
-<code class="console" style="height:auto;">
+<code class="console" style="min-height: 800px;">
   <?php foreach($this->getCommandsRun() as $commandRun): ?>
     <p class="command-title <?= (!$commandRun->passed) ? 'error-text' : '' ?>">
       [<?= date('H:i:s', $commandRun->startTime); ?>]

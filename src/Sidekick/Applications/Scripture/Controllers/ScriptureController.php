@@ -22,7 +22,7 @@ class ScriptureController extends BaseControl
     $this->setTitle('Scripture');
     if($id !== null)
     {
-      $source = new Source($id);
+      $source = (new Project($id))->repository();
       if($source->exists())
       {
         $this->setTitle(Strings::humanize($source->name));

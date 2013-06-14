@@ -16,37 +16,27 @@ use Sidekick\Components\Repository\Mappers\Source;
 class ScriptureRepos extends ViewModel
 {
   /**
-   * @return \Sidekick\Components\Projects\Mappers\Project[]
+   * @var \Sidekick\Components\Projects\Mappers\Project[]
    */
-  protected $_repositories;
+  protected $_projecs;
 
-  public function __construct($repositories, $currentRepo = 0)
+  public function __construct($repositories, $currentProject = 0)
   {
-    $this->_repositories = assert_instances_of($repositories, new Project());
-    $this->_currentRepo  = $currentRepo;
+    $this->_projecs     = assert_instances_of($repositories, new Project());
+    $this->_currentRepo = $currentProject;
   }
 
   public function render()
   {
     $partial = new Partial('<li class="%s"><a href="%s">%s</a></li>');
-    foreach($this->_repositories as $project)
+    foreach($this->_projecs as $project)
     {
-      /**
-       * @var $project Project
-       * @var $source  Source
-       */
-      $source = $project->repositories()->get()->refine(
-                  [new PropertyEqual('branch', 'master')]
-                )->first();
-      if($source instanceof Source)
-      {
-        $link = $this->baseUri() . '/' . $source->id() . '/README';
-        $partial->addElement(
-          ($this->_currentRepo == $source->id() ? 'active' : 'inactive'),
-          $link,
-          $project->name
-        );
-      }
+      $link = $this->baseUri() . '/' . $project->id() . '/README';
+      $partial->addElement(
+        ($this->_currentRepo == $project->id() ? 'active' : 'inactive'),
+        $link,
+        $project->name
+      );
     }
 
     $tabs = new HtmlElement('div', ['class' => 'tabbable tabs-left']);

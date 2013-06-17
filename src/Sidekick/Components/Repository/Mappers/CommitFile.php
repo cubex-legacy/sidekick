@@ -11,6 +11,9 @@ class CommitFile extends RecordMapper
 {
   public $commitId;
   public $repositoryId;
+  /**
+   * @length 255
+   */
   public $filePath;
   public $changeType;
 }

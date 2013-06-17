@@ -8,7 +8,7 @@
 function toggle(selector)
 {
   $(selector).toggle('fast', function (){
-    var text = $(selector + 'Trigger').text();
+    var text = $(selector + '-trigger').text();
     if ($.trim(text) == '+')
     {
       $(selector + '-trigger').text('-');

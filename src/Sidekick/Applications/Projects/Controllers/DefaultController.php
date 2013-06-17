@@ -35,22 +35,7 @@ class DefaultController extends ProjectsController
 
   public function postCreateProject()
   {
-    $postData             = $this->request()->postVariables();
-    $project              = new Project();
-    $project->name        = $postData['name'];
-    $project->description = $postData['description'];
-    if((int)$postData['parent'] != 0)
-    {
-      $project->parentId = $postData['parent'];
-    }
-
-    $project->saveChanges();
-
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Project was successfully created';
-
-    Redirect::to($this->baseUri())->with('msg', $msg)->now();
+    $this->_postCreateOrUpdateProject();
   }
 
   public function renderEditProject()
@@ -61,19 +46,64 @@ class DefaultController extends ProjectsController
 
   public function postUpdateProject()
   {
+    $this->_postCreateOrUpdateProject();
+  }
+
+  private function _postCreateOrUpdateProject()
+  {
     $postData = $this->request()->postVariables();
 
-    $project              = new Project($postData['id']);
-    $project->name        = $postData['name'];
-    $project->description = $postData['description'];
-    $project->parentId    = $postData['parent_id'];
-    $project->saveChanges();
+    /**
+     * Because we use bindMapper method (see Projects/views/ProjectForm)
+     * to build this form.
+     * There will always be an id field that defaults to an empty string.
+     * Casting this id to an int can tell us if we are dealing with a create
+     * or update request
+     */
+    if($postData['name'] != '')
+    {
+      if((int)$postData['id'])
+      {
+        $project   = new Project($postData['id']);
+        $msg       = new \stdClass();
+        $msg->type = 'success';
+        $msg->text = 'Project was successfully updated';
+      }
+      else
+      {
+        $project   = new Project();
+        $msg       = new \stdClass();
+        $msg->type = 'success';
+        $msg->text = 'Project was successfully created';
+      }
 
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Project was successfully updated';
+      $project->name        = $postData['name'];
+      $project->description = $postData['description'];
+      $project->parentId    = $postData['parent_id'];
+      $project->saveChanges();
 
-    Redirect::to($this->baseUri())->with('msg', $msg)->now();
+      Redirect::to($this->baseUri())->with('msg', $msg)->now();
+    }
+    else
+    {
+      if((int)$postData['id'])
+      {
+        $redirectTo = $this->baseUri() . '/edit/' . $postData['id'];
+        $error      = 'Project could be not updated. ' .
+          'Please provide at least a name';
+      }
+      else
+      {
+        $redirectTo = $this->baseUri() . '/create-project';
+        $error      = 'Project could be not created. ' .
+          'Please provide at least a name';
+      }
+
+      $msg       = new \stdClass();
+      $msg->type = 'error';
+      $msg->text = $error;
+      Redirect::to($redirectTo)->with('msg', $msg)->now();
+    }
   }
 
 

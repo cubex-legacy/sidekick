@@ -9,7 +9,9 @@
 
 namespace Sidekick\Applications\Projects\Views;
 
+use Cubex\Facade\Session;
 use Cubex\Form\Form;
+use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -40,7 +42,17 @@ class ProjectsForm extends ViewModel
     $form->addAttribute('class', 'well');
     $form->bindMapper(new Project($this->_projectId));
 
-    return new RenderGroup("<h1>$formTitle</h1>", $form);
+    $alert = '';
+    if(Session::getFlash('msg'))
+    {
+      $alert = new HtmlElement(
+        'div',
+        ['class' => 'alert alert-' . Session::getFlash('msg')->type],
+        Session::getFlash('msg')->text
+      );
+    }
+
+    return new RenderGroup("<h1>$formTitle</h1>", $alert, $form);
   }
 
   public function render()

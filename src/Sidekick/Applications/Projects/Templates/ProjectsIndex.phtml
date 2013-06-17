@@ -21,9 +21,7 @@
 <table class="table table-striped table-bordered table-hover">
   <tr class="info">
     <th>Name</th>
-    <th>Parent</th>
     <th>Description</th>
-    <th>Created</th>
     <th>Last Update</th>
     <th></th>
   </tr>
@@ -56,9 +54,7 @@
           </ul>
         </div>
       </td>
-      <td><?= $project->parent()->name; ?></td>
       <td><?= $project->description; ?></td>
-      <td><?= date('d/M/Y', strtotime($project->created_at)); ?></td>
       <td><?= date('d/M/Y', strtotime($project->updated_at)); ?></td>
       <td>
         <a href="<?= $this->baseUri() . '/edit/' . $project->id(); ?>"

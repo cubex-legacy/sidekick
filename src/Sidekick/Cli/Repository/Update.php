@@ -14,6 +14,7 @@ use Cubex\Helpers\Strings;
 use Cubex\I18n\TranslateTraits;
 use Cubex\Queue\StdQueue;
 use Sidekick\Components\Repository\Mappers\Commit;
+use Sidekick\Components\Repository\Mappers\CommitFile;
 use Sidekick\Components\Repository\Mappers\Source;
 use Symfony\Component\Process\Process;
 
@@ -148,8 +149,11 @@ class Update extends CliCommand
       }
     }
 
-    $format      = "%H%n%cn%n%ct%n%s%n%b%x03";
-    $out         = `git log --format="$format" --reverse $fromHash`;
+    $format        = "%H%n%cn%n%ct%n%s%n%b%x03";
+    $command       = "git log --format=\"$format\" --reverse $fromHash";
+    $commitProcess = new Process($command);
+    $commitProcess->run();
+    $out         = $commitProcess->getOutput();
     $commits     = explode(chr(03), $out);
     $commitCount = 0;
 
@@ -182,6 +186,25 @@ class Update extends CliCommand
       if($this->verbose)
       {
         echo 'Adding ' . $commitHash . " - $subject\n";
+      }
+
+      $command = "git diff-tree --no-commit-id -r --name-status " . $commitHash;
+
+      $diffProcess = new Process($command);
+      $diffProcess->run();
+      $changedFiles = explode("\n", $diffProcess->getOutput());
+      foreach($changedFiles as $file)
+      {
+        if(stristr($file, "\t"))
+        {
+          list($changeType, $filePath) = explode("\t", $file, 2);
+          $cFile               = new CommitFile();
+          $cFile->changeType   = strtoupper(trim($changeType));
+          $cFile->commitId     = $commitO->id();
+          $cFile->repositoryId = $this->_currentRepoId;
+          $cFile->filePath     = trim($filePath);
+          $cFile->saveChanges();
+        }
       }
     }
 

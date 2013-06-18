@@ -14,7 +14,7 @@ use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
-use Sidekick\Applications\Fortify\Views\BuildRunDetails;
+use Sidekick\Applications\Fortify\Views\BuildLogView;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
 use Sidekick\Components\Fortify\Mappers\Build;
@@ -83,18 +83,27 @@ class FortifyController extends BaseControl
     );
   }
 
-  public function renderRunDetails()
+  public function renderBuildLog()
   {
     $runId    = $this->getInt('runId');
     $buildRun = new BuildRun($runId);
 
-    $view = new BuildRunDetails();
+    $view = new BuildLogView();
 
     foreach($buildRun->commands as $c)
     {
       $command       = new Command($c);
-      $commandRun    = BuildLog::cf()->get("$runId-$c", ['exit_code','start_time']);
-      $commandOutput = BuildLog::cf()->getSlice("$runId-$c", 'output:0', '', false, 1000);
+      $commandRun    = BuildLog::cf()->get(
+        "$runId-$c",
+        ['exit_code', 'start_time']
+      );
+      $commandOutput = BuildLog::cf()->getSlice(
+        "$runId-$c",
+        'output:0',
+        '',
+        false,
+        1000
+      );
 
       $view->addCommand(
         new Command($c),
@@ -138,24 +147,51 @@ class FortifyController extends BaseControl
    * Run build process. Does not actually run the build, it only puts
    * the request into a queue, which gets processed by cron script
    */
-  public function renderBuild()
+  public function Build()
   {
     $projectId = $this->getInt('projectId');
     $buildId   = $this->getInt('buildType');
 
-    $buildRepo = BuildsProjects::collection()->loadOneWhere(
-      ['project_id' => $projectId, 'build_id' => $buildId]
-    );
+    try
+    {
+      $buildRepo = BuildsProjects::collection()->loadOneWhere(
+        ['project_id' => $projectId, 'build_id' => $buildId]
+      );
 
-    $queue = new StdQueue('buildRequest');
-    Queue::push(
-      $queue,
-      ['respositoryId' => $buildRepo->buildSourceId, 'buildId' => $buildId]
-    );
+      if($buildRepo !== null)
+      {
+        $queue = new StdQueue('buildRequest');
+        Queue::push(
+          $queue,
+          ['respositoryId' => $buildRepo->buildSourceId, 'buildId' => $buildId]
+        );
 
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Your Build Request has been queued up!';
+        $msg       = new \stdClass();
+        $msg->type = 'success';
+        $msg->text = 'Your Build Request has been queued up!';
+      }
+      else
+      {
+        $msg       = new \stdClass();
+        $msg->type = 'error';
+        $msg->text = 'Your Build Request could not be processed.' .
+          'No Repository is linked to this build type';
+      }
+    }
+    catch(\Exception $e)
+    {
+      /*
+       * By the way, I think getting to this point is impossible, because
+       * BuildsProject Mapper has projectId and buildId as primary key, so
+       * any combination of these two keys should always return one result.
+       * The only case this will happen is if the primary keys got changed
+       * and this is very unlikely.
+       */
+      $msg       = new \stdClass();
+      $msg->type = 'error';
+      $msg->text = 'Your Build Request could not be processed.' .
+        'More than one Repository is linked to this build type';
+    }
 
     Redirect::to($this->baseUri() . '/' . $projectId . '/' . $buildId)->with(
       'msg',
@@ -173,9 +209,9 @@ class FortifyController extends BaseControl
       $routes,
       new StdRoute('/:projectId', 'fortify'),
       new StdRoute('/:projectId/:buildType', 'fortify'),
-      new StdRoute('/:projectId/:buildType/repository', 'renderRepo'),
-      new StdRoute('/:projectId/:buildType/build', 'renderBuild'),
-      new StdRoute('/:projectId/:buildType/:runId@num', 'runDetails'),
+      new StdRoute('/:projectId/:buildType/repository', 'Repo'),
+      new StdRoute('/:projectId/:buildType/build', 'Build'),
+      new StdRoute('/:projectId/:buildType/:runId@num', 'buildLog'),
       new StdRoute('/:projectId/:buildType/(?<result>(pass|fail|running))/', 'fortify')
     );
 

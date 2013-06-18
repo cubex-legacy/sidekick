@@ -12,7 +12,7 @@ namespace Sidekick\Applications\Fortify\Views;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Fortify\Mappers\Command;
 
-class BuildRunDetails extends TemplatedViewModel
+class BuildLogView extends TemplatedViewModel
 {
   protected $_commandsRun = [];
 

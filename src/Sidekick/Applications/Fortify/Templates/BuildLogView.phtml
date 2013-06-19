@@ -7,9 +7,21 @@
 <h1>Build Log</h1>
 <code class="console" style="min-height: 800px;">
   <?php foreach($this->getCommandsRun() as $commandRun): ?>
-    <p class="command-title <?= (!$commandRun->passed) ? 'error-text' : '' ?>">
+    <?php
+    $txtClass = '';
+    if(!$commandRun->passed)
+    {
+      $txtClass = 'error-text';
+      if($commandRun->exitCode == -1)
+      {
+        $txtClass = 'running-text';
+      }
+    }
+    ?>
+    <p class="command-title <?= $txtClass ?>">
       [<?= date('H:i:s', $commandRun->startTime); ?>]
       <a href="#" id="<?= md5($commandRun->command->command) ?>-trigger"
+         class="control"
          onclick="toggle('#<?= md5($commandRun->command->command); ?>');">
         <?= ($commandRun->passed) ? '+' : '-' ?></a>
       <?= $commandRun->command->name ?></p>
@@ -17,11 +29,11 @@
     <div id="<?= md5($commandRun->command->command) ?>"
          class="cmdOutput <?= ($commandRun->passed) ? 'hide' : '' ?>">
       <p
-        class="command <?= (!$commandRun->passed) ? 'error-text' : '' ?>">
+        class="command <?= $txtClass ?>">
         [<?= date('H:i:s', $commandRun->startTime); ?>]
-        &nbsp;&nbsp;<?= $commandRun->command->command; ?> <?= $commandRun->args ?>
+        &nbsp;&nbsp;<?= $commandRun->command->command; ?>
+        <?= $commandRun->args ?>
       </p>
-
       <?php foreach($commandRun->commandOutput as $key => $lineValue): ?>
         <?php
         $keyParts   = explode(':', $key);
@@ -45,7 +57,7 @@
             {
               continue;
             } ?>
-            <div class="line <?= (!$commandRun->passed) ? 'error-text' : '' ?>">
+            <div class="line <?= $txtClass ?>">
               [<?= $lineTime; ?>] &nbsp;&nbsp;<?= $line ?>
             </div>
           <?php endforeach; ?>

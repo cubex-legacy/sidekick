@@ -12,6 +12,7 @@ use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
 use Cubex\Helpers\System;
 use Sidekick\Components\Fortify\Enums\BuildResult;
+use Sidekick\Components\Fortify\Enums\FileSet;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -276,7 +277,7 @@ class Build extends CliCommand
       $runCommand
     );
 
-    if($command->runOnFileSet)
+    if($command->fileSet !== FileSet::NONE)
     {
       $command->fileSetDirectory = str_replace(
         '{sourcedirectory}',

@@ -5,7 +5,6 @@
 
 namespace Sidekick\Applications\Fortify\Controllers;
 
-use Bundl\Debugger\DebuggerBundle;
 use Cubex\Data\Attribute\Attribute;
 use Cubex\Form\Form;
 use Cubex\Helpers\Strings;
@@ -45,7 +44,8 @@ class FortifyCrudController extends MapperController
 
     $main = new Sidebar(
       $this->request()->path(2),
-      ['/fortify/builds'  => 'Manage Builds',
+      [
+      '/fortify/builds'   => 'Manage Builds',
       '/fortify/commands' => 'Manage Commands'
       ]
     );
@@ -59,8 +59,6 @@ class FortifyCrudController extends MapperController
 
   protected function _saveMapper()
   {
-    $d = new DebuggerBundle();
-    $d->init();
     $result = false;
     $post   = $this->postVariables();
     foreach($post as $attr => $value)
@@ -83,10 +81,6 @@ class FortifyCrudController extends MapperController
       if(!$this->postVariables('cause_build_failure'))
       {
         $this->_mapper->causeBuildFailure = false;
-      }
-      if(!$this->postVariables('run_on_file_set'))
-      {
-        $this->_mapper->runOnFileSet = false;
       }
     }
 

@@ -7,6 +7,7 @@ namespace Sidekick\Cli\Fortify;
 
 use Cubex\Cli\CliCommand;
 use Sidekick\Components\Fortify\Enums\BuildLevel;
+use Sidekick\Components\Fortify\Enums\FileSet;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
@@ -31,7 +32,7 @@ class SampleData extends CliCommand
     $command->args             = ['-l'];
     $command->name             = 'PHP Lint';
     $command->description      = "PHP Lint Check Directory";
-    $command->runOnFileSet     = true;
+    $command->fileSet          = FileSet::ALL;
     $command->filePattern      = '.*\.php$';
     $command->fileSetDirectory = '{sourcedirectory}src';
     $command->saveChanges();

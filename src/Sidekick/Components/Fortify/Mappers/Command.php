@@ -8,6 +8,7 @@ namespace Sidekick\Components\Fortify\Mappers;
 use Cubex\Data\Attribute\Attribute;
 use Cubex\Data\Validator\Validator;
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Fortify\Enums\FileSet;
 
 class Command extends RecordMapper
 {
@@ -24,7 +25,10 @@ class Command extends RecordMapper
 
   public $causeBuildFailure = true;
 
-  public $runOnFileSet = false;
+  /**
+   * @enumclass \Sidekick\Components\Fortify\Enums\FileSet
+   */
+  public $fileSet = FileSet::NONE;
   public $fileSetDirectory;
   public $filePattern;
 
@@ -38,5 +42,11 @@ class Command extends RecordMapper
     $this->_attribute("args")->setSerializer(Attribute::SERIALIZATION_JSON);
     $this->_attribute("name")->addValidator(Validator::VALIDATE_NOTEMPTY);
     $this->_attribute("command")->addValidator(Validator::VALIDATE_NOTEMPTY);
+    $this->_attribute("fileset")->setRequired(true);
+  }
+
+  public function fileSets()
+  {
+    return new FileSet();
   }
 }

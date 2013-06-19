@@ -7,12 +7,17 @@ namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\Form\Form;
 use Cubex\Form\FormElement;
+use Cubex\Form\OptionBuilder;
 use Cubex\Helpers\Inflection;
 use Cubex\Helpers\Strings;
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Fortify\Enums\FileSet;
 
 class FortifyCommandForm extends TemplatedViewModel
 {
+  /**
+   * @var \Sidekick\Components\Fortify\Mappers\Command
+   */
   protected $_command;
   /**
    * @var $_form \Cubex\Form\Form
@@ -28,10 +33,10 @@ class FortifyCommandForm extends TemplatedViewModel
   {
     if($this->_form === null)
     {
-      if($this->_command->id())
+      if($this->_command->exists())
       {
         $this->_form = new Form("fortifyCommandForm", $this->baseUri(
-          ) . '/' . $this->_command->id());
+        ) . '/' . $this->_command->id());
         $this->_form->addHiddenElement('id', $this->_command->id());
       }
       else
@@ -57,11 +62,12 @@ class FortifyCommandForm extends TemplatedViewModel
       $this->_addArrayElementToForm('success_exit_codes');
       $this->_addArrayElementToForm('args');
 
-      $this->_form->addCheckboxElement(
-        'run_on_file_set',
-        $this->_command->runOnFileSet,
-        true
+      $this->_form->addSelectElement(
+        "file_set",
+        (new OptionBuilder(new FileSet()))->getOptions(),
+        $this->_command->fileSet
       );
+
       $this->_form->addCheckboxElement(
         'cause_build_failure',
         $this->_command->causeBuildFailure,
@@ -105,8 +111,8 @@ class FortifyCommandForm extends TemplatedViewModel
     }
 
     $buttonText = 'Add ' . Inflection::singularise(
-        Strings::titleize($elementName)
-      );
+      Strings::titleize($elementName)
+    );
 
     $this->_form->addElement(
       'add_' . $elementName,

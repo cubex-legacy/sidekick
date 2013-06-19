@@ -11,6 +11,7 @@ use Cubex\FileSystem\FileSystem;
 use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
 use Cubex\Helpers\System;
+use Cubex\Log\Debug;
 use Sidekick\Components\Fortify\Enums\BuildResult;
 use Sidekick\Components\Fortify\Enums\FileSet;
 use Sidekick\Components\Fortify\Mappers\Command;
@@ -21,6 +22,8 @@ use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Fortify\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Enums\RepositoryProvider;
+use Sidekick\Components\Repository\Mappers\Commit;
+use Sidekick\Components\Repository\Mappers\CommitFile;
 use Sidekick\Components\Repository\Mappers\Source;
 use Symfony\Component\Process\Process;
 
@@ -64,6 +67,7 @@ class Build extends CliCommand
   protected $_buildSourceDir;
   protected $_buildPath;
   protected $_branch = 'master';
+  protected $_commitHash;
 
   protected $_totalTests = 0;
   protected $_testsRun = 0;
@@ -130,7 +134,7 @@ class Build extends CliCommand
     $process = new Process("git rev-parse --verify HEAD");
     $process->setTimeout($this->timeout);
     $process->run();
-    $buildRun->commitHash = $process->getOutput();
+    $this->_commitHash = $buildRun->commitHash = trim($process->getOutput());
     chdir($buildPath);
 
     if($this->patch !== null)
@@ -284,34 +288,69 @@ class Build extends CliCommand
         $this->_buildSourceDir,
         $command->fileSetDirectory
       );
-      $returnExitCode            = -1;
-      $files                     = $this->_getFullFilelisting(
-        $command->fileSetDirectory,
-        $command->filePattern
-      );
-      foreach($files as $file)
-      {
-        if(stristr($runCommand, '{iteratedFilePath}'))
-        {
-          $process = new Process(
-            str_replace(
-              '{iteratedFilePath}',
-              $file,
-              $runCommand
-            )
-          );
-        }
-        else
-        {
-          $process = new Process($runCommand . ' ' . $file);
-        }
 
-        $process->setTimeout($this->timeout);
-        $process->run([$log, 'writeBuffer']);
-        $exitCode = $process->getExitCode();
-        if($exitCode > $returnExitCode)
+      $returnExitCode = -1;
+      $fileList       = null;
+
+      if($command->fileSet === FileSet::MODIFIED)
+      {
+        $commitIds = $this->buildCommitRange()
+                     ->setColumns(['id'])
+                     ->get()
+                     ->loadedIds();
+
+        if($commitIds)
         {
-          $returnExitCode = $exitCode;
+          $files = CommitFile::collection()
+                   ->whereIn('commit_id', $commitIds, 'd')
+                   ->whereIn("change_type", ['A', 'M'])
+                   ->setColumns(['file_path'])
+                   ->get()
+                   ->getUniqueField('file_path');
+
+          foreach($files as $file)
+          {
+            if(preg_match("/$command->filePattern/", $file))
+            {
+              $fileList[] = $file;
+            }
+          }
+        }
+      }
+      else
+      {
+        $fileList = $this->_getFullFilelisting(
+          $command->fileSetDirectory,
+          $command->filePattern
+        );
+      }
+
+      if($fileList)
+      {
+        foreach($fileList as $file)
+        {
+          if(stristr($runCommand, '{iteratedFilePath}'))
+          {
+            $process = new Process(
+              str_replace(
+                '{iteratedFilePath}',
+                $file,
+                $runCommand
+              )
+            );
+          }
+          else
+          {
+            $process = new Process($runCommand . ' ' . $file);
+          }
+
+          $process->setTimeout($this->timeout);
+          $process->run([$log, 'writeBuffer']);
+          $exitCode = $process->getExitCode();
+          if($exitCode > $returnExitCode)
+          {
+            $returnExitCode = $exitCode;
+          }
         }
       }
       return $returnExitCode;
@@ -324,6 +363,51 @@ class Build extends CliCommand
       $process->run([$log, 'writeBuffer']);
       return $process->getExitCode();
     }
+  }
+
+  /**
+   * @return \Cubex\Mapper\Database\RecordCollection
+   */
+  public function buildCommitRange()
+  {
+    $lastCommitHash = BuildRun::collection(
+                        [
+                        'project_id' => $this->project,
+                        'build_id'   => $this->build,
+                        'result'     => BuildResult::PASS
+                        ]
+                      )
+                      ->setOrderBy("created_at", 'DESC')
+                      ->setLimit(0, 1)
+                      ->setColumns(['commit_hash'])
+                      ->first();
+
+    $findCommits = [$this->_commitHash];
+    if($lastCommitHash !== null)
+    {
+      $findCommits[] = trim($lastCommitHash->commitHash);
+    }
+
+    $commitIds = Commit::collection()
+                 ->whereIn('commit_hash', $findCommits)
+                 ->setColumns(['commit_hash', 'repository_id', 'id'])
+                 ->get();
+
+    $range = Commit::collection();
+
+    switch($commitIds->count())
+    {
+      case 2:
+        $range->whereBetween("id", $commitIds->loadedIds());
+        break;
+      case 1:
+        $range->whereLessThan("id", $commitIds->loadedIds()[0]);
+        break;
+    }
+
+    $range->whereEq("repository_id", $commitIds->getField('repository_id'));
+
+    return $range;
   }
 
   protected function _getFullFilelisting($directory, $filePatten = '.*')

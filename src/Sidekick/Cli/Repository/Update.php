@@ -142,6 +142,9 @@ class Update extends CliCommand
         'committed_at',
         $lastCommit
       );
+      /**
+       * @var $latest Commit
+       */
 
       if($latest)
       {

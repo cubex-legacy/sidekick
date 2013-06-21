@@ -4,19 +4,24 @@
  * @var $this Sidekick\Applications\Fortify\Views\BuildLogView
  */
 ?>
+<?php
+$basePath = $this->request()->path(4);
+?>
 <h1>Build Log</h1>
+<div class="btn-group cushion pull-right">
+  <a class="btn" href="<?= $basePath ?>/phploc">PHP LOC</a>
+  <a class="btn" href="<?= $basePath ?>/phpmd">PHP Mess Detection</a>
+  <a class="btn" href="<?= $basePath ?>/phpcs">Style Check Warning</a>
+  <a class="btn" href="<?= $basePath ?>/phpunit">PHP Unit</a>
+</div>
+<div class="clearfix"></div>
 <code class="console" style="min-height: 800px;">
   <?php foreach($this->getCommandsRun() as $commandRun): ?>
     <?php
-    $txtClass = '';
-    if(!$commandRun->passed)
-    {
-      $txtClass = 'error-text';
-      if($commandRun->exitCode == -1)
-      {
-        $txtClass = 'running-text';
-      }
-    }
+    $txtClass = $this->getTextClass(
+      $commandRun->passed,
+      $commandRun->exitCode
+    );
     ?>
     <p class="command-title <?= $txtClass ?>">
       [<?= date('H:i:s', $commandRun->startTime); ?>]
@@ -35,30 +40,12 @@
         <?= $commandRun->args ?>
       </p>
       <?php foreach($commandRun->commandOutput as $key => $lineValue): ?>
-        <?php
-        $keyParts   = explode(':', $key);
-        $outputLine = false; //start_time or some other "non output" key
-        if($keyParts[0] == 'output')
-        {
-          $outputLine = true;
-          $lineTime   = date('H:i:s', $keyParts[1]);
-          $lines      = explode("\n", $lineValue);
-        }
-
-        $errorLine = false;
-        if(isset($keyParts[2]) && $keyParts[2] == 'err')
-        {
-          $errorLine = true;
-        }
-        ?>
+        <?php $outputLine = $this->getOutputLine($key, $lineValue); ?>
         <?php if($outputLine): ?>
-          <?php foreach($lines as $line): ?>
-            <?php if($line == '')
-            {
-              continue;
-            } ?>
+          <?php foreach($outputLine->lines as $line): ?>
             <div class="line <?= $txtClass ?>">
-              [<?= $lineTime; ?>] &nbsp;&nbsp;<?= $line ?>
+              [<?= $outputLine->lineTime; ?>]
+              &nbsp;&nbsp;<?= $line ?>
             </div>
           <?php endforeach; ?>
         <?php endif; ?>

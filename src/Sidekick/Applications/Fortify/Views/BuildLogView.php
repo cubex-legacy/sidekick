@@ -15,6 +15,7 @@ use Sidekick\Components\Fortify\Mappers\Command;
 class BuildLogView extends TemplatedViewModel
 {
   protected $_commandsRun = [];
+  private $_outputLine = false;
 
   public function addCommand(
     Command $command, $commandRun, $passed = false, $commandOutput = null
@@ -43,5 +44,40 @@ class BuildLogView extends TemplatedViewModel
   public function getCommandsRun()
   {
     return $this->_commandsRun;
+  }
+
+  public function getOutputLine($key, $lineValue)
+  {
+    $keyParts   = explode(':', $key);
+    if($keyParts[0] == 'output')
+    {
+      $this->_outputLine = new \stdClass();
+      $this->_outputLine->lineTime   = date('H:i:s', $keyParts[1]);
+
+      $lines = explode("\n", $lineValue);
+      foreach($lines as $line)
+      {
+        //we don't want empty lines
+        if($line == '') continue;
+        $this->_outputLine->lines[] = $line;
+      }
+    }
+
+    return $this->_outputLine;
+  }
+
+  public function getTextClass($passed, $exitCode)
+  {
+    $txtClass = '';
+    if(!$passed)
+    {
+      $txtClass = 'error-text';
+      if($exitCode == -1)
+      {
+        $txtClass = 'running-text';
+      }
+    }
+
+    return $txtClass;
   }
 }

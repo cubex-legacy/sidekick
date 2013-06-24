@@ -34,9 +34,9 @@ class FortifyBuildCommandsController extends FortifyController
     //add dependencies to build commands
     foreach($postData['dependencies'] as $depCommandId)
     {
-      $depBuildCommand               = new BuildsCommands();
-      $depBuildCommand->commandId    = $depCommandId;
-      $depBuildCommand->buildId      = $postData['buildId'];
+      $depBuildCommand            = new BuildsCommands();
+      $depBuildCommand->commandId = $depCommandId;
+      $depBuildCommand->buildId   = $postData['buildId'];
       $depBuildCommand->saveChanges();
     }
 
@@ -62,10 +62,11 @@ class FortifyBuildCommandsController extends FortifyController
   public function getRoutes()
   {
     //extending ResourceTemplate routes
-    $routes         = parent::getRoutes();
+    $routes = parent::getRoutes();
 
     //put overrides on top of routes so they take priority
-    array_unshift($routes,
+    array_unshift(
+      $routes,
       new StdRoute('/create', 'create'),
       new StdRoute('/:commandId/:buildId/delete', 'delete')
     );

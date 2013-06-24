@@ -26,8 +26,8 @@ class ConfigItemsManager extends TemplatedViewModel
     $this->parentProject = new Project($this->project->parentId);
 
     $this->configItems = ConfigurationItem::collection()->loadWhere(
-      ['configuration_group_id' => $groupId]
-    )->setOrderBy('id');
+                           ['configuration_group_id' => $groupId]
+                         )->setOrderBy('id');
   }
 
   public function addForm()
@@ -80,7 +80,6 @@ class ConfigItemsManager extends TemplatedViewModel
     $form->addSubmitElement('Save', 'submit');
     return $form;
   }
-
 
   public function getBreadcrumbs()
   {

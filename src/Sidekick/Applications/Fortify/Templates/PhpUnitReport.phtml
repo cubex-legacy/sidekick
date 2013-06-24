@@ -1,0 +1,77 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 20/06/13 18:07
+ *
+ * @var $this \Sidekick\Applications\Fortify\Views\PhpUnitReport
+ */
+?>
+<h1>PHP Unit Report</h1>
+<p>Testing Testing...</p>
+<?php if($this->reportFileFound): ?>
+  <h2>Summary</h2>
+  <?php $summary = $this->getTestSummary(); ?>
+  <div class="well">
+    <p><?= $summary->name ?></p>
+
+    <p><strong>Assertions: </strong><?= $summary->assertions ?></p>
+
+    <p><strong>Failures: </strong><?= $summary->failures ?></p>
+
+    <p><strong>Errors: </strong><?= $summary->errors ?></p>
+
+    <p><strong>Time: </strong><?= $summary->time ?></p>
+  </div>
+  <?php foreach($this->getTestData() as $testsuite): ?>
+    <div class="well">
+      <h4><?= $testsuite['name'] ?></h4>
+      <table class='table table-compacted table-bordered'
+             style='font-size:11px;'>
+        <tr>
+          <th>Name</th>
+          <th>Class</th>
+          <th>File</th>
+          <th>Line</th>
+          <th>Assertions</th>
+          <th>Time</th>
+        </tr>
+        <?php foreach($testsuite['testCase'] as $testcase): ?>
+          <tr>
+            <td><?= $testcase['name'] ?></td>
+            <td><?= $testcase['class'] ?></td>
+            <td><?= basename($testcase['file']) ?></td>
+            <td><?= $testcase['line'] ?></td>
+            <td><?= $testcase['assertions'] ?></td>
+            <td><?= $testcase['time'] ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </table>
+      <?php foreach($testsuite['testSuite'] as $subTestsuites): ?>
+        <strong><?= $subTestsuites['name']; ?></strong><br/>
+        <table class='table table-compacted table-bordered'
+               style='font-size:11px;'>
+          <tr>
+            <th>Name</th>
+            <th>Class</th>
+            <th>File</th>
+            <th>Line</th>
+            <th>Assertions</th>
+            <th>Time</th>
+          </tr>
+          <?php foreach($subTestsuites['testCase'] as $testcase): ?>
+            <tr>
+              <td><?= $testcase['name'] ?></td>
+              <td><?= $testcase['class'] ?></td>
+              <td><?= basename($testcase['file']) ?></td>
+              <td><?= $testcase['line'] ?></td>
+              <td><?= $testcase['assertions'] ?></td>
+              <td><?= $testcase['time'] ?></td>
+            </tr>
+          <?php endforeach; ?>
+        </table>
+      <?php endforeach; ?>
+    </div>
+  <?php endforeach; ?>
+<?php else: ?>
+  <h2>Fortify could not find PHP Unit report file</h2>
+<?php endif; ?>

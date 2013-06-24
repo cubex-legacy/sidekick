@@ -10,6 +10,7 @@ use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\Queue\StdQueue;
 use Cubex\Routing\StdRoute;
+use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
@@ -17,6 +18,11 @@ use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Fortify\Views\BuildLogView;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
+use Sidekick\Applications\Fortify\Views\PhpCsReport;
+use Sidekick\Applications\Fortify\Views\PhpLocReport;
+use Sidekick\Applications\Fortify\Views\PhpMdReport;
+use Sidekick\Applications\Fortify\Views\PhpUnitReport;
+use Sidekick\Applications\Fortify\Views\ReportsButtonGroup;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -199,6 +205,43 @@ class FortifyController extends BaseControl
     )->now();
   }
 
+  public function renderReportType()
+  {
+    $reportType = $this->getStr('reportType');
+    $file       = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
+
+    $filter = $this->getStr('filter');
+    $runId  = $this->getInt('runId');
+
+    $report = '';
+    switch($reportType)
+    {
+      case 'phploc':
+        $file .= "/builds/$runId/logs/phploc.csv";
+        $report = new PhpLocReport($file);
+        break;
+      case 'phpmd':
+        $file .= "/builds/$runId/logs/pmd.report.xml";
+        $report = new PhpMdReport($file, $filter);
+        break;
+      case 'phpcs':
+        $file .= "/builds/$runId/logs/checkstyle.xml";
+        $report = new PhpCsReport($file);
+        break;
+      case 'phpunit':
+        $file .= "/builds/$runId/logs/junit.xml";
+        $report = new PhpUnitReport($file);
+        break;
+      default:
+        $report = '';
+    }
+
+    return new RenderGroup(
+      new ReportsButtonGroup(),
+      $report
+    );
+  }
+
   public function getRoutes()
   {
     //extending ResourceTemplate routes
@@ -212,7 +255,18 @@ class FortifyController extends BaseControl
       new StdRoute('/:projectId/:buildType/repository', 'Repo'),
       new StdRoute('/:projectId/:buildType/build', 'Build'),
       new StdRoute('/:projectId/:buildType/:runId@num', 'buildLog'),
-      new StdRoute('/:projectId/:buildType/(?<result>(pass|fail|running))/', 'fortify')
+      new StdRoute(
+        '/:projectId/:buildType/:runId@num/:reportType',
+        'reportType'
+      ),
+      new StdRoute(
+        '/:projectId/:buildType/:runId@num/:reportType/:filter',
+        'reportType'
+      ),
+      new StdRoute(
+        '/:projectId/:buildType/(?<result>(pass|fail|running))/',
+        'fortify'
+      )
     );
 
     return $routes;

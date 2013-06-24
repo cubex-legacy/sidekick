@@ -1,0 +1,103 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 20/06/13 13:22
+ *
+ * @var $this \Sidekick\Applications\Fortify\Views\PhpMdReport
+ */
+?>
+<?php
+$basePath = $this->request()->path(5);
+?>
+<h1>PHP Mess Report</h1>
+<p>Look at the mess you made! :)</p>
+<?php if($this->reportFileFound): ?>
+<h2>Summary</h2>
+<table class="table table-hover table-bordered" style="font-size:11px;">
+  <tr>
+    <th>Warnings</th>
+    <th>Errors</th>
+  </tr>
+
+  <tr>
+    <td><?= $this->getViolationsCount(); ?></td>
+    <td><?= $this->getErrorsCount(); ?></td>
+  </tr>
+</table>
+
+
+<?php if($this->filter === null || $this->filterType !== 'mess'): ?>
+  <table class="table table-hover table-bordered" style="font-size:11px;">
+    <tr>
+      <th>Mess Type</th>
+      <th>Total</th>
+    </tr>
+    <?php foreach($this->getMessTypeSummary() as $group => $count): ?>
+      <tr>
+        <td><a
+            href="<?= $basePath ?>/mess:<?= $group ?>">
+            <?= $group ?>
+          </a>
+        </td>
+        <td><?= $count ?></td>
+      </tr>
+    <?php endforeach; ?>
+  </table>
+<?php endif; ?>
+
+<?php if($this->filter !== null): ?>
+  <strong><?= $this->getAppliedFilter() ?> Mess Breakdown</strong>
+  <table class="table table-hover table-bordered" style="font-size:11px;">
+    <tr>
+      <th>File Name</th>
+      <th>Package</th>
+      <th>Class</th>
+      <th>Method</th>
+      <th>Priority</th>
+    </tr>
+    <?php foreach($this->getFiles() as $file): ?>
+      <tr>
+        <td>
+          <a href=''><?= $file->fileName; ?></a>:
+          <?= $file->beginLine ?>-<?= $file->endLine ?>
+        </td>
+        <td><?= $file->package ?></td>
+        <td><?= $file->class ?></td>
+        <td><?= $file->method ?></td>
+        <td><?= $file->priority ?></td>
+      </tr>
+    <?php endforeach; ?>
+  </table>
+<?php endif; ?>
+
+<?php if($this->filter === null || $this->filterType !== 'package'): ?>
+  <table class="table table-hover table-bordered" style="font-size:11px;">
+    <tr>
+      <th>Package</th>
+      <th>Total</th>
+    </tr>
+    <?php foreach($this->getPackageSummary() as $group => $count): ?>
+      <tr>
+        <td>
+          <a href="<?= $basePath ?>/package:<?= md5($group) ?>">
+            <?= $group ?>
+          </a>
+        </td>
+        <td><?= $count ?></td>
+      </tr>
+    <?php endforeach; ?>
+  </table>
+<?php endif; ?>
+
+<h2>Errors (<?= $this->getErrorsCount(); ?>)</h2>
+<table class="table table-hover" style="font-size:11px;">
+  <?php foreach($this->getErrors() as $error): ?>
+    <tr>
+      <td title="<?= $error->message; ?>"><?= basename($error->fileName) ?></td>
+      <td><?= $error->message ?></td>
+    </tr>
+  <?php endforeach; ?>
+</table>
+<?php else: ?>
+<h2>Fortify could not find PHP Mess Detection report file</h2>
+<?php endif; ?>

@@ -17,6 +17,7 @@ use Sidekick\Applications\PreviewApp\PreviewApp;
 use Sidekick\Applications\Projects\ProjectsApp;
 use Sidekick\Applications\Repository\RepositoryApp;
 use Sidekick\Applications\Scripture\ScriptureApp;
+use Sidekick\Applications\SourceCode\SourceCodeApp;
 
 class Project extends \Cubex\Core\Project\Project
 {
@@ -83,6 +84,13 @@ class Project extends \Cubex\Core\Project\Project
     {
       $app = new OverviewApp();
       $app->setBaseUri('/' . 'overview');
+      return $app;
+    }
+
+    if(starts_with($path, '/sourcecode'))
+    {
+      $app = new SourceCodeApp();
+      $app->setBaseUri('/' . 'sourcecode');
       return $app;
     }
 

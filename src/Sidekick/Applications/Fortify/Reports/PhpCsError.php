@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Fortify\Reports;
 
 class PhpCsError
 {
+  public $fileName;
   public $line;
   public $column;
   public $message;
@@ -25,6 +26,17 @@ class PhpCsError
   public function setCategory($category)
   {
     $this->category = $category;
+    return $this;
+  }
+
+  /**
+   * @param mixed $fileName
+   *
+   * @return PhPCsError
+   */
+  public function setFileName($fileName)
+  {
+    $this->fileName = $fileName;
     return $this;
   }
 

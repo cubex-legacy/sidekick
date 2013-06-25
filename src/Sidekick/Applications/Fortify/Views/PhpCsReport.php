@@ -13,13 +13,28 @@ use Sidekick\Applications\Fortify\Reports\PhpCsFile;
 class PhpCsReport extends TemplatedViewModel
 {
   private $_file;
+  private $_filter;
   private $_parsedData;
   public $reportFileFound = true;
 
-  public function __construct($file)
+  public function __construct($file, $filter)
   {
-    $this->_file = $file;
+    if($filter !== null)
+    {
+      list($filterType, $filter) = explode(':', $filter);
+    }
+    else
+    {
+      $filter = 'all';
+    }
+    $this->_file   = $file;
+    $this->_filter = $filter;
     $this->_setParsedData();
+
+    $this->requireJs(
+      'https://google-code-prettify.googlecode.com/svn/'
+      . 'loader/run_prettify.js?skin=sons-of-obsidian'
+    );
   }
 
   /**
@@ -27,12 +42,18 @@ class PhpCsReport extends TemplatedViewModel
    */
   public function getErrorFiles()
   {
-    return $this->_parsedData['style'];
+
+    return $this->_parsedData[$this->_filter];
   }
 
   public function getErrorFilesCount()
   {
-    return count($this->_parsedData['style']);
+    return count($this->_parsedData['all']);
+  }
+
+  public function getErrorsCount()
+  {
+    return $this->_parsedData['errorsCount'][$this->_filter];
   }
 
   public function getCodeStandardErrorSummary()
@@ -66,21 +87,18 @@ class PhpCsReport extends TemplatedViewModel
       $xml = simplexml_load_file($this->_file);
       foreach($xml->file as $file)
       {
-        $fileName = basename((string)$file['name']);
-        $errors   = [];
+        $fileName       = basename((string)$file['name']);
+        $fullFileName   = (string)$file['name'];
+        $errors         = [];
+        $filteredErrors = [];
         foreach($file->error as $error)
         {
-          /**
-           * XML can be a bitch sometimes. Casting to avoid issue
-           * down the line
-           */
-
           $e = new PhpCsError();
           $e->setLine((int)$error['line'])
           ->setColumn((int)$error['column'])
           ->setMessage((string)$error['message'])
-          ->setSource((string)$error['source']);
-          //->setFileName($fileName);
+          ->setSource((string)$error['source'])
+          ->setFileName($fullFileName);
 
           list($standard, $category, $subCategory, $type) = explode(
             '.',
@@ -92,7 +110,9 @@ class PhpCsReport extends TemplatedViewModel
           ->setSubCategory($subCategory)
           ->setType($type);
 
-          $errors[] = $e;
+          $errors[]                             = $e;
+          $filteredErrors[$standard][]          = $e;
+          $filteredErrors[md5($fullFileName)][] = $e;
 
           if(!isset($data['summary']['standard'][$standard]))
           {
@@ -119,10 +139,19 @@ class PhpCsReport extends TemplatedViewModel
           $data['summary']['type'][$type] += 1;
 
           $data['hierarchy'][$standard][$category][$subCategory][$type] = 1;
+
+          $data['errorsCount']['all'] += 1;
+          $data['errorsCount'][$standard] += 1;
+          $data['errorsCount'][md5($fullFileName)] += 1;
         }
 
-        $phpCsFile       = new PhpCsFile($fileName, $errors);
-        $data['style'][] = $phpCsFile;
+        $data['all'][]              = new PhpCsFile($fileName, $errors);
+        $data[$standard][]          = new PhpCsFile(
+          $fileName, $filteredErrors[$standard]
+        );
+        $data[md5($fullFileName)][] = new PhpCsFile(
+          $fileName, $filteredErrors[md5($fullFileName)]
+        );
       }
     }
     else

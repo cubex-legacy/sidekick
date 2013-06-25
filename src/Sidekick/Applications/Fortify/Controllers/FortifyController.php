@@ -15,6 +15,7 @@ use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
+use Sidekick\Applications\Fortify\Views\BuildDetailsView;
 use Sidekick\Applications\Fortify\Views\BuildLogView;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
@@ -226,7 +227,7 @@ class FortifyController extends BaseControl
         break;
       case 'phpcs':
         $file .= "/builds/$runId/logs/checkstyle.xml";
-        $report = new PhpCsReport($file);
+        $report = new PhpCsReport($file, $filter);
         break;
       case 'phpunit':
         $file .= "/builds/$runId/logs/junit.xml";
@@ -242,6 +243,12 @@ class FortifyController extends BaseControl
     );
   }
 
+  public function buildDetails()
+  {
+    $runId = $this->getInt('runId');
+    return new BuildDetailsView(new BuildRun($runId));
+  }
+
   public function getRoutes()
   {
     //extending ResourceTemplate routes
@@ -254,7 +261,8 @@ class FortifyController extends BaseControl
       new StdRoute('/:projectId/:buildType', 'fortify'),
       new StdRoute('/:projectId/:buildType/repository', 'Repo'),
       new StdRoute('/:projectId/:buildType/build', 'Build'),
-      new StdRoute('/:projectId/:buildType/:runId@num', 'buildLog'),
+      new StdRoute('/:projectId/:buildType/:runId@num/', 'buildDetails'),
+      new StdRoute('/:projectId/:buildType/:runId@num/buildlog', 'buildLog'),
       new StdRoute(
         '/:projectId/:buildType/:runId@num/:reportType',
         'reportType'

@@ -40,10 +40,8 @@ class SourceCodeView extends ViewModel
     //zero-based index
     $line = $this->_lineNumber - 1;
 
-    $this->_addResourceBlock(
-      'ol.linenums {margin: 0 0 10px 50px;}',
-      TypeEnum::CSS(),
-      null
+    $this->addCssBlock(
+      'ol.linenums {margin: 0 0 10px 50px;}'
     );
 
     $this->addJsBlock(

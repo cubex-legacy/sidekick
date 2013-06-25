@@ -7,6 +7,9 @@ namespace Sidekick\Applications\Projects\Controllers;
 
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
+use Cubex\View\HtmlElement;
+use Cubex\View\RenderGroup;
+use Sidekick\Applications\Projects\Forms\ProjectForm;
 use Sidekick\Applications\Projects\Views\ProjectsForm;
 use Sidekick\Applications\Projects\Views\ProjectsIndex;
 use Sidekick\Applications\Projects\Views\ProjectsSidebar;
@@ -30,82 +33,96 @@ class DefaultController extends ProjectsController
 
   public function renderCreateProject()
   {
-    return new ProjectsForm();
+    return new RenderGroup(
+      new HtmlElement('h1', [], 'Create Project'),
+      new ProjectForm('/projects/create-project')
+    );
   }
 
   public function postCreateProject()
   {
-    $this->_postCreateOrUpdateProject();
-  }
-
-  public function renderEditProject()
-  {
-    $projectId = $this->getInt('projectId');
-    return new ProjectsForm($projectId);
-  }
-
-  public function postUpdateProject()
-  {
-    $this->_postCreateOrUpdateProject();
-  }
-
-  private function _postCreateOrUpdateProject()
-  {
     $postData = $this->request()->postVariables();
-
-    /**
-     * Because we use bindMapper method (see Projects/views/ProjectForm)
-     * to build this form.
-     * There will always be an id field that defaults to an empty string.
-     * Casting this id to an int can tell us if we are dealing with a create
-     * or update request
-     */
-    if($postData['name'] != '')
+    $form     = new ProjectForm('/projects/create-project');
+    $form->hydrate($postData);
+    if($form->isValid())
     {
-      if((int)$postData['id'])
-      {
-        $project   = new Project($postData['id']);
-        $msg       = new \stdClass();
-        $msg->type = 'success';
-        $msg->text = 'Project was successfully updated';
-      }
-      else
-      {
-        $project   = new Project();
-        $msg       = new \stdClass();
-        $msg->type = 'success';
-        $msg->text = 'Project was successfully created';
-      }
-
+      //save project
+      $project              = new Project();
       $project->name        = $postData['name'];
       $project->description = $postData['description'];
       $project->parentId    = $postData['parent_id'];
       $project->saveChanges();
 
+      $msg       = new \stdClass();
+      $msg->type = 'success';
+      $msg->text = 'Project was successfully created';
+
       Redirect::to($this->baseUri())->with('msg', $msg)->now();
     }
     else
     {
-      if((int)$postData['id'])
-      {
-        $redirectTo = $this->baseUri() . '/edit/' . $postData['id'];
-        $error      = 'Project could be not updated. ' .
-          'Please provide at least a name';
-      }
-      else
-      {
-        $redirectTo = $this->baseUri() . '/create-project';
-        $error      = 'Project could be not created. ' .
-          'Please provide at least a name';
-      }
+      $redirectTo = $this->baseUri() . '/create-project';
+      $error      = 'Project could be not created. ' .
+        'Please provide at least a name';
 
       $msg       = new \stdClass();
       $msg->type = 'error';
       $msg->text = $error;
       Redirect::to($redirectTo)->with('msg', $msg)->now();
     }
+
+    return new RenderGroup(
+      new HtmlElement('h1', [], 'Create Project'),
+      $form
+    );
+
   }
 
+  public function renderEditProject()
+  {
+    $projectId = $this->getInt('projectId');
+    $form      = new ProjectForm('/projects/update-project', $projectId);
+
+    return new RenderGroup(
+      new HtmlElement('h1', [], 'Update Project'),
+      $form
+    );
+  }
+
+  public function postUpdateProject()
+  {
+    $postData = $this->request()->postVariables();
+    $form     = new ProjectForm('/projects/update-project');
+    $form->hydrate($postData);
+    if($form->isValid())
+    {
+      //save project
+      $project              = new Project($postData['id']);
+      $project->name        = $postData['name'];
+      $project->description = $postData['description'];
+      $project->parentId    = $postData['parent_id'];
+      $project->saveChanges();
+
+      $msg       = new \stdClass();
+      $msg->type = 'success';
+      $msg->text = 'Project was successfully updated';
+
+      Redirect::to($this->baseUri())->with('msg', $msg)->now();
+    }
+    else
+    {
+      $redirectTo = $this->baseUri() . '/update-project';
+      $error      = 'Project could be not updated. ' .
+        'Please provide at least a name';
+
+      $msg       = new \stdClass();
+      $msg->type = 'error';
+      $msg->text = $error;
+      Redirect::to($redirectTo)->with('msg', $msg)->now();
+    }
+
+    return $form;
+  }
 
   public function renderDeleteProject()
   {

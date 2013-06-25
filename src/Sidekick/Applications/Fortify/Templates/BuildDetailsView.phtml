@@ -1,0 +1,53 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 25/06/13 14:52
+ *
+ * @var $this \Sidekick\Applications\Fortify\Views\BuildDetailsView
+ */
+?>
+<?php $basePath = $this->request()->path(4); ?>
+<h1>Build Details #<?= $this->run->id(); ?></h1>
+
+<table class="table table-bordered">
+  <tr>
+    <td>Status:</td>
+    <td><?= $this->run->result ?></td>
+  </tr>
+  <tr>
+    <td>Type:</td>
+    <td><?= $this->run->buildType ?></td>
+  </tr>
+  <tr>
+    <td>Date:</td>
+    <td>
+      <?= date('d M Y', strtotime($this->run->createdAt)) ?>
+    </td>
+  </tr>
+  <tr>
+    <td>Start Time:</td>
+    <td>
+      <?= date('d M Y H:i:s', strtotime($this->run->startTime)) ?>
+    </td>
+  </tr>
+  <tr>
+    <td>End Time:</td>
+    <td>
+      <?= date('d M Y H:i:s', strtotime($this->run->endTime)) ?>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <strong><a href="<?= $basePath ?>/buildlog">View Build Log</a></strong>
+    </td>
+  </tr>
+</table>
+
+<h2>Build Reports</h2>
+<ul>
+  <li><a href="<?= $basePath ?>/phploc">PHP LOC</a></li>
+  <li><a href="<?= $basePath ?>/phpmd">PHP Mess Detection</a></li>
+  <li><a href="<?= $basePath ?>/phpcs">PHP Style Check</a></li>
+  <li><a href="<?= $basePath ?>/punit">PHP Unit</a></li>
+</ul>

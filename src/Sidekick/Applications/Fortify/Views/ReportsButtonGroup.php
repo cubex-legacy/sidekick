@@ -38,7 +38,7 @@ class ReportsButtonGroup extends ViewModel
       'class' => 'btn btn-info pull-right',
       'style' => 'margin-left:10px;'
       ],
-      'Back to Build Log'
+      'Back to Build Home'
     );
 
     $backButton = new HtmlElement(

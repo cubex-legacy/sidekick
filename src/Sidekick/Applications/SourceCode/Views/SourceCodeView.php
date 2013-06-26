@@ -27,7 +27,7 @@ class SourceCodeView extends ViewModel
     $this->requireJsLibrary('jquery');
     $this->requireJs(
       'https://google-code-prettify.googlecode.com/svn/'
-      . 'loader/run_prettify.js?skin=sons-of-obsidian&callback=linehigh'
+      . 'loader/run_prettify.js?skin=sons-of-obsidian&callback=highlightLine'
     );
 
     $sourceText = htmlentities(file_get_contents($this->_sourceFile));
@@ -37,24 +37,18 @@ class SourceCodeView extends ViewModel
       ['class' => 'prettyprint lang-scm linenums'],
       $sourceText
     );
-    //zero-based index
+
+    //taking into account the zero-based index
     $line = $this->_lineNumber - 1;
 
     $this->addCssBlock(
       'ol.linenums {margin: 0 0 10px 50px;}'
     );
 
+    $this->requireJs('main');
     $this->addJsBlock(
       <<<JSB
-          window.exports = {
-            linehigh: function(){
-              line = \$(\$(".linenums li")[$line]);
-              line.css("background-color","brown");
-              $('html, body').animate({
-                scrollTop: line.offset().top-43
-              }, 2000);
-          }
-        };
+var lineNumber = $line;
 JSB
     );
 

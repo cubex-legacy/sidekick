@@ -13,7 +13,6 @@ class DefaultController extends BaseControl
 {
   public function renderIndex()
   {
-    echo "welcome to source code viewer";
     $sourceFile = $this->getStr('sourceFile');
     $lineNumber = $this->getInt('lineNumber');
     return new SourceCodeView($sourceFile, $lineNumber);

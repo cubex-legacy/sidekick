@@ -192,7 +192,7 @@ class FortifyController extends BaseControl
    * Run build process. Does not actually run the build, it only puts
    * the request into a queue, which gets processed by cron script
    */
-  public function Build()
+  public function build()
   {
     $projectId = $this->getInt('projectId');
     $buildId   = $this->getInt('buildType');
@@ -248,8 +248,11 @@ class FortifyController extends BaseControl
     $commands, $runId, TemplatedViewModel $view
   )
   {
+    //determine if user has requested for a filter command list
+    $filter = $this->getStr('commandId');
     foreach($commands as $c)
     {
+      if($filter !== null && $filter != $c) continue;
       $command       = new Command($c);
       $commandRun    = BuildLog::cf()->get(
         "$runId-$c",
@@ -284,10 +287,14 @@ class FortifyController extends BaseControl
       $routes,
       new StdRoute('/:projectId', 'fortify'),
       new StdRoute('/:projectId/:buildType', 'fortify'),
-      new StdRoute('/:projectId/:buildType/repository', 'Repo'),
-      new StdRoute('/:projectId/:buildType/build', 'Build'),
+      new StdRoute('/:projectId/:buildType/repository', 'repo'),
+      new StdRoute('/:projectId/:buildType/build', 'build'),
       new StdRoute('/:projectId/:buildType/:runId@num/', 'buildDetails'),
       new StdRoute('/:projectId/:buildType/:runId@num/buildlog', 'buildLog'),
+      new StdRoute(
+        '/:projectId/:buildType/:runId@num/buildlog/:commandId',
+        'buildLog'
+      ),
       new StdRoute('/:projectId/:buildType/:runId@num/changes', 'changes'),
       new StdRoute(
         '/:projectId/:buildType/:runId@num/:reportType',

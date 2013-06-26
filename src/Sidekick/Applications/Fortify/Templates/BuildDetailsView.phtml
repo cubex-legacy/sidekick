@@ -52,7 +52,9 @@
         <?php endif; ?>
       </td>
       <td>
-        <a href="" title="Command Log"><i class="icon-list-alt"></i></a>
+        <a
+          href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+          title="Command Log"><i class="icon-list-alt"></i></a>
         <a
           href="<?= $this->basePath ?>/<?= $command->command->command ?>"
           title="Command Report">

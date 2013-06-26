@@ -16,16 +16,12 @@ use Cubex\View\TemplatedView;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
+use Sidekick\Applications\Fortify\Reports\FortifyReport;
 use Sidekick\Applications\Fortify\Views\BuildDetailsView;
 use Sidekick\Applications\Fortify\Views\BuildLogView;
 use Sidekick\Applications\Fortify\Views\BuildRunPage;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
-use Sidekick\Applications\Fortify\Views\PhpCsReport;
-use Sidekick\Applications\Fortify\Views\PhpLocReport;
-use Sidekick\Applications\Fortify\Views\PhpMdReport;
-use Sidekick\Applications\Fortify\Views\PhpUnitReport;
-use Sidekick\Applications\Fortify\Views\ReportsButtonGroup;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -127,39 +123,33 @@ class FortifyController extends BaseControl
     return new BuildRunPage('', $buildRun, $basePath, $currentTab);
   }
 
-  public function renderReportType()
+  public function renderReport()
   {
-    $reportType = $this->getStr('reportType');
-    $file       = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
+    $commandId = $this->getStr('commandId');
 
     $filter   = $this->getStr('filter');
     $runId    = $this->getInt('runId');
     $basePath = $this->request()->path(4);
 
-    $report = '';
-    switch($reportType)
+    $report  = '';
+    $command = new Command($commandId);
+    if($command->reportNamespace !== null)
     {
-      case 'phploc':
-        $file .= "/builds/$runId/logs/phploc.csv";
-        $report = new PhpLocReport($file);
-        break;
-      case 'phpmd':
-        $file .= "/builds/$runId/logs/pmd.report.xml";
-        $report = new PhpMdReport($file, $filter, $basePath);
-        break;
-      case 'phpcs':
-        $file .= "/builds/$runId/logs/checkstyle.xml";
-        $report = new PhpCsReport($file, $filter, $basePath);
-        break;
-      case 'phpunit':
-        $file .= "/builds/$runId/logs/junit.xml";
-        $report = new PhpUnitReport($file);
-        break;
-      default:
-        $report = '';
-    }
+      $className      = $this->_getFullClassName($command->reportNamespace);
+      $reportProvider = new $className($runId, $filter, $basePath);
 
+      if($reportProvider instanceof FortifyReport)
+      {
+        $report = $reportProvider->getView();
+      }
+    }
     return new BuildRunPage($report, new BuildRun($runId), $basePath);
+  }
+
+  private function _getFullClassName($namespace)
+  {
+    $base = "\\Sidekick\\Applications\\Fortify\\Reports\\";
+    return $base . $namespace . "\\ReportProvider";
   }
 
   public function renderRepo()
@@ -252,7 +242,10 @@ class FortifyController extends BaseControl
     $filter = $this->getStr('commandId');
     foreach($commands as $c)
     {
-      if($filter !== null && $filter != $c) continue;
+      if($filter !== null && $filter != $c)
+      {
+        continue;
+      }
       $command       = new Command($c);
       $commandRun    = BuildLog::cf()->get(
         "$runId-$c",
@@ -297,12 +290,12 @@ class FortifyController extends BaseControl
       ),
       new StdRoute('/:projectId/:buildType/:runId@num/changes', 'changes'),
       new StdRoute(
-        '/:projectId/:buildType/:runId@num/:reportType',
-        'reportType'
+        '/:projectId/:buildType/:runId@num/:commandId',
+        'report'
       ),
       new StdRoute(
-        '/:projectId/:buildType/:runId@num/:reportType/:filter',
-        'reportType'
+        '/:projectId/:buildType/:runId@num/:commandId/:filter',
+        'report'
       ),
       new StdRoute(
         '/:projectId/:buildType/(?<result>(pass|fail|running))/',

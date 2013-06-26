@@ -51,8 +51,8 @@ class FortifyCommandForm extends TemplatedViewModel
       $this->_form->addTextElement('command', $this->_command->command);
       $this->_form->addTextElement('description', $this->_command->description);
       $this->_form->addTextElement(
-        'report_class',
-        $this->_command->reportClass
+        'report_namespace',
+        $this->_command->reportNamespace
       );
       $this->_form->addTextElement(
         'file_pattern',

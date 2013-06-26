@@ -22,7 +22,7 @@ class Command extends RecordMapper
   public $args;
   public $name;
   public $description;
-  public $reportClass;
+  public $reportNamespace;
 
   public $causeBuildFailure = true;
 

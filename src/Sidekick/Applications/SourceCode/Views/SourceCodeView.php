@@ -46,11 +46,7 @@ class SourceCodeView extends ViewModel
     );
 
     $this->requireJs('main');
-    $this->addJsBlock(
-      <<<JSB
-var lineNumber = $line;
-JSB
-    );
+    $this->addJsBlock("var lineNumber = $line;");
 
     return new RenderGroup(
       '<h1>' . $fileName . '</h1>',

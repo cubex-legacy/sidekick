@@ -47,11 +47,12 @@
                title="<?= $error->fileName ?>">
               <?= $file->fileName ?>
             </a>
-            <br/><a class="label" target="_blank"
-               href="/sourcecode/<?= $error->line ?>/<?= $error->fileName ?>">
-              view source</a>
           </td>
-          <td><?= $error->line ?>,<?= $error->column ?></td>
+          <td>
+            <a target="_blank"
+                 href="/sourcecode/<?= $error->line ?>/<?= $error->fileName ?>">
+              <?= $error->line ?>,<?= $error->column ?></a>
+          </td>
           <td><?= $error->message ?></td>
           <td><?= $error->standard ?></td>
           <td><?= $error->category ?></td>

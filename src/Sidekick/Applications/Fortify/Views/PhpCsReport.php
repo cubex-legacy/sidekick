@@ -7,8 +7,8 @@
 namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Applications\Fortify\Reports\PhpCsError;
-use Sidekick\Applications\Fortify\Reports\PhpCsFile;
+use Sidekick\Applications\Fortify\Reports\Phpcs\PhpCsError;
+use Sidekick\Applications\Fortify\Reports\Phpcs\PhpCsFile;
 
 class PhpCsReport extends TemplatedViewModel
 {

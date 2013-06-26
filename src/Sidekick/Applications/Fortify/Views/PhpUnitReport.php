@@ -7,7 +7,7 @@
 namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Applications\Fortify\Reports\PhpUnitTestSummary;
+use Sidekick\Applications\Fortify\Reports\PhpUnit\PhpUnitTestSummary;
 
 class PhpUnitReport extends TemplatedViewModel
 {

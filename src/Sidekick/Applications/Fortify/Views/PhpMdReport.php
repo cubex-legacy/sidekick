@@ -7,8 +7,8 @@
 namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Applications\Fortify\Reports\PhpMdError;
-use Sidekick\Applications\Fortify\Reports\PhpMdFile;
+use Sidekick\Applications\Fortify\Reports\Phpmd\PhpMdError;
+use Sidekick\Applications\Fortify\Reports\PhpMd\PhpMdFile;
 
 class PhpMdReport extends TemplatedViewModel
 {

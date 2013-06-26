@@ -122,6 +122,20 @@
       </table>
     </fieldset>
   </div>
+  <div class="row-fluid">
+    <div class="well span12">
+      <fieldset>
+        <legend>Reporting</legend>
+        <table>
+          <tr>
+            <td>Report Class:</td>
+            <td>
+              <?= $this->form()->getElement('report_class'); ?>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
   <?= $this->form()->getElement('submit')->addAttribute(
     'class',
     'btn btn-primary btn-large pull-right'

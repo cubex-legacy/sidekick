@@ -7,6 +7,7 @@ namespace Sidekick;
 
 use Cubex\Core\Application\Application;
 use Cubex\Core\Http\Request;
+use Sidekick\Applications\Api\ApiApp;
 use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
@@ -74,6 +75,10 @@ class Project extends \Cubex\Core\Project\Project
     if($subdomain == 'phuse')
     {
       return new PhuseApp(true);
+    }
+    else if($subdomain == 'api')
+    {
+      return new ApiApp();
     }
     return null;
   }

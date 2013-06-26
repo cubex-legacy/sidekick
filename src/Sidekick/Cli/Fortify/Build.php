@@ -329,6 +329,11 @@ class Build extends CliCommand
       {
         foreach($fileList as $file)
         {
+          if(!file_exists($file))
+          {
+            continue;
+          }
+
           if(stristr($runCommand, '{iteratedFilePath}'))
           {
             $process = new Process(

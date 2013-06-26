@@ -4,7 +4,7 @@
  * Date: 21/06/13 11:17
  */
 
-namespace Sidekick\Applications\Fortify\Reports\Phpcs;
+namespace Sidekick\Applications\Fortify\Reports\PhpCs;
 
 class PhpCsFile
 {

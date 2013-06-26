@@ -4,7 +4,7 @@
  * Date: 21/06/13 11:07
  */
 
-namespace Sidekick\Applications\Fortify\Reports\Phpcs;
+namespace Sidekick\Applications\Fortify\Reports\PhpCs;
 
 class PhpCsError
 {

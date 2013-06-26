@@ -312,7 +312,7 @@ class Build extends CliCommand
           {
             if(preg_match("/$command->filePattern/", $file))
             {
-              $fileList[] = $file;
+              $fileList[] = $command->fileSetDirectory . $file;
             }
           }
         }

@@ -15,9 +15,10 @@ class PhpCsReport extends TemplatedViewModel
   private $_file;
   private $_filter;
   private $_parsedData;
+  public $basePath;
   public $reportFileFound = true;
 
-  public function __construct($file, $filter)
+  public function __construct($file, $filter, $basePath)
   {
     if($filter !== null)
     {
@@ -29,6 +30,7 @@ class PhpCsReport extends TemplatedViewModel
     }
     $this->_file   = $file;
     $this->_filter = $filter;
+    $this->basePath = $basePath;
     $this->_setParsedData();
 
     $this->requireJs(

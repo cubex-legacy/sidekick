@@ -32,7 +32,7 @@
     <?php foreach($this->getMessTypeSummary() as $group => $count): ?>
       <tr>
         <td><a
-            href="<?= $this->basePath ?>/mess:<?= $group ?>">
+            href="<?= $this->basePath ?>phpmd/mess:<?= $group ?>">
             <?= $group ?>
           </a>
         </td>
@@ -76,7 +76,7 @@
     <?php foreach($this->getPackageSummary() as $group => $count): ?>
       <tr>
         <td>
-          <a href="<?= $this->basePath ?>/package:<?= md5($group) ?>">
+          <a href="<?= $this->basePath ?>/phpmd/package:<?= md5($group) ?>">
             <?= $group ?>
           </a>
         </td>

@@ -149,7 +149,7 @@ class FortifyController extends BaseControl
         break;
       case 'phpcs':
         $file .= "/builds/$runId/logs/checkstyle.xml";
-        $report = new PhpCsReport($file, $filter);
+        $report = new PhpCsReport($file, $filter, $basePath);
         break;
       case 'phpunit':
         $file .= "/builds/$runId/logs/junit.xml";

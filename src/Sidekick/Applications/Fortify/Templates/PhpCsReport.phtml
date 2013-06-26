@@ -6,7 +6,6 @@
  * @var $this \Sidekick\Applications\Fortify\Views\PhpCsReport
  */
 ?>
-<?php $basePath = $this->request()->path(5); ?>
 <h1>PHP Style Check Report</h1>
 <p>We are not digging your style! :p</p>
 <?php if($this->reportFileFound): ?>
@@ -19,7 +18,7 @@
     <?php foreach($this->getCodeStandardErrorSummary() as $name => $count): ?>
       <tr>
         <td>
-          <a href="<?= $basePath ?>/standard:<?= $name ?>">
+          <a href="<?= $this->basePath ?>/phpcs/standard:<?= $name ?>">
             <?= $name ?>
           </a>
         </td>
@@ -28,7 +27,7 @@
     <?php endforeach; ?>
   </table>
 
-  <p class="pull-right"><a href="<?= $basePath ?>">Show All</a></p>
+  <p class="pull-right"><a href="<?= $this->basePath ?>/phpcs">Show All</a></p>
   <h2>Errors (<?= $this->getErrorsCount() ?>)</h2>
   <table class="table table-bordered" style="font-size:11px;">
     <tr>
@@ -43,14 +42,16 @@
       <?php foreach($file->errors as $error): ?>
         <tr>
           <td>
-            <a href="<?= $basePath ?>/file:<?= md5($error->fileName) ?>"
+            <a href="<?= $this->basePath ?>/phpcs/file:<?= md5(
+              $error->fileName
+            ) ?>"
                title="<?= $error->fileName ?>">
               <?= $file->fileName ?>
             </a>
           </td>
           <td>
             <a target="_blank"
-                 href="/sourcecode/<?= $error->line ?>/<?= $error->fileName ?>">
+               href="/sourcecode/<?= $error->line ?>/<?= $error->fileName ?>">
               <?= $error->line ?>,<?= $error->column ?></a>
           </td>
           <td><?= $error->message ?></td>

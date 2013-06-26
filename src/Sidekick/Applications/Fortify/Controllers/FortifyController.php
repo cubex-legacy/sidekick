@@ -13,6 +13,7 @@ use Cubex\Routing\StdRoute;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedView;
+use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Fortify\Views\BuildDetailsView;
@@ -96,29 +97,7 @@ class FortifyController extends BaseControl
     $buildRun = new BuildRun($runId);
 
     $view = new BuildLogView();
-
-    foreach($buildRun->commands as $c)
-    {
-      $command       = new Command($c);
-      $commandRun    = BuildLog::cf()->get(
-        "$runId-$c",
-        ['exit_code', 'start_time']
-      );
-      $commandOutput = BuildLog::cf()->getSlice(
-        "$runId-$c",
-        'output:0',
-        '',
-        false,
-        1000
-      );
-
-      $view->addCommand(
-        new Command($c),
-        $commandRun,
-        in_array($commandRun['exit_code'], $command->successExitCodes),
-        $commandOutput
-      );
-    }
+    $view = $this->_addCommandToView($buildRun->commands, $runId, $view);
 
     $this->requireJs('buildLog');
     return $view;
@@ -211,8 +190,9 @@ class FortifyController extends BaseControl
     $reportType = $this->getStr('reportType');
     $file       = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
 
-    $filter = $this->getStr('filter');
-    $runId  = $this->getInt('runId');
+    $filter   = $this->getStr('filter');
+    $runId    = $this->getInt('runId');
+    $basePath = $this->request()->path(5);
 
     $report = '';
     switch($reportType)
@@ -223,7 +203,7 @@ class FortifyController extends BaseControl
         break;
       case 'phpmd':
         $file .= "/builds/$runId/logs/pmd.report.xml";
-        $report = new PhpMdReport($file, $filter);
+        $report = new PhpMdReport($file, $filter, $basePath);
         break;
       case 'phpcs':
         $file .= "/builds/$runId/logs/checkstyle.xml";
@@ -245,8 +225,43 @@ class FortifyController extends BaseControl
 
   public function buildDetails()
   {
-    $runId = $this->getInt('runId');
-    return new BuildDetailsView(new BuildRun($runId));
+    $runId    = $this->getInt('runId');
+    $buildRun = new BuildRun($runId);
+    $basePath = $this->request()->path(4);
+    $view     = new BuildDetailsView($buildRun, $basePath);
+    $view     = $this->_addCommandToView($buildRun->commands, $runId, $view);
+
+    return $view;
+  }
+
+  private function _addCommandToView(
+    $commands, $runId, TemplatedViewModel $view
+  )
+  {
+    foreach($commands as $c)
+    {
+      $command       = new Command($c);
+      $commandRun    = BuildLog::cf()->get(
+        "$runId-$c",
+        ['exit_code', 'start_time', 'end_time']
+      );
+      $commandOutput = BuildLog::cf()->getSlice(
+        "$runId-$c",
+        'output:0',
+        '',
+        false,
+        1000
+      );
+
+      $view->addCommand(
+        new Command($c),
+        $commandRun,
+        in_array($commandRun['exit_code'], $command->successExitCodes),
+        $commandOutput
+      );
+    }
+
+    return $view;
   }
 
   public function getRoutes()

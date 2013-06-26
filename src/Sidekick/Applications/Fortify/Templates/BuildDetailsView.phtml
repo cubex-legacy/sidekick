@@ -6,48 +6,79 @@
  * @var $this \Sidekick\Applications\Fortify\Views\BuildDetailsView
  */
 ?>
-<?php $basePath = $this->request()->path(4); ?>
-<h1>Build Details #<?= $this->run->id(); ?></h1>
+<div class="pull-right build-result build-<?= $this->run->result ?>">
+  <?= $this->run->result ?>
+</div>
+<div class="page-header">
+  <h1>Build Details #<?= $this->run->id(); ?>
+    <small><?= ucfirst($this->run->buildType) ?> Build</small>
+  </h1>
+
+</div>
 
 <table class="table table-bordered">
   <tr>
-    <td>Status:</td>
-    <td><?= $this->run->result ?></td>
+    <th>Start Time:</th>
+    <th>End Time:</th>
+    <th>Duration:</th>
   </tr>
   <tr>
-    <td>Type:</td>
-    <td><?= $this->run->buildType ?></td>
-  </tr>
-  <tr>
-    <td>Date:</td>
-    <td>
-      <?= date('d M Y', strtotime($this->run->createdAt)) ?>
-    </td>
-  </tr>
-  <tr>
-    <td>Start Time:</td>
     <td>
       <?= date('d M Y H:i:s', strtotime($this->run->startTime)) ?>
     </td>
-  </tr>
-  <tr>
-    <td>End Time:</td>
     <td>
       <?= date('d M Y H:i:s', strtotime($this->run->endTime)) ?>
+    </td>
+    <td>
+      <?= $this->getDuration($this->run->endTime, $this->run->startTime) ?>
     </td>
   </tr>
   <tr>
     <td></td>
+    <td></td>
     <td>
-      <strong><a href="<?= $basePath ?>/buildlog">View Build Log</a></strong>
+      <strong><a href="<?= $this->basePath ?>/buildlog">View Build Log</a></strong>
     </td>
   </tr>
 </table>
 
-<h2>Build Reports</h2>
-<ul>
-  <li><a href="<?= $basePath ?>/phploc">PHP LOC</a></li>
-  <li><a href="<?= $basePath ?>/phpmd">PHP Mess Detection</a></li>
-  <li><a href="<?= $basePath ?>/phpcs">PHP Style Check</a></li>
-  <li><a href="<?= $basePath ?>/phpunit">PHP Unit</a></li>
-</ul>
+
+<h2>Build Commands</h2>
+<table class="table table-bordered">
+  <tr>
+    <th>Exit <br/>Code</th>
+    <th>Command</th>
+    <th>Start</th>
+    <th>Duration</th>
+    <th>Actions</th>
+    <th>Status</th>
+  </tr>
+  <?php foreach($this->getCommandsRun() as $command): ?>
+    <tr>
+      <td><?= $command->exitCode ?></td>
+      <td><?= $command->command->command ?></td>
+      <td><?= date('H:i:s', $command->startTime) ?></td>
+      <td>
+        <?php if($command->endTime && $command->startTime): ?>
+          <?=
+          $this->getDuration(
+            date('Y-m-d H:i:s', $command->endTime),
+            date('Y-m-d H:i:s', $command->startTime)
+          );
+          ?>
+        <?php endif; ?>
+      </td>
+      <td>
+        <a href="" title="Command Log"><i class="icon-list-alt"></i></a>
+        <a
+          href="<?= $this->basePath ?>/<?= $command->command->command ?>"
+          title="Command Report">
+          <i class="icon-file"></i>
+        </a>
+      </td>
+      <td><?= (int)$command->passed ?></td>
+    </tr>
+  <?php endforeach; ?>
+</table>
+
+

@@ -17,11 +17,13 @@ class PhpMdReport extends TemplatedViewModel
   public $filter;
   public $filterType;
   public $group;
+  public $basePath;
   public $reportFileFound = true;
 
-  public function __construct($file, $filter)
+  public function __construct($file, $filter, $basePath)
   {
     $this->_file = $file;
+    $this->basePath = $basePath;
     list($this->filterType, $this->filter) = explode(':', $filter);
     $this->group = 'rule_files';
     if($this->filterType != 'mess')

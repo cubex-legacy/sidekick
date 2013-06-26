@@ -6,9 +6,6 @@
  * @var $this \Sidekick\Applications\Fortify\Views\PhpMdReport
  */
 ?>
-<?php
-$basePath = $this->request()->path(5);
-?>
 <h1>PHP Mess Report</h1>
 <p>Look at the mess you made! :)</p>
 <?php if($this->reportFileFound): ?>
@@ -35,7 +32,7 @@ $basePath = $this->request()->path(5);
     <?php foreach($this->getMessTypeSummary() as $group => $count): ?>
       <tr>
         <td><a
-            href="<?= $basePath ?>/mess:<?= $group ?>">
+            href="<?= $this->basePath ?>/mess:<?= $group ?>">
             <?= $group ?>
           </a>
         </td>
@@ -79,7 +76,7 @@ $basePath = $this->request()->path(5);
     <?php foreach($this->getPackageSummary() as $group => $count): ?>
       <tr>
         <td>
-          <a href="<?= $basePath ?>/package:<?= md5($group) ?>">
+          <a href="<?= $this->basePath ?>/package:<?= md5($group) ?>">
             <?= $group ?>
           </a>
         </td>

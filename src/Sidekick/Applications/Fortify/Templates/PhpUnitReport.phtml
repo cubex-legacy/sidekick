@@ -9,11 +9,9 @@
 <h1>PHP Unit Report</h1>
 <p>Testing Testing...</p>
 <?php if($this->reportFileFound): ?>
-  <h2>Summary</h2>
   <?php $summary = $this->getTestSummary(); ?>
+  <h2>Summary: <?= $summary->name ?></h2>
   <div class="well">
-    <p><?= $summary->name ?></p>
-
     <p><strong>Assertions: </strong><?= $summary->assertions ?></p>
 
     <p><strong>Failures: </strong><?= $summary->failures ?></p>
@@ -23,8 +21,19 @@
     <p><strong>Time: </strong><?= $summary->time ?></p>
   </div>
   <?php foreach($this->getTestData() as $testsuite): ?>
-    <div class="well">
-      <h4><?= $testsuite['name'] ?></h4>
+    <a class="testsuite"
+       onclick="$('#<?= md5($testsuite['name']) ?>').toggle()">
+      <div class="pull-left"><h4><?= $testsuite['name'] ?></h4></div>
+      <div class="pull-right">
+        <?php
+        $class = ($testsuite['errors'] == 0) ?
+          "test-passed" : "test-failed";
+        ?>
+        <div class="<?= $class ?>"></div>
+      </div>
+      <div class="clearfix"></div>
+    </a>
+    <div class="hide" id="<?= md5($testsuite['name']) ?>">
       <table class='table table-compacted table-bordered'
              style='font-size:11px;'>
         <tr>

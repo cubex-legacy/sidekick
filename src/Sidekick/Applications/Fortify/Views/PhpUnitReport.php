@@ -19,6 +19,7 @@ class PhpUnitReport extends TemplatedViewModel
   {
     $this->_file       = $file;
     $this->_parsedData = $this->_parseFile();
+    $this->requireCss('phpUnitReport');
   }
 
   /**

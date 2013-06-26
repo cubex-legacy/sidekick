@@ -6,16 +6,6 @@
  * @var $this \Sidekick\Applications\Fortify\Views\BuildDetailsView
  */
 ?>
-<div class="pull-right build-result build-<?= $this->run->result ?>">
-  <?= $this->run->result ?>
-</div>
-<div class="page-header">
-  <h1>Build Details #<?= $this->run->id(); ?>
-    <small><?= ucfirst($this->run->buildType) ?> Build</small>
-  </h1>
-
-</div>
-
 <table class="table table-bordered">
   <tr>
     <th>Start Time</th>
@@ -31,13 +21,6 @@
     </td>
     <td>
       <?= $this->getDuration($this->run->endTime, $this->run->startTime) ?>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td>
-      <strong><a href="<?= $this->basePath ?>/buildlog">View Build Log</a></strong>
     </td>
   </tr>
 </table>

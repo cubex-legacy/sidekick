@@ -4,16 +4,6 @@
  * @var $this Sidekick\Applications\Fortify\Views\BuildLogView
  */
 ?>
-<?php
-$basePath = $this->request()->path(4);
-?>
-<h1>Build Log</h1>
-<div class="btn-group cushion pull-right">
-  <a class="btn" href="<?= $basePath ?>/phploc">PHP LOC</a>
-  <a class="btn" href="<?= $basePath ?>/phpmd">PHP Mess Detection</a>
-  <a class="btn" href="<?= $basePath ?>/phpcs">Style Check Warning</a>
-  <a class="btn" href="<?= $basePath ?>/phpunit">PHP Unit</a>
-</div>
 <div class="clearfix"></div>
 <code class="console" style="min-height: 800px;">
   <?php foreach($this->getCommandsRun() as $commandRun): ?>

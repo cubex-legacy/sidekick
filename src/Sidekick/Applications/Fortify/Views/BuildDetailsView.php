@@ -22,7 +22,6 @@ class BuildDetailsView extends TemplatedViewModel
   {
     $this->run      = $run;
     $this->basePath = $basePath;
-    $this->requireCss('buildDetailsView');
   }
 
   public function addCommand(

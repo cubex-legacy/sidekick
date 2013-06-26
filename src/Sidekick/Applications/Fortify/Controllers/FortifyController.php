@@ -18,6 +18,7 @@ use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Fortify\Views\BuildDetailsView;
 use Sidekick\Applications\Fortify\Views\BuildLogView;
+use Sidekick\Applications\Fortify\Views\BuildRunPage;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
 use Sidekick\Applications\Fortify\Views\PhpCsReport;
@@ -91,16 +92,74 @@ class FortifyController extends BaseControl
     );
   }
 
+  public function buildDetails()
+  {
+    $runId      = $this->getInt('runId');
+    $buildRun   = new BuildRun($runId);
+    $basePath   = $this->request()->path(4);
+    $currentTab = $this->request()->offsetPath(4, 1);
+    $view       = new BuildDetailsView($buildRun, $basePath);
+    $view       = $this->_addCommandToView($buildRun->commands, $runId, $view);
+
+    return new BuildRunPage($view, $buildRun, $basePath, $currentTab);
+  }
+
   public function renderBuildLog()
   {
-    $runId    = $this->getInt('runId');
-    $buildRun = new BuildRun($runId);
-
-    $view = new BuildLogView();
-    $view = $this->_addCommandToView($buildRun->commands, $runId, $view);
+    $runId      = $this->getInt('runId');
+    $buildRun   = new BuildRun($runId);
+    $basePath   = $this->request()->path(4);
+    $currentTab = $this->request()->offsetPath(4, 1);
+    $view       = new BuildLogView();
+    $view       = $this->_addCommandToView($buildRun->commands, $runId, $view);
 
     $this->requireJs('buildLog');
-    return $view;
+    return new BuildRunPage($view, $buildRun, $basePath, $currentTab);
+  }
+
+  public function renderChanges()
+  {
+    $runId      = $this->getInt('runId');
+    $buildRun   = new BuildRun($runId);
+    $basePath   = $this->request()->path(4);
+    $currentTab = $this->request()->offsetPath(4, 1);
+
+    return new BuildRunPage('', $buildRun, $basePath, $currentTab);
+  }
+
+  public function renderReportType()
+  {
+    $reportType = $this->getStr('reportType');
+    $file       = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
+
+    $filter   = $this->getStr('filter');
+    $runId    = $this->getInt('runId');
+    $basePath = $this->request()->path(4);
+
+    $report = '';
+    switch($reportType)
+    {
+      case 'phploc':
+        $file .= "/builds/$runId/logs/phploc.csv";
+        $report = new PhpLocReport($file);
+        break;
+      case 'phpmd':
+        $file .= "/builds/$runId/logs/pmd.report.xml";
+        $report = new PhpMdReport($file, $filter, $basePath);
+        break;
+      case 'phpcs':
+        $file .= "/builds/$runId/logs/checkstyle.xml";
+        $report = new PhpCsReport($file, $filter);
+        break;
+      case 'phpunit':
+        $file .= "/builds/$runId/logs/junit.xml";
+        $report = new PhpUnitReport($file);
+        break;
+      default:
+        $report = '';
+    }
+
+    return new BuildRunPage($report, new BuildRun($runId), $basePath);
   }
 
   public function renderRepo()
@@ -185,55 +244,6 @@ class FortifyController extends BaseControl
     )->now();
   }
 
-  public function renderReportType()
-  {
-    $reportType = $this->getStr('reportType');
-    $file       = realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
-
-    $filter   = $this->getStr('filter');
-    $runId    = $this->getInt('runId');
-    $basePath = $this->request()->path(5);
-
-    $report = '';
-    switch($reportType)
-    {
-      case 'phploc':
-        $file .= "/builds/$runId/logs/phploc.csv";
-        $report = new PhpLocReport($file);
-        break;
-      case 'phpmd':
-        $file .= "/builds/$runId/logs/pmd.report.xml";
-        $report = new PhpMdReport($file, $filter, $basePath);
-        break;
-      case 'phpcs':
-        $file .= "/builds/$runId/logs/checkstyle.xml";
-        $report = new PhpCsReport($file, $filter);
-        break;
-      case 'phpunit':
-        $file .= "/builds/$runId/logs/junit.xml";
-        $report = new PhpUnitReport($file);
-        break;
-      default:
-        $report = '';
-    }
-
-    return new RenderGroup(
-      new ReportsButtonGroup(),
-      $report
-    );
-  }
-
-  public function buildDetails()
-  {
-    $runId    = $this->getInt('runId');
-    $buildRun = new BuildRun($runId);
-    $basePath = $this->request()->path(4);
-    $view     = new BuildDetailsView($buildRun, $basePath);
-    $view     = $this->_addCommandToView($buildRun->commands, $runId, $view);
-
-    return $view;
-  }
-
   private function _addCommandToView(
     $commands, $runId, TemplatedViewModel $view
   )
@@ -278,6 +288,7 @@ class FortifyController extends BaseControl
       new StdRoute('/:projectId/:buildType/build', 'Build'),
       new StdRoute('/:projectId/:buildType/:runId@num/', 'buildDetails'),
       new StdRoute('/:projectId/:buildType/:runId@num/buildlog', 'buildLog'),
+      new StdRoute('/:projectId/:buildType/:runId@num/changes', 'changes'),
       new StdRoute(
         '/:projectId/:buildType/:runId@num/:reportType',
         'reportType'

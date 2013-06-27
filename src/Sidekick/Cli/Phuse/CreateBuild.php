@@ -69,6 +69,7 @@ class CreateBuild extends CliCommand
     $package->license     = $composer->license;
     $package->authors     = $composer->authors;
     $package->require     = $composer->require;
+    $package->rawComposer = $composer;
     $package->saveChanges();
 
     $release              = new Release([$package->id(), $this->version]);

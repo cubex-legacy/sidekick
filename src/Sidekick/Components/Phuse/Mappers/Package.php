@@ -24,11 +24,16 @@ class Package extends RecordMapper
    */
   public $require;
   public $projectId;
+  /**
+   * @datatype text
+   */
+  public $rawComposer;
 
   protected function _configure()
   {
-    $this->_attribute('authors')->setSerializer(Attribute::SERIALIZATION_JSON);
-    $this->_attribute('require')->setSerializer(Attribute::SERIALIZATION_JSON);
+    $this->_setSerializer('authors');
+    $this->_setSerializer('require');
+    $this->_setSerializer('rawComposer');
   }
 
 

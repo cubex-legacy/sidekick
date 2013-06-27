@@ -27,19 +27,21 @@ class ComposedController extends PhuseController
       {
         $releases[] = ['name' => $pack->name, 'version' => $rel->version];
 
-        $updateTag = strtotime($rel->updatedAt);
-
-        $versions[$rel->version] = [
+        $updateTag               = strtotime($rel->updatedAt);
+        $rawComposer             = $pack->rawComposer;
+        $append                  = [
           "name"    => $pack->name,
           "version" => $rel->version,
-          "time"    => date("Y-m-d H:i:s", $rel->updatedAt),
+          "time"    => date("Y-m-d H:i:s", $updateTag),
           "dist"    => [
             'url'       => url() . '/download/' .
             ($pack->name . '/' . $rel->version . '/' . $updateTag),
             'type'      => 'zip',
+            'shasum'    => "",
             'reference' => $rel->zipHash
-          ]
+          ],
         ];
+        $versions[$rel->version] = $rawComposer + $append;
         $packages[$pack->name]   = $versions;
       }
     }

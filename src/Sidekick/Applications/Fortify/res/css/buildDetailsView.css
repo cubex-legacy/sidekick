@@ -8,13 +8,13 @@
 }
 
 .build-pass {
-  background-color: green;
+ color: green;
 }
 
 .build-fail {
-  background-color: red;
+  color: red;
 }
 
 .build-running{
-  background-color: #ade0ef;
+  color: #ade0ef;
 }

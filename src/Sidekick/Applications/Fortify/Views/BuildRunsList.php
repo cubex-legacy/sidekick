@@ -31,4 +31,18 @@ class BuildRunsList extends TemplatedViewModel
     $diff = strtotime($endDate) - strtotime($startDate);
     return DateTimeHelper::formatTimespan($diff);
   }
+
+  public function textClass($result)
+  {
+    $return = "text-info";
+    if($result == 'fail')
+    {
+      $return = "text-error";
+    }
+    elseif($result == 'pass')
+    {
+      $return = "text-success";
+    }
+    return $return;
+  }
 }

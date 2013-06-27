@@ -16,7 +16,7 @@
   </tr>
   <?php if($this->getBuildRuns()): ?>
     <?php foreach($this->getBuildRuns() as $run): ?>
-      <tr class="<?= ($run->result == 'fail')? 'text-error' : '';  ?>">
+      <tr class="<?= $this->textClass($run->result);  ?>">
         <td>
           <a href="/fortify/<?= $run->projectId ?>/<?= $run->buildId ?>/<?= $run->id() ?>"><?= $run->id(); ?></a>
         </td>

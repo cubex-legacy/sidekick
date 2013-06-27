@@ -135,14 +135,22 @@ class FortifyController extends BaseControl
     $command = new Command($commandId);
     if($command->reportNamespace !== null)
     {
-      $className      = FortifyReport::getReportProviderClass(
-        $command->reportNamespace
-      );
-      $reportProvider = new $className($runId, $filter, $basePath);
-
-      if($reportProvider instanceof FortifyReport)
+      try
       {
-        $report = $reportProvider->getView();
+        $className = FortifyReport::getReportProviderClass(
+          $command->reportNamespace
+        );
+
+        $reportProvider = new $className($runId, $filter, $basePath);
+
+        if($reportProvider instanceof FortifyReport)
+        {
+          $report = $reportProvider->getView();
+        }
+      }
+      catch(\Exception $e)
+      {
+        $report = $e->getMessage();
       }
     }
 

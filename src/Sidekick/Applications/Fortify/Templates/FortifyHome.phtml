@@ -7,23 +7,28 @@
  */
 ?>
 <h1>Fortify Home</h1>
-<?php foreach($this->builds as $b): ?>
-  <div class="well">
-    <h2>
-      <a
-        href="/fortify/<?= $b->project_id ?>/<?= $b->build_id ?>/<?= $b->id; ?>">
-        <?= $this->project($b->project_id)->name; ?>: Build #<?= $b->id; ?>
-      </a>
-    </h2>
-
-    <p><strong>Status: </strong><?= ucfirst($b->result) ?></p>
-
-    <p><strong>Build Type: </strong><?= $b->build_type ?></p>
-
-    <p><strong>Commit Hash: </strong><?= substr($b->commit_hash, 0, 8) ?></p>
-
-    <p><strong>Started: </strong>
-      <?= date('d M Y', strtotime($b->start_time)) ?>
-    </p>
-  </div>
-<?php endforeach; ?>
+<table class="table">
+  <tr>
+    <th>Project</th>
+    <th>Commit Hash</th>
+    <th>Build Type</th>
+    <th>Started</th>
+    <th>Duration</th>
+    <th>Status</th>
+  </tr>
+  <?php foreach($this->getBuildRuns() as $b): ?>
+    <tr>
+      <td>
+        <a
+          href="/fortify/<?= $b->project_id ?>/<?= $b->build_id ?>/<?= $b->id; ?>">
+          <?= $this->project($b->project_id)->name; ?>: Build #<?= $b->id; ?>
+        </a>
+      </td>
+      <td><?= substr($b->commit_hash, 0, 8) ?></td>
+      <td><?= $b->build_type ?></td>
+      <td><?= date('d M Y', strtotime($b->start_time)) ?></td>
+      <td><?= $this->getDuration($b->end_time, $b->start_time) ?></td>
+      <td><?= ucfirst($b->result) ?></td>
+    </tr>
+  <?php endforeach; ?>
+</table>

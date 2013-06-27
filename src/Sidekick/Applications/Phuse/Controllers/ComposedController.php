@@ -28,7 +28,7 @@ class ComposedController extends PhuseController
         $releases[] = ['name' => $pack->name, 'version' => $rel->version];
 
         $updateTag               = strtotime($rel->updatedAt);
-        $rawComposer             = $pack->rawComposer;
+        $rawComposer             = (array)$pack->rawComposer;
         $append                  = [
           "name"    => $pack->name,
           "version" => $rel->version,

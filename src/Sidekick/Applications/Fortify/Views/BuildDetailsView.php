@@ -16,7 +16,7 @@ class BuildDetailsView extends TemplatedViewModel
    */
   public $run;
   public $basePath;
-  protected $_commandsRun;
+  protected $_commandsRun = [];
 
   public function __construct($run, $basePath)
   {

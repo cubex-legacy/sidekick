@@ -57,12 +57,14 @@ class BuildRun extends RecordMapper
     $result = self::conn()->getRows(
       ParseQuery::parse(
         self::conn(),
-        "SELECT * FROM %T WHERE %C IN (SELECT MAX(%C) FROM %T GROUP BY %C)",
+        "SELECT * FROM %T WHERE %C IN
+        (SELECT MAX(%C) FROM %T GROUP BY %C) ORDER BY %C DESC",
         self::tableName(),
         'id',
         'id',
         self::tableName(),
-        'project_id'
+        'project_id',
+        'start_time'
       )
     );
 

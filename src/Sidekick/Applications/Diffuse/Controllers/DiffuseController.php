@@ -11,9 +11,4 @@ use Sidekick\Applications\Diffuse\Views\Sidebar;
 class DiffuseController extends BaseControl
 {
   protected $_titlePrefix = 'Diffuse';
-
-  public function getSidebar()
-  {
-    return new Sidebar();
-  }
 }

@@ -14,6 +14,7 @@ use Cubex\Helpers\System;
 use Cubex\Log\Debug;
 use Sidekick\Components\Fortify\Enums\BuildResult;
 use Sidekick\Components\Fortify\Enums\FileSet;
+use Sidekick\Components\Fortify\FortifyBuildChanges;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -375,44 +376,11 @@ class Build extends CliCommand
    */
   public function buildCommitRange()
   {
-    $lastCommitHash = BuildRun::collection(
-                        [
-                        'project_id' => $this->project,
-                        'build_id'   => $this->build,
-                        'result'     => BuildResult::PASS
-                        ]
-                      )
-                      ->setOrderBy("created_at", 'DESC')
-                      ->setLimit(0, 1)
-                      ->setColumns(['commit_hash'])
-                      ->first();
+    $changes = new FortifyBuildChanges(
+      $this->project, $this->build, $this->_commitHash
+    );
 
-    $findCommits = [$this->_commitHash];
-    if($lastCommitHash !== null)
-    {
-      $findCommits[] = trim($lastCommitHash->commitHash);
-    }
-
-    $commitIds = Commit::collection()
-                 ->whereIn('commit_hash', $findCommits)
-                 ->setColumns(['commit_hash', 'repository_id', 'id'])
-                 ->get();
-
-    $range = Commit::collection();
-
-    switch($commitIds->count())
-    {
-      case 2:
-        $range->whereBetween("id", $commitIds->loadedIds());
-        break;
-      case 1:
-        $range->whereLessThan("id", $commitIds->loadedIds()[0]);
-        break;
-    }
-
-    $range->whereEq("repository_id", $commitIds->getField('repository_id'));
-
-    return $range;
+    return $changes->buildCommitRange();
   }
 
   protected function _getFullFilelisting($directory, $filePatten = '.*')

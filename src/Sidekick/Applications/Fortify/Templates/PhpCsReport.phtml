@@ -18,7 +18,7 @@
     <?php foreach($this->getCodeStandardErrorSummary() as $name => $count): ?>
       <tr>
         <td>
-          <a href="<?= $this->basePath ?>/phpcs/standard:<?= $name ?>">
+          <a href="<?= $this->basePath ?>/standard:<?= $name ?>">
             <?= $name ?>
           </a>
         </td>
@@ -27,7 +27,7 @@
     <?php endforeach; ?>
   </table>
 
-  <p class="pull-right"><a href="<?= $this->basePath ?>/phpcs">Show All</a></p>
+  <p class="pull-right"><a href="<?= $this->basePath ?>">Show All</a></p>
   <h2>Errors (<?= $this->getErrorsCount() ?>)</h2>
   <table class="table table-bordered" style="font-size:11px;">
     <tr>
@@ -42,7 +42,7 @@
       <?php foreach($file->errors as $error): ?>
         <tr>
           <td>
-            <a href="<?= $this->basePath ?>/phpcs/file:<?= md5(
+            <a href="<?= $this->basePath ?>/file:<?= md5(
               $error->fileName
             ) ?>"
                title="<?= $error->fileName ?>">

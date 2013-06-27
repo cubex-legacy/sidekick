@@ -19,7 +19,6 @@ class BuildsPage extends ViewModel
   protected $_projectId;
   protected $_buildType;
 
-
   public function __construct($projectId, $buildType, $builds, $buildRuns)
   {
     $this->_projectId = $projectId;
@@ -27,7 +26,6 @@ class BuildsPage extends ViewModel
     $this->_buildRuns = $buildRuns;
     $this->_buildType = $buildType;
   }
-
 
   private function _tabs()
   {
@@ -106,18 +104,17 @@ class BuildsPage extends ViewModel
     );
   }
 
-
   public function render()
   {
-    $baseUri = $this->baseUri(
-      ) . '/' . $this->_projectId . '/' . $this->_buildType;
+    $baseUri = $this->baseUri() . '/' . $this->_projectId .
+      '/' . $this->_buildType;
 
     $alert = '';
     if(Session::getFlash('msg'))
     {
       $alert = new HtmlElement(
         'div',
-        ['class' => 'alert alert-'.Session::getFlash('msg')->type],
+        ['class' => 'alert alert-' . Session::getFlash('msg')->type],
         Session::getFlash('msg')->text
       );
     }

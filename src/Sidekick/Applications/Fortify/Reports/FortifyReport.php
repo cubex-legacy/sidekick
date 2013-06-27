@@ -14,24 +14,41 @@ abstract class FortifyReport
   public $filter;
   public $basePath;
 
-  public function __construct($runId, $filter=null, $basePath=null)
+  public function __construct($runId, $filter = null, $basePath = null)
   {
-    $this->runId = $runId;
-    $this->filter = $filter;
+    $this->runId    = $runId;
+    $this->filter   = $filter;
     $this->basePath = $basePath;
   }
 
   public function getFileBase()
   {
-    return Container::config()->get('_cubex_')->getStr('project_base').'../';
+    return Container::config()->get('_cubex_')->getStr('project_base') . '../';
   }
 
   public static function getReportProviderClass($namespace)
   {
-    $base = "\\Sidekick\\Applications\\Fortify\\Reports\\";
-    return $base . $namespace . "\\ReportProvider";
+    if(starts_with($namespace, '\\'))
+    {
+      $base = '';
+    }
+    else
+    {
+      $base = "\\Sidekick\\Applications\\Fortify\\Reports\\";
+    }
+
+    $class = $base . $namespace . "\\ReportProvider";
+    if(class_exists($class))
+    {
+      return $class;
+    }
+    else
+    {
+      throw new \Exception("Namespace does not contain a valid ReportProvider");
+    }
   }
 
   abstract public function getView();
+
   abstract public function getReportFile();
 }

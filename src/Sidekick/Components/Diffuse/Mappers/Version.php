@@ -6,14 +6,13 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Diffuse\Enums\VersionState;
 
 /**
  * Class Version
  */
 class Version extends RecordMapper
 {
-  public $projectId;
-  public $repoId;
   /**
    * @datatype tinyint
    */
@@ -26,14 +25,35 @@ class Version extends RecordMapper
    * @datatype smallint
    */
   public $build;
+
+  /**
+   * initiating build ID
+   */
+  public $buildId;
+  /**
+   * related project
+   */
+  public $projectId;
+  /**
+   * related repository
+   */
+  public $repoId;
+
   public $fromCommitHash;
   public $toCommitHash;
-  public $releaseDate;
-  public $stageReleaseDate;
-  public $changeLog;
-  /**
-   * @enumclass \Sidekick\Components\Diffuse\Mappers\VersionState
-   */
-  public $versionState;
 
+  /**
+   * @datatype mediumtext
+   */
+  public $changeLog;
+
+  /**
+   * @enumclass \Sidekick\Components\Diffuse\Enums\VersionState
+   */
+  public $versionState = VersionState::UNKNOWN;
+
+  public function actions()
+  {
+    return $this->hasMany(new Action());
+  }
 }

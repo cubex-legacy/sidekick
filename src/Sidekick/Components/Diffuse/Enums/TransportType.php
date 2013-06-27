@@ -14,4 +14,5 @@ class TransportType extends Enum
   const FTP               = 'ftp';
   const GOOGLE_APP_ENGINE = 'gae';
   const PHUSE             = 'phuse';
+  const RSYNC             = 'rsync';
 }

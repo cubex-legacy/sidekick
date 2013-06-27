@@ -14,12 +14,14 @@ class FortifyBuildChanges
 {
   public $projectId;
   public $buildId;
+  public $runId;
   protected $_commitHash;
 
-  public function __construct($projectId, $buildId, $commitHash)
+  public function __construct($projectId, $buildId, $commitHash, $runId = null)
   {
     $this->projectId   = $projectId;
     $this->buildId     = $buildId;
+    $this->runId       = $runId;
     $this->_commitHash = $commitHash;
   }
 
@@ -29,12 +31,17 @@ class FortifyBuildChanges
   public function buildCommitRange()
   {
     $lastCommitHash = BuildRun::collection(
-                        [
-                        'project_id' => $this->projectId,
-                        'build_id'   => $this->buildId,
-                        'result'     => BuildResult::PASS
-                        ]
-                      )
+      [
+      'project_id' => $this->projectId,
+      'build_id'   => $this->buildId,
+      'result'     => BuildResult::PASS
+      ]
+    );
+    if($this->runId !== null)
+    {
+      $lastCommitHash->whereLessThan("id", $this->runId);
+    }
+    $lastCommitHash = $lastCommitHash
                       ->setOrderBy("created_at", 'DESC')
                       ->setLimit(0, 1)
                       ->setColumns(['commit_hash'])
@@ -63,7 +70,8 @@ class FortifyBuildChanges
         break;
     }
 
-    $range->whereEq("repository_id", $commitIds->getField('repository_id'));
+    $range->whereEq("repository_id", $commitIds->getField('repository_id'))
+    ->setOrderBy('committed_at', 'DESC');
 
     return $range;
   }

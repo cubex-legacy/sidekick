@@ -17,11 +17,13 @@ use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Fortify\Reports\FortifyReport;
+use Sidekick\Applications\Fortify\Views\BuildChanges;
 use Sidekick\Applications\Fortify\Views\BuildDetailsView;
 use Sidekick\Applications\Fortify\Views\BuildLogView;
 use Sidekick\Applications\Fortify\Views\BuildRunPage;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
+use Sidekick\Components\Fortify\FortifyBuildChanges;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -116,11 +118,23 @@ class FortifyController extends BaseControl
   public function renderChanges()
   {
     $runId      = $this->getInt('runId');
+    $buildId    = $this->getInt('buildType');
+    $projectId  = $this->getInt('projectId');
+    $commitHash = $this->getStr('commitHash');
+
     $buildRun   = new BuildRun($runId);
     $basePath   = $this->request()->path(4);
     $currentTab = $this->request()->offsetPath(4, 1);
 
-    return new BuildRunPage('', $buildRun, $basePath, $currentTab);
+    $changes = new FortifyBuildChanges(
+      $projectId, $buildId, $commitHash, $runId
+    );
+    $commits = $changes->buildCommitRange();
+
+    $repo = (new Project($projectId))->repository();
+    $view = $this->createView(new BuildChanges($repo, $commits));
+
+    return new BuildRunPage($view, $buildRun, $basePath, $currentTab);
   }
 
   public function renderReport()
@@ -294,7 +308,10 @@ class FortifyController extends BaseControl
         '/:projectId/:buildType/:runId@num/buildlog/:commandId',
         'buildLog'
       ),
-      new StdRoute('/:projectId/:buildType/:runId@num/changes', 'changes'),
+      new StdRoute(
+        '/:projectId/:buildType/:runId@num/changes/:commitHash',
+        'changes'
+      ),
       new StdRoute(
         '/:projectId/:buildType/:runId@num/:commandId',
         'report'

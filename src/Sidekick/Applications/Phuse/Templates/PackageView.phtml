@@ -9,7 +9,9 @@
 ?>
 <div class="page-header">
   <h2><?= $this->getPackage()->name; ?>
-    <small>v<?= $this->getPackage()->version; ?></small>
+    <?php if($this->getPackage()->version !== ""): ?>
+      <small>v<?= $this->getPackage()->version; ?></small>
+    <?php endif; ?>
   </h2>
 </div>
 <div class="well">
@@ -73,5 +75,7 @@
   </div>
 </div>
 <?php if($this->getPackage()->projectId !== null): ?>
-<p><a href="/scripture/<?= $this->getPackage()->projectId ?>/README">View Documentation</a></p>
+  <p><a href="/scripture/<?= $this->getPackage()->projectId ?>/README">View
+                                                                       Documentation</a>
+  </p>
 <?php endif; ?>

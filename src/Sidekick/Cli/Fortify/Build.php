@@ -359,6 +359,12 @@ class Build extends CliCommand
           }
         }
       }
+
+      if($returnExitCode === -1)
+      {
+        $returnExitCode = 0;
+      }
+
       return $returnExitCode;
     }
     else

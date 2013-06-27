@@ -10,17 +10,9 @@ use Sidekick\Components\Diffuse\Mappers\Version;
 
 class VersionHelper
 {
-  /**
-   * @param     $projectId
-   * @param int $majorIncr
-   * @param int $minorIncr
-   * @param int $buildIncr
-   *
-   * @return array
-   * @throws \Exception
-   */
   public static function nextVersion(
-    $projectId, $majorIncr = 0, $minorIncr = 0, $buildIncr = 1
+    $projectId, $majorIncr = 0, $minorIncr = 0, $buildIncr = 1,
+    $revisionIncr = 0
   )
   {
     $batchSize = 10;
@@ -49,7 +41,8 @@ class VersionHelper
             return [
               $version->major + $majorIncr,
               $version->minor + $minorIncr,
-              $version->build + $buildIncr
+              $version->build + $buildIncr,
+              $version->revision + $revisionIncr
             ];
           case VersionState::REJECTED:
 
@@ -87,6 +80,6 @@ class VersionHelper
     }
 
     //Handle first version
-    return [$majorIncr, $minorIncr, $buildIncr];
+    return [$majorIncr, $minorIncr, $buildIncr, $revisionIncr];
   }
 }

@@ -7,6 +7,9 @@ namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
 
+/**
+ * e.g. Live Stage, Live Prod, Dev Stage, Dev Prod
+ */
 class Platform extends RecordMapper
 {
   public $name;

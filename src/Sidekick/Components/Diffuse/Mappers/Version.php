@@ -7,9 +7,11 @@ namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Diffuse\Enums\VersionType;
 
 /**
  * Class Version
+ * @link http://semver.org
  */
 class Version extends RecordMapper
 {
@@ -25,6 +27,15 @@ class Version extends RecordMapper
    * @datatype smallint
    */
   public $build;
+  /**
+   * e.g. 2 for RC2
+   * @datatype smallint
+   */
+  public $revision;
+  /**
+   * @enumclass \Sidekick\Components\Diffuse\Enums\VersionType
+   */
+  public $type = VersionType::STANDARD;
 
   /**
    * initiating build ID
@@ -55,5 +66,10 @@ class Version extends RecordMapper
   public function actions()
   {
     return $this->hasMany(new Action());
+  }
+
+  public function pushes()
+  {
+    return $this->hasMany(new Push());
   }
 }

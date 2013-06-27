@@ -48,9 +48,9 @@ class DefaultController extends ProjectsController
     {
       //save project
       $project              = new Project();
-      $project->name        = $postData['name'];
-      $project->description = $postData['description'];
-      $project->parentId    = $postData['parent_id'];
+      $project->name        = $form->name;
+      $project->description = $form->description;
+      $project->parentId    = $form->parent_id;
       $project->saveChanges();
 
       $msg       = new \stdClass();
@@ -98,9 +98,9 @@ class DefaultController extends ProjectsController
     {
       //save project
       $project              = new Project($postData['id']);
-      $project->name        = $postData['name'];
-      $project->description = $postData['description'];
-      $project->parentId    = $postData['parent_id'];
+      $project->name        = $form->name;
+      $project->description = $form->description;
+      $project->parentId    = $form->parent_id;
       $project->saveChanges();
 
       $msg       = new \stdClass();

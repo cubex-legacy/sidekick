@@ -7,6 +7,7 @@ namespace Sidekick\Components\Fortify\Mappers;
 
 use Cubex\Data\Attribute\Attribute;
 use Cubex\Mapper\Database\RecordMapper;
+use Cubex\Sprintf\ParseQuery;
 use Sidekick\Components\Fortify\Enums\BuildResult;
 use Sidekick\Components\Fortify\Enums\BuildType;
 
@@ -49,5 +50,22 @@ class BuildRun extends RecordMapper
       $this->endTime = new \DateTime();
       $this->saveChanges();
     }
+  }
+
+  public static function getLatestProjectBuilds()
+  {
+    $result = self::conn()->getRows(
+      ParseQuery::parse(
+        self::conn(),
+        "SELECT * FROM %T WHERE %C IN (SELECT MAX(%C) FROM %T GROUP BY %C)",
+        self::tableName(),
+        'id',
+        'id',
+        self::tableName(),
+        'project_id'
+      )
+    );
+
+    return $result;
   }
 }

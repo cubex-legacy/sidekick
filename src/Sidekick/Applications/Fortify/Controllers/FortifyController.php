@@ -22,6 +22,7 @@ use Sidekick\Applications\Fortify\Views\BuildDetailsView;
 use Sidekick\Applications\Fortify\Views\BuildLogView;
 use Sidekick\Applications\Fortify\Views\BuildRunPage;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
+use Sidekick\Applications\Fortify\Views\FortifyHome;
 use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
 use Sidekick\Components\Fortify\FortifyBuildChanges;
 use Sidekick\Components\Fortify\Mappers\Build;
@@ -61,7 +62,8 @@ class FortifyController extends BaseControl
 
   public function renderIndex()
   {
-    return new TemplatedView("Index", $this);
+    $builds = BuildRun::getLatestProjectBuilds();
+    return new FortifyHome($builds);
   }
 
   public function renderFortify()

@@ -120,14 +120,13 @@ class FortifyController extends BaseControl
     $runId      = $this->getInt('runId');
     $buildId    = $this->getInt('buildType');
     $projectId  = $this->getInt('projectId');
-    $commitHash = $this->getStr('commitHash');
 
     $buildRun   = new BuildRun($runId);
     $basePath   = $this->request()->path(4);
-    $currentTab = $this->request()->offsetPath(4, 1);
+    $currentTab = $this->request()->offsetPath(4);
 
     $changes = new FortifyBuildChanges(
-      $projectId, $buildId, $commitHash, $runId
+      $projectId, $buildId, $buildRun->commitHash, $runId
     );
     $commits = $changes->buildCommitRange();
 
@@ -309,7 +308,7 @@ class FortifyController extends BaseControl
         'buildLog'
       ),
       new StdRoute(
-        '/:projectId/:buildType/:runId@num/changes/:commitHash',
+        '/:projectId/:buildType/:runId@num/changes',
         'changes'
       ),
       new StdRoute(

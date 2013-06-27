@@ -54,17 +54,17 @@ class BuildRunPage extends ViewModel
   {
     $tabs = [
       'Home'      => '',
-      'Changes'   => '/changes/' . $this->_run->commitHash,
-      'Build Log' => '/buildlog'
+      'Changes'   => 'changes',
+      'Build Log' => 'buildlog'
     ];
 
     $tabItems = new Partial('<li class="%s"><a href="%s">%s</a></li>');
     foreach($tabs as $tab => $href)
     {
-      $state = starts_with("$href", $this->_currentTab) ? 'active' : '';
+      $state = ("/$href" == $this->_currentTab) ? 'active' : '';
       $tabItems->addElement(
         $state,
-        $this->_basePath . $href,
+        $this->_basePath . '/' . $href,
         $tab
       );
     }

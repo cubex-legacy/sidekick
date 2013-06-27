@@ -135,13 +135,13 @@ class Update extends CliCommand
 
     if($lastCommit)
     {
-      $latest = Commit::loadWhereOrNew(
-        "%C = %d AND %C = %s",
-        'repository_id',
-        $this->_currentRepoId,
-        'committed_at',
-        $lastCommit
-      );
+      $latest = Commit::collection(
+                  "%C = %d AND %C = %s",
+                  'repository_id',
+                  $this->_currentRepoId,
+                  'committed_at',
+                  $lastCommit
+                )->setOrderBy("id", "DESC")->setLimit(0, 1)->first();
       /**
        * @var $latest Commit
        */

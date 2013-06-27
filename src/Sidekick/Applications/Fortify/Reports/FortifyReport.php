@@ -6,6 +6,8 @@
 
 namespace Sidekick\Applications\Fortify\Reports;
 
+use Cubex\Foundation\Container;
+
 abstract class FortifyReport
 {
   public $rundId;
@@ -21,7 +23,13 @@ abstract class FortifyReport
 
   public function getFileBase()
   {
-    return realpath($_SERVER['DOCUMENT_ROOT'] . '/..');
+    return Container::config()->get('_cubex_')->getStr('project_base').'../';
+  }
+
+  public static function getReportProviderClass($namespace)
+  {
+    $base = "\\Sidekick\\Applications\\Fortify\\Reports\\";
+    return $base . $namespace . "\\ReportProvider";
   }
 
   abstract public function getView();

@@ -129,13 +129,15 @@ class FortifyController extends BaseControl
 
     $filter   = $this->getStr('filter');
     $runId    = $this->getInt('runId');
-    $basePath = $this->request()->path(4);
+    $basePath = $this->request()->path(5);
 
     $report  = '';
     $command = new Command($commandId);
     if($command->reportNamespace !== null)
     {
-      $className      = $this->_getFullClassName($command->reportNamespace);
+      $className      = FortifyReport::getReportProviderClass(
+        $command->reportNamespace
+      );
       $reportProvider = new $className($runId, $filter, $basePath);
 
       if($reportProvider instanceof FortifyReport)
@@ -143,13 +145,9 @@ class FortifyController extends BaseControl
         $report = $reportProvider->getView();
       }
     }
-    return new BuildRunPage($report, new BuildRun($runId), $basePath);
-  }
 
-  private function _getFullClassName($namespace)
-  {
-    $base = "\\Sidekick\\Applications\\Fortify\\Reports\\";
-    return $base . $namespace . "\\ReportProvider";
+    $basePath = $this->request()->path(4);
+    return new BuildRunPage($report, new BuildRun($runId), $basePath);
   }
 
   public function renderRepo()
@@ -238,7 +236,7 @@ class FortifyController extends BaseControl
     $commands, $runId, TemplatedViewModel $view
   )
   {
-    //determine if user has requested for a filter command list
+    //determine if user has requested for a filtered command list
     $filter = $this->getStr('commandId');
     foreach($commands as $c)
     {

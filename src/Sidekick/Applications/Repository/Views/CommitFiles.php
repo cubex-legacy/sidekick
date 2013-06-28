@@ -15,10 +15,12 @@ class CommitFiles extends TemplatedViewModel
    * @var $commitFiles \Sidekick\Components\Repository\Mappers\CommitFile[]
    */
   public $commitFiles;
+  private $_runId;
 
-  public function __construct($commitFiles)
+  public function __construct($commitFiles, $runId)
   {
     $this->commitFiles = $commitFiles;
+    $this->_runId    = $runId;
   }
 
   public function getFullPath($filePath)
@@ -26,7 +28,7 @@ class CommitFiles extends TemplatedViewModel
     $base = Container::config()->get('_cubex_')->getStr('project_base') . '../';
     if(!starts_with($filePath, $base))
     {
-      return $base.$filePath;
+      return $base . 'builds/' . $this->_runId . '/sourcecode/' . $filePath;
     }
     return $filePath;
   }

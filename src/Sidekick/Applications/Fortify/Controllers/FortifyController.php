@@ -133,7 +133,7 @@ class FortifyController extends BaseControl
     $commits = $changes->buildCommitRange();
 
     $repo = (new Project($projectId))->repository();
-    $view = $this->createView(new BuildChanges($repo, $commits));
+    $view = $this->createView(new BuildChanges($repo, $runId, $commits));
 
     return new BuildRunPage($view, $buildRun, $basePath, $currentTab);
   }

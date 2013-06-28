@@ -35,8 +35,9 @@ class CommitsController extends RepositoryController
   public function renderCommitFiles()
   {
     $commitId = $this->getInt('commitId');
+    $runId = $this->getInt('runId');
     $commitFiles = CommitFile::collection(['commit_id' => $commitId]);
-    return new CommitFiles($commitFiles);
+    return new CommitFiles($commitFiles, $runId);
   }
 
   public function getRoutes()
@@ -44,7 +45,7 @@ class CommitsController extends RepositoryController
     return [
       '/'              => 'index',
       '/:repoId'       => 'index',
-      '/:repoId/:commitId' => 'commitFiles'
+      '/:repoId/:runId/:commitId' => 'commitFiles'
     ];
   }
 }

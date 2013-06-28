@@ -11,12 +11,14 @@ use Sidekick\Components\Repository\Mappers\Source;
 
 class BuildChanges extends TemplatedViewModel
 {
+  public $runId;
   protected $_repo;
   protected $_commits;
 
-  public function __construct(Source $repo, $commits)
+  public function __construct(Source $repo, $runId, $commits)
   {
     $this->_repo    = $repo;
+    $this->runId  = $runId;
     $this->_commits = $commits;
   }
 

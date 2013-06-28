@@ -25,6 +25,7 @@ class ApprovalConfiguration extends RecordMapper
    */
   public $managerSignoffs = Consistency::NONE;
   public $requireManagerSignoff = false;
+  public $failOnSingleReject = false;
 
   protected function _configure()
   {

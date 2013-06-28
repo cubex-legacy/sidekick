@@ -68,8 +68,8 @@ class Version extends RecordMapper
     return $this->hasMany(new Action());
   }
 
-  public function pushes()
+  public function deployments()
   {
-    return $this->hasMany(new Push());
+    return $this->hasMany(new Deployment());
   }
 }

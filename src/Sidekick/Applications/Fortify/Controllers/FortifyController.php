@@ -99,16 +99,18 @@ class FortifyController extends BaseControl
     $buildId       = $this->getInt('buildType');
     $buildRun      = new BuildRun($runId);
     $build         = new Build($buildId);
-    $buildCommands = BuildsCommands::collection(['build_id' => $buildId]);
+    $buildCommands = BuildsCommands::collection(['build_id' => $buildId])
+                     ->getFieldValues('command_id');
     $basePath      = $this->request()->path(4);
     $currentTab    = $this->request()->offsetPath(4, 1);
     $view          = new BuildDetailsView($buildRun, $basePath);
     $view          = $this->_addCommandToView(
-      $buildRun->commands,
+      $buildCommands,
       $runId,
       $view
     );
 
+//    var_dump($buildCommands); die;
     return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }
 

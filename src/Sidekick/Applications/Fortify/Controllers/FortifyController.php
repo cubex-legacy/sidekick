@@ -28,6 +28,7 @@ use Sidekick\Components\Fortify\FortifyBuildChanges;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
+use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -94,14 +95,19 @@ class FortifyController extends BaseControl
 
   public function buildDetails()
   {
-    $runId      = $this->getInt('runId');
-    $buildId    = $this->getInt('buildType');
-    $buildRun   = new BuildRun($runId);
-    $build      = new Build($buildId);
-    $basePath   = $this->request()->path(4);
-    $currentTab = $this->request()->offsetPath(4, 1);
-    $view       = new BuildDetailsView($buildRun, $basePath);
-    $view       = $this->_addCommandToView($buildRun->commands, $runId, $view);
+    $runId         = $this->getInt('runId');
+    $buildId       = $this->getInt('buildType');
+    $buildRun      = new BuildRun($runId);
+    $build         = new Build($buildId);
+    $buildCommands = BuildsCommands::collection(['build_id' => $buildId]);
+    $basePath      = $this->request()->path(4);
+    $currentTab    = $this->request()->offsetPath(4, 1);
+    $view          = new BuildDetailsView($buildRun, $basePath);
+    $view          = $this->_addCommandToView(
+      $buildRun->commands,
+      $runId,
+      $view
+    );
 
     return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }
@@ -109,14 +115,16 @@ class FortifyController extends BaseControl
   public function renderBuildLog()
   {
     $runId      = $this->getInt('runId');
+    $buildId    = $this->getInt('buildId');
     $buildRun   = new BuildRun($runId);
+    $build      = new Build($buildId);
     $basePath   = $this->request()->path(4);
     $currentTab = $this->request()->offsetPath(4, 1);
     $view       = new BuildLogView();
     $view       = $this->_addCommandToView($buildRun->commands, $runId, $view);
 
     $this->requireJs('buildLog');
-    return new BuildRunPage($view, $buildRun, $basePath, $currentTab);
+    return new BuildRunPage($view, $build, $buildRun, $basePath, $currentTab);
   }
 
   public function renderChanges()
@@ -126,6 +134,7 @@ class FortifyController extends BaseControl
     $projectId = $this->getInt('projectId');
 
     $buildRun   = new BuildRun($runId);
+    $build      = new Build($buildId);
     $basePath   = $this->request()->path(4);
     $currentTab = $this->request()->offsetPath(4);
 
@@ -137,7 +146,7 @@ class FortifyController extends BaseControl
     $repo = (new Project($projectId))->repository();
     $view = $this->createView(new BuildChanges($repo, $runId, $commits));
 
-    return new BuildRunPage($view, $buildRun, $basePath, $currentTab);
+    return new BuildRunPage($view, $build, $buildRun, $basePath, $currentTab);
   }
 
   public function renderReport()
@@ -146,7 +155,10 @@ class FortifyController extends BaseControl
 
     $filter   = $this->getStr('filter');
     $runId    = $this->getInt('runId');
+    $buildId  = $this->getInt('buildType');
     $basePath = $this->request()->path(5);
+
+    $build = new Build($buildId);
 
     $report  = '';
     $command = new Command($commandId);
@@ -172,7 +184,7 @@ class FortifyController extends BaseControl
     }
 
     $basePath = $this->request()->path(4);
-    return new BuildRunPage($report, new BuildRun($runId), $basePath);
+    return new BuildRunPage($report, $build, new BuildRun($runId), $basePath);
   }
 
   public function renderRepo()

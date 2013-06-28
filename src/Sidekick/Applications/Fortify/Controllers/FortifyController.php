@@ -214,6 +214,13 @@ class FortifyController extends BaseControl
         ['project_id' => $projectId, 'build_id' => $buildId]
       );
 
+      if($buildRepo === null)
+      {
+        //try to get the master repo for project
+        $project = new Project($buildId);
+        $buildRepo = $project->repository();
+      }
+
       if($buildRepo !== null)
       {
         $queue = new StdQueue('buildRequest');

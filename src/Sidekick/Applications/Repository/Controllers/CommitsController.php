@@ -9,8 +9,10 @@
 
 namespace Sidekick\Applications\Repository\Controllers;
 
+use Sidekick\Applications\Repository\Views\CommitFiles;
 use Sidekick\Applications\Repository\Views\CommitsIndex;
 use Sidekick\Components\Repository\Mappers\Commit;
+use Sidekick\Components\Repository\Mappers\CommitFile;
 use Sidekick\Components\Repository\Mappers\Source;
 
 class CommitsController extends RepositoryController
@@ -30,12 +32,19 @@ class CommitsController extends RepositoryController
     return 'Source Code to be displayed here. Maybe a diff';
   }
 
+  public function renderCommitFiles()
+  {
+    $commitId = $this->getInt('commitId');
+    $commitFiles = CommitFile::collection(['commit_id' => $commitId]);
+    return new CommitFiles($commitFiles);
+  }
+
   public function getRoutes()
   {
     return [
       '/'              => 'index',
       '/:repoId'       => 'index',
-      '/src/:commitId' => 'commitSrc'
+      '/:repoId/:commitId' => 'commitFiles'
     ];
   }
 }

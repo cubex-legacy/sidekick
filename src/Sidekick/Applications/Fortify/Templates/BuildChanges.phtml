@@ -20,14 +20,18 @@
     <th>Subject</th>
     <th>Author</th>
   </tr>
-  <?php foreach($this->getCommits() as $commit): ?>
+  <?php foreach($this->getCommits() as $c): ?>
     <tr>
-      <td><?php echo substr($commit->commitHash, 0, 8); ?></td>
       <td>
-        <?php echo date('d/M/Y H:i', strtotime($commit->committedAt)); ?>
+        <a href="/repository/commits/<?= $c->repository_id ?>/<?= $c->id() ?>">
+          <?php echo substr($c->commitHash, 0, 8); ?>
+        </a>
       </td>
-      <td><?php echo $commit->subject; ?></td>
-      <td><?php echo $commit->author; ?></td>
+      <td>
+        <?php echo date('d/M/Y H:i', strtotime($c->committedAt)); ?>
+      </td>
+      <td><?php echo $c->subject; ?></td>
+      <td><?php echo $c->author; ?></td>
     </tr>
   <?php endforeach; ?>
 </table>

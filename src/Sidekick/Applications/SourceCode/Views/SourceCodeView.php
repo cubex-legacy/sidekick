@@ -30,10 +30,10 @@ class SourceCodeView extends ViewModel
       . 'loader/run_prettify.js?skin=sons-of-obsidian&callback=highlightLine'
     );
 
+    $fileName   = basename($this->_sourceFile);
     if(file_exists($this->_sourceFile))
     {
       $sourceText = htmlentities(file_get_contents($this->_sourceFile));
-      $fileName   = basename($this->_sourceFile);
       $code       = new HtmlElement(
         'pre',
         ['class' => 'prettyprint lang-scm linenums'],
@@ -56,7 +56,7 @@ class SourceCodeView extends ViewModel
     }
 
     return new RenderGroup(
-      '<h1>' . $fileName . '</h1>',
+      '<h1>Source Code: ' . $fileName . '</h1>',
       $code
     );
   }

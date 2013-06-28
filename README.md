@@ -15,3 +15,8 @@ check process buildQueue
   with pidfile "/var/run/cubex/Fortify.BuildQueue.pid"
     start program "/home/qbex/sidekick/bin/cubex --cubex-env=devbuild Fortify.BuildQueue"
     stop program "/home/qbex/sidekick/vendor/bin/kill-cubex-script.sh Fortify.BuildQueue"
+
+
+# Recommended Tools
+pear config-set auto_discover 1
+pear install pear.phpqatools.org/phpqatools

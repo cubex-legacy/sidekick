@@ -30,7 +30,7 @@ class SourceCodeView extends ViewModel
       . 'loader/run_prettify.js?skin=sons-of-obsidian&callback=highlightLine'
     );
 
-    $fileName   = basename($this->_sourceFile);
+    $fileName = basename($this->_sourceFile);
     if(file_exists($this->_sourceFile))
     {
       $sourceText = htmlentities(file_get_contents($this->_sourceFile));
@@ -52,7 +52,8 @@ class SourceCodeView extends ViewModel
     }
     else
     {
-      $code = "<p>Sorry I could not find the <i>$this->_sourceFile</i></p>";
+      $code = "<p><strong>Sorry I could not find the file:</strong>" .
+        "<i>$this->_sourceFile</i></p>";
     }
 
     return new RenderGroup(

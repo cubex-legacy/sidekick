@@ -52,7 +52,7 @@ class SourceCodeView extends ViewModel
     }
     else
     {
-      $code = "<p><strong>Sorry I could not find the file:</strong>" .
+      $code = "<p><strong>Sorry I could not find the file: </strong>" .
         "<i>$this->_sourceFile</i></p>";
     }
 

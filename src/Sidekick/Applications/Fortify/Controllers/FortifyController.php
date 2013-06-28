@@ -124,7 +124,7 @@ class FortifyController extends BaseControl
     $view       = $this->_addCommandToView($buildRun->commands, $runId, $view);
 
     $this->requireJs('buildLog');
-    return new BuildRunPage($view, $build, $buildRun, $basePath, $currentTab);
+    return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }
 
   public function renderChanges()
@@ -146,7 +146,7 @@ class FortifyController extends BaseControl
     $repo = (new Project($projectId))->repository();
     $view = $this->createView(new BuildChanges($repo, $runId, $commits));
 
-    return new BuildRunPage($view, $build, $buildRun, $basePath, $currentTab);
+    return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }
 
   public function renderReport()
@@ -184,7 +184,7 @@ class FortifyController extends BaseControl
     }
 
     $basePath = $this->request()->path(4);
-    return new BuildRunPage($report, $build, new BuildRun($runId), $basePath);
+    return new BuildRunPage($report, new BuildRun($runId), $build, $basePath);
   }
 
   public function renderRepo()

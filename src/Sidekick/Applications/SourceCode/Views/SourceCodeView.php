@@ -30,23 +30,30 @@ class SourceCodeView extends ViewModel
       . 'loader/run_prettify.js?skin=sons-of-obsidian&callback=highlightLine'
     );
 
-    $sourceText = htmlentities(file_get_contents($this->_sourceFile));
-    $fileName   = basename($this->_sourceFile);
-    $code       = new HtmlElement(
-      'pre',
-      ['class' => 'prettyprint lang-scm linenums'],
-      $sourceText
-    );
+    if(file_exists($this->_sourceFile))
+    {
+      $sourceText = htmlentities(file_get_contents($this->_sourceFile));
+      $fileName   = basename($this->_sourceFile);
+      $code       = new HtmlElement(
+        'pre',
+        ['class' => 'prettyprint lang-scm linenums'],
+        $sourceText
+      );
 
-    //taking into account the zero-based index
-    $line = $this->_lineNumber - 1;
+      //taking into account the zero-based index
+      $line = $this->_lineNumber - 1;
 
-    $this->addCssBlock(
-      'ol.linenums {margin: 0 0 10px 50px;}'
-    );
+      $this->addCssBlock(
+        'ol.linenums {margin: 0 0 10px 50px;}'
+      );
 
-    $this->requireJs('main');
-    $this->addJsBlock("var lineNumber = $line;");
+      $this->requireJs('main');
+      $this->addJsBlock("var lineNumber = $line;");
+    }
+    else
+    {
+      $code = "<p>Sorry I could not find the <i>$this->_sourceFile</i></p>";
+    }
 
     return new RenderGroup(
       '<h1>' . $fileName . '</h1>',

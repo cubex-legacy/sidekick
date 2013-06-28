@@ -43,7 +43,7 @@ class BuildChanges extends TemplatedViewModel
     $diffusionBase = $this->getRepo()->diffusionBaseUri;
     if(!empty($diffusionBase))
     {
-      return '"' . $diffusionBase . $commit->commitHash . '"';
+      return $diffusionBase . $commit->commitHash;
     }
     else
     {

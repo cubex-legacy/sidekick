@@ -23,8 +23,7 @@
   <?php foreach($this->getCommits() as $c): ?>
     <tr>
       <td>
-        <a
-          href="/repository/commits/<?= $c->repository_id . '/' . $this->runId . '/' . $c->id() ?>">
+        <a href="<?= $this->getCommitUrl($c) ?>">
           <?php echo substr($c->commitHash, 0, 8); ?>
         </a>
       </td>

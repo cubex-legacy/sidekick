@@ -15,13 +15,15 @@ class BuildRunPage extends ViewModel
 {
   private $_view;
   private $_run;
+  private $_build;
   private $_basePath;
   private $_currentTab;
 
-  public function __construct($view, $run, $basePath, $currentTab = '')
+  public function __construct($view, $run, $build, $basePath, $currentTab = '')
   {
     $this->_view       = $view;
     $this->_run        = $run;
+    $this->_build      = $build;
     $this->_basePath   = $basePath;
     $this->_currentTab = $currentTab;
     $this->requireCss('buildDetailsView');
@@ -39,7 +41,7 @@ class BuildRunPage extends ViewModel
       'h1',
       [],
       'Build #' . $this->_run->id() . ' <small>' . ucfirst(
-        $this->_run->buildType
+        $this->_build->name
       ) . ' Build</small>'
     );
 

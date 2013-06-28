@@ -95,13 +95,15 @@ class FortifyController extends BaseControl
   public function buildDetails()
   {
     $runId      = $this->getInt('runId');
+    $buildId    = $this->getInt('buildType');
     $buildRun   = new BuildRun($runId);
+    $build      = new Build($buildId);
     $basePath   = $this->request()->path(4);
     $currentTab = $this->request()->offsetPath(4, 1);
     $view       = new BuildDetailsView($buildRun, $basePath);
     $view       = $this->_addCommandToView($buildRun->commands, $runId, $view);
 
-    return new BuildRunPage($view, $buildRun, $basePath, $currentTab);
+    return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }
 
   public function renderBuildLog()
@@ -119,9 +121,9 @@ class FortifyController extends BaseControl
 
   public function renderChanges()
   {
-    $runId      = $this->getInt('runId');
-    $buildId    = $this->getInt('buildType');
-    $projectId  = $this->getInt('projectId');
+    $runId     = $this->getInt('runId');
+    $buildId   = $this->getInt('buildType');
+    $projectId = $this->getInt('projectId');
 
     $buildRun   = new BuildRun($runId);
     $basePath   = $this->request()->path(4);
@@ -217,7 +219,7 @@ class FortifyController extends BaseControl
       if($buildRepo === null)
       {
         //try to get the master repo for project
-        $project = new Project($buildId);
+        $project   = new Project($buildId);
         $buildRepo = $project->repository();
       }
 

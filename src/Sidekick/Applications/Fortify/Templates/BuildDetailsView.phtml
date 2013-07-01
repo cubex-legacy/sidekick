@@ -38,41 +38,48 @@
   </tr>
   <?php foreach($this->getCommandsRun() as $command): ?>
     <tr>
-      <td><a
-        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
-        title="Command Log"><?= $command->exitCode ?></a></td>
-      <td><a
-        href="<?= $this->basePath ?>/<?= $command->command->id() ?>"
-        title="Command Report"><?= $command->command->name ?></a></td>
-      <td><a
-        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
-        title="Command Log"><?= date('H:i:s', $command->startTime) ?></a></td>
-      <td><a
-        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
-        title="Command Log">
-        <?php if($command->endTime && $command->startTime): ?>
-          <?=
-          $this->getDuration(
-            date('Y-m-d H:i:s', $command->endTime),
-            date('Y-m-d H:i:s', $command->startTime)
-          );
-          ?>
-        <?php endif; ?></a>
-      </td>
-      <td>
-        <a
-        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
-        title="Command Log"><i class="icon-list-alt"></i> View Log</a>
-        <a
-        href="<?= $this->basePath ?>/<?= $command->command->id() ?>"
-        title="Command Report">
-          <i class="icon-file"></i> View Report
-        </a>
-      </td>
-      <td><a
-        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
-        title="Command Log">
-          <i class="icon-<?= $command->passed ? 'ok' : 'remove' ?>"></i></a></td>
+      <?php if($command->exitCode !== null): ?>
+        <td><a
+          href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+          title="Command Log"><?= $command->exitCode ?></a></td>
+        <td><a
+          href="<?= $this->basePath ?>/<?= $command->command->id() ?>"
+          title="Command Report"><?= $command->command->name ?></a></td>
+        <td><a
+          href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+          title="Command Log"><?= date('H:i:s', $command->startTime) ?></a></td>
+        <td><a
+          href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+          title="Command Log">
+            <?php if($command->endTime && $command->startTime): ?>
+              <?=
+              $this->getDuration(
+                date('Y-m-d H:i:s', $command->endTime),
+                date('Y-m-d H:i:s', $command->startTime)
+              );
+              ?>
+            <?php endif; ?></a>
+        </td>
+        <td>
+          <a
+          href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+          title="Command Log"><i class="icon-list-alt"></i> View Log</a>
+          <a
+          href="<?= $this->basePath ?>/<?= $command->command->id() ?>"
+          title="Command Report">
+            <i class="icon-file"></i> View Report
+          </a>
+        </td>
+        <td><a
+          href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+          title="Command Log">
+            <i class="icon-<?= $command->passed ? 'ok' : 'remove' ?>"></i></a>
+        </td>
+      <?php else: ?>
+        <td>N/A</td>
+        <td><?= $command->command->name ?></td>
+        <td colspan="4">This command has not yet been executed</td>
+      <?php endif; ?>
     </tr>
   <?php endforeach; ?>
 </table>

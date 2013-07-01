@@ -11,14 +11,14 @@ use Cubex\View\TemplatedViewModel;
 
 class ReportErrorPage extends TemplatedViewModel
 {
-  public $reportName;
-  public $reason;
-  public $basePath;
+  protected $_reportName;
+  protected $_reason;
+  protected $_basePath;
 
   public function __construct($reportName, $errorReason, $basePath)
   {
-    $this->reportName = $reportName;
-    $this->reason     = $errorReason;
-    $this->basePath   = $basePath;
+    $this->_reportName = $reportName;
+    $this->_reason     = $errorReason;
+    $this->_basePath   = $basePath;
   }
 }

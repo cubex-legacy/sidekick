@@ -10,7 +10,7 @@
 <div class="well" style="line-height: 20px;">
   <p>
     <strong>
-      <?= $this->reportName ?> report could not be generated
+      <?= $this->_reportName ?> report could not be generated
     </strong>
   </p>
 
@@ -22,11 +22,11 @@
     <li>Command did not complete and so log file was never created</li>
   </ol>
   </p>
-  <?php if($this->reason != ''): ?>
+  <?php if($this->_reason != ''): ?>
   <p class="text-info">
-    <strong>Fortify Thinks: </strong> <?= $this->reason ?>
+    <strong>Fortify Thinks: </strong> <?= $this->_reason ?>
   </p>
   <?php endif; ?>
 
-  <a class="btn" href="<?= $this->basePath ?>">Return to Build Home</a>
+  <a class="btn" href="<?= $this->_basePath ?>">Return to Build Home</a>
 </div>

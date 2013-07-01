@@ -13,9 +13,10 @@ class BuildCommandsHelper
   /**
    * Orders a collection of commands by their dependency.
    * So that less dependent commands come first
-   * @param $commands
    *
-   * @return BuildCommands[]
+   * @param \Sidekick\Components\Fortify\Mappers\BuildsCommands[] $commands
+   *
+   * @return \Sidekick\Components\Fortify\Mappers\BuildsCommands[]
    */
   public static function orderByDependencies($commands)
   {
@@ -23,9 +24,6 @@ class BuildCommandsHelper
     $rebuild      = []; //lookup array to be used to rebuild list
     foreach($commands as $com)
     {
-      /**
-       * @var $com BuildsCommands
-       */
       $dependencies->add(
         $com->commandId,
         $com->dependencies

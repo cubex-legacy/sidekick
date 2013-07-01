@@ -38,10 +38,18 @@
   </tr>
   <?php foreach($this->getCommandsRun() as $command): ?>
     <tr>
-      <td><?= $command->exitCode ?></td>
-      <td><?= $command->command->name ?></td>
-      <td><?= date('H:i:s', $command->startTime) ?></td>
-      <td>
+      <td><a
+        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+        title="Command Log"><?= $command->exitCode ?></a></td>
+      <td><a
+        href="<?= $this->basePath ?>/<?= $command->command->id() ?>"
+        title="Command Report"><?= $command->command->name ?></a></td>
+      <td><a
+        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+        title="Command Log"><?= date('H:i:s', $command->startTime) ?></a></td>
+      <td><a
+        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+        title="Command Log">
         <?php if($command->endTime && $command->startTime): ?>
           <?=
           $this->getDuration(
@@ -49,19 +57,22 @@
             date('Y-m-d H:i:s', $command->startTime)
           );
           ?>
-        <?php endif; ?>
+        <?php endif; ?></a>
       </td>
       <td>
         <a
-          href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
-          title="Command Log"><i class="icon-list-alt"></i></a>
+        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+        title="Command Log"><i class="icon-list-alt"></i> View Log</a>
         <a
-          href="<?= $this->basePath ?>/<?= $command->command->id() ?>"
-          title="Command Report">
-          <i class="icon-file"></i>
+        href="<?= $this->basePath ?>/<?= $command->command->id() ?>"
+        title="Command Report">
+          <i class="icon-file"></i> View Report
         </a>
       </td>
-      <td><?= (int)$command->passed ?></td>
+      <td><a
+        href="<?= $this->basePath ?>/buildlog/<?= $command->command->id() ?>"
+        title="Command Log">
+          <i class="icon-<?= $command->passed ? 'ok' : 'remove' ?>"></i></a></td>
     </tr>
   <?php endforeach; ?>
 </table>

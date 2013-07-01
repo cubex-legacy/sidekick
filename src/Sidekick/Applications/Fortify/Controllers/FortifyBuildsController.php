@@ -58,16 +58,16 @@ class FortifyBuildsController extends FortifyCrudController
 
     $this->_mapper->load($id);
 
-    $form             = new FortifyForm($this->_mapper, $this->baseUri());
-    $allCommands      = Command::collection()->loadAll()->getKeyPair(
+    $form        = new FortifyForm($this->_mapper, $this->baseUri());
+    $allCommands = Command::collection()->loadAll()->getKeyPair(
       'id',
       'name'
     );
 
-    $buildCommands    = BuildsCommands::collection(['build_id' => $id]);
+    $buildCommands = BuildsCommands::collection(['build_id' => $id]);
     if($buildCommands->count())
     {
-      $buildCommandsIds = $buildCommands->getUniqueField("command_id");
+      $buildCommandsIds   = $buildCommands->getUniqueField("command_id");
       $unAssignedCommands = Command::collection()->loadWhere(
                               "%C NOT IN (%Ld)",
                               "id",

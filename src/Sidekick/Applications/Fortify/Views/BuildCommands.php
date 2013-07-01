@@ -9,12 +9,12 @@
 
 namespace Sidekick\Applications\Fortify\Views;
 
-use Cubex\Helpers\DependencyArray;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\BaseApp\Views\Alert;
 use Sidekick\Components\Fortify\Mappers\Command;
+use Sidekick\Components\Helpers\BuildCommandsHelper;
 
 class BuildCommands extends TemplatedViewModel
 {
@@ -64,29 +64,10 @@ class BuildCommands extends TemplatedViewModel
     return $output;
   }
 
-
   public function orderByDependencies()
   {
-    $dependencies = new DependencyArray();
-    $rebuild      = []; //lookup array to be used to rebuild $_buildCommands
-    foreach($this->getBuildCommands() as $com)
-    {
-      /**
-       * @var $com BuildsCommands
-       */
-      $dependencies->add(
-        $com->commandId,
-        $com->dependencies
-      );
-
-      $rebuild[$com->commandId] = $com;
-    }
-
-    $orderedCommandList   = $dependencies->getLoadOrder();
-    $this->_buildCommands = []; //reset to rebuild
-    foreach($orderedCommandList as $commandId)
-    {
-      $this->_buildCommands[] = $rebuild[$commandId];
-    }
+    $this->_buildCommands[] = BuildCommandsHelper::orderByDependencies(
+      $this->getBuildCommands()
+    );
   }
 }

@@ -26,7 +26,7 @@ class BuildCommands extends TemplatedViewModel
     $this->_buildCommands = $buildCommands;
     try
     {
-      $this->orderByDependencies();
+      $this->_orderByDependencies();
     }
     catch(\Exception $e)
     {
@@ -64,9 +64,9 @@ class BuildCommands extends TemplatedViewModel
     return $output;
   }
 
-  public function orderByDependencies()
+  private function _orderByDependencies()
   {
-    $this->_buildCommands[] = BuildCommandsHelper::orderByDependencies(
+    $this->_buildCommands = BuildCommandsHelper::orderByDependencies(
       $this->getBuildCommands()
     );
   }

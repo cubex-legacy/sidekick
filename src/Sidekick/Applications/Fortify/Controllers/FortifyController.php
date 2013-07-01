@@ -96,10 +96,10 @@ class FortifyController extends BaseControl
 
   public function buildDetails()
   {
-    $runId         = $this->getInt('runId');
-    $buildId       = $this->getInt('buildType');
-    $buildRun      = new BuildRun($runId);
-    $build         = new Build($buildId);
+    $runId    = $this->getInt('runId');
+    $buildId  = $this->getInt('buildType');
+    $buildRun = new BuildRun($runId);
+    $build    = new Build($buildId);
 
     /**
      * Get builds commands and order them by dependecies before passing to view
@@ -111,7 +111,7 @@ class FortifyController extends BaseControl
     /**
      * Get just the command id. That's all the view needs
      */
-    $collection = new Collection(new BuildsCommands(), $buildCommands);
+    $collection    = new Collection(new BuildsCommands(), $buildCommands);
     $buildCommands = $collection->getFieldValues('command_id');
 
     $basePath   = $this->request()->path(4);
@@ -138,6 +138,15 @@ class FortifyController extends BaseControl
     $view       = $this->_addCommandToView($buildRun->commands, $runId, $view);
 
     $this->requireJs('buildLog');
+    $commandId = $this->getInt('commandId');
+    if($commandId !== null)
+    {
+      $command = new Command($commandId);
+      $this->addJsBlock(
+        "$('#" . md5($command->command) . "').show();
+        $('#" . md5($command->command) . "-trigger').text('-');"
+      );
+    }
     return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }
 

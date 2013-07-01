@@ -50,11 +50,7 @@ abstract class FortifyReport
 
   public function reportFileExists()
   {
-    if(file_exists($this->getReportFile()))
-    {
-      return true;
-    }
-    return false;
+    return file_exists($this->getReportFile());
   }
 
   abstract public function getView();

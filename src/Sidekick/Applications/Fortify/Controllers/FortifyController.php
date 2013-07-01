@@ -8,11 +8,11 @@ namespace Sidekick\Applications\Fortify\Controllers;
 use Cubex\Facade\Queue;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
+use Cubex\Mapper\Collection;
 use Cubex\Queue\StdQueue;
 use Cubex\Routing\StdRoute;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
-use Cubex\View\TemplatedView;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
@@ -31,6 +31,7 @@ use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Fortify\Mappers\Command;
+use Sidekick\Components\Helpers\BuildCommandsHelper;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Mappers\Source;
 
@@ -99,18 +100,29 @@ class FortifyController extends BaseControl
     $buildId       = $this->getInt('buildType');
     $buildRun      = new BuildRun($runId);
     $build         = new Build($buildId);
-    $buildCommands = BuildsCommands::collection(['build_id' => $buildId])
-                     ->getFieldValues('command_id');
-    $basePath      = $this->request()->path(4);
-    $currentTab    = $this->request()->offsetPath(4, 1);
-    $view          = new BuildDetailsView($buildRun, $basePath);
-    $view          = $this->_addCommandToView(
+
+    /**
+     * Get builds commands and order them by dependecies before passing to view
+     * so commands get displayed in the right order
+     */
+    $buildCommands = BuildsCommands::collection(['build_id' => $buildId]);
+    $buildCommands = BuildCommandsHelper::orderByDependencies($buildCommands);
+
+    /**
+     * Get just the command id. That's all the view needs
+     */
+    $collection = new Collection(new BuildsCommands(), $buildCommands);
+    $buildCommands = $collection->getFieldValues('command_id');
+
+    $basePath   = $this->request()->path(4);
+    $currentTab = $this->request()->offsetPath(4, 1);
+    $view       = new BuildDetailsView($buildRun, $basePath);
+    $view       = $this->_addCommandToView(
       $buildCommands,
       $runId,
       $view
     );
 
-//    var_dump($buildCommands); die;
     return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }
 

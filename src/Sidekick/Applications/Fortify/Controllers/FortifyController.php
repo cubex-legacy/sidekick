@@ -24,6 +24,7 @@ use Sidekick\Applications\Fortify\Views\BuildRunPage;
 use Sidekick\Applications\Fortify\Views\BuildsPage;
 use Sidekick\Applications\Fortify\Views\FortifyHome;
 use Sidekick\Applications\Fortify\Views\FortifyRepositoryLink;
+use Sidekick\Applications\Fortify\Views\ReportErrorPage;
 use Sidekick\Components\Fortify\FortifyBuildChanges;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
@@ -139,6 +140,11 @@ class FortifyController extends BaseControl
 
     $this->requireJs('buildLog');
     $commandId = $this->getInt('commandId');
+
+    /**
+     * If we are viewing build log for a single command, keep the log output
+     * expanded by default
+     */
     if($commandId !== null)
     {
       $command = new Command($commandId);
@@ -197,17 +203,41 @@ class FortifyController extends BaseControl
 
         if($reportProvider instanceof FortifyReport)
         {
-          $report = $reportProvider->getView();
+          if($reportProvider->reportFileExists())
+          {
+            $report   = $reportProvider->getView();
+            $basePath = $this->request()->path(4);
+            return new BuildRunPage(
+              $report, new BuildRun($runId), $build, $basePath
+            );
+          }
+          else
+          {
+            return new ReportErrorPage(
+              $command->name,
+              $reportProvider->getReportFile() . ' does not exist',
+              $this->request()->path(4)
+            );
+          }
         }
       }
       catch(\Exception $e)
       {
-        $report = $e->getMessage();
+        return new ReportErrorPage(
+          $command->name,
+          $command->reportNamespace . $e->getMessage(),
+          $this->request()->path(4)
+        );
       }
     }
-
-    $basePath = $this->request()->path(4);
-    return new BuildRunPage($report, new BuildRun($runId), $build, $basePath);
+    else
+    {
+      return new ReportErrorPage(
+        $command->name,
+        'No report namespace is configured',
+        $this->request()->path(4)
+      );
+    }
   }
 
   public function renderRepo()

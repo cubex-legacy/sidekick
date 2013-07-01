@@ -1,0 +1,32 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 01/07/13 11:33
+ *
+ * @var $this \Sidekick\Applications\Fortify\Views\ReportErrorPage
+ */
+?>
+<h1>Report Error</h1>
+<div class="well" style="line-height: 20px;">
+  <p>
+    <strong>
+      <?= $this->reportName ?> report could not be generated
+    </strong>
+  </p>
+
+  <p>This could happen for various reasons:
+  <ol>
+    <li>Build Folder has been moved or deleted</li>
+    <li>Project Base is configured incorrectly</li>
+    <li>Invalid Report Namespace for command</li>
+    <li>Command did not complete and so log file was never created</li>
+  </ol>
+  </p>
+  <?php if($this->reason != ''): ?>
+  <p class="text-info">
+    <strong>Fortify Thinks: </strong> <?= $this->reason ?>
+  </p>
+  <?php endif; ?>
+
+  <a class="btn" href="<?= $this->basePath ?>">Return to Build Home</a>
+</div>

@@ -56,6 +56,11 @@ class Project extends RecordMapper
     return $this->hasMany(new Source());
   }
 
+  /**
+   * @param string $branch
+   *
+   * @return Source
+   */
   public function repository($branch = "master")
   {
     return $this->hasMany(new Source())->whereEq("branch", $branch)->first();

@@ -27,7 +27,9 @@
   <?php foreach($this->getUsers() as $user): ?>
     <tr>
       <td>
-        <a href=""><?= $user->username; ?></a>
+        <a href="<?= $this->baseUri() . '/edit/' . $user->id(); ?>">
+          <?= $user->username; ?>
+        </a>
       </td>
       <td><?= $user->displayName; ?></td>
       <td>

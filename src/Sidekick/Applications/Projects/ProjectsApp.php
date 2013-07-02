@@ -29,15 +29,12 @@ class ProjectsApp extends BaseApp
   public function getBundles()
   {
     return [
-      //      new DebuggerBundle()
+//      new DebuggerBundle()
     ];
   }
 
   public function getRoutes()
   {
-    //this is here as a temp fix for bug http://phabricator.cubex.io/T105
-    return [
-      '/' => '',
-    ];
+
   }
 }

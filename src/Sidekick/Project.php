@@ -19,6 +19,7 @@ use Sidekick\Applications\Projects\ProjectsApp;
 use Sidekick\Applications\Repository\RepositoryApp;
 use Sidekick\Applications\Scripture\ScriptureApp;
 use Sidekick\Applications\SourceCode\SourceCodeApp;
+use Sidekick\Applications\Users\UsersApp;
 
 class Project extends \Cubex\Core\Project\Project
 {
@@ -34,6 +35,7 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('diffuse', new DiffuseApp());
     $this->addApplication('dispatcher', new DispatcherApp());
     $this->addApplication('scripture', new ScriptureApp());
+    $this->addApplication('users', new UsersApp());
   }
 
   public function getApplication(Request $req)

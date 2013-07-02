@@ -11,6 +11,7 @@ use Cubex\Mapper\Database\RecordMapper;
 class User extends RecordMapper
 {
   public $username;
+  public $email;
   public $password;
   public $displayName;
 }

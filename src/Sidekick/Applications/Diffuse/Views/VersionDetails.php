@@ -11,6 +11,7 @@ use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Diffuse\Enums\VersionType;
 
 class VersionDetails extends TemplatedViewModel
 {
@@ -48,6 +49,11 @@ class VersionDetails extends TemplatedViewModel
   public function getVersion()
   {
     return $this->_version;
+  }
+
+  public function getVersionTypeName()
+  {
+    return VersionType::constFromValue($this->_version->type);
   }
 
   public function getActions()
@@ -130,4 +136,12 @@ class VersionDetails extends TemplatedViewModel
 
     return $this->_deployForm;
   }
+
+//  public function render()
+//  {
+//    $x = VersionType::fromValue($this->_version->type)->getConstList();
+//    var_dump(VersionType::constFromValue($this->_version->type));
+//    var_dump($x);
+//    var_dump($this->_version->type); die;
+//  }
 }

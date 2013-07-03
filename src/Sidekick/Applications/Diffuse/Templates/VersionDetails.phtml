@@ -23,9 +23,9 @@
 
     <p>Build: <?= $this->getVersion()->build ?></p>
 
-    <p>Revision: <?= $this->getVersion()->build ?></p>
+    <p>Revision: <?= $this->getVersion()->revision ?></p>
 
-    <p>Type: <?= $this->getVersion()->type ?></p>
+    <p>Type: <?= $this->getVersionTypeName() ?></p>
   </div>
   <div class="span6">
     <p>Status: <?= $this->getVersion()->versionState ?></p>

@@ -9,6 +9,7 @@ use Bundl\Debugger\DebuggerBundle;
 use Cubex\Cli\CliCommand;
 use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
+use Sidekick\Components\Diffuse\Mappers\Version;
 
 class VersionCheck extends CliCommand
 {
@@ -36,7 +37,7 @@ class VersionCheck extends CliCommand
   /**
    * @valuerequired
    */
-  public $type;
+  public $type = 'std';
 
 
   /**
@@ -45,7 +46,7 @@ class VersionCheck extends CliCommand
   public function execute()
   {
     $this->type = VersionType::fromValue($this->type);
-    (new DebuggerBundle())->init();
+    //(new DebuggerBundle())->init();
     echo "\nVersion Check: ";
     list($major, $minor, $build, $revision) = VersionHelper::nextVersion(
       $this->project,
@@ -56,10 +57,22 @@ class VersionCheck extends CliCommand
     );
 
     echo "$major.$minor.$build";
-    if($revision > 0 && $this->type !== VersionType::STANDARD)
+    if($revision > 0 && (string)$this->type !== VersionType::STANDARD)
     {
       echo '-' . $this->type . $revision;
     }
+
+    echo "\n";
+
+    $version            = new Version();
+    $version->major     = $major;
+    $version->minor     = $minor;
+    $version->build     = $build;
+    $version->revision  = $revision;
+    $version->type      = $this->type;
+    $version->projectId = $this->project;
+
+    echo "Location: " . VersionHelper::sourceLocation($version);
 
     echo "\n";
   }

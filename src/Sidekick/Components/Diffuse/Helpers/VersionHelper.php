@@ -5,7 +5,10 @@
 
 namespace Sidekick\Components\Diffuse\Helpers;
 
+use Cubex\Foundation\Config\Config;
+use Cubex\Foundation\Container;
 use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Diffuse\Mappers\Version;
 
 class VersionHelper
@@ -95,5 +98,26 @@ class VersionHelper
 
     //Handle first version
     return [$majorIncr, $minorIncr, $buildIncr, $revisionIncr];
+  }
+
+  public static function sourceLocation(Version $version)
+  {
+    $config   = Container::config()->get('diffuse', new Config());
+    $basePath = $config->getStr(
+      "versions_path",
+      (dirname(WEB_ROOT) . DS . 'diffuse' . DS . 'versions' . DS)
+    );
+
+    $versionPath = [
+      'P' . $version->projectId,
+      $version->major,
+      $version->minor,
+      $version->build,
+      VersionType::STANDARD === (string)VersionType::fromValue($version->type) ?
+      VersionType::STANDARD :
+      $version->type . '-' . $version->revision
+    ];
+
+    return $basePath . implode(DS, $versionPath) . DS;
   }
 }

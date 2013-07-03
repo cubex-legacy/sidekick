@@ -7,6 +7,11 @@
  */
 ?>
 <h1>Approval Configuration</h1>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
+    <?= Session::getFlash('msg')->text; ?>
+  </div>
+<?php endif; ?>
 <?php
 echo $this->form()->open();
 echo $this->form()->token();
@@ -50,7 +55,11 @@ echo $this->form()->getElement('projectId');
       <td><?= strtoupper($config->consistencyLevel) ?></td>
       <td><?= ($config->required) ? 'Yes' : 'No' ?></td>
       <td>
-        <a href="/diffuse/<?= $this->projectId ?>/approval-configuration">
+        <a
+          href="/diffuse/approval/<?= $this->projectId . '/' . $config->role ?>/edit"
+          title="Edit"><i class="icon-edit"></i></a>
+        <a
+          href="/diffuse/approval/<?= $this->projectId . '/' . $config->role ?>/delete">
           <i class="icon icon-trash"></i>
         </a>
       </td>

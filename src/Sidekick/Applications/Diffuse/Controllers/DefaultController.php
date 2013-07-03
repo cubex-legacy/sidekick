@@ -46,7 +46,7 @@ class DefaultController extends DiffuseController
     try
     {
       $versionArr = $this->_getVersionArr($type, $projectId);
-      $project = new Project($projectId);
+      $project    = new Project($projectId);
 
       //create version
       $version               = new Version();
@@ -62,17 +62,17 @@ class DefaultController extends DiffuseController
       /*
        * Get latest passing build
        */
-      $lastestPassingBuild = BuildRun::collection(
+      $latestPassingBuild = BuildRun::collection(
         ['project_id' => $projectId, 'result' => 'pass']
       );
-      $lastestPassingBuild = $lastestPassingBuild->setOrderBy(
+      $latestPassingBuild = $latestPassingBuild->setOrderBy(
         'start_time',
         'DESC'
       );
-      $lastestPassingBuild = $lastestPassingBuild->setLimit(0, 1)->first();
+      $latestPassingBuild = $latestPassingBuild->setLimit(0, 1)->first();
 
-      $version->buildId        = $lastestPassingBuild->buildId;
-      $version->fromCommitHash = $lastestPassingBuild->commitHash;
+      $version->buildId        = $latestPassingBuild->buildId;
+      $version->fromCommitHash = $latestPassingBuild->commitHash;
       $version->saveChanges();
 
       $msg       = new \stdClass();
@@ -146,20 +146,6 @@ class DefaultController extends DiffuseController
     return new VersionDetails($version, $actions, $platforms, $deployments);
   }
 
-  public function renderApprovalConfiguration()
-  {
-    $projectId = $this->getInt('projectId');
-    if($this->request()->postVariables())
-    {
-      $ac = new ApprovalConfiguration();
-      $ac->hydrate($this->request()->postVariables());
-      $ac->saveChanges();
-    }
-
-    $config = ApprovalConfiguration::collection(['project_id' => $projectId]);
-    return new ApprovalConfigurationPage($config, $projectId);
-  }
-
   public function renderAddComment()
   {
     $projectId = $this->getInt('projectId');
@@ -201,7 +187,6 @@ class DefaultController extends DiffuseController
   {
     return [
       '/:projectId'                        => 'versions',
-      '/:projectId/approval-configuration' => 'approvalConfiguration',
       '/:projectId/create-version/:type'   => 'createVersion',
       '/:projectId/:versionId@num'         => 'versionDetails',
       '/:projectId/:versionId@num/comment' => 'addComment',

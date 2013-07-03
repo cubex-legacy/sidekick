@@ -63,6 +63,19 @@ class Version extends RecordMapper
    */
   public $versionState = VersionState::UNKNOWN;
 
+  public function format()
+  {
+    $formatted = implode(
+      ".",
+      [(int)$this->major, (int)$this->minor, (int)$this->build]
+    );
+    if($this->revision > 0 && (string)$this->type !== VersionType::STANDARD)
+    {
+      $formatted .= '-' . $this->type . $this->revision;
+    }
+    return $formatted;
+  }
+
   public function actions()
   {
     return $this->hasMany(new Action());

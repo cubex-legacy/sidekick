@@ -9,7 +9,9 @@ use Bundl\Debugger\DebuggerBundle;
 use Cubex\Cli\CliCommand;
 use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
+use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\Version;
+use Sidekick\Deployment\Rsync\RsyncService;
 
 class VersionCheck extends CliCommand
 {
@@ -75,5 +77,13 @@ class VersionCheck extends CliCommand
     echo "Location: " . VersionHelper::sourceLocation($version);
 
     echo "\n";
+    $platform = new Platform();
+    $rsync    = new RsyncService($version, $platform);
+    echo $rsync->deploy();
+  }
+
+  public function latest()
+  {
+    echo VersionHelper::latestVersions($this->project, 1)->first()->format();
   }
 }

@@ -13,6 +13,15 @@ use Sidekick\Components\Diffuse\Mappers\Version;
 
 class VersionHelper
 {
+  public static function latestVersions($projectId, $batchSize = 10)
+  {
+    return Version::collection()
+           ->whereEq("project_id", $projectId)
+           ->whereNeq("version_state", VersionState::REJECTED)
+           ->setOrderBy('id', 'DESC')
+           ->setLimit(0, $batchSize)->get();
+  }
+
   public static function nextVersion(
     $projectId, $majorIncr = 0, $minorIncr = 0, $buildIncr = 1,
     $revisionIncr = 0
@@ -21,11 +30,7 @@ class VersionHelper
     $batchSize = 10;
     $processed = 0;
 
-    $versions = Version::collection()
-                ->whereEq("project_id", $projectId)
-                ->whereNeq("version_state", VersionState::REJECTED)
-                ->setOrderBy('id', 'DESC')
-                ->setLimit($processed, $batchSize)->get();
+    $versions = self::latestVersions($projectId, $batchSize);
 
     while($versions->hasMappers())
     {

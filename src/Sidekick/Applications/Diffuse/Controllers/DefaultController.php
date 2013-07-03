@@ -38,14 +38,15 @@ class DefaultController extends DiffuseController
     return new VersionsList($versions, $projectId);
   }
 
-  public function renderCreateVersion()
+  public function postCreateVersion()
   {
-    $type      = $this->getStr('type');
-    $projectId = $this->getInt('projectId');
+    $type              = $this->request()->postVariables('type');
+    $versionNumberType = $this->request()->postVariables('versionNumberType');
+    $projectId         = $this->request()->postVariables('projectId');
 
     try
     {
-      $versionArr = $this->_getVersionArr($type, $projectId);
+      $versionArr = $this->_getVersionArr($versionNumberType, $projectId);
       $project    = new Project($projectId);
 
       //create version
@@ -55,9 +56,13 @@ class DefaultController extends DiffuseController
       $version->build        = $versionArr[2];
       $version->revision     = $versionArr[3];
       $version->projectId    = $projectId;
+      $version->type         = $type;
       $version->versionState = VersionState::PENDING;
       //this will return repo id for master branch
-      $version->repoId = $project->repository()->id();
+      if($project->repository())
+      {
+        $version->repoId = $project->repository()->id();
+      }
 
       /*
        * Get latest passing build
@@ -186,8 +191,8 @@ class DefaultController extends DiffuseController
   public function getRoutes()
   {
     return [
+      '/create-version'                    => 'createVersion',
       '/:projectId'                        => 'versions',
-      '/:projectId/create-version/:type'   => 'createVersion',
       '/:projectId/:versionId@num'         => 'versionDetails',
       '/:projectId/:versionId@num/comment' => 'addComment',
       '/:projectId/:versionId@num/deploy'  => 'deploy',

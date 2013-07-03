@@ -19,19 +19,26 @@
   </div>
 <?php endif; ?>
 <div class="well">
-  <strong>Create:</strong>
-  <a class="btn btn-primary"
-     href="/diffuse/<?= $this->_projectId ?>/create-version/major">Major
-                                                                   Version</a>
-  <a class="btn btn-primary"
-     href="/diffuse/<?= $this->_projectId ?>/create-version/minor">Minor
-                                                                   Version</a>
-  <a class="btn btn-primary"
-     href="/diffuse/<?= $this->_projectId ?>/create-version/build">Build
-                                                                   Version</a>
-  <a class="btn btn-primary"
-     href="/diffuse/<?= $this->_projectId ?>/create-version/revision">Revision
-                                                                      Version</a>
+  <strong>Create New Version:</strong>
+  <?php
+  echo $this->createVersionForm()->open();
+  echo $this->createVersionForm()->token();
+  echo $this->createVersionForm()->formNameInput();
+  ?>
+  <?= $this->createVersionForm()->getElement('projectId') ?>
+  <table>
+    <tr>
+      <td><?= $this->createVersionForm()->getElement('type') ?></td>
+      <td>
+        <?= $this->createVersionForm()->getElement('versionNumberType') ?>
+      </td>
+      <td style="vertical-align: text-top;">
+        <?= $this->createVersionForm()->getElement('submit'); ?>
+      </td>
+    </tr>
+  </table>
+
+  <?= $this->createVersionForm()->close() ?>
 </div>
 
 <table class="table table-striped table-bordered table-condensed">

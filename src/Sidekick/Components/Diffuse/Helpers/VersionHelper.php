@@ -31,6 +31,20 @@ class VersionHelper
       // and no complete build found, loop next 10
       foreach($versions as $version)
       {
+        if($majorIncr > 0)
+        {
+          $version->minor = $version->build = $version->revision = 0;
+        }
+
+        if($minorIncr > 0)
+        {
+          $version->build = $version->revision = 0;
+        }
+
+        if($buildIncr > 0)
+        {
+          $version->revision = 0;
+        }
         /**
          * @var $version Version
          */

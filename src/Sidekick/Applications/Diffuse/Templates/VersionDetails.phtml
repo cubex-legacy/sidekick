@@ -1,0 +1,135 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 02/07/13 13:22
+ *
+ * @var $this \Sidekick\Applications\Diffuse\Views\VersionDetails
+ */
+?>
+<style type="text/css">
+  .comment {
+    background-color: #eee;
+    margin-bottom:    10px;
+    padding:          10px;
+  }
+</style>
+
+<h1>Version Details: 1.0.0.0</h1>
+<div class="well row-fluid">
+  <div class="span6">
+    <p>Major: <?= $this->getVersion()->major ?></p>
+
+    <p>Minor: <?= $this->getVersion()->minor ?></p>
+
+    <p>Build: <?= $this->getVersion()->build ?></p>
+
+    <p>Revision: <?= $this->getVersion()->build ?></p>
+
+    <p>Type: <?= $this->getVersion()->type ?></p>
+  </div>
+  <div class="span6">
+    <p>Status: <?= $this->getVersion()->versionState ?></p>
+
+    <p>Commit Range:
+      <?= substr($this->getVersion()->fromCommitHash, 0,8) ?> -
+       xxxx
+    </p>
+
+    <p>Last Updated: <?=
+      date(
+        'd M Y',
+        strtotime($this->getVersion()->updatedAt)
+      ) ?></p>
+  </div>
+  <div class="clearfix"></div>
+  <?php if($this->canApproveOrReject): ?>
+    <div style="margin-bottom: 10px; margin-top:30px;">
+      <a class="btn btn-success btn-large" href="">
+        <i class="icon-ok icon-white"></i>
+        Approve
+      </a>
+      <a class="btn btn-danger btn-large" href="">
+        <i class="icon-remove icon-white"></i>
+        Reject
+      </a>
+    </div>
+  <?php endif; ?>
+</div>
+
+<div class="well">
+  <h2>Change Log</h2>
+  <textarea name="" id=""
+            style="width:100%; height:100px; padding:0;"><?=
+    $this->getVersion()->changeLog ?></textarea>
+  <button class="btn btn-primary">Save</button>
+</div>
+
+<div class="">
+  <h2>Audits</h2>
+
+  <?php foreach($this->getActions() as $action): ?>
+    <div class="comment">
+      <strong><?= $action->user()->displayName ?> [<?= $action->actionType ?>]:</strong>
+
+      <div>
+        <?= $action->comment; ?>
+      </div>
+    </div>
+  <?php endforeach; ?>
+  <div class="comment">
+    <?php
+    echo $this->actionForm()->open();
+    echo $this->actionForm()->token();
+    echo $this->actionForm()->formNameInput();
+    echo $this->actionForm()->getElement('versionId');
+    echo $this->actionForm()->getElement('userId');
+    ?>
+    <strong>Drop a Comment:</strong>
+
+    <div>
+      <?= $this->actionForm()->getElement('actionType')->setLabel('Action:') ?>
+    </div>
+    <?= $this->actionForm()->getElement('comment') ?>
+    <?= $this->actionForm()->getElement('submit') ?>
+    <?= $this->actionForm()->close() ?>
+  </div>
+
+</div>
+
+
+<div class="well">
+  <h2>Deploy</h2>
+  <?php
+  echo $this->deployForm()->open();
+  echo $this->deployForm()->token();
+  echo $this->deployForm()->formNameInput();
+  echo $this->deployForm()->getElement('versionId');
+  ?>
+
+  <?= $this->deployForm()->getElement('platformId') ?>
+  <?= $this->deployForm()->getElement('comment') ?>
+  <?= $this->deployForm()->getElement('submit') ?>
+  <?= $this->deployForm()->close() ?>
+
+  <h2>Deployment History</h2>
+  <?php if($this->getDeployments()->hasMappers()): ?>
+    <table class="table table-bordered">
+      <tr>
+        <th>Date</th>
+        <th>Platform</th>
+        <th>Comment</th>
+        <th>Completed</th>
+      </tr>
+      <?php foreach($this->getDeployments() as $d): ?>
+        <tr>
+          <td><?= date('d M Y', strtotime($d->createdAt)) ?></td>
+          <td><?= $d->platform()->name ?></td>
+          <td><?= $d->comment ?></td>
+          <td><?= ($d->completed) ? 'Yes' : 'No' ?></td>
+        </tr>
+      <?php endforeach; ?>
+    </table>
+  <?php else: ?>
+    <p>This version has never been deployed.</p>
+  <?php endif; ?>
+</div>

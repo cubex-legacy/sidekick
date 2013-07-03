@@ -17,4 +17,9 @@ class Deployment extends RecordMapper
   public $deployedOn;
   public $completed = false;
   public $comment;
+
+  public function platform()
+  {
+    return new Platform($this->platformId);
+  }
 }

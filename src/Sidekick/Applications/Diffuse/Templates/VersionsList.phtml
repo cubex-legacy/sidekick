@@ -1,0 +1,65 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 02/07/13 12:13
+ *
+ * @var $this \Sidekick\Applications\Diffuse\Views\VersionsList
+ */
+?>
+<!--might be better to pass basePath instead of project id-->
+<h1>Versions</h1>
+<p class="pull-right">
+  <a href="/diffuse/<?= $this->_projectId ?>/approval-configuration">Approval
+                                                                     Configuration</a>
+</p>
+<div class="clearfix"></div>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
+    <?= Session::getFlash('msg')->text; ?>
+  </div>
+<?php endif; ?>
+<div class="well">
+  <strong>Create:</strong>
+  <a class="btn btn-primary"
+     href="/diffuse/<?= $this->_projectId ?>/create-version/major">Major
+                                                                   Version</a>
+  <a class="btn btn-primary"
+     href="/diffuse/<?= $this->_projectId ?>/create-version/minor">Minor
+                                                                   Version</a>
+  <a class="btn btn-primary"
+     href="/diffuse/<?= $this->_projectId ?>/create-version/build">Build
+                                                                   Version</a>
+  <a class="btn btn-primary"
+     href="/diffuse/<?= $this->_projectId ?>/create-version/revision">Revision
+                                                                      Version</a>
+</div>
+
+<table class="table table-striped table-bordered table-condensed">
+  <tr class="info">
+    <th>Version</th>
+    <th>Status</th>
+    <th>Commit Range</th>
+    <th>Created</th>
+    <th>Last Updated</th>
+  </tr>
+  <?php if($this->getVersions()): ?>
+    <?php foreach($this->getVersions() as $v): ?>
+      <tr class="">
+        <td>
+          <a href="/diffuse/<?= $this->_projectId ?>/<?= $v->id() ?>">
+            <?= $v->major . '.' . $v->minor . '.' . $v->build . '.' . $v->revision ?>
+          </a>
+        </td>
+        <td><?= $v->versionState; ?></td>
+        <td><?= substr($v->fromCommitHash, 0, 8); ?> - <?=
+          substr(
+            $v->toCommitHash,
+            0,
+            8
+          ); ?></td>
+        <td><?= date('d M y', strtotime($v->createdAt)); ?></td>
+        <td><?= date('d M y H:i:s', strtotime($v->updatedAt)); ?></td>
+      </tr>
+    <?php endforeach; ?>
+  <?php endif; ?>
+</table>

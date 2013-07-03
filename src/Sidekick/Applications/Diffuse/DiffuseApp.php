@@ -15,6 +15,7 @@ class DiffuseApp extends BaseApp
   {
     return [
       'projects/(.*)'  => 'ProjectController',
+      'platforms/(.*)' => 'PlatformController',
     ];
   }
 
@@ -26,7 +27,7 @@ class DiffuseApp extends BaseApp
   public function getBundles()
   {
     return [
-      //new DebuggerBundle()
+//      new DebuggerBundle()
     ];
   }
 

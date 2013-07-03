@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Users\Mappers\User;
 
 class Action extends RecordMapper
 {
@@ -19,4 +20,13 @@ class Action extends RecordMapper
    * @datatype text
    */
   public $comment;
+
+
+  /**
+   * @return User
+   */
+  public function user()
+  {
+    return new User($this->userId);
+  }
 }

@@ -6,30 +6,25 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
-use Sidekick\Components\Sidekick\Enums\Consistency;
 
 class ApprovalConfiguration extends RecordMapper
 {
+  protected $_idType = self::ID_COMPOSITE;
+
   public $projectId;
+  public $role;
 
-  public $developers = [];
-  /**
-   * @enumclass \Sidekick\Components\Sidekick\Enums\Consistency
-   */
-  public $developerSignoffs = Consistency::NONE;
-  public $requireDeveloperSignoff = false;
-
-  public $managers = [];
-  /**
-   * @enumclass \Sidekick\Components\Sidekick\Enums\Consistency
-   */
-  public $managerSignoffs = Consistency::NONE;
-  public $requireManagerSignoff = false;
-  public $failOnSingleReject = false;
+  public $consistencyLevel;
+  public $required;
 
   protected function _configure()
   {
-    $this->_setSerializer("developers");
-    $this->_setSerializer("managers");
+    $this->_addCompositeAttribute(
+      "id",
+      array(
+           "projectId",
+           "role",
+      )
+    );
   }
 }

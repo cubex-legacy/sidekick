@@ -58,11 +58,11 @@
       <td><?= date('d/M/Y', strtotime($project->updated_at)); ?></td>
       <td>
         <a href="<?= $this->baseUri() . '/edit/' . $project->id(); ?>"
-           title="edit"><i class="icon-edit"></i></a>
+           title="Edit"><i class="icon-edit"></i></a><br/>
         <a href="<?= $this->baseUri() . '/users/' . $project->id(); ?>"
-           title="delete"><i class="icon-user"></i></a>
+           title="Users"><i class="icon-user"></i></a><br/>
         <a href="<?= $this->baseUri() . '/delete/' . $project->id(); ?>"
-           title="delete"><i class="icon-trash"></i></a>
+           title="Delete"><i class="icon-trash"></i></a>
       </td>
     </tr>
   <?php endforeach; ?>

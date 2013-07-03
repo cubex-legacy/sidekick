@@ -1,0 +1,59 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 02/07/13 17:16
+ *
+ * @var $this \Sidekick\Applications\Diffuse\Views\ApprovalConfigurationPage
+ */
+?>
+<h1>Approval Configuration</h1>
+<?php
+echo $this->form()->open();
+echo $this->form()->token();
+echo $this->form()->formNameInput();
+echo $this->form()->getElement('projectId');
+?>
+<div class="well">
+  <table>
+    <tr>
+      <td>Role</td>
+      <td>
+        <?= $this->form()->getElement('role') ?>
+      </td>
+    </tr>
+    <tr>
+      <td>Consisteny Level</td>
+      <td>
+        <?= $this->form()->getElement('consistencyLevel') ?>
+      </td>
+    </tr>
+    <tr>
+      <td>Required</td>
+      <td>
+        <?= $this->form()->getElement('required') ?>
+      </td>
+    </tr>
+  </table>
+  <?= $this->form()->getElement('submit') ?>
+</div>
+<?= $this->form()->close() ?>
+<table class="table table-bordered table-hover">
+  <tr>
+    <th>Role</th>
+    <th>Consistency Level</th>
+    <th>Required</th>
+    <th></th>
+  </tr>
+  <?php foreach($this->getConfig() as $config): ?>
+    <tr>
+      <td><?= ucfirst($config->role) ?></td>
+      <td><?= strtoupper($config->consistencyLevel) ?></td>
+      <td><?= ($config->required) ? 'Yes' : 'No' ?></td>
+      <td>
+        <a href="/diffuse/<?= $this->projectId ?>/approval-configuration">
+          <i class="icon icon-trash"></i>
+        </a>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+</table>

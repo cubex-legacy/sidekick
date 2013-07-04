@@ -62,7 +62,7 @@ class HostsController extends DiffuseController
     $platforms     = Platform::collection()->loadAll();
     $hostPlatforms = HostPlatform::collection(['host_id' => $hostId])->load();
 
-    return new HostPage($host, $platforms, $hostPlatforms);
+    return $this->createView(new HostPage($host, $platforms, $hostPlatforms));
   }
 
   public function renderEdit()
@@ -132,14 +132,32 @@ class HostsController extends DiffuseController
     )->now();
   }
 
+  public function renderDeletePlatform()
+  {
+    $hostId     = $this->getInt('hostId');
+    $platformId = $this->getInt('platformId');
+
+    $hostPlatform = new HostPlatform([$hostId, $platformId]);
+    $hostPlatform->delete();
+
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Platform was successfully deleted';
+    Redirect::to($this->baseUri() . '/view/' . $hostId)->with(
+      'msg',
+      $msg
+    )->now();
+  }
+
   public function getRoutes()
   {
     return [
-      '/create'         => 'create',
-      '/add-platform'   => 'addPlatform',
-      '/view/:hostId'   => 'view',
-      '/edit/:hostId'   => 'edit',
-      '/delete/:hostId' => 'delete'
+      '/create'                              => 'create',
+      '/add-platform'                        => 'addPlatform',
+      '/delete-platform/:hostId/:platformId' => 'deletePlatform',
+      '/view/:hostId'                        => 'view',
+      '/edit/:hostId'                        => 'edit',
+      '/delete/:hostId'                      => 'delete'
     ];
   }
 }

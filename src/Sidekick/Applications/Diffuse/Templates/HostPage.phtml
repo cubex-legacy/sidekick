@@ -34,10 +34,16 @@
     <table class="table table-bordered table-condensed">
       <tr>
         <th>Platform Name</th>
+        <th></th>
       </tr>
       <?php foreach($this->hostPlatforms as $platform): ?>
         <tr>
           <td><?= $platform->platform()->name ?></td>
+          <td>
+            <a href="<?= $this->baseUri(
+            ) . '/delete-platform/' . $platform->hostId . '/' . $platform->platformId; ?>"
+               title="Delete"><i class="icon-trash"></i></a>
+          </td>
         </tr>
       <?php endforeach; ?>
     </table>

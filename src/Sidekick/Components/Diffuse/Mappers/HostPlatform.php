@@ -18,4 +18,20 @@ class HostPlatform extends PivotMapper
   {
     return 'diffuse_hosts_platforms';
   }
+
+  /**
+   * @return Host
+   */
+  public function host()
+  {
+    return $this->belongsTo(new Host());
+  }
+
+  /**
+   * @return Platform
+   */
+  public function platform()
+  {
+    return $this->belongsTo(new Platform());
+  }
 }

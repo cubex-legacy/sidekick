@@ -31,9 +31,7 @@ class Deploy extends CliCommand
     $deployment->versionId  = $version->id();
     $deployment->saveChanges();
 
-    $hosts = HostPlatform::collection(
-      ['platform_id' => $platform->id()]
-    );
+    $hosts = HostPlatform::collectionOn($platform)->preFetch("host");
 
     $stages = DeploymentStage::collection(['platform_id' => $platform->id()]);
     foreach($stages as $stage)
@@ -49,8 +47,16 @@ class Deploy extends CliCommand
           throw new \Exception("No Hosts");
         }
 
-        foreach($hosts as $stageHost)
+        foreach($hosts as $hostPlat)
         {
+          /**
+           * @var $hostPlat \Sidekick\Components\Diffuse\Mappers\HostPlatform
+           */
+          $stageHost                    = new DeploymentStageHost();
+          $stageHost->hostId            = $hostPlat->host()->id();
+          $stageHost->deploymentId      = $deployment->id();
+          $stageHost->deploymentStageId = $stage->id();
+
           $diffuser = new $deployService($version, $stageHost);
           if($diffuser instanceof IDeploymentService)
           {

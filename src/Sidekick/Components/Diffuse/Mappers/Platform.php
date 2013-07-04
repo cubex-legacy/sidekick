@@ -29,6 +29,5 @@ class Platform extends RecordMapper
   protected function _configure()
   {
     $this->_setSerializer("requiredBuilds");
-    $this->_setSerializer("deploymentOrder");
   }
 }

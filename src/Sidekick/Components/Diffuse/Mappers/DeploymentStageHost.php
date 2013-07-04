@@ -9,6 +9,9 @@ use Cubex\Mapper\Database\RecordMapper;
 
 class DeploymentStageHost extends RecordMapper
 {
+  protected $_idType = self::ID_COMPOSITE;
+
+  public $deploymentId;
   public $deploymentStageId;
   public $hostId;
 
@@ -19,7 +22,7 @@ class DeploymentStageHost extends RecordMapper
   {
     $this->_addCompositeAttribute(
       "id",
-      ["deploymentStageId", "hostId"]
+      ["deploymentId", "deploymentStageId", "hostId"]
     );
   }
 

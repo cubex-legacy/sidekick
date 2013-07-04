@@ -9,21 +9,23 @@ use Cubex\Mapper\Database\RecordMapper;
 
 class DeploymentStage extends RecordMapper
 {
-  public $deploymentId;
+  public $platformId;
   public $serviceClass;
   public $requireAllHostsPass;
   public $configuration = [];
+  public $dependencies = [];
 
   protected function _configure()
   {
     $this->_setSerializer("configuration");
+    $this->_setSerializer("dependencies");
   }
 
   /**
-   * @return Deployment
+   * @return Platform
    */
-  public function deployment()
+  public function platform()
   {
-    return $this->belongsTo(new Deployment());
+    return $this->belongsTo(new Platform());
   }
 }

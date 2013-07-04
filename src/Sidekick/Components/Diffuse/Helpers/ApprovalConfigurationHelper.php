@@ -43,7 +43,7 @@ class ApprovalConfigurationHelper
   /**
    * Counts Approve actions grouped by user role
    * IMPORTANT: This method only counts 'action=approve' as this is what we
-   * use to determine if a verison should be auto approved or not
+   * use to determine if a version should be auto approved or not
    *
    * @param $actions
    * @param $projectId

@@ -7,6 +7,7 @@
 namespace Sidekick\Applications\Diffuse\Views;
 
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Fortify\Mappers\Build;
 
 class PlatformIndex extends TemplatedViewModel
 {
@@ -20,5 +21,10 @@ class PlatformIndex extends TemplatedViewModel
   public function getPlatforms()
   {
     return $this->_platforms;
+  }
+
+  public function getRequiredBuilds($buildIdArr)
+  {
+    return Build::collection()->loadIds($buildIdArr)->getUniqueField('name');
   }
 }

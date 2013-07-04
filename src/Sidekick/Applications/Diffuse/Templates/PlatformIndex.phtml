@@ -2,7 +2,7 @@
 /**
  * @author: oke.ugwu
  *        Application: Projects
- * @var $this \Sidekick\Applications\Projects\Views\ProjectsIndex
+ * @var $this \Sidekick\Applications\Diffuse\Views\PlatformIndex
  */
 ?>
 <h1>Deployment Platforms</h1>
@@ -24,7 +24,7 @@
     <th>Description</th>
     <th>Transport Type</th>
     <th>Configuration</th>
-    <th>Require Build</th>
+    <th>Required Build</th>
     <th>Require Approval</th>
     <th>Last Update</th>
     <th></th>
@@ -37,8 +37,16 @@
       <td><?= $platform->description; ?></td>
       <td><?= $platform->transportType; ?></td>
       <td><?= $platform->configuration; ?></td>
-      <td><?= $platform->requiredBuilds; ?></td>
-      <td><?= ($platform->requireApproval)? 'Yes' : 'No'; ?></td>
+      <td>
+        <?php if(is_array($platform->requiredBuilds)): ?>
+          <?=
+          implode(
+            '<br/>',
+            $this->getRequiredBuilds($platform->requiredBuilds)
+          ); ?>
+        <?php endif; ?>
+      </td>
+      <td><?= ($platform->requireApproval) ? 'Yes' : 'No'; ?></td>
       <td><?= date('d/M/Y', strtotime($platform->updated_at)); ?></td>
       <td>
         <a href="<?= $this->baseUri() . '/edit/' . $platform->id(); ?>"

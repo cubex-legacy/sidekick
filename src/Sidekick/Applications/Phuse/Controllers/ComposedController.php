@@ -41,7 +41,7 @@ class ComposedController extends PhuseController
             'reference' => $rel->zipHash
           ],
         ];
-        $versions[$rel->version] = $rawComposer + $append;
+        $versions[$rel->version] = array_merge($rawComposer, $append);
         $packages[$pack->name]   = $versions;
       }
     }

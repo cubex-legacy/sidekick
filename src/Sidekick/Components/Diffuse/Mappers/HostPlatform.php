@@ -5,22 +5,13 @@
 
 namespace Sidekick\Components\Diffuse\Mappers;
 
-use Cubex\Mapper\Database\RecordMapper;
+use Cubex\Mapper\Database\PivotMapper;
 
-class HostPlatform extends RecordMapper
+class HostPlatform extends PivotMapper
 {
-  protected $_idType = self::ID_COMPOSITE;
-  protected $_autoTimestamp = false;
-
-  public $hostId;
-  public $platformId;
-
   protected function _configure()
   {
-    $this->_addCompositeAttribute(
-      "id",
-      ["hostId", "platformId"]
-    );
+    $this->pivotOn(new Host(), new Platform());
   }
 
   public function getTableName()
@@ -28,8 +19,19 @@ class HostPlatform extends RecordMapper
     return 'diffuse_hosts_platforms';
   }
 
+  /**
+   * @return Host
+   */
+  public function host()
+  {
+    return $this->belongsTo(new Host());
+  }
+
+  /**
+   * @return Platform
+   */
   public function platform()
   {
-    return new Platform($this->platformId);
+    return $this->belongsTo(new Platform());
   }
 }

@@ -13,6 +13,14 @@ use Sidekick\Components\Sidekick\Enums\Consistency;
 
 class ApprovalConfigurationHelper
 {
+  /**
+   * Counts Project members grouped by role.
+   * The array it returns is keyed by role
+   *
+   * @param $projectId
+   *
+   * @return array
+   */
   public static function getTotalUsersCount($projectId)
   {
     $result = [];
@@ -33,10 +41,14 @@ class ApprovalConfigurationHelper
   }
 
   /**
+   * Counts Approve actions grouped by user role
+   * IMPORTANT: This method only counts 'action=approve' as this is what we
+   * use to determine if a verison should be auto approved or not
+   *
    * @param $actions
    * @param $projectId
    *
-   * @return array - An array of count of approve actions group by role
+   * @return array
    */
   public static function getApproveActionCount($actions, $projectId)
   {
@@ -62,6 +74,15 @@ class ApprovalConfigurationHelper
     return $actionCount;
   }
 
+  /**
+   * Given a consistencyLevel string, this method will return its Integer
+   * equivalent
+   *
+   * @param $consistencyLevel
+   * @param $total
+   *
+   * @return float|int
+   */
   public static function getConsistencyLevelInt($consistencyLevel, $total)
   {
     switch($consistencyLevel)

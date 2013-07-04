@@ -9,6 +9,7 @@ use Cubex\Cli\CliCommand;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
+use Sidekick\Components\Diffuse\Mappers\HostPlatform;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -30,6 +31,10 @@ class Deploy extends CliCommand
     $deployment->versionId  = $version->id();
     $deployment->saveChanges();
 
+    $hosts = HostPlatform::collection(
+      ['platform_id' => $platform->id()]
+    );
+
     $stages = DeploymentStage::collection(['platform_id' => $platform->id()]);
     foreach($stages as $stage)
     {
@@ -39,16 +44,12 @@ class Deploy extends CliCommand
       $deployService = $stage->serviceClass;
       if(class_exists($deployService))
       {
-        $stageHosts = DeploymentStageHost::collection(
-          ['deployment_stage_id' => $stage->id()]
-        );
-
-        if(!$stageHosts)
+        if(!$hosts)
         {
           throw new \Exception("No Hosts");
         }
 
-        foreach($stageHosts as $stageHost)
+        foreach($hosts as $stageHost)
         {
           $diffuser = new $deployService($version, $stageHost);
           if($diffuser instanceof IDeploymentService)

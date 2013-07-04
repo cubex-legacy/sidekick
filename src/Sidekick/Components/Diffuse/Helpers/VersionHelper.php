@@ -30,7 +30,7 @@ class VersionHelper
     $batchSize = 10;
     $processed = 0;
 
-    $versions = self::latestVersions($projectId,$batc);
+    $versions = self::latestVersions($projectId, $batchSize);
 
     while($versions->hasMappers())
     {
@@ -119,8 +119,8 @@ class VersionHelper
       $version->minor,
       $version->build,
       VersionType::STANDARD === (string)VersionType::fromValue($version->type) ?
-      VersionType::STANDARD :
-      $version->type . '-' . $version->revision
+        VersionType::STANDARD :
+        $version->type . '-' . $version->revision
     ];
 
     return $basePath . implode(DS, $versionPath) . DS;

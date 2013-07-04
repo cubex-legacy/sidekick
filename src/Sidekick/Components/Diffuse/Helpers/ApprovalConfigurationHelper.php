@@ -9,6 +9,7 @@ namespace Sidekick\Components\Diffuse\Helpers;
 use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
+use Sidekick\Components\Sidekick\Enums\Consistency;
 
 class ApprovalConfigurationHelper
 {
@@ -65,19 +66,19 @@ class ApprovalConfigurationHelper
   {
     switch($consistencyLevel)
     {
-      case 'none':
+      case Consistency::NONE:
         $int = 0;
         break;
-      case 'one':
+      case Consistency::ONE:
         $int = 1;
         break;
-      case 'two':
+      case Consistency::TWO:
         $int = 2;
         break;
-      case 'all':
+      case Consistency::ALL:
         $int = $total;
         break;
-      case 'quorum':
+      case Consistency::QUORUM:
         $int = floor($total / 2) + 1;
         break;
       default:
@@ -128,10 +129,8 @@ class ApprovalConfigurationHelper
         else
         {
           $autoApprove = false;
-          /**
-           * no point going further.
-           * One of the config requirement has not been met
-           */
+          //no point going further.
+          //One of the config requirement has not been met
           break;
         }
       }

@@ -6,6 +6,7 @@
 namespace Sidekick\Deployment\Rsync;
 
 use Cubex\Data\Handler\DataHandler;
+use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\Version;
@@ -56,6 +57,7 @@ class RsyncService implements IDeploymentService
     $cmd .= build_path($remoteBase, $this->_versionPath($this->_version));
 
     $proc = new Process($cmd);
+    Log::debug("Deploying to rsync with '" . $cmd . "'");
     $proc->run();
     return $proc->getExitCode() === 0;
   }

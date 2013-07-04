@@ -32,6 +32,10 @@ class Deploy extends CliCommand
     $deployment->saveChanges();
 
     $hosts = HostPlatform::collectionOn($platform)->preFetch("host");
+    if(!$hosts)
+    {
+      throw new \Exception("No Hosts have been assigned to this platform");
+    }
 
     $stages = DeploymentStage::collection(['platform_id' => $platform->id()]);
     foreach($stages as $stage)
@@ -42,11 +46,6 @@ class Deploy extends CliCommand
       $deployService = $stage->serviceClass;
       if(class_exists($deployService))
       {
-        if(!$hosts)
-        {
-          throw new \Exception("No Hosts");
-        }
-
         foreach($hosts as $hostPlat)
         {
           /**

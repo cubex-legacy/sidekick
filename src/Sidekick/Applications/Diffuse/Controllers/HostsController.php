@@ -9,8 +9,11 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
+use Sidekick\Applications\Diffuse\Views\HostPage;
 use Sidekick\Applications\Diffuse\Views\HostsIndex;
 use Sidekick\Components\Diffuse\Mappers\Host;
+use Sidekick\Components\Diffuse\Mappers\HostPlatform;
+use Sidekick\Components\Diffuse\Mappers\Platform;
 
 class HostsController extends DiffuseController
 {
@@ -49,6 +52,17 @@ class HostsController extends DiffuseController
       'msg',
       $msg
     )->now();
+  }
+
+  public function renderView()
+  {
+    $hostId = $this->getInt('hostId');
+    $host   = new Host($hostId);
+
+    $platforms     = Platform::collection()->loadAll();
+    $hostPlatforms = HostPlatform::collection(['host_id' => $hostId])->load();
+
+    return new HostPage($host, $platforms, $hostPlatforms);
   }
 
   public function renderEdit()
@@ -100,10 +114,30 @@ class HostsController extends DiffuseController
     )->now();
   }
 
+  public function postAddPlatform()
+  {
+    $postData = $this->request()->postVariables();
+
+    $hostPlatform             = new HostPlatform();
+    $hostPlatform->hostId     = $postData['hostId'];
+    $hostPlatform->platformId = $postData['platformId'];
+    $hostPlatform->saveChanges();
+
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Platform was successfully added host';
+    Redirect::to($this->baseUri() . '/view/' . $postData['hostId'])->with(
+      'msg',
+      $msg
+    )->now();
+  }
+
   public function getRoutes()
   {
     return [
       '/create'         => 'create',
+      '/add-platform'   => 'addPlatform',
+      '/view/:hostId'   => 'view',
       '/edit/:hostId'   => 'edit',
       '/delete/:hostId' => 'delete'
     ];

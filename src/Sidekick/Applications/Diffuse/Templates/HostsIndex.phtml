@@ -29,7 +29,9 @@
   <?php foreach($this->getHosts() as $host): ?>
     <tr>
       <td>
-        <a href=""><?= $host->name; ?></a>
+        <a href="<?= $this->baseUri() . '/view/' . $host->id(); ?>">
+          <?= $host->name; ?>
+        </a>
       </td>
       <td><?= $host->hostname; ?></td>
       <td><?= $host->ipv4; ?></td>

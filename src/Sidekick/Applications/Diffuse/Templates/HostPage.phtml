@@ -1,0 +1,46 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 04/07/13 11:55
+ *
+ * @var $this \Sidekick\Applications\Diffuse\Views\HostPage
+ */
+?>
+<h1><?= $this->host->name; ?></h1>
+<div class="well">
+  <p>Name: <?= $this->host->name; ?></p>
+
+  <p>Host Name: <?= $this->host->hostname; ?></p>
+
+  <p>Ipv 4: <?= $this->host->ipv4; ?></p>
+
+  <p>Ipv 6: <?= $this->host->ipv6; ?></p>
+</div>
+<div>
+  <h2>Host Platforms</h2>
+
+  <div>
+    <?php
+    echo $this->form()->open();
+    echo $this->form()->token();
+    echo $this->form()->formNameInput();
+    echo $this->form()->getElement('hostId');
+    ?>
+    <?= $this->form()->getElement('platformId') ?>
+    <?= $this->form()->getElement('submit') ?>
+    <?= $this->form()->close() ?>
+  </div>
+  <div>
+    <table class="table table-bordered table-condensed">
+      <tr>
+        <th>Platform Name</th>
+      </tr>
+      <?php foreach($this->hostPlatforms as $platform): ?>
+        <tr>
+          <td><?= $platform->platform()->name ?></td>
+        </tr>
+      <?php endforeach; ?>
+    </table>
+
+  </div>
+</div>

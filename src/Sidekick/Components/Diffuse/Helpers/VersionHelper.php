@@ -125,4 +125,27 @@ class VersionHelper
 
     return $basePath . implode(DS, $versionPath) . DS;
   }
+
+  public static function getVersionArr($type, $projectId)
+  {
+    switch($type)
+    {
+      case 'major':
+        $versionArr = VersionHelper::nextVersion($projectId, 1, 0, 0, 0);
+        break;
+      case 'minor':
+        $versionArr = VersionHelper::nextVersion($projectId, 0, 1, 0, 0);
+        break;
+      case 'build':
+        $versionArr = VersionHelper::nextVersion($projectId, 0, 0, 1, 0);
+        break;
+      case 'revision':
+        $versionArr = VersionHelper::nextVersion($projectId, 0, 0, 0, 1);
+        break;
+      default:
+        $versionArr = VersionHelper::nextVersion($projectId, 0, 0, 0, 1);
+    }
+
+    return $versionArr;
+  }
 }

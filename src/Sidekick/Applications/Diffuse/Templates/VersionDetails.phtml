@@ -15,6 +15,14 @@
 </style>
 
 <h1>Version Details: 1.0.0.0</h1>
+<?php if($this->autoApprove): ?>
+  <p class="alert alert-success">
+    Based on the
+    <a href="/diffuse/approval/<?= $this->getVersion()->projectId ?>">
+      Appproval Configuration</a>, sufficient actions have been taken to
+    automatically approve this version
+  </p>
+<?php endif; ?>
 <div class="well row-fluid">
   <div class="span6">
     <p>Major: <?= $this->getVersion()->major ?></p>
@@ -31,7 +39,7 @@
     <p>Status: <?= $this->getVersion()->versionState ?></p>
 
     <p>Commit Range:
-      <?= substr($this->getVersion()->fromCommitHash, 0,8) ?> -
+      <?= substr($this->getVersion()->fromCommitHash, 0, 8) ?> -
        xxxx
     </p>
 
@@ -40,20 +48,18 @@
         'd M Y',
         strtotime($this->getVersion()->updatedAt)
       ) ?></p>
+
+    <div>
+      <strong>Members</strong>
+      <ul>
+        <?php foreach($this->getProjectMembers() as $m): ?>
+          <li><?= $m->user()->displayName; ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+
   </div>
   <div class="clearfix"></div>
-  <?php if($this->canApproveOrReject): ?>
-    <div style="margin-bottom: 10px; margin-top:30px;">
-      <a class="btn btn-success btn-large" href="">
-        <i class="icon-ok icon-white"></i>
-        Approve
-      </a>
-      <a class="btn btn-danger btn-large" href="">
-        <i class="icon-remove icon-white"></i>
-        Reject
-      </a>
-    </div>
-  <?php endif; ?>
 </div>
 
 <div class="well">
@@ -69,8 +75,8 @@
 
   <?php foreach($this->getActions() as $action): ?>
     <div class="comment">
-      <strong><?= $action->user()->displayName ?> [<?= $action->actionType ?>]:</strong>
-
+      <strong><?= $action->user()->displayName ?>:</strong>
+      <span class="label label-info"><?= $action->actionType ?></span>
       <div>
         <?= $action->comment; ?>
       </div>
@@ -113,7 +119,7 @@
 
   <h2>Deployment History</h2>
   <?php if($this->getDeployments()->hasMappers()): ?>
-    <table class="table table-bordered">
+    <table class="table table-bordered table-condensed" style="font-size:11px;">
       <tr>
         <th>Date</th>
         <th>Platform</th>

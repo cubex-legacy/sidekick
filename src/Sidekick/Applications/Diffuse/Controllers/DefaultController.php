@@ -8,11 +8,11 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
-use Sidekick\Applications\BaseApp\Views\Sidebar;
-use Sidekick\Applications\Diffuse\Views\ApprovalConfigurationPage;
 use Sidekick\Applications\Diffuse\Views\VersionDetails;
 use Sidekick\Applications\Diffuse\Views\VersionsList;
+use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Diffuse\Helpers\ApprovalConfigurationHelper;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
@@ -21,6 +21,7 @@ use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Projects\Mappers\ProjectUser;
 
 class DefaultController extends DiffuseController
 {
@@ -46,7 +47,10 @@ class DefaultController extends DiffuseController
 
     try
     {
-      $versionArr = $this->_getVersionArr($versionNumberType, $projectId);
+      $versionArr = VersionHelper::getVersionArr(
+        $versionNumberType,
+        $projectId
+      );
       $project    = new Project($projectId);
 
       //create version
@@ -101,31 +105,9 @@ class DefaultController extends DiffuseController
     }
   }
 
-  private function _getVersionArr($type, $projectId)
-  {
-    switch($type)
-    {
-      case 'major':
-        $versionArr = VersionHelper::nextVersion($projectId, 1, 0, 0, 0);
-        break;
-      case 'minor':
-        $versionArr = VersionHelper::nextVersion($projectId, 0, 1, 0, 0);
-        break;
-      case 'build':
-        $versionArr = VersionHelper::nextVersion($projectId, 0, 0, 1, 0);
-        break;
-      case 'revision':
-        $versionArr = VersionHelper::nextVersion($projectId, 0, 0, 0, 1);
-        break;
-      default:
-        $versionArr = VersionHelper::nextVersion($projectId, 0, 0, 0, 1);
-    }
-
-    return $versionArr;
-  }
-
   public function renderVersionDetails()
   {
+    $projectId = $this->getInt('projectId');
     $versionId = $this->getInt('versionId');
     $version   = new Version($versionId);
     $actions   = Action::collection(['version_id' => $versionId]);
@@ -148,7 +130,18 @@ class DefaultController extends DiffuseController
     $deployments = Deployment::collection(['version_id' => $versionId])
                    ->setOrderBy('created_at', 'DESC');
 
-    return new VersionDetails($version, $actions, $platforms, $deployments);
+    $projectUsers = ProjectUser::collection(
+      ['project_id' => $projectId]
+    );
+
+    $autoApprove = ApprovalConfigurationHelper::isAutoApproveReady(
+      $actions,
+      $projectId
+    );
+
+    return new VersionDetails(
+      $version, $actions, $platforms, $deployments, $projectUsers, $autoApprove
+    );
   }
 
   public function renderAddComment()
@@ -164,10 +157,8 @@ class DefaultController extends DiffuseController
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Comment added';
-    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $versionId)->with(
-      'msg',
-      $msg
-    )->now();
+    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $versionId)
+    ->with('msg', $msg)->now();
   }
 
   public function renderDeploy()
@@ -182,10 +173,8 @@ class DefaultController extends DiffuseController
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Version deployed successfully';
-    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $versionId)->with(
-      'msg',
-      $msg
-    )->now();
+    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $versionId)
+    ->with('msg', $msg)->now();
   }
 
   public function getRoutes()

@@ -10,8 +10,8 @@ use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Diffuse\Enums\ActionType;
-use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Enums\VersionType;
+use Sidekick\Components\Projects\Mappers\ProjectUser;
 
 class VersionDetails extends TemplatedViewModel
 {
@@ -27,23 +27,19 @@ class VersionDetails extends TemplatedViewModel
   protected $_actionForm;
   protected $_deployForm;
   protected $_deployments;
-  public $canApproveOrReject = false;
+  protected $_projectUsers;
+  public $autoApprove;
 
-  public function __construct($version, $actions, $platforms, $deployments)
+  public function __construct(
+    $version, $actions, $platforms, $deployments, $projectUsers, $autoApprove
+  )
   {
-    $this->_version = $version;
-    if(!in_array(
-      $this->_version->versionState,
-      [VersionState::APPROVED, VersionState::REJECTED]
-    )
-    )
-    {
-      $this->canApproveOrReject = true;
-    }
-
-    $this->_actions     = $actions;
-    $this->_platforms   = $platforms;
-    $this->_deployments = $deployments;
+    $this->_version      = $version;
+    $this->_actions      = $actions;
+    $this->_platforms    = $platforms;
+    $this->_deployments  = $deployments;
+    $this->_projectUsers = $projectUsers;
+    $this->autoApprove   = $autoApprove;
   }
 
   public function getVersion()
@@ -69,6 +65,11 @@ class VersionDetails extends TemplatedViewModel
   public function getDeployments()
   {
     return $this->_deployments;
+  }
+
+  public function getProjectMembers()
+  {
+    return $this->_projectUsers;
   }
 
   public function actionForm()
@@ -136,12 +137,4 @@ class VersionDetails extends TemplatedViewModel
 
     return $this->_deployForm;
   }
-
-//  public function render()
-//  {
-//    $x = VersionType::fromValue($this->_version->type)->getConstList();
-//    var_dump(VersionType::constFromValue($this->_version->type));
-//    var_dump($x);
-//    var_dump($this->_version->type); die;
-//  }
 }

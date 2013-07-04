@@ -59,8 +59,20 @@ class HostsController extends DiffuseController
     $hostId = $this->getInt('hostId');
     $host   = new Host($hostId);
 
-    $platforms     = Platform::collection()->loadAll();
     $hostPlatforms = HostPlatform::collection(['host_id' => $hostId])->load();
+
+    if($hostPlatforms->hasMappers())
+    {
+      $platforms = Platform::collection()->loadWhere(
+        "%C NOT IN (%Ld)",
+        "id",
+        $hostPlatforms->getUniqueField('platform_id')
+      );
+    }
+    else
+    {
+      $platforms = Platform::collection()->loadAll();
+    }
 
     return $this->createView(new HostPage($host, $platforms, $hostPlatforms));
   }

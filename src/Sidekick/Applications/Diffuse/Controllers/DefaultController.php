@@ -10,7 +10,6 @@ use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Views\VersionDetails;
 use Sidekick\Applications\Diffuse\Views\VersionsList;
-use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Helpers\ApprovalConfigurationHelper;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;

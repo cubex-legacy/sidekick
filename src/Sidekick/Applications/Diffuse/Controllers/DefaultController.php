@@ -21,6 +21,7 @@ use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
+use Sidekick\Components\Repository\Mappers\Commit;
 
 class DefaultController extends DiffuseController
 {
@@ -65,22 +66,77 @@ class DefaultController extends DiffuseController
       if($project->repository())
       {
         $version->repoId = $project->repository()->id();
+
+        //Get latest passing build
+        $latestPassingBuild = BuildRun::collection(
+          ['project_id' => $projectId, 'result' => 'pass']
+        );
+        $latestPassingBuild = $latestPassingBuild->setOrderBy(
+          'start_time',
+          'DESC'
+        );
+        $latestPassingBuild = $latestPassingBuild->setLimit(0, 1)->first();
+        if($latestPassingBuild)
+        {
+          $version->toCommitHash = $latestPassingBuild->commitHash;
+        }
+
+        //Get oldest build
+        $oldestBuild = BuildRun::collection(
+          ['project_id' => $projectId, 'result' => 'pass']
+        );
+        $oldestBuild = $oldestBuild->setOrderBy(
+          'start_time',
+          'ASC'
+        );
+        $oldestBuild = $oldestBuild->setLimit(0, 1)->first();
+        if($oldestBuild)
+        {
+          $version->fromCommitHash = $oldestBuild->commitHash;
+        }
+
+        //Get Change log
+        //Basically this is all the comment messages from the commit range
+        //only attempt this if we have a valid commit range
+        if($oldestBuild && $latestPassingBuild)
+        {
+          $startCommit = Commit::collection()->loadOneWhere(
+            ['commit_hash' => $oldestBuild->commitHash]
+          );
+
+          $endCommit = Commit::collection()->loadOneWhere(
+            ['commit_hash' => $latestPassingBuild->commitHash]
+          );
+
+          $commits = Commit::collection()->loadWhere(
+            '%C BETWEEN %d AND %d AND %C = %d',
+            'id',
+            $startCommit->id(),
+            $endCommit->id(),
+            'repository_id',
+            $version->repoId
+          );
+
+          $changeLog = '';
+          foreach($commits as $c)
+          {
+            $changeLog .= '- ' . $c->subject;
+            if($c->message != '')
+            {
+              $changeLog .= ':' . $c->message . PHP_EOL;
+            }
+            else
+            {
+              $changeLog .= PHP_EOL;
+            }
+          }
+
+          $version->changeLog = $changeLog;
+        }
+
+        $version->buildId = $latestPassingBuild->buildId;
       }
 
-      /*
-       * Get latest passing build
-       */
-      $latestPassingBuild = BuildRun::collection(
-        ['project_id' => $projectId, 'result' => 'pass']
-      );
-      $latestPassingBuild = $latestPassingBuild->setOrderBy(
-        'start_time',
-        'DESC'
-      );
-      $latestPassingBuild = $latestPassingBuild->setLimit(0, 1)->first();
-
-      $version->buildId        = $latestPassingBuild->buildId;
-      $version->fromCommitHash = $latestPassingBuild->commitHash;
       $version->saveChanges();
 
       $msg       = new \stdClass();

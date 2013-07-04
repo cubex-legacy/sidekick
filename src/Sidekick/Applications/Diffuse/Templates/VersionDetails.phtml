@@ -40,7 +40,7 @@
 
     <p>Commit Range:
       <?= substr($this->getVersion()->fromCommitHash, 0, 8) ?> -
-       xxxx
+      <?= substr($this->getVersion()->toCommitHash, 0, 8) ?>
     </p>
 
     <p>Last Updated: <?=

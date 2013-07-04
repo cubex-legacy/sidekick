@@ -27,6 +27,7 @@ class DiffuseController extends BaseControl
       $this->request()->path(2),
       [
       '/diffuse/platforms' => 'Manage Platforms',
+      '/diffuse/hosts'     => 'Manage Hosts',
       ]
     );
 

@@ -16,6 +16,7 @@ class DiffuseApp extends BaseApp
     return [
       'projects/(.*)'  => 'ProjectController',
       'platforms/(.*)' => 'PlatformController',
+      'hosts/(.*)'     => 'HostsController',
       'approval/(.*)'  => 'ApprovalController',
     ];
   }

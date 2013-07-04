@@ -14,11 +14,7 @@ class Platform extends RecordMapper
 {
   public $name;
   public $description;
-  /**
-   * @enumclass \Sidekick\Components\Diffuse\Enums\TransportType
-   */
-  public $transportType;
-  public $configuration = [];
+
   /**
    * Build IDs required to pass before can process upload
    * (builds must cover every commit contained in version)
@@ -32,7 +28,7 @@ class Platform extends RecordMapper
 
   protected function _configure()
   {
-    $this->_setSerializer("configuration");
     $this->_setSerializer("requiredBuilds");
+    $this->_setSerializer("deploymentOrder");
   }
 }

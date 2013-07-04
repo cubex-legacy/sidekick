@@ -30,7 +30,7 @@ class VersionHelper
     $batchSize = 10;
     $processed = 0;
 
-    $versions = self::latestVersions($projectId, $batchSize);
+    $versions = self::latestVersions($projectId,$batc);
 
     while($versions->hasMappers())
     {

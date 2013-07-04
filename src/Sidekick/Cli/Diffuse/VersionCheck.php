@@ -77,9 +77,6 @@ class VersionCheck extends CliCommand
     echo "Location: " . VersionHelper::sourceLocation($version);
 
     echo "\n";
-    $platform = new Platform();
-    $rsync    = new RsyncService($version, $platform);
-    echo $rsync->deploy();
   }
 
   public function latest()

@@ -26,17 +26,11 @@ class PlatformController extends DiffuseController
 
   public function renderCreate()
   {
+    $build = Build::collection()->loadAll()->getKeyPair('id', 'name');
+
     $form = new Form('createPlatform', '');
     $form->addTextElement('name');
     $form->addTextareaElement('description');
-    $form->addSelectElement(
-      'transportType',
-      (new OptionBuilder(new TransportType))->getOptions()
-    );
-
-    $build = Build::collection()->loadAll()->getKeyPair('id', 'name');
-
-    $form->addTextElement('configuration');
     $form->addCheckboxElements('requiredBuilds[]', '', $build);
     $form->addRadioElements('requireApproval', 1, ['No', 'Yes']);
     $form->addSubmitElement('Create');
@@ -66,19 +60,8 @@ class PlatformController extends DiffuseController
 
   public function renderEdit()
   {
-    $platformId = $this->getInt('platformId');
-    $platform   = new Platform($platformId);
-
-    $form = new Form('editPlatform', '');
-    $form->addHiddenElement('id', $platform->id());
-    $form->addTextElement('name', $platform->name);
-    $form->addTextareaElement('description', $platform->description);
-    $form->addSelectElement(
-      'transportType',
-      (new OptionBuilder(new TransportType))->getOptions(),
-      $platform->transportType
-    );
-
+    $platformId    = $this->getInt('platformId');
+    $platform      = new Platform($platformId);
     $build         = Build::collection()->loadAll()->getKeyPair('id', 'name');
     $selectedBuild = [];
     if(is_array($platform->requiredBuilds))
@@ -87,7 +70,10 @@ class PlatformController extends DiffuseController
                        ->getUniqueField('id');
     }
 
-    $form->addTextElement('configuration', $platform->configuration);
+    $form = new Form('editPlatform', '');
+    $form->addHiddenElement('id', $platform->id());
+    $form->addTextElement('name', $platform->name);
+    $form->addTextareaElement('description', $platform->description);
     $form->addCheckboxElements('requiredBuilds[]', $selectedBuild, $build);
     $form->addRadioElements(
       'requireApproval',

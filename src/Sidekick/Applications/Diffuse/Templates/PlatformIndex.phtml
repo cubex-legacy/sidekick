@@ -22,8 +22,6 @@
   <tr class="info">
     <th>Name</th>
     <th>Description</th>
-    <th>Transport Type</th>
-    <th>Configuration</th>
     <th>Required Build</th>
     <th>Require Approval</th>
     <th>Last Update</th>
@@ -35,8 +33,6 @@
         <a href=""><?= $platform->name; ?></a>
       </td>
       <td><?= $platform->description; ?></td>
-      <td><?= $platform->transportType; ?></td>
-      <td><?= $platform->configuration; ?></td>
       <td>
         <?php if(is_array($platform->requiredBuilds)): ?>
           <?=

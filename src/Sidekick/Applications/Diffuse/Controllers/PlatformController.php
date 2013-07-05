@@ -8,11 +8,8 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
-use Cubex\Form\FormElement;
-use Cubex\Form\OptionBuilder;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Views\PlatformIndex;
-use Sidekick\Components\Diffuse\Enums\TransportType;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Fortify\Mappers\Build;
 
@@ -32,9 +29,11 @@ class PlatformController extends DiffuseController
     $form->addTextElement('name');
     $form->addTextareaElement('description');
     $form->addCheckboxElements('requiredBuilds[]', '', $build);
-    $form->addRadioElements('requireApproval', 1, ['No', 'Yes']);
+    $form->addSelectElement('requireApproval', ['No', 'Yes'], 1);
     $form->addSubmitElement('Create');
 
+    $form->getElement('requireApproval')->setLabel('Require Approval')
+    ->addAttribute('class', 'input-small');
     $form->getElement('requiredBuilds[]')->setLabel('Required Builds');
 
     return new RenderGroup(
@@ -82,6 +81,7 @@ class PlatformController extends DiffuseController
     );
     $form->addSubmitElement('Update');
 
+    $form->getElement('requireApproval')->setLabel('Require Approval');
     $form->getElement('requiredBuilds[]')->setLabel('Required Builds');
 
     return new RenderGroup(

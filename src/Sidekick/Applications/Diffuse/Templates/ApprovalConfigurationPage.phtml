@@ -12,13 +12,19 @@
     <?= Session::getFlash('msg')->text; ?>
   </div>
 <?php endif; ?>
-<?php
-echo $this->form()->open();
-echo $this->form()->token();
-echo $this->form()->formNameInput();
-echo $this->form()->getElement('projectId');
-?>
-<div class="well">
+
+<a class="btn btn-success pull-right" id="addConfigBtn"> <i
+    class="icon-plus icon-white"></i>
+  Add Config</a>
+<div class="clearfix"></div>
+<div style="margin-top:10px;"></div>
+<div class="well hide" id="approveForm">
+  <?php
+  echo $this->form()->open();
+  echo $this->form()->token();
+  echo $this->form()->formNameInput();
+  echo $this->form()->getElement('projectId');
+  ?>
   <table>
     <tr>
       <td>Role</td>
@@ -40,8 +46,10 @@ echo $this->form()->getElement('projectId');
     </tr>
   </table>
   <?= $this->form()->getElement('submit') ?>
+  <button class="btn" id="cancelBtn">Cancel</button>
+  <?= $this->form()->close() ?>
 </div>
-<?= $this->form()->close() ?>
+
 <table class="table table-bordered table-hover">
   <tr>
     <th>Role</th>
@@ -50,14 +58,38 @@ echo $this->form()->getElement('projectId');
     <th></th>
   </tr>
   <?php foreach($this->getConfig() as $config): ?>
+    <?php $id = md5($config->id()); ?>
+    <?php $editForm = $this->editForm($config->projectId, $config->role); ?>
     <tr>
-      <td><?= ucfirst($config->role) ?></td>
-      <td><?= strtoupper($config->consistencyLevel) ?></td>
-      <td><?= ($config->required) ? 'Yes' : 'No' ?></td>
       <td>
-        <a
-          href="/diffuse/approval/<?= $this->projectId . '/' . $config->role ?>/edit"
-          title="Edit"><i class="icon-edit"></i></a>
+        <div class="role<?= $id ?>">
+          <?= ucfirst($config->role) ?>
+        </div>
+        <div class="role<?= $id ?> hide">
+          <?= $editForm->getElement('role') ?>
+        </div>
+      </td>
+      <td>
+        <div class="<?= $id ?> <?= $id ?>">
+          <?= strtoupper($config->consistencyLevel) ?>
+        </div>
+        <div class="<?= $id ?> hide">
+          <?=
+          $editForm->getElement('consistencyLevel')
+          ->addAttribute('class', 'input-small') ?>
+        </div>
+      </td>
+      <td>
+        <div class="<?= $id ?> <?= $id ?>">
+          <?= ($config->required) ? 'Yes' : 'No' ?>
+        </div>
+        <div class="<?= $id ?> hide">
+          <?= $editForm->getElement('required') ?>
+        </div>
+      </td>
+      <td>
+        <a title="Edit" onclick="$('.<?= $id ?>').toggle();"><i
+            class="icon-edit"></i></a>
         <a
           href="/diffuse/approval/<?= $this->projectId . '/' . $config->role ?>/delete">
           <i class="icon icon-trash"></i>

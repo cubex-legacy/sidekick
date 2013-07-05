@@ -14,6 +14,14 @@ use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 
 class ApprovalController extends DiffuseController
 {
+  public function preRender()
+  {
+    parent::preRender();
+
+    $this->requireJsLibrary('jquery');
+    $this->requireJs('approvalConfig');
+  }
+
   public function renderIndex()
   {
     $projectId = $this->getInt('projectId');
@@ -25,39 +33,32 @@ class ApprovalController extends DiffuseController
     }
 
     $config = ApprovalConfiguration::collection(['project_id' => $projectId]);
-    $form   = new ApprovalConfigurationForm(
-      $projectId, null, ''
-    );
+    $form   = new ApprovalConfigurationForm($projectId, null, '');
     return new ApprovalConfigurationPage($form, $config, $projectId);
   }
 
-  public function renderEdit()
-  {
-    $projectId = $this->getInt('projectId');
-    $role      = $this->getStr('role');
-
-    $config = ApprovalConfiguration::collection(['project_id' => $projectId]);
-    $form   = new ApprovalConfigurationForm(
-      $projectId, $role, ''
-    );
-    return new ApprovalConfigurationPage($form, $config, $projectId, $role);
-  }
+  //  public function renderEdit()
+  //  {
+  //    $projectId = $this->getInt('projectId');
+  //    $role      = $this->getStr('role');
+  //
+  //    $config = ApprovalConfiguration::collection(['project_id' => $projectId]);
+  //    $form   = new ApprovalConfigurationForm(
+  //      $projectId, $role, ''
+  //    );
+  //    return new ApprovalConfigurationPage($form, $config, $projectId, $role);
+  //  }
 
   public function postEdit()
   {
-    $projectId = $this->getInt('projectId');
+    $postData = $this->request()->postVariables();
 
-    $ac = new ApprovalConfiguration();
-    $ac->hydrate($this->request()->postVariables());
+    $ac                   = new ApprovalConfiguration(
+      [$postData['projectId'], $postData['role']]
+    );
+    $ac->hydrate($postData);
     $ac->saveChanges();
-
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Config successfully updated';
-    Redirect::to($this->baseUri() . '/' . $projectId)->with(
-      'msg',
-      $msg
-    )->now();
+    die(md5($postData['projectId'].'|'.$postData['role']));
   }
 
   public function renderDelete()

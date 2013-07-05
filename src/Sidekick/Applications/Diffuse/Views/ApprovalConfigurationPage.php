@@ -7,9 +7,13 @@
 namespace Sidekick\Applications\Diffuse\Views;
 
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Applications\Diffuse\Forms\ApprovalConfigurationForm;
 
 class ApprovalConfigurationPage extends TemplatedViewModel
 {
+  /**
+   * @var $_form \Cubex\Form\Form
+   */
   protected $_form;
   protected $_config;
   public $projectId;
@@ -31,5 +35,10 @@ class ApprovalConfigurationPage extends TemplatedViewModel
   public function form()
   {
     return $this->_form;
+  }
+
+  public function editForm($projectId, $role)
+  {
+    return new ApprovalConfigurationForm($projectId, $role, '');
   }
 }

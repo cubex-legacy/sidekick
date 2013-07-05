@@ -18,33 +18,40 @@ class ApprovalConfigurationForm extends Form
   public $projectId;
   public $consistencyLevel;
   public $required;
+  protected $_ac;
 
   public function __construct($projectId, $role = null, $action = '')
   {
-    $this->role      = $role;
     $this->projectId = $projectId;
+    $this->role      = $role;
+    $this->_ac       = new ApprovalConfiguration(
+      [$this->projectId, $this->role]
+    );
     parent::__construct('approvalConfig', $action);
   }
 
   protected function _configure()
   {
-    $ac = new ApprovalConfiguration([$this->projectId, $this->role]);
-
     $this->setDefaultElementTemplate('{{input}}');
     $this->addHiddenElement('projectId', $this->projectId);
     $this->addSelectElement(
       'role',
       (new OptionBuilder(new UserRole))->getOptions(),
-      $ac->role
+      $this->_ac->role
     );
 
     $this->addSelectElement(
       'consistencyLevel',
       (new OptionBuilder(new Consistency))->getOptions(),
-      $ac->consistencyLevel
+      $this->_ac->consistencyLevel
     );
 
-    $this->addRadioElements('required', $ac->required, ['No', 'Yes']);
+    $this->addSelectElement(
+      'required',
+      ['No', 'Yes'],
+      $this->_ac->required
+    );
+
     if($this->role == null)
     {
       $this->addSubmitElement('Save');
@@ -52,8 +59,20 @@ class ApprovalConfigurationForm extends Form
     else
     {
       $this->addSubmitElement('Update');
+      //attach on change events to form field
+      //makes an ajax call to update field
+      $this->getElement('consistencyLevel')->addAttribute(
+        'onchange',
+        "updateField(this, $this->projectId, '$this->role')"
+      );
+
+      $this->getElement('required')->addAttribute(
+        'onchange',
+        "updateField(this, $this->projectId, '$this->role')"
+      );
     }
 
+    $this->getElement('required')->addAttribute('class', 'input-small');
     $this->getElement('submit')->addAttribute(
       'class',
       'btn btn-primary'

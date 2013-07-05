@@ -11,8 +11,17 @@ use Cubex\View\TemplatedViewModel;
 
 class HostPage extends TemplatedViewModel
 {
+  /**
+   * @var $host \Sidekick\Components\Diffuse\Mappers\Host
+   */
   public $host;
+  /**
+   * @var $hostPlatforms \Sidekick\Components\Diffuse\Mappers\Platform[]
+   */
   public $platforms;
+  /**
+   * @var $hostPlatforms \Sidekick\Components\Diffuse\Mappers\HostPlatform[]
+   */
   public $hostPlatforms;
   protected $_form;
 

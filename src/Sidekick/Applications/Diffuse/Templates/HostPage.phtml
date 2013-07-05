@@ -20,6 +20,7 @@
   <h2>Host Platforms</h2>
 
   <div>
+    <?php if(count($this->platforms)): ?>
     <?php
     echo $this->form()->open();
     echo $this->form()->token();
@@ -30,6 +31,7 @@
     <?= $this->form()->getElement('submit') ?>
     <?= $this->form()->close() ?>
   </div>
+  <?php endif; ?>
   <div>
     <table class="table table-bordered table-condensed">
       <tr>
@@ -47,6 +49,5 @@
         </tr>
       <?php endforeach; ?>
     </table>
-
   </div>
 </div>

@@ -37,6 +37,7 @@ class VersionsList extends TemplatedViewModel
     if($this->_createVersionForm === null)
     {
       $this->_createVersionForm = new Form('createVersion', 'create-version');
+      $this->_createVersionForm->addAttribute('class', 'form-inline');
       $this->_createVersionForm->setDefaultElementTemplate('{{input}}');
       $this->_createVersionForm->addHiddenElement(
         'projectId',

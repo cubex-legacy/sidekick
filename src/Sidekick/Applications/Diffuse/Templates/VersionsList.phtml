@@ -26,18 +26,9 @@
   echo $this->createVersionForm()->formNameInput();
   ?>
   <?= $this->createVersionForm()->getElement('projectId') ?>
-  <table>
-    <tr>
-      <td><?= $this->createVersionForm()->getElement('type') ?></td>
-      <td>
-        <?= $this->createVersionForm()->getElement('versionNumberType') ?>
-      </td>
-      <td style="vertical-align: text-top;">
-        <?= $this->createVersionForm()->getElement('submit'); ?>
-      </td>
-    </tr>
-  </table>
-
+  <?= $this->createVersionForm()->getElement('type') ?>
+  <?= $this->createVersionForm()->getElement('versionNumberType') ?>
+  <?= $this->createVersionForm()->getElement('submit'); ?>
   <?= $this->createVersionForm()->close() ?>
 </div>
 

@@ -14,7 +14,7 @@ class HostPlatform extends PivotMapper
     $this->pivotOn(new Host(), new Platform());
   }
 
-  public function getTableName()
+  public function getTableName($plural = true)
   {
     return 'diffuse_hosts_platforms';
   }

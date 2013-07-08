@@ -21,10 +21,6 @@ class Deploy extends CliCommand
   /**
    * @valuerequired
    */
-  public $projectId;
-  /**
-   * @valuerequired
-   */
   public $versionId;
   /**
    * @valuerequired
@@ -47,7 +43,7 @@ class Deploy extends CliCommand
       throw new \Exception("The platform specified does not exist");
     }
 
-    $project = new Project($this->projectId);
+    $project = new Project($version->projectId);
     if(!$project->exists())
     {
       throw new \Exception("The project specified does not exist");
@@ -56,6 +52,7 @@ class Deploy extends CliCommand
     $deployment             = new Deployment();
     $deployment->platformId = $platform->id();
     $deployment->versionId  = $version->id();
+    $deployment->projectId  = $project->id();
     $deployment->saveChanges();
 
     $hosts = HostPlatform::collectionOn($platform)->preFetch("host");

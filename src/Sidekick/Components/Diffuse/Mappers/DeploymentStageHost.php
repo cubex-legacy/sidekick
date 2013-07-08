@@ -15,6 +15,9 @@ class DeploymentStageHost extends RecordMapper
   public $deploymentStageId;
   public $hostId;
 
+  /**
+   * @datatype tinyint
+   */
   public $passed;
   public $log;
 
@@ -26,7 +29,7 @@ class DeploymentStageHost extends RecordMapper
     );
   }
 
-  public function getTableName()
+  public function getTableName($plural = true)
   {
     return 'diffuse_deployments_stages_hosts';
   }

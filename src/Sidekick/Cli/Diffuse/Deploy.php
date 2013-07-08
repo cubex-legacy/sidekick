@@ -25,30 +25,32 @@ class Deploy extends CliCommand
   /**
    * @valuerequired
    */
-  public $version;
+  public $versionId;
   /**
    * @valuerequired
    */
-  public $platform;
+  public $platformId;
 
   protected $_echoLevel = 'debug';
 
   public function execute()
   {
-    $version = new Version($this->version);
+    $version = new Version($this->versionId);
     if(!$version->exists())
     {
-      $version->major = 1;
-      $version->saveChanges();
-      Log::info("Created version " . $version->id());
+      throw new \Exception("The version specified does not exist");
     }
 
-    $platform = new Platform($this->platform);
+    $platform = new Platform($this->platformId);
     if(!$platform->exists())
     {
-      $platform->name = 'Test platform';
-      $platform->saveChanges();
-      Log::info("Created platform " . $platform->id());
+      throw new \Exception("The platform specified does not exist");
+    }
+
+    $project = new Platform($this->projectId);
+    if(!$project->exists())
+    {
+      throw new \Exception("The project specified does not exist");
     }
 
     $deployment             = new Deployment();
@@ -63,7 +65,10 @@ class Deploy extends CliCommand
     }
 
     $stages    = DeploymentStage::collection(
-      ['platform_id' => $platform->id()]
+      [
+      'platform_id' => $platform->id(),
+      'project_id'  => $project->id(),
+      ]
     );
     $passStage = true;
     foreach($stages as $stage)

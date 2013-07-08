@@ -6,9 +6,11 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class DeploymentStage extends RecordMapper
 {
+  public $projectId;
   public $platformId;
   public $serviceClass;
   public $requireAllHostsPass;
@@ -27,5 +29,13 @@ class DeploymentStage extends RecordMapper
   public function platform()
   {
     return $this->belongsTo(new Platform());
+  }
+
+  /**
+   * @return Project
+   */
+  public function project()
+  {
+    return $this->belongsTo(new Project());
   }
 }

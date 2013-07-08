@@ -47,7 +47,7 @@ class Deploy extends CliCommand
       throw new \Exception("The platform specified does not exist");
     }
 
-    $project = new Platform($this->projectId);
+    $project = new Project($this->projectId);
     if(!$project->exists())
     {
       throw new \Exception("The project specified does not exist");

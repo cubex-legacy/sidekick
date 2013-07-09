@@ -119,8 +119,8 @@ class VersionHelper
       $version->minor,
       $version->build,
       VersionType::STANDARD === (string)VersionType::fromValue($version->type) ?
-        VersionType::STANDARD :
-        $version->type . '-' . $version->revision
+      VersionType::STANDARD :
+      $version->type . $version->revision
     ];
 
     return $basePath . implode(DS, $versionPath) . DS;

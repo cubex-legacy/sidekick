@@ -36,7 +36,7 @@ class RsyncService extends BaseDeploymentService
       $host = $stageHost->host();
 
       //Automatically deploy with hard links
-      $cmd = 'rsync -aH' . $options . ' --link-dest ';
+      $cmd = 'rsync --chmod=u=rwX,go=rX -aH' . $options . ' --link-dest ';
 
       //Remote Old Version Path
       $cmd .= build_path_unix(

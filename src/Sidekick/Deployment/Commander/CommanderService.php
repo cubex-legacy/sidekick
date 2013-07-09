@@ -6,6 +6,7 @@
 namespace Sidekick\Deployment\Commander;
 
 use Cubex\Data\Handler\DataHandler;
+use Cubex\Log\Log;
 use Sidekick\Deployment\BaseDeploymentService;
 use Symfony\Component\Process\Process;
 
@@ -70,6 +71,8 @@ class CommanderService extends BaseDeploymentService
         ],
         $command
       );
+
+      Log::info($cmd);
 
       $process = new Process($cmd);
       $process->run();

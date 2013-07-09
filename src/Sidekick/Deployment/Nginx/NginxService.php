@@ -51,7 +51,7 @@ class NginxService extends BaseDeploymentService
   if ( $remote_addr !~* "(192.168.0.21|192.168.0.20)" ) { set $allowCookie false; }
 
   # Only allow major version switching (1.X)
-  if ( $cubexVersion !~* "1\.[0-9]" ) { set $allowCookie false; }
+  if ( $cubexVersion !~* "(stage|1\.[0-9])" ) { set $allowCookie false; }
 
   # Check the directory exists
   if ( !-d  /home/cubex.nginx/$cubexVersion/public ) { set $allowCookie false; }

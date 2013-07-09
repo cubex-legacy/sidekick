@@ -35,49 +35,29 @@ class NginxService extends BaseDeploymentService
   public function buildConfig()
   {
     /*
-  set $cubexVersion 'live';
-  set $allowCookie true;
 
-  if ( $http_cookie ~* "CUBEX_VERSION=" )
-  {
-    set $cubexVersion $cookie_CUBEX_VERSION;
-  }
+  set $defaultVersion 'live';
+  set $cubexVersion $defaultVersion;
+  set $allowCookie true;
+  if ( $http_cookie ~* "CUBEX_VERSION=" ) { set $cubexVersion $cookie_CUBEX_VERSION; }
 
   # Version should not contain double dots
-  if ( $cubexVersion ~* "[\.]{2,}" )
-  {
-    set $allowCookie false;
-  }
+  if ( $cubexVersion ~* "[\.]{2,}" ) { set $allowCookie false; }
 
   # Version should not contain a slash
-  if ( $cubexVersion ~* "[/\\\\]" )
-  {
-    set $allowCookie false;
-  }
+  if ( $cubexVersion ~* "[/\\\\]" ) { set $allowCookie false; }
 
   # Allow version switching from approved IPs only
-  if ( $remote_addr !~* "(192.168.0.21|192.168.0.20)" )
-  {
-    set $allowCookie false;
-  }
+  if ( $remote_addr !~* "(192.168.0.21|192.168.0.20)" ) { set $allowCookie false; }
 
   # Only allow major version switching (1.X)
-  if ( $cubexVersion !~* "1\.[0-9]" )
-  {
-    set $allowCookie false;
-  }
+  if ( $cubexVersion !~* "1\.[0-9]" ) { set $allowCookie false; }
 
   # Check the directory exists
-  if ( !-d  /home/cubex.nginx/$cubexVersion/public )
-  {
-    set $allowCookie false;
-  }
+  if ( !-d  /home/cubex.nginx/$cubexVersion/public ) { set $allowCookie false; }
 
   # Revert back to live on any failed checks
-  if ( $allowCookie = false )
-  {
-    set $cubexVersion 'live';
-  }
+  if ( $allowCookie = false ) { set $cubexVersion $defaultVersion; }
 
   root /home/cubex.nginx/$cubexVersion/public;
 

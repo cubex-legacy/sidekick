@@ -37,7 +37,7 @@ interface IDeploymentService
   public function getHost($hostId);
 
   /**
-   * @return bool success
+   * @return void
    */
   public function deploy();
 }

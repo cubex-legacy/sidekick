@@ -5,6 +5,7 @@
 
 namespace Sidekick\Deployment\Rsync;
 
+use Cubex\Cli\Shell;
 use Cubex\Data\Handler\DataHandler;
 use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
@@ -38,20 +39,29 @@ class RsyncService extends BaseDeploymentService
       $cmd = 'rsync -aH' . $options . ' --link-dest ';
 
       //Remote Old Version Path
-      $cmd .= build_path(
+      $cmd .= build_path_unix(
         $remoteBase,
         $this->_versionPath($this->_previsionVersion())
       );
 
       //Local Source Path
-      $cmd .= " " . VersionHelper::sourceLocation($this->_version);
+      $sourcePath = VersionHelper::sourceLocation($this->_version);
+      if(CUBEX_ENV === 'development' && Shell::commandExists('cygpath'))
+      {
+        $sourcePath = trim(shell_exec('cygpath "' . $sourcePath . '"'));
+      }
+      $cmd .= ' ' . $sourcePath . ' ';
 
       //Remote Path
-      $cmd .= ' ' . $host->hostname . ':';
-      $cmd .= build_path($remoteBase, $this->_versionPath($this->_version));
+      $cmd .= $host->username !== null ? $host->username . '@' : ''; //Username
+      $cmd .= $host->getConnPreference() . ':'; //Hostname | IP
+      $cmd .= build_path_unix(
+        $remoteBase,
+        $this->_versionPath($this->_version)
+      );
 
       Log::info(
-        "Deploying to " . $host->hostname . " with '" . $cmd . "'"
+        "Deploying to " . $host->name . " with '" . $cmd . "'"
       );
 
       $stageHost->log = $cmd;
@@ -64,7 +74,7 @@ class RsyncService extends BaseDeploymentService
 
   protected function _versionPath(Version $v)
   {
-    return $v->format() . DS;
+    return $v->format() . '/';
   }
 
   protected function _previsionVersion()

@@ -20,7 +20,7 @@ class NginxService extends BaseDeploymentService
       $host = $stageHost->host();
 
       Log::info(
-        "Updating nginx on " . $host->hostname . " with new cfgs"
+        "Updating nginx on " . $host->name . " with new cfgs"
       );
 
       $stageHost->passed = true;

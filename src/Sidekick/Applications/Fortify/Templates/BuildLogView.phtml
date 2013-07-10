@@ -5,7 +5,7 @@
  */
 ?>
 <div class="clearfix"></div>
-<code class="console" style="min-height: 800px;">
+<code class="console" style="min-height: 400px;">
   <?php foreach($this->getCommandsRun() as $commandRun): ?>
     <?php
     $txtClass = $this->getTextClass(
@@ -24,7 +24,7 @@
     <div id="<?= md5($commandRun->command->command) ?>"
          class="cmdOutput <?= ($commandRun->passed) ? 'hide' : '' ?>">
       <p
-        class="command <?= $txtClass ?>">
+      class="command <?= $txtClass ?>">
         [<?= date('H:i:s', $commandRun->startTime); ?>]
         &nbsp;&nbsp;<?= $commandRun->command->command; ?>
         <?= $commandRun->args ?>

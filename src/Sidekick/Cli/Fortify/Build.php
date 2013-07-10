@@ -15,6 +15,7 @@ use Cubex\Log\Debug;
 use Sidekick\Components\Fortify\Enums\BuildResult;
 use Sidekick\Components\Fortify\Enums\FileSet;
 use Sidekick\Components\Fortify\FortifyBuildChanges;
+use Sidekick\Components\Fortify\FortifyHelper;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -116,7 +117,7 @@ class Build extends CliCommand
       Shell::COLOUR_FOREGROUND_LIGHT_BLUE
     );
 
-    $buildPath = dirname(WEB_ROOT) . '/builds/' . $buildRun->id();
+    $buildPath = FortifyHelper::buildPath($buildRun->id());
     mkdir($buildPath, 0777, true);
     chdir($buildPath);
     $this->_buildPath      = $buildPath;

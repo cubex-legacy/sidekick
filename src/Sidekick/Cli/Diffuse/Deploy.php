@@ -6,7 +6,9 @@
 namespace Sidekick\Cli\Diffuse;
 
 use Cubex\Cli\CliCommand;
+use Cubex\Cli\Shell;
 use Cubex\Log\Log;
+use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
@@ -48,6 +50,8 @@ class Deploy extends CliCommand
     {
       throw new \Exception("The project specified does not exist");
     }
+
+    $this->_createVersionDataFile($version);
 
     $deployment             = new Deployment();
     $deployment->platformId = $platform->id();
@@ -115,5 +119,29 @@ class Deploy extends CliCommand
         throw new \Exception("The class '$deployService' does not exist");
       }
     }
+  }
+
+  protected function _createVersionDataFile(Version $v)
+  {
+    $sourcePath = VersionHelper::sourceLocation($v);
+    $filePath   = $sourcePath . 'DIFFUSE.VERSION';
+    file_put_contents($filePath, $this->_versionFile($v));
+  }
+
+  protected function _versionFile(Version $v)
+  {
+    $content = '';
+    $content .= 'Version: ' . $v->format() . "\n";
+    $content .= 'Commits: ' . $v->fromCommitHash . ' - ' . $v->toCommitHash;
+    $content .= "\n";
+    $content .= 'State: ' . $v->versionState . "\n";
+    $content .= 'Project ID: ' . $v->projectId . "\n";
+    $content .= 'Build ID: ' . $v->buildId . "\n";
+    $content .= 'Repository ID: ' . $v->repoId . "\n";
+    $content .= 'Created: ' . $v->getData($v->createdAttribute()) . "\n";
+    $content .= 'Updated: ' . $v->getData($v->updatedAttribute()) . "\n";
+    $content .= "\n== Change Log ==\n";
+    $content .= $v->changeLog;
+    return $content;
   }
 }

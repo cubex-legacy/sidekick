@@ -21,8 +21,8 @@ class DefaultController extends BaseControl
   public function getRoutes()
   {
     return [
-      '/(?<sourceFile>.*)/' => 'index',
-      '/:lineNumber/(?<sourceFile>.*)/' => 'index'
+      '/{lineNumber@num}/(?<sourceFile>.*)/' => 'index',
+      '/(?<sourceFile>.*)/'                  => 'index',
     ];
   }
 }

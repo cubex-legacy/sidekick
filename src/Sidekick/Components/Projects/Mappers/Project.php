@@ -23,7 +23,7 @@ class Project extends RecordMapper
       "%C %=d",
       "parent_id",
       $projectId
-    );
+    )->setOrderBy('name');
 
     return $projects;
   }
@@ -37,7 +37,8 @@ class Project extends RecordMapper
           SELECT count(*) FROM %T
           WHERE parent_id= p.id
         ) as sub_projects
-        FROM %T p",
+        FROM %T p
+        ORDER BY name ASC",
         self::tableName(),
         self::tableName()
       )

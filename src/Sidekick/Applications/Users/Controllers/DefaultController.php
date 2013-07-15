@@ -38,6 +38,7 @@ class DefaultController extends UsersController
   {
     $user = new User();
     $user->hydrate($this->request()->postVariables());
+    $user->password = md5($user->password);
     $user->saveChanges();
 
     $msg       = new \stdClass();
@@ -58,6 +59,7 @@ class DefaultController extends UsersController
   {
     $user = new User();
     $user->hydrate($this->request()->postVariables());
+    $user->password = md5($user->password);
     $user->saveChanges();
 
     $msg       = new \stdClass();

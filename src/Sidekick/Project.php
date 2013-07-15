@@ -7,11 +7,13 @@ namespace Sidekick;
 
 use Cubex\Core\Application\Application;
 use Cubex\Core\Http\Request;
+use Cubex\Facade\Auth;
 use Sidekick\Applications\Api\ApiApp;
 use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
 use Sidekick\Applications\Fortify\FortifyApp;
+use Sidekick\Applications\Login\LoginApp;
 use Sidekick\Applications\Overview\OverviewApp;
 use Sidekick\Applications\Phuse\PhuseApp;
 use Sidekick\Applications\PreviewApp\PreviewApp;
@@ -122,6 +124,13 @@ class Project extends \Cubex\Core\Project\Project
    */
   public function defaultApplication()
   {
-    return new OverviewApp();
+    if(Auth::loggedin())
+    {
+      return new OverviewApp();
+    }
+    else
+    {
+      return new LoginApp();
+    }
   }
 }

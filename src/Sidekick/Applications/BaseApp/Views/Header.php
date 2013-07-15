@@ -9,9 +9,11 @@
 
 namespace Sidekick\Applications\BaseApp\Views;
 
+use Cubex\Facade\Auth;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
+use Sidekick\Components\Users\Mappers\User;
 use Sidekick\Project;
 
 class Header extends ViewModel
@@ -55,7 +57,7 @@ class Header extends ViewModel
       '</ul>',
       '<div class="nav-collapse collapse">
         <ul class="nav pull-right">
-          <li><a href="/profile">John Doe</a></li>
+          <li><a href="/profile">'.Auth::getRawUsername().'</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </div>'

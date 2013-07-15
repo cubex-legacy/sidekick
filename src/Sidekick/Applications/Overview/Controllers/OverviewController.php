@@ -5,6 +5,7 @@
 
 namespace Sidekick\Applications\Overview\Controllers;
 
+use Cubex\Facade\Redirect;
 use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\Overview\Views\Releases;
@@ -21,10 +22,17 @@ class OverviewController extends BaseControl
     return new Releases();
   }
 
+  public function logout()
+  {
+    \Auth::logout();
+    Redirect::to('/')->now();
+  }
+
   public function getRoutes()
   {
     return [
-      '/releases' => 'releases'
+      '/releases' => 'releases',
+      'logout'    => 'logout'
     ];
   }
 }

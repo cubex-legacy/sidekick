@@ -6,12 +6,21 @@
 namespace Sidekick\Applications\BaseApp\Controllers;
 
 use Cubex\Core\Controllers\WebpageController;
+use Cubex\Facade\Redirect;
 use Sidekick\Applications\BaseApp\Views\Header;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 
 class BaseControl extends WebpageController
 {
   protected $_titlePrefix;
+
+  public function __construct()
+  {
+    if(!\Auth::loggedIn())
+    {
+      Redirect::to('/')->now();
+    }
+  }
 
   public function preRender()
   {

@@ -6,11 +6,12 @@
 namespace Sidekick\Applications\Phuse\Controllers;
 
 use Bundl\Debugger\DebuggerBundle;
+use Cubex\Core\Controllers\WebpageController;
 use Cubex\Core\Http\Response;
 use Sidekick\Components\Phuse\Mappers\Package;
 use Sidekick\Components\Phuse\PhuseHelper;
 
-class ComposedController extends PhuseController
+class ComposedController extends WebpageController
 {
   public function renderIndex()
   {

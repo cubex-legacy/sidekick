@@ -78,7 +78,8 @@ class ComposedController extends WebpageController
   public function getRoutes()
   {
     return [
-      '/download/(?P<package>.*)/(?P<version>[a-zA-Z0-9_\.\-]*)/[0-9]+/' => 'download'
+      '/download/(?P<package>.*)/(?P<version>[a-zA-Z0-9_\.\-]*)/[0-9]+/' => 'download',
+      '*'                                                                => 'index'
     ];
   }
 }

@@ -55,7 +55,10 @@ class DefaultController extends ProjectsController
       $project              = new Project();
       $project->name        = $form->name;
       $project->description = $form->description;
-      $project->parentId    = $form->parent_id;
+      if((int)$form->parent_id > 0)
+      {
+        $project->parentId    = $form->parent_id;
+      }
       $project->saveChanges();
 
       $msg       = new \stdClass();
@@ -104,7 +107,10 @@ class DefaultController extends ProjectsController
       $project              = new Project($postData['id']);
       $project->name        = $form->name;
       $project->description = $form->description;
-      $project->parentId    = $form->parent_id;
+      if((int)$form->parent_id > 0)
+      {
+        $project->parentId    = $form->parent_id;
+      }
       $project->saveChanges();
 
       $msg       = new \stdClass();

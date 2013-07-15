@@ -18,13 +18,13 @@ class ApprovalConfigurationForm extends Form
   public $projectId;
   public $consistencyLevel;
   public $required;
-  protected $_ac;
+  protected $_approvalConfiguration;
 
   public function __construct($projectId, $role = null, $action = '')
   {
     $this->projectId = $projectId;
     $this->role      = $role;
-    $this->_ac       = new ApprovalConfiguration(
+    $this->_approvalConfiguration       = new ApprovalConfiguration(
       [$this->projectId, $this->role]
     );
     parent::__construct('approvalConfig', $action);
@@ -37,19 +37,19 @@ class ApprovalConfigurationForm extends Form
     $this->addSelectElement(
       'role',
       (new OptionBuilder(new UserRole))->getOptions(),
-      $this->_ac->role
+      $this->_approvalConfiguration->role
     );
 
     $this->addSelectElement(
       'consistencyLevel',
       (new OptionBuilder(new Consistency))->getOptions(),
-      $this->_ac->consistencyLevel
+      $this->_approvalConfiguration->consistencyLevel
     );
 
     $this->addSelectElement(
       'required',
       ['No', 'Yes'],
-      $this->_ac->required
+      $this->_approvalConfiguration->required
     );
 
     if($this->role == null)

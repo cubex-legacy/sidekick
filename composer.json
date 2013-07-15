@@ -23,7 +23,8 @@
     "cubex/cassandra":       "*",
     "symfony/process":       "*",
     "bundl/debugger":        "*",
-    "themed/sidekick":       "*"
+    "themed/sidekick":       "*",
+    "phpseclib/phpseclib":    "*"
   },
   "autoload":          {
     "psr-0": {

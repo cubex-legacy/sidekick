@@ -6,6 +6,7 @@
 
 namespace Sidekick\Applications\Diffuse\Views;
 
+use Cubex\Facade\Auth;
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
@@ -88,7 +89,7 @@ class VersionDetails extends TemplatedViewModel
       );
       $this->_actionForm->addTextareaElement('comment');
       $this->_actionForm->addHiddenElement('versionId', $this->_version->id());
-      $this->_actionForm->addHiddenElement('userId', rand(1, 6));
+      $this->_actionForm->addHiddenElement('userId', Auth::user()->getId());
       $this->_actionForm->addSubmitElement('Submit');
 
       //add custom attributes

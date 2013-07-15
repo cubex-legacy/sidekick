@@ -128,7 +128,7 @@
       </tr>
       <?php foreach($this->getDeployments() as $d): ?>
         <tr>
-          <td><?= date('d M Y', strtotime($d->createdAt)) ?></td>
+          <td><?= date('d M Y H:i:s', strtotime($d->createdAt)) ?></td>
           <td><?= $d->platform()->name ?></td>
           <td><?= $d->comment ?></td>
           <td><?= ($d->completed) ? 'Yes' : 'No' ?></td>

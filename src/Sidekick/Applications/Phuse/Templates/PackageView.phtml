@@ -9,7 +9,7 @@
 ?>
 <div class="page-header">
   <h2><?= $this->getPackage()->name; ?>
-    <?php if($this->getPackage()->version !== ""): ?>
+    <?php if($this->getPackage()->version !== null): ?>
       <small>v<?= $this->getPackage()->version; ?></small>
     <?php endif; ?>
   </h2>

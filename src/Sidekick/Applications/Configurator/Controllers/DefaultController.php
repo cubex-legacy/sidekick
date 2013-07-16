@@ -13,11 +13,13 @@ use Sidekick\Applications\Configurator\Views\IniPreview;
 use Sidekick\Applications\Configurator\Views\ModifyProjectConfigItem;
 use Sidekick\Applications\Configurator\Views\ProjectConfigurator;
 use Sidekick\Applications\Configurator\Views\ProjectList;
+use Sidekick\Components\Configure\Helpers\ConfigHelper;
 use Sidekick\Components\Configure\Mappers\ConfigurationGroup;
 use Sidekick\Components\Configure\Mappers\ConfigurationItem;
 use Sidekick\Components\Configure\Mappers\CustomConfigurationItem;
 use Sidekick\Components\Configure\Mappers\Environment;
 use Sidekick\Components\Configure\Mappers\EnvironmentConfigurationItem;
+use Sidekick\Components\Phuse\Mappers\Package;
 use Sidekick\Components\Projects\Mappers\Project;
 
 class DefaultController extends ConfiguratorController
@@ -181,63 +183,11 @@ class DefaultController extends ConfiguratorController
 
   public function buildIni()
   {
-    $projectId = $this->getInt('projectId');
-    $project   = new Project($projectId);
-
-    //load config in cascade fashion, parent comes first
-    if($project->parentId !== null)
-    {
-      $cascade[] = $project->parentId;
-    }
-    $cascade[] = $projectId;
-
+    $projectId   = $this->getInt('projectId');
+    $project     = new Project($projectId);
     $envs        = Environment::collection()->loadAll();
-    $configArray = [];
-    foreach($cascade as $level)
-    {
-      foreach($envs as $env)
-      {
-        $projectConfigs = EnvironmentConfigurationItem::collection()->loadWhere(
-          [
-          'project_id'     => $level,
-          'environment_id' => $env->id,
-          ]
-        );
-
-        $configArray = array_replace_recursive(
-          $configArray,
-          $this->buildCascadeConfig($projectConfigs)
-        );
-      }
-    }
-
+    $configArray = (new ConfigHelper())->getConfigArray($projectId, $envs);
     return $this->createView(new IniPreview($project, $envs, $configArray));
-  }
-
-  public function buildCascadeConfig($projectConfigs)
-  {
-    $configArray = array();
-
-    foreach($projectConfigs as $config)
-    {
-      $item  = new ConfigurationItem($config->configurationItemId);
-      $group = new ConfigurationGroup($item->configurationGroupId);
-      $env   = new Environment($config->environmentId);
-
-      //check if custom value assigned
-      if($config->customItemId !== null)
-      {
-        //override value before displaying
-        $customItem  = new CustomConfigurationItem($config->customItemId);
-        $item->value = $customItem->value;
-      }
-
-      $configArray[$env->name][$group->entry][$item->key] = is_object(
-        $item->value
-      ) ? (array)$item->value : $item->value;
-    }
-
-    return $configArray;
   }
 
   public function renderConfigItems()

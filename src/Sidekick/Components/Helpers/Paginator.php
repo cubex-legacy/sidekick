@@ -44,7 +44,7 @@ class Paginator implements ITranslatable
 
   public function __toString()
   {
-    return $this->getPager();
+    return (string)$this->getPager();
   }
 
   public function getPager()
@@ -122,6 +122,7 @@ HTML
 </div>
 HTML
     );
+
     if($this->_pages > 1)
     {
       return $pager;

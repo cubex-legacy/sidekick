@@ -38,7 +38,12 @@ class CreateBuild extends CliCommand
       throw new \Exception("The path specified is not a valid composer project");
     }
 
-    $composer   = json_decode(file_get_contents($composerJson));
+    $composer = json_decode(file_get_contents($composerJson));
+    if(!isset($composer->name))
+    {
+      throw new \Exception("Invalid project. Composer project doesn't have a name.");
+    }
+
     $compileDir = PhuseHelper::getArchiveDir($this->config("phuse"));
 
     if(!file_exists($compileDir))

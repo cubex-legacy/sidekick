@@ -5,7 +5,6 @@
 
 namespace Sidekick\Components\Configure\Mappers;
 
-use Bundl\Debugger\DebuggerBundle;
 use Cubex\Mapper\Database\RecordMapper;
 use Cubex\Sprintf\ParseQuery;
 
@@ -26,7 +25,6 @@ class ConfigurationGroup extends RecordMapper
     $collection = static::collection();
     $collection->setGroupBy("project_id");
     $collection->setColumns(["project_id", "COUNT(*) AS count"]);
-    $collection->get();
     return $collection->getKeyPair("project_id", "count");
   }
 }

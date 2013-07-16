@@ -111,10 +111,11 @@
   echo $this->deployForm()->formNameInput();
   echo $this->deployForm()->getElement('versionId');
   echo $this->deployForm()->getElement('userId');
+  echo $this->deployForm()->getElement('projectId');
   ?>
 
-  <?= $this->deployForm()->getElement('comment') ?>
   <?= $this->deployForm()->getElement('platformId') ?>
+  <?= $this->deployForm()->getElement('comment') ?>
   <?= $this->deployForm()->getElement('submit') ?>
   <?= $this->deployForm()->close() ?>
 

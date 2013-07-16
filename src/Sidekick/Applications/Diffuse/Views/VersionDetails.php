@@ -121,6 +121,8 @@ class VersionDetails extends TemplatedViewModel
         $this->_platforms->getKeyPair('id', 'name')
       );
       $this->_deployForm->addTextareaElement('comment');
+
+      $this->_deployForm->addHiddenElement('userId', Auth::user()->getId());
       $this->_deployForm->addHiddenElement('versionId', $this->_version->id());
       $this->_deployForm->addSubmitElement('Deploy!');
 

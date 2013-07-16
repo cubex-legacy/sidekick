@@ -110,10 +110,11 @@
   echo $this->deployForm()->token();
   echo $this->deployForm()->formNameInput();
   echo $this->deployForm()->getElement('versionId');
+  echo $this->deployForm()->getElement('userId');
   ?>
 
-  <?= $this->deployForm()->getElement('platformId') ?>
   <?= $this->deployForm()->getElement('comment') ?>
+  <?= $this->deployForm()->getElement('platformId') ?>
   <?= $this->deployForm()->getElement('submit') ?>
   <?= $this->deployForm()->close() ?>
 
@@ -122,6 +123,7 @@
     <table class="table table-bordered table-condensed" style="font-size:11px;">
       <tr>
         <th>Date</th>
+        <th>Deployed By</th>
         <th>Platform</th>
         <th>Comment</th>
         <th>Completed</th>
@@ -129,6 +131,7 @@
       <?php foreach($this->getDeployments() as $d): ?>
         <tr>
           <td><?= date('d M Y H:i:s', strtotime($d->createdAt)) ?></td>
+          <td><?= $d->user()->display_name ?></td>
           <td><?= $d->platform()->name ?></td>
           <td><?= $d->comment ?></td>
           <td><?= ($d->completed) ? 'Yes' : 'No' ?></td>

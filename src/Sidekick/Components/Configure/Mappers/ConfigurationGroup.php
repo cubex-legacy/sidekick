@@ -5,6 +5,7 @@
 
 namespace Sidekick\Components\Configure\Mappers;
 
+use Bundl\Debugger\DebuggerBundle;
 use Cubex\Mapper\Database\RecordMapper;
 use Cubex\Sprintf\ParseQuery;
 
@@ -14,7 +15,6 @@ class ConfigurationGroup extends RecordMapper
   public $entry;
   public $projectId;
 
-
   protected function _configure()
   {
     $this->_setRequired('groupName');
@@ -23,16 +23,10 @@ class ConfigurationGroup extends RecordMapper
 
   public static function getConfigGroupsCount()
   {
-    $result = self::conn()->getKeyedRows(
-      ParseQuery::parse(
-        self::conn(),
-        "SELECT %C, count(*) FROM %T GROUP BY %C",
-        'project_id',
-        self::tableName(),
-        'project_id'
-      )
-    );
-
-    return $result;
+    $collection = static::collection();
+    $collection->setGroupBy("project_id");
+    $collection->setColumns(["project_id", "COUNT(*) AS count"]);
+    $collection->get();
+    return $collection->getKeyPair("project_id", "count");
   }
 }

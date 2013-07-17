@@ -151,7 +151,7 @@ HTML
   protected function _getUrl($page)
   {
     $url = $this->_uri;
-    $url = rtrim($url, "/") . "/P{$page}";
+    $url = rtrim($url, "/") . "/{$page}";
 
     return $url;
   }

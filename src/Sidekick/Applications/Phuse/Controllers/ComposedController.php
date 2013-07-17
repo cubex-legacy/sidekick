@@ -79,7 +79,7 @@ class ComposedController extends WebpageController
   {
     return [
       '/download/(?P<package>.*)/(?P<version>[a-zA-Z0-9_\.\-]*)/[0-9]+/' => 'download',
-      '*'                                                                => 'index'
+      '(.*)'                                                             => 'index'
     ];
   }
 }

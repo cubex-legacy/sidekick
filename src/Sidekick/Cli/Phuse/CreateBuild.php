@@ -70,6 +70,7 @@ class CreateBuild extends CliCommand
     $package->projectId   = $this->projectId;
     $package->name        = $composer->name;
     $package->description = $composer->description;
+    $package->vendor      = explode('/', $composer->name)[0];
     $package->version     = $composer->version;
     $package->license     = $composer->license;
     $package->authors     = $composer->authors;
@@ -83,7 +84,7 @@ class CreateBuild extends CliCommand
     $release->description = $composer->description;
     $release->license     = $composer->license;
     $release->authors     = $composer->authors;
-    $release->vendor      = explode('/', $composer->name)[0];
+    $release->vendor      = $package->vendor;
     $release->zipHash     = md5_file($zipLoc);
     $release->saveChanges();
   }

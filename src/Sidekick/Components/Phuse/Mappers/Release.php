@@ -15,10 +15,16 @@ class Release extends RecordMapper
   public $zipLocation;
   public $packageId;
   public $zipHash;
+  public $name;
+  public $description;
+  public $authors;
+  public $license;
+  public $vendor;
 
   protected function _configure()
   {
     $this->_addCompositeAttribute("id", ['packageId', 'version']);
+    $this->_setSerializer('authors');
   }
 
   public function package()

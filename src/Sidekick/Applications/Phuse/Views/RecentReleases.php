@@ -6,9 +6,9 @@
 
 namespace Sidekick\Applications\Phuse\Views;
 
-use Cubex\View\TemplatedViewModel;
+use Sidekick\Applications\BaseApp\Views\MapperList;
 
-class RecentReleases extends TemplatedViewModel
+class RecentReleases extends MapperList
 {
   public $releases;
 

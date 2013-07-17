@@ -10,6 +10,7 @@
 namespace Sidekick\Applications\Phuse\Controllers;
 
 use Cubex\Core\Http\Response;
+use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Phuse\Views\PackageResults;
 use Sidekick\Applications\Phuse\Views\PackagesList;
@@ -62,8 +63,9 @@ class DefaultController extends PhuseController
   public function renderNewPackages()
   {
     $recentDate = date('Y-m-d 00:00:00', strtotime('-2 months'));
-    $packages   = Package::collection()->setWhereQuery(
-                    "created_at >= '$recentDate'"
+    $packages   = Package::collection()->whereGreaterThan(
+                    'created_at',
+                    $recentDate
                   )->setOrderBy('created_at', 'DESC');
     return $this->createView(new PackagesList($packages, 'New Packages'));
   }
@@ -71,21 +73,21 @@ class DefaultController extends PhuseController
   public function renderRecentReleases()
   {
     $recentDate = date('Y-m-d 00:00:00', strtotime('-2 months'));
-    $releases   = Release::collection()->setWhereQuery(
-                    "created_at >= '$recentDate'"
-                  )
-                  ->setOrderBy('created_at', 'DESC');
-    var_dump_json($releases);
+    $releases   = Release::collection()->whereGreaterThan(
+                    'created_at',
+                    $recentDate
+                  )->setOrderBy('created_at', 'DESC');
 
-    $perPage    = 30;
-    $page       = $this->getStr('page');
-    $totalCount = $releases->count();
-    $pager      = $this->pager($page, $totalCount, $perPage);
+    $perPage        = 30;
+    $page           = $this->getStr('page');
+    $totalCount     = $releases->count();
+    $recentReleases = new RecentReleases($releases);
+    $pager          = $recentReleases->pager($page, $totalCount, $perPage);
 
     $pager->getOffset();
     $releases->setLimit($pager->getOffset(), $perPage);
 
-    $list = $this->createView(new RecentReleases($releases));
+    $list = $this->createView($recentReleases);
 
     return new RenderGroup(
       $list,
@@ -95,39 +97,27 @@ class DefaultController extends PhuseController
 
   public function renderAllPackages()
   {
-    $perPage    = 30;
-    $page       = $this->getStr('page');
-    $packages   = Package::collection()->setOrderBy('name', 'ASC');
-    $totalCount = $packages->count();
-    $pager      = $this->pager($page, $totalCount, $perPage);
+    $perPage  = 30;
+    $page     = $this->getStr('page');
+    $packages = Package::collection()->setOrderBy('name', 'ASC');
+    $filter   = $this->getStr('filter');
+    if($filter !== null)
+    {
+      $packages = $packages->loadWhere(['vendor' => $filter]);
+    }
 
+    $totalCount   = $packages->count();
+    $packagesList = new PackagesList($packages, 'All Packages', false);
+    $pager        = $packagesList->pager($page, $totalCount, $perPage);
     $pager->getOffset();
     $packages->setLimit($pager->getOffset(), $perPage);
 
-    $list = $this->createView(new PackagesList($packages, 'All Packages'));
+    $list = $this->createView($packagesList);
 
     return new RenderGroup(
       $list,
       $pager->getPager()
     );
-  }
-
-  public function pager($page, $count, $perPage, $baseUri = null)
-  {
-    if(null === $baseUri)
-    {
-      $baseUri = $this->_request->path(2) . '/page/';
-    }
-
-    preg_match('!\d+!', $page, $matches);
-    $page = $matches[0];
-
-    $pagination = new Paginator();
-    $pagination->setNumResults($count);
-    $pagination->setNumResultsPerPage($perPage);
-    $pagination->setPage($page);
-    $pagination->setUri($baseUri);
-    return $pagination;
   }
 
   public function getRoutes()
@@ -141,6 +131,7 @@ class DefaultController extends PhuseController
       'recent-releases/page/:page' => 'recentReleases',
       'all/page/:page'             => 'allPackages',
       'all/(.*)'                   => 'allPackages',
+      ':filter/(.*)'               => 'allPackages',
     ];
   }
 }

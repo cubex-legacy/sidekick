@@ -7,14 +7,17 @@
  */
 ?>
 <h1><?= $this->heading ?></h1>
+<?= $this->renderFilters() ?>
 <table class="table table-striped table-bordered table-condensed">
   <tr class="info">
     <th>Name</th>
     <th>Description</th>
-    <th>Author</th>
-    <th>Version</th>
-    <th>License</th>
-    <th>Date Created</th>
+    <?php if($this->showFullList): ?>
+      <th>Author</th>
+      <th>Version</th>
+      <th>License</th>
+      <th>Date Created</th>
+    <?php endif; ?>
   </tr>
   <?php if($this->packages): ?>
     <?php foreach($this->packages as $package): ?>
@@ -23,10 +26,26 @@
           <a href="/phuse/view/<?= $package->id() ?>"><?= $package->name; ?></a>
         </td>
         <td><?= $package->description; ?></td>
-        <td><?= ($package->authors != '')? $package->authors : '-'; ?></td>
-        <td><?= ($package->version != '')? $package->version : '-'; ?></td>
-        <td><?= ($package->license != '')? $package->license : '-'; ?></td>
-        <td><?= date('d M y H:i:s', strtotime($package->createdAt)); ?></td>
+        <?php if($this->showFullList): ?>
+          <td>
+            <?php if(is_array($package->authors)): ?>
+              <ul>
+                <?php foreach($package->authors as $author): ?>
+                  <li>
+                    <?= $author->name; ?> <?=
+                    isset($author->email) ?
+                      '&lt;' . $author->email . '&gt;' : ''; ?>
+                  </li>
+                <?php endforeach; ?>
+              </ul>
+            <?php else: ?>
+              -
+            <?php endif; ?>
+          </td>
+          <td><?= $package->release()->version; ?></td>
+          <td><?= ($package->license != '') ? $package->license : '-'; ?></td>
+          <td><?= date('d M y H:i:s', strtotime($package->createdAt)); ?></td>
+        <?php endif; ?>
       </tr>
     <?php endforeach; ?>
   <?php endif; ?>

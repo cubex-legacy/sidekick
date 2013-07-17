@@ -10,7 +10,10 @@
 <table class="table table-striped table-bordered table-condensed">
   <tr class="info">
     <th>Package</th>
+    <th>Description</th>
+    <th>Author</th>
     <th>Version</th>
+    <th>License</th>
     <th>Date Created</th>
   </tr>
   <?php if($this->releases): ?>
@@ -21,7 +24,24 @@
             <?= $release->package()->name; ?>
           </a>
         </td>
+        <td><?= $release->description; ?></td>
+        <td>
+          <?php if(is_array($release->authors)): ?>
+            <ul>
+              <?php foreach($release->authors as $author): ?>
+                <li>
+                  <?= $author->name; ?> <?=
+                  isset($author->email) ?
+                    '&lt;' . $author->email . '&gt;' : ''; ?>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php else: ?>
+            -
+          <?php endif; ?>
+        </td>
         <td><?= $release->version; ?></td>
+        <td><?= $release->license; ?></td>
         <td><?= date('d M y H:i:s', strtotime($release->createdAt)); ?></td>
       </tr>
     <?php endforeach; ?>

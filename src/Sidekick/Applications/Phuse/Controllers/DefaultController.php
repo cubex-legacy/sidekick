@@ -18,7 +18,6 @@ use Sidekick\Applications\Phuse\Views\PackageView;
 use Sidekick\Applications\Phuse\Views\PhuseIndex;
 use Sidekick\Applications\Phuse\Views\RecentReleases;
 use Sidekick\Applications\Phuse\Views\Sidebar;
-use Sidekick\Components\Helpers\Paginator;
 use Sidekick\Components\Phuse\Mappers\Package;
 use Sidekick\Components\Phuse\Mappers\Release;
 

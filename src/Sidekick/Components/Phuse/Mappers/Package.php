@@ -14,6 +14,7 @@ class Package extends RecordMapper
   public $name;
   public $description;
   public $vendor;
+  public $library;
   /**
    * @datatype text
    */

@@ -21,13 +21,19 @@ class Release extends RecordMapper
    * @datatype text
    */
   public $authors;
+  /**
+   * @datatype text
+   */
+  public $require;
   public $license;
   public $vendor;
+  public $library;
 
   protected function _configure()
   {
     $this->_addCompositeAttribute("id", ['packageId', 'version']);
     $this->_setSerializer('authors');
+    $this->_setSerializer('require');
   }
 
   public function package()

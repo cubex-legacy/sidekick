@@ -17,6 +17,9 @@ class Release extends RecordMapper
   public $zipHash;
   public $name;
   public $description;
+  /**
+   * @datatype text
+   */
   public $authors;
   public $license;
   public $vendor;

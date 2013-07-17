@@ -13,6 +13,7 @@ class Package extends RecordMapper
 {
   public $name;
   public $description;
+  public $vendor;
   /**
    * @datatype text
    */
@@ -36,7 +37,6 @@ class Package extends RecordMapper
     $this->_setSerializer('rawComposer');
   }
 
-
   public function project()
   {
     return $this->belongsTo(new Project());
@@ -45,5 +45,13 @@ class Package extends RecordMapper
   public function releases()
   {
     return $this->hasMany(new Release());
+  }
+
+  public function release()
+  {
+    return Release::collection(['package_id' => $this->id()])->setOrderBy(
+             'created_at',
+             'DESC'
+           )->first();
   }
 }

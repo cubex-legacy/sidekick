@@ -25,7 +25,8 @@
     "bundl/debugger":            "*",
     "themed/sidekick":           "*",
     "phpseclib/phpseclib":       "*",
-    "ircmaxell/password-compat": "*"
+    "ircmaxell/password-compat": "*",
+    "apigen/apigen":             "2.8.0"
   },
   "autoload":          {
     "psr-0": {

@@ -121,7 +121,7 @@ class Header extends ViewModel
 
   private function _getMainNavState($path, $navGroup)
   {
-    $currentApp = substr($path, 1);
+    $currentApp = str_replace('/', '', $path);
     $state      = '';
     if(array_key_exists($currentApp, $navGroup))
     {

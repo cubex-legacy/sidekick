@@ -66,7 +66,7 @@ class Header extends ViewModel
         foreach($apps as $appPath => $app)
         {
           //active if path starts with appPath
-          $state = starts_with($path, "/$appPath", false) ? ' active' : '';
+          $state = $this->_getSubNavState($path, $appPath);
           $subNavItems->addElement(
             $state,
             ('/' . $appPath),
@@ -75,8 +75,9 @@ class Header extends ViewModel
           );
         }
 
+        $state = $this->_getMainNavState($path, $structure[$group]);
         $navItems->addElement(
-          'dropdown',
+          'dropdown' . ' ' . $state,
           'data-toggle="dropdown"',
           'dropdown-toggle',
           ('/' . $appPath),
@@ -89,9 +90,10 @@ class Header extends ViewModel
       }
       else
       {
+        $state   = $this->_getMainNavState($path, $structure[$group]);
         $appPath = key($apps);
         $navItems->addElement(
-          '',
+          $state,
           '',
           '',
           '/' . $appPath,
@@ -115,5 +117,29 @@ class Header extends ViewModel
         </ul>
       </div>'
     );
+  }
+
+  private function _getMainNavState($path, $navGroup)
+  {
+    $currentApp = substr($path, 1);
+    $state      = '';
+    if(array_key_exists($currentApp, $navGroup))
+    {
+      $state = 'active';
+    }
+
+    return $state;
+  }
+
+  /**
+   * @param $path
+   * @param $appPath
+   *
+   * @return string
+   */
+  private function _getSubNavState($path, $appPath)
+  {
+    $state = starts_with($path, "/$appPath", false) ? ' active' : '';
+    return $state;
   }
 }

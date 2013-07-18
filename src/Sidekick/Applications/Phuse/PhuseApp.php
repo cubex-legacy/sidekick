@@ -30,6 +30,11 @@ class PhuseApp extends BaseApp
     }
   }
 
+  public function getNavGroup()
+  {
+    return "Development";
+  }
+
   public function name()
   {
     return "Phuse"; //Phusing all the parts of your project together

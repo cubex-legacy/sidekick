@@ -21,8 +21,6 @@ class Generate extends CliCommand
    */
   public $versionId;
 
-  public $timeout = 10;
-
   public $docBase = "docs/";
 
   public function execute()
@@ -44,7 +42,6 @@ class Generate extends CliCommand
     echo $command . PHP_EOL;
 
     $process = new Process($command);
-    $process->setTimeout($this->timeout);
     $process->run();
   }
 }

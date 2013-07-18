@@ -148,4 +148,10 @@ class VersionHelper
 
     return $versionArr;
   }
+
+  public static function getVersionString($version)
+  {
+    return $version->major . '.' . $version->minor .
+    '.' . $version->build . '.' . $version->revision;
+  }
 }

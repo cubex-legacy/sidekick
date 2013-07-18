@@ -23,6 +23,11 @@ class BaseApp extends Application
     ];
   }
 
+  public function getNavGroup()
+  {
+    return null;
+  }
+
   public function defaultController()
   {
     return new BaseControl();

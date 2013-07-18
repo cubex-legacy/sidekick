@@ -26,6 +26,11 @@ class RepositoryApp extends BaseApp
     return new DefaultController();
   }
 
+  public function getNavGroup()
+  {
+    return "Configuration";
+  }
+
   public function getBundles()
   {
     //return [new DebuggerBundle()];

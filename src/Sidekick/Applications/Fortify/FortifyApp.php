@@ -26,6 +26,11 @@ class FortifyApp extends BaseApp
     return new FortifyController();
   }
 
+  public function getNavGroup()
+  {
+    return "Development";
+  }
+
   public function getBundles()
   {
     return [

@@ -26,6 +26,11 @@ class ProjectsApp extends BaseApp
     return "Projects Manager";
   }
 
+  public function getNavGroup()
+  {
+    return "Configuration";
+  }
+
   public function getBundles()
   {
     return [

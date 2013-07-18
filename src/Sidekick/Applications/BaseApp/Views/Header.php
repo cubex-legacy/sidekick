@@ -10,6 +10,7 @@
 namespace Sidekick\Applications\BaseApp\Views;
 
 use Cubex\Facade\Auth;
+use Cubex\View\Impart;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
@@ -27,7 +28,28 @@ class Header extends ViewModel
 
   public function render()
   {
+    $structure = [];
+
+    $apps = $this->_project->getApplications();
+    foreach($apps as $appPath => $app)
+    {
+      $group = $app->getNavGroup();
+      if($group !== null)
+      {
+        $structure[$group][$appPath] = $app;
+      }
+      else
+      {
+        $structure[$app->name()][$appPath] = $app;
+      }
+    }
+
     $navItems = new Partial(
+      '<li class="%s">
+        <a %s class="%s" href="%s" title="%s">%s</a>%s</li>'
+      , null, false);
+
+    $subNavItems = new Partial(
       '<li class="%s">
         <a data-animation="true" data-placement="bottom" href="%s" title="%s">
           %s
@@ -35,18 +57,49 @@ class Header extends ViewModel
       </li>'
     );
 
-    $apps = $this->_project->getApplications();
     $path = $this->request()->path();
-    foreach($apps as $appPath => $app)
+
+    foreach($structure as $group => $apps)
     {
-      //active if path starts with appPath
-      $state = starts_with($path, "/$appPath", false) ? 'active' : '';
-      $navItems->addElement(
-        $state,
-        ('/' . $appPath),
-        $app->description(),
-        $app->name()
-      );
+      if(count($apps) > 1)
+      {
+        foreach($apps as $appPath => $app)
+        {
+          //active if path starts with appPath
+          $state = starts_with($path, "/$appPath", false) ? ' active' : '';
+          $subNavItems->addElement(
+            $state,
+            ('/' . $appPath),
+            $app->description(),
+            $app->name()
+          );
+        }
+
+        $navItems->addElement(
+          'dropdown',
+          'data-toggle="dropdown"',
+          'dropdown-toggle',
+          ('/' . $appPath),
+          '',
+          $group . ' <b class="caret"></b>',
+          '<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>'
+        );
+
+        $subNavItems->clearElements();
+      }
+      else
+      {
+        $appPath = key($apps);
+        $navItems->addElement(
+          '',
+          '',
+          '',
+          '/' . $appPath,
+          $apps[$appPath]->description(),
+          $group,
+          ''
+        );
+      }
     }
 
     return new RenderGroup(
@@ -57,7 +110,7 @@ class Header extends ViewModel
       '</ul>',
       '<div class="nav-collapse collapse">
         <ul class="nav pull-right">
-          <li><a href="/profile">'.Auth::getRawUsername().'</a></li>
+          <li><a href="/profile">' . Auth::getRawUsername() . '</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </div>'

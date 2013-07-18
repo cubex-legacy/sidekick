@@ -26,6 +26,11 @@ class ConfiguratorApp extends BaseApp
     return new DefaultController();
   }
 
+  public function getNavGroup()
+  {
+    return "Deployment";
+  }
+
   public function getBundles()
   {
     return [

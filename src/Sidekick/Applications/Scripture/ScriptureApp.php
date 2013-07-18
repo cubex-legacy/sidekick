@@ -23,6 +23,11 @@ class ScriptureApp extends BaseApp
     return new ScriptureController();
   }
 
+  public function getNavGroup()
+  {
+    return "Documentation";
+  }
+
   public function getBundles()
   {
     return [

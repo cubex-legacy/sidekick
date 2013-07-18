@@ -26,6 +26,11 @@ class UsersApp extends BaseApp
     return "Users Manager";
   }
 
+  public function getNavGroup()
+  {
+    return "Configuration";
+  }
+
   public function getBundles()
   {
     return [

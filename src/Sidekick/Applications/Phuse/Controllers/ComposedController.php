@@ -8,11 +8,18 @@ namespace Sidekick\Applications\Phuse\Controllers;
 use Bundl\Debugger\DebuggerBundle;
 use Cubex\Core\Controllers\WebpageController;
 use Cubex\Core\Http\Response;
+use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Components\Phuse\Mappers\Package;
 use Sidekick\Components\Phuse\PhuseHelper;
 
-class ComposedController extends WebpageController
+class ComposedController extends BaseControl
 {
+
+  public function canProcess()
+  {
+    return true;
+  }
+
   public function renderIndex()
   {
     $versions    = $packages = $releases = [];
@@ -78,8 +85,7 @@ class ComposedController extends WebpageController
   public function getRoutes()
   {
     return [
-      '/download/(?P<package>.*)/(?P<version>[a-zA-Z0-9_\.\-]*)/[0-9]+/' => 'download',
-      '(.*)'                                                             => 'index'
+      '/download/(?P<package>.*)/(?P<version>[a-zA-Z0-9_\.\-]*)/[0-9]+/' => 'download'
     ];
   }
 }

@@ -14,12 +14,13 @@ class BaseControl extends WebpageController
 {
   protected $_titlePrefix;
 
-  public function __construct()
+  public function canProcess()
   {
     if(!\Auth::loggedIn())
     {
       Redirect::to('/')->now();
     }
+    return true;
   }
 
   public function preRender()

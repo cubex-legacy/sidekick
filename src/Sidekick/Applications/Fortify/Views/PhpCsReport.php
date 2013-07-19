@@ -22,14 +22,14 @@ class PhpCsReport extends TemplatedViewModel
   {
     if($filter !== null)
     {
-      list($filterType, $filter) = explode(':', $filter);
+      $filter = explode(':', $filter)[1];
     }
     else
     {
       $filter = 'all';
     }
-    $this->_file   = $file;
-    $this->_filter = $filter;
+    $this->_file    = $file;
+    $this->_filter  = $filter;
     $this->basePath = $basePath;
     $this->_setParsedData();
 
@@ -44,33 +44,56 @@ class PhpCsReport extends TemplatedViewModel
    */
   public function getErrorFiles()
   {
-
-    return $this->_parsedData[$this->_filter];
+    if(isset($this->_parsedData[$this->_filter]))
+    {
+      return $this->_parsedData[$this->_filter];
+    }
+    return [];
   }
 
   public function getErrorFilesCount()
   {
-    return count($this->_parsedData['all']);
+    if(isset($this->_parsedData['all']))
+    {
+      return count($this->_parsedData['all']);
+    }
+    return 0;
   }
 
   public function getErrorsCount()
   {
-    return $this->_parsedData['errorsCount'][$this->_filter];
+    if(isset($this->_parsedData['errorsCount'][$this->_filter]))
+    {
+      return $this->_parsedData['errorsCount'][$this->_filter];
+    }
+    return 0;
   }
 
   public function getCodeStandardErrorSummary()
   {
-    return $this->_parsedData['summary']['standard'];
+    if(isset($this->_parsedData['summary']['standard']))
+    {
+      return $this->_parsedData['summary']['standard'];
+    }
+    return [];
   }
 
   public function getCategoryErrorSummary()
   {
-    return $this->_parsedData['summary']['category'];
+    if(isset($this->_parsedData['summary']['category']))
+    {
+      return $this->_parsedData['summary']['category'];
+    }
+    return [];
   }
 
   public function getSubCategoryErrorSummary()
   {
-    return $this->_parsedData['summary']['subCategory'];
+    if(isset($this->_parsedData['summary']['subCategory']))
+    {
+      return $this->_parsedData['summary']['subCategory'];
+    }
+    return [];
   }
 
   protected function _setParsedData()

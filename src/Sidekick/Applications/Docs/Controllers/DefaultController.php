@@ -12,7 +12,6 @@ use Cubex\View\HtmlElement;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedView;
-use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
@@ -75,12 +74,23 @@ class DefaultController extends BaseControl
   {
     $projectId = $this->getInt('projectId');
     $versionId = $this->getInt('versionId');
-    return new HtmlElement(
+
+    $project = new Project($projectId);
+    $version = new Version($versionId);
+    $iframe  = new HtmlElement(
       'iframe',
       [
       'src'   => "/docs/$projectId/$versionId/",
       'style' => 'width:100%; height:800px; border:0;'
       ]
+    );
+
+    $versionString = VersionHelper::getVersionString($version);
+    return new RenderGroup(
+      "<h1>$project->name v$versionString
+      <a class='pull-right' title='Full Screen' href='/docs/$projectId/$versionId/'>
+      <i class='icon icon-fullscreen'></i></a></h1>",
+      $iframe
     );
   }
 

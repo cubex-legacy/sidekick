@@ -3,7 +3,6 @@
  * Author: oke.ugwu
  * Date: 17/07/13 16:10
  */
-
 namespace Sidekick\Cli\Docs;
 
 use Cubex\Cli\CliCommand;
@@ -21,6 +20,8 @@ class Generate extends CliCommand
    */
   public $versionId;
 
+  public $timeout = 120;
+
   public $docBase = "docs/";
 
   public function execute()
@@ -28,20 +29,23 @@ class Generate extends CliCommand
     $version = new Version($this->versionId);
 
     //generate docs
-    $vendor_dir = build_path(dirname(WEB_ROOT), 'vendor');
-    $command    = $vendor_dir . '/bin/apigen.php';
+    $vendorDir = build_path(dirname(WEB_ROOT), 'vendor');
+    $command   = $vendorDir . '/bin/apigen.php';
     if(System::isWindows())
     {
       $command .= '.bat';
     }
     $command .= " --source=";
     $command .= VersionHelper::sourceLocation($version);
-    $command .= ' --exclude "*/vendor/*"';
     $command .= " --destination={$this->docBase}$this->versionId";
+    $command .= " --skip-doc-path=";
+    $command .= VersionHelper::sourceLocation($version)."vendor\\*";
 
     echo $command . PHP_EOL;
 
     $process = new Process($command);
+    $process->setTimeout($this->timeout);
     $process->run();
+    $process->getOutput();
   }
 }

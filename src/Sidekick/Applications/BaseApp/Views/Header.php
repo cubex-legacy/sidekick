@@ -78,7 +78,7 @@ class Header extends ViewModel
         $state = $this->_getMainNavState($path, $structure[$group]);
         $navItems->addElement(
           'dropdown' . ' ' . $state,
-          'data-toggle="dropdown"',
+          'data-toggle="dropdown" data-hover="dropdown"',
           'dropdown-toggle',
           ('/' . $appPath),
           '',

@@ -1,0 +1,104 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Sam.Waters
+ * Date: 23/07/13
+ * Time: 11:09
+ * To change this template use File | Settings | File Templates.
+ */
+?>
+  <h1>Platform: <?php echo $this->_platform->name; ?></h1>
+<?php
+$nav = $this->getNav();
+echo $nav->render();
+if(Session::getFlash('msg'))
+{
+  echo "<div class='alert alert-" . Session::getFlash('msg')->type . "'>";
+  echo Session::getFlash('msg')->text;
+  echo "</div>";
+}
+if($this->_state == \Sidekick\Components\Diffuse\Enums\VersionState::REJECTED)
+{
+  echo "<div class='alert alert-error'>This version has been rejected</div>";
+}
+elseif(!$this->meetsApprovalRequirements())
+{
+  echo "<div class='alert alert-warning'>This platform does not have the required approval to be deployed to</div>";
+}
+?>
+  <table class="table table-bordered table-condensed">
+    <thead>
+    <tr>
+      <th>Approval Required From</th>
+      <th>Consistency Level</th>
+      <th>Required</th>
+      <th>Approval Received</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    $approvals = $this->getApprovalConfiguration();
+    foreach($approvals as $approval)
+    {
+      echo "<tr>";
+      echo "<td>" . $approval->role . "</td>";
+      echo "<td>" . $approval->consistency_level . "</td>";
+      echo "<td>";
+      echo ($approval->required) ? "Yes" : "No";
+      echo "</td>";
+      echo "<td>";
+      $approversGot    = $this->getApproverCount(
+        $this->_versionID,
+        $approval->role
+      );
+      $approversNeeded = $this->approversRequired(
+        $this->_projectID,
+        $approval->role,
+        $approval->consistency_level
+      );
+      echo ($approversGot >= $approversNeeded) ? "Yes" : "No";
+      echo " ($approversGot / $approversNeeded)";
+      echo "</td>";
+      echo "</tr>";
+    }
+    ?>
+    </tbody>
+  </table>
+  <div class="row-fluid">
+    <div class="span6">
+      <h2>Actions</h2>
+      <?php
+      $form = $this->getActionForm();
+      echo $form->render();
+      ?>
+    </div>
+    <div class="span6">
+      <h2>Deploy</h2>
+      <?php
+      $deploy = $this->getDeployForm();
+      echo $deploy->render();
+      ?>
+      <p><a
+          href="/diffuse/platform/<?php echo $this->_projectID . "/" . $this->_versionID . "/" . $this->_platformID; ?>/refresh">Refresh
+                                                                                                                                 Deploy
+                                                                                                                                 Status</a>
+      </p>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <h2>Action History</h2>
+<?php
+$actions = $this->getActionHistory();
+foreach($actions as $action)
+{
+  echo "<div class='comment'>";
+  echo "<strong>" . $action->user(
+    )->displayName . "</strong> (" . $action->user_role . ") <small>" . date(
+      "d M Y H:i",
+      strtotime($action->updatedAt)
+    ) . "</small>";
+  echo " <span class='label label-info'>" . $action->actionType . "</span>";
+  echo "<p>" . $action->comment . "</p>";
+  echo "</div>";
+}
+?>

@@ -20,14 +20,10 @@ class Platform extends RecordMapper
    * (builds must cover every commit contained in version)
    */
   public $requiredBuilds = [];
-  /**
-   * @var bool
-   * Require approval before upload can commence
-   */
-  public $requireApproval = true;
-
+  public $requiredPlatforms=[];
   protected function _configure()
   {
     $this->_setSerializer("requiredBuilds");
+    $this->_setSerializer("requiredPlatforms");
   }
 }

@@ -23,7 +23,7 @@
     <th>Name</th>
     <th>Description</th>
     <th>Required Build</th>
-    <th>Require Approval</th>
+    <th>Required Platforms</th>
     <th>Last Update</th>
     <th></th>
   </tr>
@@ -42,12 +42,14 @@
           ); ?>
         <?php endif; ?>
       </td>
-      <td><?= ($platform->requireApproval) ? 'Yes' : 'No'; ?></td>
+      <td><?php
+          echo implode(",",$platform->requiredPlatforms);
+      ?></td>
       <td><?= date('d/M/Y', strtotime($platform->updated_at)); ?></td>
       <td>
-        <a href="<?= $this->baseUri() . '/edit/' . $platform->id(); ?>"
+        <a href="<?= $this->baseUri() . '/edit/' . $platform->id; ?>"
            title="Edit"><i class="icon-edit"></i></a>
-        <a href="<?= $this->baseUri() . '/delete/' . $platform->id(); ?>"
+        <a href="<?= $this->baseUri() . '/delete/' . $platform->id; ?>"
            title="Delete"><i class="icon-trash"></i></a>
       </td>
     </tr>

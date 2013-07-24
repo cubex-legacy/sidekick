@@ -8,37 +8,29 @@ namespace Sidekick\Applications\Diffuse\Views;
 
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\Diffuse\Forms\ApprovalConfigurationForm;
+use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
+use Sidekick\Components\Diffuse\Mappers\Platform;
 
 class ApprovalConfigurationPage extends TemplatedViewModel
 {
-  /**
-   * @var $_form \Cubex\Form\Form
-   */
-  protected $_form;
-  protected $_config;
   public $projectId;
-  public $role;
 
-  public function __construct($form, $config, $projectId, $role = null)
+  public function __construct($projectId)
   {
-    $this->_config   = $config;
-    $this->_form     = $form;
     $this->projectId = $projectId;
-    $this->role      = $role;
   }
 
-  public function getConfig()
+  public function getPlatforms()
   {
-    return $this->_config;
+    $platforms = Platform::collection()->loadAll();
+    return ($platforms !== null) ? $platforms : [];
   }
 
-  public function form()
+  public function getConfigurations($platformID)
   {
-    return $this->_form;
-  }
-
-  public function editForm($projectId, $role)
-  {
-    return new ApprovalConfigurationForm($projectId, $role, '');
+    $configs = ApprovalConfiguration::collection()->loadWhere(
+      ["project_id" => $this->projectId, "platform_id" => $platformID]
+    );
+    return ($configs !== null) ? $configs : [];
   }
 }

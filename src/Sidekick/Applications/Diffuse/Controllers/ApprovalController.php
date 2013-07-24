@@ -8,9 +8,12 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
-use Sidekick\Applications\Diffuse\Forms\ApprovalConfigurationForm;
+use Cubex\Form\OptionBuilder;
+use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Views\ApprovalConfigurationPage;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
+use Sidekick\Components\Sidekick\Enums\Consistency;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class ApprovalController extends DiffuseController
 {
@@ -24,66 +27,71 @@ class ApprovalController extends DiffuseController
 
   public function renderIndex()
   {
-    $projectId = $this->getInt('projectId');
-    if($this->request()->postVariables())
-    {
-      $ac = new ApprovalConfiguration();
-      $ac->hydrate($this->request()->postVariables());
-      $ac->saveChanges();
-    }
-
-    $config = ApprovalConfiguration::collection(['project_id' => $projectId]);
-    $form   = new ApprovalConfigurationForm($projectId, null, '');
-    return new ApprovalConfigurationPage($form, $config, $projectId);
+    return new RenderGroup("<h1>Approval Configuration</h1>", "<p>Select a project on the left to see the approval configuration</p>");
   }
 
-  //  public function renderEdit()
-  //  {
-  //    $projectId = $this->getInt('projectId');
-  //    $role      = $this->getStr('role');
-  //
-  //    $config = ApprovalConfiguration::collection(['project_id' => $projectId]);
-  //    $form   = new ApprovalConfigurationForm(
-  //      $projectId, $role, ''
-  //    );
-  //    return new ApprovalConfigurationPage($form, $config, $projectId, $role);
-  //  }
-
-  public function postEdit()
+  public function renderApproval()
   {
-    $postData = $this->request()->postVariables();
+    $projectId = $this->getInt('projectId');
+    return new ApprovalConfigurationPage($projectId);
+  }
 
-    $ac                   = new ApprovalConfiguration(
-      [$postData['projectId'], $postData['role']]
+  public function renderConfigure()
+  {
+    $project  = $this->getInt("projectId");
+    $platform = $this->getInt("platform");
+    $acForm   = new Form("ApprovalConfiguration");
+    $acForm->addHiddenElement("project_id", $project);
+    $acForm->addHiddenElement("platform_id", $platform);
+    $acForm->addSelectElement(
+      "role",
+      (new OptionBuilder(new UserRole))->getOptions()
     );
-    $ac->hydrate($postData);
+    $acForm->addSelectElement(
+      "consistency_level",
+      (new OptionBuilder(new Consistency()))->getOptions()
+    );
+    $acForm->addSelectElement("required", ["No", "Yes"]);
+    $acForm->addSubmitElement("Create Configuration");
+    return new RenderGroup("<h1>Create Configuration</h1>", $acForm);
+  }
+
+  public function postConfigure()
+  {
+    $ac = new ApprovalConfiguration();
+    $ac->hydrate($this->request()->postVariables());
     $ac->saveChanges();
-    die(md5($postData['projectId'].'|'.$postData['role']));
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Configuration created successfully';
+    Redirect::to($this->baseUri() . "/" . $ac->projectId)->with('msg', $msg)
+    ->now();
   }
 
   public function renderDelete()
   {
-    $projectId = $this->getInt('projectId');
-    $role      = $this->getStr('role');
-
-    $ac = new ApprovalConfiguration([$projectId, $role]);
-    $ac->delete();
-
+    $platform = $this->getInt("platform");
+    $project  = $this->getInt("projectId");
+    $role     = $this->getStr("role");
+    $ac       = ApprovalConfiguration::collection()->loadOneWhere(
+      ["platform_id" => $platform, "project_id" => $project, "role" => $role]
+    );
+    if($ac !== null)
+    {
+      $ac->delete();
+    }
     $msg       = new \stdClass();
     $msg->type = 'success';
-    $msg->text = 'Config successfully deleted';
-    Redirect::to($this->baseUri() . '/' . $projectId)->with(
-      'msg',
-      $msg
-    )->now();
+    $msg->text = 'Configuration deleted successfully';
+    Redirect::to($this->baseUri() . '/' . $project)->with('msg', $msg)->now();
   }
 
   public function getRoutes()
   {
     return [
-      '/:projectId'              => 'index',
-      '/:projectId/:role/edit'   => 'edit',
-      '/:projectId/:role/delete' => 'delete',
+      '/:projectId'                        => 'approval',
+      '/:projectId/:platform'              => 'configure',
+      '/:projectId/:platform/:role/delete' => 'delete',
     ];
   }
 }

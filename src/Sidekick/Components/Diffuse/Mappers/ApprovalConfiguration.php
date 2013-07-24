@@ -6,14 +6,21 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Sidekick\Enums\Consistency;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class ApprovalConfiguration extends RecordMapper
 {
   protected $_idType = self::ID_COMPOSITE;
-
+  public $platformId;
   public $projectId;
+  /**
+   * @enumclass \Sidekick\Components\Users\Enums\UserRole
+   */
   public $role;
-
+  /**
+   * @enumclass \Sidekick\Components\Sidekick\Enums\Consistency
+   */
   public $consistencyLevel;
   public $required;
 
@@ -21,10 +28,17 @@ class ApprovalConfiguration extends RecordMapper
   {
     $this->_addCompositeAttribute(
       "id",
-      array(
-           "projectId",
-           "role",
-      )
+      ["platformId", "projectId", "role"]
     );
+  }
+
+  public function consistencyLevels()
+  {
+    return new Consistency();
+  }
+
+  public function roles()
+  {
+    return new UserRole();
   }
 }

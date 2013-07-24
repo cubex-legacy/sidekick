@@ -12,89 +12,62 @@
     <?= Session::getFlash('msg')->text; ?>
   </div>
 <?php endif; ?>
-
-<a class="btn btn-success pull-right" id="addConfigBtn"> <i
-    class="icon-plus icon-white"></i>
-  Add Config</a>
 <div class="clearfix"></div>
 <div style="margin-top:10px;"></div>
-<div class="well hide" id="approveForm">
-  <?php
-  echo $this->form()->open();
-  echo $this->form()->token();
-  echo $this->form()->formNameInput();
-  echo $this->form()->getElement('projectId');
-  ?>
-  <table>
-    <tr>
-      <td>Role</td>
-      <td>
-        <?= $this->form()->getElement('role') ?>
-      </td>
-    </tr>
-    <tr>
-      <td>Consisteny Level</td>
-      <td>
-        <?= $this->form()->getElement('consistencyLevel') ?>
-      </td>
-    </tr>
-    <tr>
-      <td>Required</td>
-      <td>
-        <?= $this->form()->getElement('required') ?>
-      </td>
-    </tr>
-  </table>
-  <?= $this->form()->getElement('submit') ?>
-  <button class="btn" id="cancelBtn">Cancel</button>
-  <?= $this->form()->close() ?>
-</div>
-
 <table class="table table-bordered table-hover">
+  <thead>
   <tr>
+    <th>Platform</th>
     <th>Role</th>
-    <th>Consistency Level</th>
+    <th>Consistency</th>
     <th>Required</th>
     <th></th>
   </tr>
-  <?php foreach($this->getConfig() as $config): ?>
-    <?php $id = md5($config->id()); ?>
-    <?php $editForm = $this->editForm($config->projectId, $config->role); ?>
-    <tr>
-      <td>
-        <div class="role<?= $id ?>">
-          <?= ucfirst($config->role) ?>
-        </div>
-        <div class="role<?= $id ?> hide">
-          <?= $editForm->getElement('role') ?>
-        </div>
-      </td>
-      <td>
-        <div class="<?= $id ?> <?= $id ?>">
-          <?= strtoupper($config->consistencyLevel) ?>
-        </div>
-        <div class="<?= $id ?> hide">
-          <?=
-          $editForm->getElement('consistencyLevel')
-          ->addAttribute('class', 'input-small') ?>
-        </div>
-      </td>
-      <td>
-        <div class="<?= $id ?> <?= $id ?>">
-          <?= ($config->required) ? 'Yes' : 'No' ?>
-        </div>
-        <div class="<?= $id ?> hide">
-          <?= $editForm->getElement('required') ?>
-        </div>
-      </td>
-      <td>
-        <a title="Edit" onclick="$('.<?= $id ?>').toggle();"><i
-            class="icon-edit"></i></a>
-        <a
-          href="/diffuse/approval/<?= $this->projectId . '/' . $config->role ?>/delete">
-          <i class="icon icon-trash"></i>
-        </a>
-      </td>
-    </tr>
-  <?php endforeach; ?>
+  </thead>
+  <tbody>
+  <?php
+  $platforms = $this->getPlatforms();
+  foreach($platforms as $platform)
+  {
+    $ac = $this->getConfigurations($platform->id);
+    $c  = count($ac);
+    echo "<tr><td";
+    if($c > 1)
+    {
+      echo " rowspan='$c'";
+    }
+    echo ">" . $platform->name . "</td>";
+    if($c == 0)
+    {
+      echo "<td colspan='3'>No configurations exists for this platform</td>";
+      echo "<td><a href='/diffuse/approval/" . $this->projectId . "/" . $platform->id . "' title='Create'><i class='icon-plus'></i></a></td>";
+      echo "</tr>";
+    }
+    else
+    {
+      $i = 0;
+      foreach($ac as $a)
+      {
+        echo "<td>" . $a->role . "</td>";
+        echo "<td>" . $a->consistency_level . "</td>";
+        echo "<td>";
+        echo ($a->required) ? "Yes" : "No";
+        echo "</td>";
+        echo "<td>";
+        if($i == 0)
+        {
+          echo "<a href='/diffuse/approval/" . $this->projectId . "/" . $platform->id . "' title='Create'><i class='icon-plus'></i></a> ";
+        }
+        echo "<a href='" . $this->projectId . "/" . $platform->id . "/" . $a->role . "/delete' title='Delete'><i class='icon-trash'></i></a></td>";
+        echo "</tr>";
+        if($i < ($c - 1))
+        {
+          echo "<tr>";
+        }
+        $i++;
+      }
+    }
+  }
+  ?>
+  </tbody>
 </table>

@@ -11,6 +11,8 @@ use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Diffuse\Enums\VersionNumberType;
 use Sidekick\Components\Diffuse\Enums\VersionType;
+use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 
 class VersionsList extends TemplatedViewModel
 {
@@ -20,7 +22,7 @@ class VersionsList extends TemplatedViewModel
 
   public function __construct($versions, $projectId)
   {
-    $this->_versions = $versions;
+    $this->_versions  = $versions;
     $this->_projectId = $projectId;
   }
 
@@ -60,5 +62,21 @@ class VersionsList extends TemplatedViewModel
       );
     }
     return $this->_createVersionForm;
+  }
+
+  public function getStates($versionID)
+  {
+    $states = PlatformVersionState::collection()->loadWhere(
+      [
+      "version_id" => $versionID
+      ]
+    );
+    return $states;
+  }
+
+  public function getPlatformName($id)
+  {
+    $platform=Platform::collection()->loadOneWhere(["id"=>$id]);
+    return ($platform==null) ? "" : $platform->name;
   }
 }

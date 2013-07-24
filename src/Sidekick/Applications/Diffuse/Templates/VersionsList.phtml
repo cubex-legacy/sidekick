@@ -6,6 +6,15 @@
  * @var $this \Sidekick\Applications\Diffuse\Views\VersionsList
  */
 ?>
+<style type="text/css">
+  .state { font-weight: bold; }
+
+  .state-approved { color: green; }
+
+  .state-pending { color: blue; }
+
+  .state-rejected { color: red; }
+</style>
 <!--might be better to pass basePath instead of project id-->
 <h1>Versions</h1>
 <p class="pull-right">
@@ -48,7 +57,19 @@
             <?= $v->major . '.' . $v->minor . '.' . $v->build . '.' . $v->revision ?>
           </a>
         </td>
-        <td><?= $v->versionState; ?></td>
+        <td><?php
+          $states = $this->getStates($v->id());
+          if($states->count() == 0)
+          {
+            echo "Not reviewed on any platform";
+          }
+          foreach($states as $state)
+          {
+            echo $this->getPlatformName(
+                $state->platformId
+              ) . ": <span class='state state-" . $state->state . "'>" . $state->state . "</span><br />";
+          }
+          ?></td>
         <td><?= substr($v->fromCommitHash, 0, 8); ?> - <?=
           substr(
             $v->toCommitHash,

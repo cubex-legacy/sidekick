@@ -7,16 +7,18 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
+use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
+Use Sidekick\Applications\Diffuse\Views\HomePage;
 use Sidekick\Applications\Diffuse\Views\VersionDetails;
+use Sidekick\Applications\Diffuse\Views\VersionHistory;
 use Sidekick\Applications\Diffuse\Views\VersionsList;
 use Sidekick\Components\Diffuse\Enums\VersionState;
-use Sidekick\Components\Diffuse\Helpers\ApprovalConfigurationHelper;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
-use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -27,8 +29,7 @@ class DefaultController extends DiffuseController
 {
   public function renderIndex()
   {
-    $projectId = $this->getInt('projectId');
-    echo "<h1>Code Distributions</h1>";
+    return $this->createView(new HomePage());
   }
 
   public function renderVersions()
@@ -164,82 +165,121 @@ class DefaultController extends DiffuseController
   {
     $projectId = $this->getInt('projectId');
     $versionId = $this->getInt('versionId');
-    $version   = new Version($versionId);
-    $actions   = Action::collection(['version_id' => $versionId]);
-    $platforms = Platform::collection();
-
-    /**
-     * If Version has been approved, show ALL platforms
-     * If Version has not been approved, show only platforms that do not
-     * require approval for deployment
-     */
-    if($version->versionState == VersionState::APPROVED)
-    {
-      $platforms = $platforms->loadAll();
-    }
-    if($version->versionState != VersionState::APPROVED)
-    {
-      $platforms = $platforms->loadWhere(['require_approval' => false]);
-    }
-
-    $deployments = Deployment::collection(['version_id' => $versionId])
-                   ->setOrderBy('created_at', 'DESC');
-
-    $projectUsers = ProjectUser::collection(
-      ['project_id' => $projectId]
-    );
-
-    $autoApprove = ApprovalConfigurationHelper::isAutoApproveReady(
-      $actions,
-      $projectId
-    );
-
-    return new VersionDetails(
-      $version, $actions, $platforms, $deployments, $projectUsers, $autoApprove
-    );
-  }
-
-  public function renderAddComment()
-  {
-    $projectId = $this->getInt('projectId');
-    $versionId = $this->getInt('versionId');
-    $postData  = $this->request()->postVariables();
-
-    $action = new Action();
-    $action->hydrate($postData);
-    $action->saveChanges();
-
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Comment added';
-    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $versionId)
-    ->with('msg', $msg)->now();
+    return new VersionDetails($projectId, $versionId, $this->getNav());
   }
 
   public function renderDeploy()
   {
-    $projectId = $this->getInt('projectId');
-    $versionId = $this->getInt('versionId');
-
+    $projectId  = $this->getInt('projectId');
+    $versionId  = $this->getInt('versionId');
+    $platformId = $this->getInt('platform');
+    //Is it allowed?
+    $pvs = PlatformVersionState::collection()->loadOneWhere(
+      ["platform_id" => $platformId, "version_id" => $versionId]
+    );
+    if($pvs == null || $pvs->state != VersionState::APPROVED)
+    {
+      $msg       = new \stdClass();
+      $msg->type = 'error';
+      $msg->text = 'Version is not approved on this platform';
+      Redirect::to(
+        $this->baseUri(
+        ) . '/platform/' . $projectId . '/' . $versionId . '/' . $platformId
+      )
+      ->with('msg', $msg)->now();
+    }
     $deployment = new Deployment();
-    $deployment->hydrate($this->request()->postVariables());
+    $deployment->hydrate(
+      [
+      "version_id"  => $versionId,
+      "platform_id" => $platformId,
+      "user_id"     => \Auth::user()->getId(),
+      "project_id"  => $projectId,
+      "deployed_on" => date("Y-m-d"),
+      "comment"     => ""
+      ]
+    );
     $deployment->saveChanges();
 
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Version deployed successfully';
-    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $versionId)
+    Redirect::to(
+      $this->baseUri(
+      ) . '/platform/' . $projectId . '/' . $versionId . '/' . $platformId
+    )
     ->with('msg', $msg)->now();
+  }
+
+  public function renderVersionChangeLog()
+  {
+    $render = new RenderGroup();
+    $render->add("<h1>Change Log</h1>");
+    $render->add($this->getNav("changelog"));
+    $version = Version::collection()->loadOneWhere(
+      ["id" => $this->getInt("versionId")]
+    );
+    $form    = new Form("changelog");
+    $form->addHiddenElement("version_id", $this->getInt("versionId"));
+    $form->addTextAreaElement("change_log", $version->changeLog);
+    $form->addSubmitElement("Update Change Log");
+    $form->getElement("change_log")->addAttribute(
+      "style",
+      "width:100%; height:100px;"
+    );
+    $render->add($form);
+    return $render;
+  }
+
+  public function renderVersionHistory()
+  {
+    return new VersionHistory($this->getInt("versionId"), $this->getNav(
+      "history"
+    ));
+  }
+
+  public function getNav($page = "")
+  {
+    $project = $this->getInt("projectId");
+    $version = $this->getInt("versionId");
+    $active  = ["class" => "active"];
+    $list    = new HTMLElement("ul", ["class" => "nav nav-tabs"]);
+    $list->nestElement(
+      "li",
+      ($page == "") ? $active : [],
+      "<a href='/diffuse/$project/$version/'>Version Details</a>"
+    );
+    $list->nestElement(
+      "li",
+      ($page == "changelog") ? $active : [],
+      "<a href='/diffuse/$project/$version/changelog'>Change Log</a>"
+    );
+    $list->nestElement(
+      "li",
+      ($page == "history") ? $active : [],
+      "<a href='/diffuse/$project/$version/history'>Version History</a>"
+    );
+    $platforms = Platform::collection()->loadAll();
+    foreach($platforms as $platform)
+    {
+      $list->nestElement(
+        "li",
+        ($page == $platform->name) ? $active : [],
+        "<a href='/diffuse/platform/$project/$version/" . $platform->id . "'>" . $platform->name . "</a>"
+      );
+    }
+    return $list;
   }
 
   public function getRoutes()
   {
     return [
-      '/create-version'                    => 'createVersion',
-      '/:projectId'                        => 'versions',
-      '/:projectId/:versionId@num'         => 'versionDetails',
-      '/:projectId/:versionId@num/comment' => 'addComment',
-      '/:projectId/:versionId@num/deploy'  => 'deploy',
+      '/create-version'                             => 'createVersion',
+      '/:projectId'                                 => 'versions',
+      '/:projectId/:versionId@num'                  => 'versionDetails',
+      '/:projectId/:versionId@num/changelog'        => 'versionChangeLog',
+      '/:projectId/:versionId@num/history'          => 'versionHistory',
+      '/:projectId/:versionId@num/:platform/deploy' => 'deploy'
     ];
   }
 }

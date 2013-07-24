@@ -18,6 +18,7 @@ class DiffuseApp extends BaseApp
       'platforms/(.*)' => 'PlatformController',
       'hosts/(.*)'     => 'HostsController',
       'approval/(.*)'  => 'ApprovalController',
+      'platform/(.*)'  => 'VersionPlatformController'
     ];
   }
 

@@ -23,8 +23,10 @@ class ScriptureController extends BaseControl
     if($id !== null)
     {
       $source = (new Project($id))->repository();
-      if($source==null) //Can be null, so will not have ->exists()!
+      if($source == null) //Can be null, so will not have ->exists()!
+      {
         return new TemplatedView("Failure", $this);
+      }
       if($source->exists())
       {
         $this->setTitle(Strings::humanize($source->name));

@@ -12,136 +12,61 @@ use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Enums\VersionType;
+use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
+use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class VersionDetails extends TemplatedViewModel
 {
+  protected $_nav;
+  protected $_projectID;
   /**
    * @var $_version \Sidekick\Components\Diffuse\Mappers\Version
    */
-  protected $_version;
-  /**
-   * @var $_version \Sidekick\Components\Diffuse\Mappers\Platform[]
-   */
-  protected $_platforms;
-  protected $_actions;
-  protected $_actionForm;
-  protected $_deployForm;
-  protected $_deployments;
-  protected $_projectUsers;
-  public $autoApprove;
+  protected $_versionID;
 
-  public function __construct(
-    $version, $actions, $platforms, $deployments, $projectUsers, $autoApprove
-  )
+  public function __construct($projectID, $versionID, $nav)
   {
-    $this->_version      = $version;
-    $this->_actions      = $actions;
-    $this->_platforms    = $platforms;
-    $this->_deployments  = $deployments;
-    $this->_projectUsers = $projectUsers;
-    $this->autoApprove   = $autoApprove;
+    $this->_projectID = $projectID;
+    $this->_versionID = $versionID;
+    $this->_nav       = $nav;
   }
 
   public function getVersion()
   {
-    return $this->_version;
+    $version = Version::collection()->loadOneWhere(["id" => $this->_versionID]);
+    return $version;
   }
 
-  public function getVersionTypeName()
+  public function getUsers()
   {
-    return VersionType::constFromValue($this->_version->type);
-  }
-
-  public function getActions()
-  {
-    return $this->_actions;
+    $projectUsers = ProjectUser::collection(
+      ['project_id' => $this->_projectID]
+    );
+    return $projectUsers;
   }
 
   public function getPlatforms()
   {
-    return $this->_platforms;
+    $platforms = Platform::collection()->loadAll();
+    return $platforms;
   }
 
-  public function getDeployments()
+  public function getStateOnPlatform($platformID)
   {
-    return $this->_deployments;
+    $pvs = PlatformVersionState::collection()->loadOneWhere(
+      [
+      "platform_id" => $platformID,
+      "version_id"  => $this->_versionID
+      ]
+    );
+    return ($pvs == null) ? "" : $pvs->state;
   }
 
-  public function getProjectMembers()
+  public function getNav()
   {
-    return $this->_projectUsers;
-  }
-
-  public function actionForm()
-  {
-    if($this->_actionForm === null)
-    {
-      $this->_actionForm = new Form(
-        'actionForm',
-        '/diffuse/' . $this->_version->projectId . '/' . $this->_version->id(
-        ) . '/comment'
-      );
-      $this->_actionForm->setDefaultElementTemplate('{{input}}');
-      $this->_actionForm->addSelectElement(
-        'actionType',
-        (new OptionBuilder(new ActionType))->getOptions()
-      );
-      $this->_actionForm->addTextareaElement('comment');
-      $this->_actionForm->addHiddenElement('versionId', $this->_version->id());
-      $this->_actionForm->addHiddenElement('userId', Auth::user()->getId());
-      $this->_actionForm->addSubmitElement('Submit');
-
-      //add custom attributes
-      $this->_actionForm->getElement('comment')->addAttribute(
-        'style',
-        'width:98%'
-      )->setRequired(true);
-      $this->_actionForm->getElement('submit')->addAttribute(
-        'class',
-        'btn btn-primary'
-      );
-    }
-
-    return $this->_actionForm;
-  }
-
-  public function deployForm()
-  {
-    if($this->_deployForm === null)
-    {
-      $this->_deployForm = new Form(
-        'actionForm',
-        '/diffuse/' . $this->_version->projectId . '/' . $this->_version->id(
-        ) . '/deploy'
-      );
-      $this->_deployForm->setDefaultElementTemplate('{{input}}');
-      $this->_deployForm->addSelectElement(
-        'platformId',
-        $this->_platforms->getKeyPair('id', 'name')
-      );
-      $this->_deployForm->addTextareaElement('comment');
-
-      $this->_deployForm->addHiddenElement('userId', Auth::user()->getId());
-      $this->_deployForm->addHiddenElement(
-        'projectId',
-        $this->_version->projectId
-      );
-      $this->_deployForm->addHiddenElement('versionId', $this->_version->id());
-      $this->_deployForm->addSubmitElement('Deploy!');
-
-      //add custom attributes
-      $this->_deployForm->getElement('comment')->addAttribute(
-        'style',
-        'width:98%'
-      )->addAttribute('placeholder', 'Add Comment Here')->setRequired(true);
-
-      $this->_deployForm->getElement('submit')->addAttribute(
-        'class',
-        'btn btn-primary'
-      );
-    }
-
-    return $this->_deployForm;
+    return $this->_nav;
   }
 }

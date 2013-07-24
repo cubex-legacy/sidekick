@@ -6,140 +6,73 @@
  * @var $this \Sidekick\Applications\Diffuse\Views\VersionDetails
  */
 ?>
-<style type="text/css">
-  .comment {
-    background-color: #eee;
-    margin-bottom:    10px;
-    padding:          10px;
-  }
-</style>
-
-<h1>Version Details: 1.0.0.0</h1>
-<?php if($this->autoApprove): ?>
-  <p class="alert alert-success">
-    Based on the
-    <a href="/diffuse/approval/<?= $this->getVersion()->projectId ?>">
-      Appproval Configuration</a>, sufficient actions have been taken to
-    automatically approve this version
-  </p>
-<?php endif; ?>
+<h1>Version Details</h1>
+<?php
+$nav = $this->getNav();
+echo $nav->render();
+$version = $this->getVersion();
+$users = $this->getUsers();
+?>
 <div class="well row-fluid">
   <div class="span6">
-    <p>Major: <?= $this->getVersion()->major ?></p>
+    <p>Major: <?= $version->major ?></p>
 
-    <p>Minor: <?= $this->getVersion()->minor ?></p>
+    <p>Minor: <?= $version->minor ?></p>
 
-    <p>Build: <?= $this->getVersion()->build ?></p>
+    <p>Build: <?= $version->build ?></p>
 
-    <p>Revision: <?= $this->getVersion()->revision ?></p>
+    <p>Revision: <?= $version->revision ?></p>
 
-    <p>Type: <?= $this->getVersionTypeName() ?></p>
+    <p>Type: <?= $version->type ?></p>
   </div>
   <div class="span6">
-    <p>Status: <?= $this->getVersion()->versionState ?></p>
-
     <p>Commit Range:
-      <?= substr($this->getVersion()->fromCommitHash, 0, 8) ?> -
-      <?= substr($this->getVersion()->toCommitHash, 0, 8) ?>
+      <?= substr($version->fromCommitHash, 0, 8) ?> -
+      <?= substr($version->toCommitHash, 0, 8) ?>
     </p>
 
     <p>Last Updated: <?=
       date(
         'd M Y',
-        strtotime($this->getVersion()->updatedAt)
+        strtotime($version->updatedAt)
       ) ?></p>
 
     <div>
       <strong>Members</strong>
       <ul>
-        <?php foreach($this->getProjectMembers() as $m): ?>
-          <li><?= $m->user()->displayName; ?></li>
+        <?php foreach($users as $u): ?>
+          <li><?= $u->user()->displayName; ?></li>
         <?php endforeach; ?>
       </ul>
     </div>
-
   </div>
   <div class="clearfix"></div>
 </div>
-
-<div class="well">
-  <h2>Change Log</h2>
-  <textarea name="" id=""
-            style="width:100%; height:100px; padding:0;"><?=
-    $this->getVersion()->changeLog ?></textarea>
-  <button class="btn btn-primary">Save</button>
-</div>
-
-<div class="">
-  <h2>Audits</h2>
-
-  <?php foreach($this->getActions() as $action): ?>
-    <div class="comment">
-      <strong><?= $action->user()->displayName ?>:</strong>
-      <span class="label label-info"><?= $action->actionType ?></span>
-      <div>
-        <?= $action->comment; ?>
-      </div>
-    </div>
-  <?php endforeach; ?>
-  <div class="comment">
-    <?php
-    echo $this->actionForm()->open();
-    echo $this->actionForm()->token();
-    echo $this->actionForm()->formNameInput();
-    echo $this->actionForm()->getElement('versionId');
-    echo $this->actionForm()->getElement('userId');
-    ?>
-    <strong>Drop a Comment:</strong>
-
-    <div>
-      <?= $this->actionForm()->getElement('actionType')->setLabel('Action:') ?>
-    </div>
-    <?= $this->actionForm()->getElement('comment') ?>
-    <?= $this->actionForm()->getElement('submit') ?>
-    <?= $this->actionForm()->close() ?>
-  </div>
-
-</div>
-
-
-<div class="well">
-  <h2>Deploy</h2>
+<h2>Status</h2>
+<table class="table table-bordered table-condensed">
+  <thead>
+  <tr>
+    <th>Platform</th>
+    <th>State</th>
+  </tr>
+  </thead>
+  <tbody>
   <?php
-  echo $this->deployForm()->open();
-  echo $this->deployForm()->token();
-  echo $this->deployForm()->formNameInput();
-  echo $this->deployForm()->getElement('versionId');
-  echo $this->deployForm()->getElement('userId');
-  echo $this->deployForm()->getElement('projectId');
+  $platforms = $this->getPlatforms();
+  foreach($platforms as $platform)
+  {
+    echo "<tr><td>" . $platform->name . "<//td><td>";
+    $state = $this->getStateOnPlatform($platform->id);
+    if($state == "")
+    {
+      echo "Not deployed on this platform";
+    }
+    else
+    {
+      echo $state;
+    }
+    echo "</td></tr>";
+  }
   ?>
-
-  <?= $this->deployForm()->getElement('platformId') ?>
-  <?= $this->deployForm()->getElement('comment') ?>
-  <?= $this->deployForm()->getElement('submit') ?>
-  <?= $this->deployForm()->close() ?>
-
-  <h2>Deployment History</h2>
-  <?php if($this->getDeployments()->hasMappers()): ?>
-    <table class="table table-bordered table-condensed" style="font-size:11px;">
-      <tr>
-        <th>Date</th>
-        <th>Deployed By</th>
-        <th>Platform</th>
-        <th>Comment</th>
-        <th>Completed</th>
-      </tr>
-      <?php foreach($this->getDeployments() as $d): ?>
-        <tr>
-          <td><?= date('d M Y H:i:s', strtotime($d->createdAt)) ?></td>
-          <td><?= $d->user()->display_name ?></td>
-          <td><?= $d->platform()->name ?></td>
-          <td><?= $d->comment ?></td>
-          <td><?= ($d->completed) ? 'Yes' : 'No' ?></td>
-        </tr>
-      <?php endforeach; ?>
-    </table>
-  <?php else: ?>
-    <p>This version has never been deployed.</p>
-  <?php endif; ?>
-</div>
+  </tbody>
+</table>

@@ -15,26 +15,26 @@
 <?php endif; ?>
 <div class="well row-fluid">
   <div class="span6">
-    <p>Major: <?= $version->major ?></p>
+    <p>Major: <?= $this->getVersion()->major ?></p>
 
-    <p>Minor: <?= $version->minor ?></p>
+    <p>Minor: <?= $this->getVersion()->minor ?></p>
 
-    <p>Build: <?= $version->build ?></p>
+    <p>Build: <?= $this->getVersion()->build ?></p>
 
-    <p>Revision: <?= $version->revision ?></p>
+    <p>Revision: <?= $this->getVersion()->revision ?></p>
 
-    <p>Type: <?= $version->type ?></p>
+    <p>Type: <?= $this->getVersion()->type ?></p>
   </div>
   <div class="span6">
     <p>Commit Range:
-      <?= substr($version->fromCommitHash, 0, 8) ?> -
-      <?= substr($version->toCommitHash, 0, 8) ?>
+      <?= substr($this->getVersion()->fromCommitHash, 0, 8) ?> -
+      <?= substr($this->getVersion()->toCommitHash, 0, 8) ?>
     </p>
 
     <p>Last Updated: <?=
       date(
         'd M Y',
-        strtotime($version->updatedAt)
+        strtotime($this->getVersion()->updatedAt)
       ) ?></p>
 
     <div>

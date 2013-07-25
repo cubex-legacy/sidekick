@@ -20,6 +20,7 @@ use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 use Sidekick\Components\Sidekick\Enums\Consistency;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class VersionPlatform extends TemplatedViewModel
 {
@@ -97,6 +98,7 @@ class VersionPlatform extends TemplatedViewModel
     }
     else
     {
+      $form->addHiddenElement("role", UserRole::USER);
       $availableActions = ["comment" => "Comment"];
     }
     $form->addSelectElement(

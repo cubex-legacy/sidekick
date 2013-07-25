@@ -11,7 +11,12 @@
 $nav = $this->getNav();
 echo $nav->render();
 $version = $this->getVersion();
-$users = $this->getUsers();
+if(Session::getFlash('msg'))
+{
+  echo "<div class='alert alert-" . Session::getFlash('msg')->type . "'>";
+  echo Session::getFlash('msg')->text;
+  echo "</div>";
+}
 ?>
 <div class="well row-fluid">
   <div class="span6">
@@ -40,7 +45,7 @@ $users = $this->getUsers();
     <div>
       <strong>Members</strong>
       <ul>
-        <?php foreach($users as $u): ?>
+        <?php foreach($this->getUsers() as $u): ?>
           <li><?= $u->user()->displayName; ?></li>
         <?php endforeach; ?>
       </ul>
@@ -57,22 +62,11 @@ $users = $this->getUsers();
   </tr>
   </thead>
   <tbody>
-  <?php
-  $platforms = $this->getPlatforms();
-  foreach($platforms as $platform)
-  {
-    echo "<tr><td>" . $platform->name . "<//td><td>";
-    $state = $this->getStateOnPlatform($platform->id);
-    if($state == "")
-    {
-      echo "Not deployed on this platform";
-    }
-    else
-    {
-      echo $state;
-    }
-    echo "</td></tr>";
-  }
-  ?>
+  <?php foreach($this->getPlatforms() as $platform): ?>
+    <tr>
+      <td><?= $platform->name ?></td>
+      <td><?= $this->getStateOnPlatform($platform->id); ?></td>
+    </tr>
+  <?php endforeach; ?>
   </tbody>
 </table>

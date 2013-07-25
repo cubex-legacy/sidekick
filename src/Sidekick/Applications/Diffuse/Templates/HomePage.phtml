@@ -22,11 +22,7 @@
   </thead>
   <tbody>
   <?php
-  /*
-   * Display formatted rows for a given group
-   */
-  function displayRows($versions)
-  {
+    $versions=$this->getAttentionVersions();
     foreach($versions as $version)
     {
       echo "<tr>";
@@ -36,11 +32,7 @@
       echo "<td>" . $version->version_state . "</td>";
       echo "<td>" . date("d/M/Y", strtotime($version->updated_at)) . "</td>";
       echo "</tr>";
-    }
   }
-
-  //$versions=$this->getAllVersions();
-  displayRows($this->getAttentionVersions());
   ?>
   </tbody>
 </table>

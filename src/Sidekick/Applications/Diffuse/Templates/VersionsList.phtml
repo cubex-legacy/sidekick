@@ -30,7 +30,6 @@
 <div class="well">
   <strong>Create New Version:</strong>
   <?php
-  echo $this->createVersionForm()->open();
   echo $this->createVersionForm()->token();
   echo $this->createVersionForm()->formNameInput();
   ?>
@@ -49,36 +48,35 @@
     <th>Created</th>
     <th>Last Updated</th>
   </tr>
-  <?php if($this->getVersions()): ?>
-    <?php foreach($this->getVersions() as $v): ?>
-      <tr class="">
-        <td>
-          <a href="/diffuse/<?= $this->_projectId ?>/<?= $v->id() ?>">
-            <?= $v->major . '.' . $v->minor . '.' . $v->build . '.' . $v->revision ?>
-          </a>
-        </td>
-        <td><?php
-          $states = $this->getStates($v->id());
-          if($states->count() == 0)
-          {
-            echo "Not reviewed on any platform";
-          }
-          foreach($states as $state)
-          {
-            echo $this->getPlatformName(
-                $state->platformId
-              ) . ": <span class='state state-" . $state->state . "'>" . $state->state . "</span><br />";
-          }
-          ?></td>
-        <td><?= substr($v->fromCommitHash, 0, 8); ?> - <?=
-          substr(
-            $v->toCommitHash,
-            0,
-            8
-          ); ?></td>
-        <td><?= date('d M y', strtotime($v->createdAt)); ?></td>
-        <td><?= date('d M y H:i:s', strtotime($v->updatedAt)); ?></td>
-      </tr>
-    <?php endforeach; ?>
-  <?php endif; ?>
+  <?php foreach ($this->getVersions() as $v): ?>
+  <tr class="">
+    <td>
+      <a href="/diffuse/<?= $this->_projectId . "/" . $v->id() ?>">
+        <?= $v->major . '.' . $v->minor . '.' . $v->build . '.' . $v->revision ?>
+      </a>
+    </td>
+    <td>
+      <?php
+      $states = $this->getStates($v->id());
+      if ($states->count() == 0):
+      ?>
+        Not reviewed on any platform
+      <?
+      else:
+      foreach ($states as $state):
+      ?>
+      <?= $this->getPlatformName($state->platformId) ?>:
+      <span class="state state-<?= $state->state ?>"><?= $state->state ?></span><br/>
+      <?php endforeach; ?>
+    </td>
+    <td>
+      <?= substr($v->fromCommitHash, 0, 8); ?> - <?= substr($v->toCommitHash, 0, 8); ?>
+    </td>
+    <td><?= date('d M y', strtotime($v->createdAt)); ?></td>
+    <td><?= date('d M y H:i:s', strtotime($v->updatedAt)); ?></td>
+  </tr>
+  <?php
+    endif;
+    endforeach;
+  ?>
 </table>

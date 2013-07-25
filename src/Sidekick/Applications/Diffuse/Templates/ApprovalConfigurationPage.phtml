@@ -6,6 +6,9 @@
  * @var $this \Sidekick\Applications\Diffuse\Views\ApprovalConfigurationPage
  */
 ?>
+<style type="text/css">
+  tr.header { background-color:lightgrey; }
+</style>
 <h1>Approval Configuration</h1>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
@@ -17,7 +20,6 @@
 <table class="table table-bordered table-hover">
   <thead>
   <tr>
-    <th>Platform</th>
     <th>Role</th>
     <th>Consistency</th>
     <th>Required</th>
@@ -25,49 +27,32 @@
   </tr>
   </thead>
   <tbody>
-  <?php
-  $platforms = $this->getPlatforms();
-  foreach($platforms as $platform)
-  {
-    $ac = $this->getConfigurations($platform->id);
-    $c  = count($ac);
-    echo "<tr><td";
-    if($c > 1)
-    {
-      echo " rowspan='$c'";
-    }
-    echo ">" . $platform->name . "</td>";
-    if($c == 0)
-    {
-      echo "<td colspan='3'>No configurations exists for this platform</td>";
-      echo "<td><a href='/diffuse/approval/" . $this->projectId . "/" . $platform->id . "' title='Create'><i class='icon-plus'></i></a></td>";
-      echo "</tr>";
-    }
-    else
-    {
-      $i = 0;
-      foreach($ac as $a)
-      {
-        echo "<td>" . $a->role . "</td>";
-        echo "<td>" . $a->consistency_level . "</td>";
-        echo "<td>";
-        echo ($a->required) ? "Yes" : "No";
-        echo "</td>";
-        echo "<td>";
-        if($i == 0)
-        {
-          echo "<a href='/diffuse/approval/" . $this->projectId . "/" . $platform->id . "' title='Create'><i class='icon-plus'></i></a> ";
-        }
-        echo "<a href='" . $this->projectId . "/" . $platform->id . "/" . $a->role . "/delete' title='Delete'><i class='icon-trash'></i></a></td>";
-        echo "</tr>";
-        if($i < ($c - 1))
-        {
-          echo "<tr>";
-        }
-        $i++;
-      }
-    }
-  }
-  ?>
+  <?php foreach($this->getPlatforms() as $platform): ?>
+    <tr class="header">
+      <td colspan="3"><strong><?= $platform->name ?></strong></td>
+      <td><a href="/diffuse/approval/<?= $this->projectId . "/" . $platform->id ?>" title="Create"><i class="icon-plus"></i></a></td>
+    </tr>
+    <?php
+      $ac = $this->getConfigurations($platform->id);
+      if($ac->count()==0):
+    ?>
+    <tr>
+      <td colspan="4">No configurations exists for this platform</td>
+    </tr>
+    <?php
+      else:
+      foreach($ac as $a):
+    ?>
+      <tr>
+        <td><?= $a->role ?></td>
+        <td><?= $a->consistency_level ?></td>
+        <td><?= ($a->required) ? "Yes" : "No" ?></td>
+        <td><a href="<?= $this->projectId . "/" . $platform->id . "/" . $a->role ?>/delete" title="Delete"><i class="icon-trash"></i></a></td>
+      </tr>
+    <?php
+       endforeach;
+      endif;
+    endforeach;
+    ?>
   </tbody>
 </table>

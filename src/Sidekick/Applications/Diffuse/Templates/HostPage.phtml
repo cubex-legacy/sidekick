@@ -18,15 +18,12 @@
 </div>
 <div>
   <h2>Host Platforms</h2>
-
+  <?php if(count($this->platforms)): ?>
   <div>
-    <?php if(count($this->platforms)): ?>
-    <?php
-    echo $this->form()->open();
-    echo $this->form()->token();
-    echo $this->form()->formNameInput();
-    echo $this->form()->getElement('hostId');
-    ?>
+    <?= $this->form()->open(); ?>
+    <?= $this->form()->token(); ?>
+    <?= $this->form()->formNameInput(); ?>
+    <?= $this->form()->getElement('hostId'); ?>
     <?= $this->form()->getElement('platformId') ?>
     <?= $this->form()->getElement('submit') ?>
     <?= $this->form()->close() ?>

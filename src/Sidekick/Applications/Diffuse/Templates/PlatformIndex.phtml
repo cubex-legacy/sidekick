@@ -42,9 +42,7 @@
           ); ?>
         <?php endif; ?>
       </td>
-      <td><?php
-          echo implode(",",$platform->requiredPlatforms);
-      ?></td>
+      <td><?= implode(",",$platform->requiredPlatforms); ?></td>
       <td><?= date('d/M/Y', strtotime($platform->updated_at)); ?></td>
       <td>
         <a href="<?= $this->baseUri() . '/edit/' . $platform->id; ?>"

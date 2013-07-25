@@ -21,19 +21,14 @@
   </tr>
   </thead>
   <tbody>
-  <?php
-    $versions=$this->getAttentionVersions();
-    foreach($versions as $version)
-    {
-      echo "<tr>";
-      echo "<td>" . $version->projectid . "</td>";
-      echo "<td><a href='/diffuse/" . $version->projectid . "/" . $version->id . "'>" . $version->major . "." . $version->minor . "." . $version->revision . "</a></td>";
-      echo "<td>" . $version->type . "</td>";
-      echo "<td>" . $version->version_state . "</td>";
-      echo "<td>" . date("d/M/Y", strtotime($version->updated_at)) . "</td>";
-      echo "</tr>";
-  }
-  ?>
+  <?php foreach($this->getAttentionVersions() as $version): ?>
+  <tr>
+    <td><?= $version->projectid; ?></td>
+    <td><a href="/diffuse/<?= $version->projectid . "/" . $version->id ?>"><?= $version->major . "." . $version->minor . "." . $version->revision ?></a></td>
+    <td><?= $version->type ?></td>
+    <td><?= $version->version_state ?></td>
+    <td><?= date("d/M/Y", strtotime($version->updated_at)) ?></td>
+  </tr>
+  <?php endforeach; ?>
   </tbody>
 </table>
-

@@ -7,17 +7,12 @@
  */
 ?>
 <h1>Version Details</h1>
-<?php
-$nav = $this->getNav();
-echo $nav->render();
-$version = $this->getVersion();
-if(Session::getFlash('msg'))
-{
-  echo "<div class='alert alert-" . Session::getFlash('msg')->type . "'>";
-  echo Session::getFlash('msg')->text;
-  echo "</div>";
-}
-?>
+<?= $this->getNav()->render(); ?>
+<?php if(Session::getFlash('msg')): ?>
+<div class="alert alert-<?= Session::getFlash('msg')->type ?> ">
+  <?= Session::getFlash('msg')->text ?>
+</div>
+<?php endif; ?>
 <div class="well row-fluid">
   <div class="span6">
     <p>Major: <?= $version->major ?></p>

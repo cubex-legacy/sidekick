@@ -7,6 +7,10 @@
  * To change this template use File | Settings | File Templates.
  */
 ?>
+<h1 class="pull-right">Status: <span class="text-<?=
+  $this->stateClass(
+    $this->_state
+  ) ?>"><?= $this->_state ?></span></h1>
 <h1>Platform: <?php echo $this->_platform->name; ?></h1>
 <?= $this->getNav()->render(); ?>
 <?php if(Session::getFlash('msg')): ?>
@@ -49,6 +53,9 @@
   <?php endforeach; ?>
   </tbody>
 </table>
+<p>
+  <a class="btn btn-info btn-small" href="/diffuse/platform/<?= $this->_projectID . "/" . $this->_versionID . "/" . $this->_platformID; ?>/refresh">Refresh Approval Status</a>
+</p>
 <div class="row-fluid">
   <div class="span6">
     <h2>Actions</h2>
@@ -57,15 +64,6 @@
   <div class="span6">
     <h2>Deploy</h2>
     <?= $this->getDeployForm()->render() ?>
-    <p>Current Status on this platform: <span
-        class="text-<?= $this->stateClass($this->_state) ?>"><?= $this->_state ?></span></p>
-
-    <p>
-      <a
-        href="/diffuse/platform/<?= $this->_projectID . "/" . $this->_versionID . "/" . $this->_platformID; ?>/refresh">Refresh
-                                                                                                                        Deploy
-                                                                                                                        Status</a>
-    </p>
   </div>
   <div class="clearfix"></div>
 </div>

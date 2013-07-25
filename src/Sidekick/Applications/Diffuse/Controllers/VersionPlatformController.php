@@ -323,11 +323,6 @@ class VersionPlatformController extends DiffuseController
       ($page == "changelog") ? $active : [],
       "<a href='/diffuse/$project/$version/changelog'>Change Log</a>"
     );
-    $list->nestElement(
-      "li",
-      ($page == "history") ? $active : [],
-      "<a href='/diffuse/$project/$version/history'>Version History</a>"
-    );
     $platforms = Platform::collection()->loadAll();
     foreach($platforms as $platform)
     {

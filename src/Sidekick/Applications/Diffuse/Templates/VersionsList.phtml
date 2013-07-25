@@ -39,35 +39,39 @@
     <th>Created</th>
     <th>Last Updated</th>
   </tr>
-  <?php foreach ($this->getVersions() as $v): ?>
-  <tr class="">
+  <?php foreach($this->getVersions() as $v): ?>
+    <tr class="">
     <td>
       <a href="/diffuse/<?= $this->_projectId . "/" . $v->id() ?>">
         <?= $v->major . '.' . $v->minor . '.' . $v->build . '.' . $v->revision ?>
       </a>
     </td>
-    <td>
-      <?php
-      $states = $this->getStates($v->id());
-      if ($states->count() == 0):
+    <?php
+    $states = $this->getStates($v->id());
+    if($states->count() == 0):
       ?>
-        Not reviewed on any platform
-      <?php
-      else:
-      foreach ($states as $state):
-      ?>
-      <?= $this->getPlatformName($state->platformId) ?>:
-      <span class="text-<?= $this->stateClass($state->state) ?>"><?= $state->state ?></span><br/>
-      <?php endforeach; ?>
-    </td>
-    <td>
-      <?= substr($v->fromCommitHash, 0, 8); ?> - <?= substr($v->toCommitHash, 0, 8); ?>
-    </td>
-    <td><?= date('d M y', strtotime($v->createdAt)); ?></td>
-    <td><?= date('d M y H:i:s', strtotime($v->updatedAt)); ?></td>
-  </tr>
-  <?php
+      <td colspan="4">Not reviewed on any platform
+    <?php else: ?>
+      <td>
+        <?php foreach($states as $state): ?>
+          <?= $this->getPlatformName($state->platformId) ?>:
+          <span class="text-<?= $this->stateClass(
+            $state->state
+          ) ?>"><?= $state->state ?></span><br/>
+        <?php endforeach; ?>
+      </td>
+      <td>
+        <?= substr($v->fromCommitHash, 0, 8); ?> - <?= substr(
+          $v->toCommitHash,
+          0,
+          8
+        ); ?>
+      </td>
+      <td><?= date('d M y', strtotime($v->createdAt)); ?></td>
+      <td><?= date('d M y H:i:s', strtotime($v->updatedAt)); ?></td>
+      </tr>
+    <?php
     endif;
-    endforeach;
+  endforeach;
   ?>
 </table>

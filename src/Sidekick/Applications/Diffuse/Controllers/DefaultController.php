@@ -186,8 +186,7 @@ class DefaultController extends DiffuseController
         $msg->type = 'error';
         $msg->text = 'Version is not approved on a required previous platform';
         Redirect::to(
-          $this->baseUri(
-          ) . '/' . $projectId . '/' . $versionId
+          $this->baseUri() . '/' . $projectId . '/' . $versionId
         )
         ->with('msg', $msg)->now();
       }
@@ -258,11 +257,6 @@ class DefaultController extends DiffuseController
       ($page == "changelog") ? $active : [],
       "<a href='/diffuse/$project/$version/changelog'>Change Log</a>"
     );
-    $list->nestElement(
-      "li",
-      ($page == "history") ? $active : [],
-      "<a href='/diffuse/$project/$version/history'>Version History</a>"
-    );
     $platforms = Platform::collection()->loadAll();
     foreach($platforms as $platform)
     {
@@ -282,7 +276,6 @@ class DefaultController extends DiffuseController
       '/:projectId'                                 => 'versions',
       '/:projectId/:versionId@num'                  => 'versionDetails',
       '/:projectId/:versionId@num/changelog'        => 'versionChangeLog',
-      '/:projectId/:versionId@num/history'          => 'versionHistory',
       '/:projectId/:versionId@num/:platform/deploy' => 'deploy'
     ];
   }

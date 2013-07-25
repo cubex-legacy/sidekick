@@ -173,20 +173,24 @@ class DefaultController extends DiffuseController
     $projectId  = $this->getInt('projectId');
     $versionId  = $this->getInt('versionId');
     $platformId = $this->getInt('platform');
+    $platform   = Platform::collection()->loadOneWhere(["id" => $platformId]);
     //Is it allowed?
-    $pvs = PlatformVersionState::collection()->loadOneWhere(
-      ["platform_id" => $platformId, "version_id" => $versionId]
-    );
-    if($pvs == null || $pvs->state != VersionState::APPROVED)
+    foreach($platform->requiredPlatforms as $required)
     {
-      $msg       = new \stdClass();
-      $msg->type = 'error';
-      $msg->text = 'Version is not approved on this platform';
-      Redirect::to(
-        $this->baseUri(
-        ) . '/platform/' . $projectId . '/' . $versionId . '/' . $platformId
-      )
-      ->with('msg', $msg)->now();
+      $pvs = PlatformVersionState::collection()->loadOneWhere(
+        ["platform_id" => $required, "version_id" => $versionId]
+      );
+      if($pvs == null || $pvs->state != VersionState::APPROVED)
+      {
+        $msg       = new \stdClass();
+        $msg->type = 'error';
+        $msg->text = 'Version is not approved on a required previous platform';
+        Redirect::to(
+          $this->baseUri(
+          ) . '/' . $projectId . '/' . $versionId
+        )
+        ->with('msg', $msg)->now();
+      }
     }
     $deployment = new Deployment();
     $deployment->hydrate(

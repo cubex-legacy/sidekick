@@ -62,7 +62,7 @@ class VersionDetails extends TemplatedViewModel
       "version_id"  => $this->_versionID
       ]
     );
-    return ($pvs == null) ? "" : $pvs->state;
+    return ($pvs == null) ? "Not deployed on this platform" : $pvs->state;
   }
 
   public function getNav()

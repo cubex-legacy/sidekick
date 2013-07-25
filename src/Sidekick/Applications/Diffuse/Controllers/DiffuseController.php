@@ -26,6 +26,7 @@ class DiffuseController extends BaseControl
     $main = new Sidebar(
       $this->request()->path(2),
       [
+      '/diffuse'           => 'Pending Versions',
       '/diffuse/platforms' => 'Manage Platforms',
       '/diffuse/hosts'     => 'Manage Hosts',
       ]

@@ -114,7 +114,7 @@ class VersionPlatform extends TemplatedViewModel
 
   public function getDeployForm()
   {
-    if($this->meetsApprovalRequirements())
+    if($this->_state != VersionState::REJECTED)
     {
       $container = new HTMLElement("p");
       $container->nest(
@@ -127,7 +127,7 @@ class VersionPlatform extends TemplatedViewModel
     }
     else
     {
-      return new HTMLElement("p", [], "This version cannot currently be deployed");
+      return new HTMLElement("p", [], "This version cannot be deployed");
     }
   }
 
@@ -193,6 +193,17 @@ class VersionPlatform extends TemplatedViewModel
       default:
         return 1;
     }
+  }
+
+  public function isApproved($role, $consistency)
+  {
+    $acount    = $this->getApproverCount($this->_versionID, $role);
+    $arequired = $this->approversRequired(
+      $this->_projectID,
+      $role,
+      $consistency
+    );
+    return ($acount >= $arequired) ? true : false;
   }
 
   public function getTotalRoles($projectID, $role)

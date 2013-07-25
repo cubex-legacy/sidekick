@@ -203,7 +203,22 @@ class VersionPlatform extends TemplatedViewModel
       $role,
       $consistency
     );
-    return ($acount >= $arequired) ? true : false;
+    return $acount >= $arequired;
+  }
+
+  public function stateClass($state)
+  {
+    switch($state)
+    {
+      case VersionState::APPROVED:
+        return "success";
+      case VersionState::REJECTED:
+        return "error";
+      case VersionState::UNKNOWN:
+        return "warning";
+      default:
+        return "info";
+    }
   }
 
   public function getTotalRoles($projectID, $role)

@@ -20,7 +20,8 @@ class User extends RecordMapper
    */
   public $userRole;
 
-    public function userRoles() {
-        return new UserRole();
-    }
+  public function userRoles()
+  {
+    return new UserRole();
+  }
 }

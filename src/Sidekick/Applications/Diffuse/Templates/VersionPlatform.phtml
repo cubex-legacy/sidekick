@@ -7,15 +7,6 @@
  * To change this template use File | Settings | File Templates.
  */
 ?>
-<style type="text/css">
-  .state { font-weight: bold; }
-
-  .state-approved { color: green; }
-
-  .state-pending { color: blue; }
-
-  .state-rejected { color: red; }
-</style>
 <h1>Platform: <?php echo $this->_platform->name; ?></h1>
 <?= $this->getNav()->render(); ?>
 <?php if(Session::getFlash('msg')): ?>
@@ -67,7 +58,7 @@
     <h2>Deploy</h2>
     <?= $this->getDeployForm()->render() ?>
     <p>Current Status on this platform: <span
-        class="state state-<?= $this->_state ?>"><?= $this->_state ?></span></p>
+        class="text-<?= $this->stateClass($this->_state) ?>"><?= $this->_state ?></span></p>
 
     <p>
       <a

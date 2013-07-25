@@ -6,15 +6,6 @@
  * @var $this \Sidekick\Applications\Diffuse\Views\VersionsList
  */
 ?>
-<style type="text/css">
-  .state { font-weight: bold; }
-
-  .state-approved { color: green; }
-
-  .state-pending { color: blue; }
-
-  .state-rejected { color: red; }
-</style>
 <!--might be better to pass basePath instead of project id-->
 <h1>Versions</h1>
 <p class="pull-right">
@@ -42,7 +33,7 @@
 
 <table class="table table-striped table-bordered table-condensed">
   <tr class="info">
-    <th>Version</th>
+    <th class="">Version</th>
     <th>Status</th>
     <th>Commit Range</th>
     <th>Created</th>
@@ -61,12 +52,12 @@
       if ($states->count() == 0):
       ?>
         Not reviewed on any platform
-      <?
+      <?php
       else:
       foreach ($states as $state):
       ?>
       <?= $this->getPlatformName($state->platformId) ?>:
-      <span class="state state-<?= $state->state ?>"><?= $state->state ?></span><br/>
+      <span class="text-<?= $this->stateClass($state->state) ?>"><?= $state->state ?></span><br/>
       <?php endforeach; ?>
     </td>
     <td>

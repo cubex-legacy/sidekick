@@ -10,6 +10,7 @@ use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Diffuse\Enums\VersionNumberType;
+use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
@@ -72,6 +73,21 @@ class VersionsList extends TemplatedViewModel
       ]
     );
     return $states;
+  }
+
+  public function stateClass($state)
+  {
+    switch($state)
+    {
+      case VersionState::APPROVED:
+        return "success";
+      case VersionState::REJECTED:
+        return "error";
+      case VersionState::UNKNOWN:
+        return "warning";
+      default:
+        return "info";
+    }
   }
 
   public function getPlatformName($id)

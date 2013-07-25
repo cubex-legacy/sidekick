@@ -6,9 +6,6 @@
  * @var $this \Sidekick\Applications\Diffuse\Views\ApprovalConfigurationPage
  */
 ?>
-<style type="text/css">
-  tr.header { background-color:lightgrey; }
-</style>
 <h1>Approval Configuration</h1>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
@@ -28,7 +25,7 @@
   </thead>
   <tbody>
   <?php foreach($this->getPlatforms() as $platform): ?>
-    <tr class="header">
+    <tr class="info">
       <td colspan="3"><strong><?= $platform->name ?></strong></td>
       <td><a href="/diffuse/approval/<?= $this->projectId . "/" . $platform->id ?>" title="Create"><i class="icon-plus"></i></a></td>
     </tr>

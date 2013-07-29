@@ -12,6 +12,7 @@ namespace Sidekick\Applications\Phuse\Controllers;
 use Cubex\Core\Http\Response;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
+use Cubex\View\Templates\Errors\Error404;
 use Sidekick\Applications\Phuse\Views\PackageResults;
 use Sidekick\Applications\Phuse\Views\PackagesList;
 use Sidekick\Applications\Phuse\Views\PackageView;
@@ -49,7 +50,7 @@ class DefaultController extends PhuseController
    *
    * @return Response
    */
-  public function renderSearch()
+  public function ajaxSearch()
   {
     $query    = $this->getStr('query');
     $packages = Package::collection()->whereLike(
@@ -57,6 +58,12 @@ class DefaultController extends PhuseController
       $query
     );
     return new Response($this->createView(new PackageResults($packages)));
+  }
+
+  public function renderSearch()
+  {
+    //Phuse search must be called only via Ajax;
+    return new Error404();
   }
 
   public function renderNewPackages()

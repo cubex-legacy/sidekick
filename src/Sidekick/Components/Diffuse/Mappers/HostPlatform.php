@@ -6,32 +6,26 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\PivotMapper;
+use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Projects\Mappers\Project;
 
-class HostPlatform extends PivotMapper
+class HostPlatform extends RecordMapper
 {
+  protected $_idType = self::ID_COMPOSITE;
+  public $hostId;
+  public $platformId;
+  public $projectId;
+
   protected function _configure()
   {
-    $this->pivotOn(new Host(), new Platform());
+    $this->_addCompositeAttribute(
+      "id",
+      ["platform_id","project_id"]
+    );
   }
 
   public function getTableName($plural = true)
   {
     return 'diffuse_hosts_platforms';
-  }
-
-  /**
-   * @return Host
-   */
-  public function host()
-  {
-    return $this->belongsTo(new Host());
-  }
-
-  /**
-   * @return Platform
-   */
-  public function platform()
-  {
-    return $this->belongsTo(new Platform());
   }
 }

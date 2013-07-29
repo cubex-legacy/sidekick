@@ -14,11 +14,12 @@ class DiffuseApp extends BaseApp
   public function getRoutes()
   {
     return [
-      'projects/(.*)'  => 'ProjectController',
-      'platforms/(.*)' => 'PlatformController',
-      'hosts/(.*)'     => 'HostsController',
-      'approval/(.*)'  => 'ApprovalController',
-      'platform/(.*)'  => 'VersionPlatformController'
+      'projects/(.*)'     => 'ProjectController',
+      'platforms/(.*)'    => 'PlatformController',
+      'hosts/(.*)'        => 'HostsController',
+      'approval/(.*)'     => 'ApprovalController',
+      'platform/(.*)'     => 'VersionPlatformController',
+      'platformhost/(.*)' => 'PlatformHostController'
     ];
   }
 

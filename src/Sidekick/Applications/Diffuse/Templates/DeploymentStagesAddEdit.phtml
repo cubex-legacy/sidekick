@@ -27,19 +27,25 @@
   </tr>
   </thead>
   <tbody>
-  <?php foreach($this->_stage->configuration as $key => $value): ?>
+  <?php
+    if($this->_stage->configuration!=null):
+    foreach($this->_stage->configuration as $key => $value):
+  ?>
     <tr>
       <td><input type="text" name="configurationKeys[]" value="<?= $key ?>"/></td>
-      <td><input type="text" name="configurationValues[]" value="<?= $value ?>"/></td>
+      <td><textarea name="configurationValues[]"><?= $value ?></textarea></td>
       <td>
         <a href="#" class="deleteRow" title="Delete"><i class="icon icon-trash"></i></a>
       </td>
     </tr>
-  <?php endforeach; ?>
+  <?php
+    endforeach;
+    endif;
+  ?>
   </tbody>
 </table>
 <p class="pull-right">
-  <a href="#" id="addConfig"><i class="icon icon-plus"></i>Add Configuration</a>
+  <a href="#" id="addConfig"><i class="icon icon-plus"></i> Add Configuration</a>
 </p>
 <p>Dependencies</p>
 <table class="table table-striped table-bordered table-condensed" id="dependencyTable">
@@ -50,19 +56,25 @@
   </tr>
   </thead>
   <tbody>
-  <?php foreach($this->_stage->dependencies as $key => $value): ?>
+  <?php
+    if($this->_stage->dependencies!=null):
+    foreach($this->_stage->dependencies as $key => $value):
+  ?>
     <tr>
       <td><input type="text" name="dependencyKeys[]" value="<?= $key ?>"/></td>
-      <td><input type="text" name="dependencyValues[]" value="<?= $value ?>"/></td>
+      <td><textarea name="dependencyValues[]"><?= $value ?></textarea></td>
       <td>
         <a href="#" class="deleteRow" title="Delete"><i class="icon icon-trash"></i></a>
       </td>
     </tr>
-  <?php endforeach; ?>
+  <?php
+    endforeach;
+    endif;
+  ?>
   </tbody>
 </table>
 <p class="pull-right">
-  <a href="#" id="addDep"><i class="icon icon-plus"></i> AddDependency</a>
+  <a href="#" id="addDep"><i class="icon icon-plus"></i> Add Dependency</a>
 </p>
 <?= $form->getElement("submit")->render(); ?>
 <?= $form->close(); ?>

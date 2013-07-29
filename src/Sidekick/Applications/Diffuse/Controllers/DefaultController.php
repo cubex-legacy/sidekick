@@ -7,8 +7,11 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
+use Cubex\Form\OptionBuilder;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
+use Sidekick\Applications\Diffuse\Views\DeploymentStages;
+use Sidekick\Applications\Diffuse\Views\DeploymentStagesAddEdit;
 Use Sidekick\Applications\Diffuse\Views\HomePage;
 use Sidekick\Applications\Diffuse\Views\VersionDetails;
 use Sidekick\Applications\Diffuse\Views\VersionHistory;
@@ -17,6 +20,7 @@ use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
@@ -241,6 +245,115 @@ class DefaultController extends DiffuseController
     ));
   }
 
+  public function renderStages()
+  {
+    return new DeploymentStages();
+  }
+
+  public function renderStageAdd()
+  {
+    return new DeploymentStagesAddEdit();
+  }
+
+  public function renderStageEdit()
+  {
+    $stageID = $this->getInt("stageId");
+    $stage   = DeploymentStage::collection()->loadOneWhere(["id" => $stageID]);
+    return new DeploymentStagesAddEdit($stage);
+  }
+
+  public function postStageAdd()
+  {
+    //Create configuration object
+    $cKeys  = $this->_request->postVariables("configurationKeys");
+    $cVals  = $this->_request->postVariables("configurationValues");
+    $config = new \StdClass();
+    for($i = 0; $i < count($cKeys); $i++)
+    {
+      $config->{$cKeys[$i]} = $cVals[$i];
+    }
+    //Create dependencies object
+    $dKeys = $this->_request->postVariables("dependencyKeys");
+    $dVals = $this->_request->postVariables("dependencyValues");
+    $deps  = new \StdClass();
+    for($i = 0; $i < count($dKeys); $i++)
+    {
+      $deps->{$dKeys[$i]} = $dVals[$i];
+    }
+    $stage = new DeploymentStage();
+    $stage->hydrate(
+      [
+      "platform_id"            => $this->_request->postVariables("platform"),
+      "project_id"             => $this->_request->postVariables("project"),
+      "service_class"          => $this->_request->postVariables(
+        "serviceClass"
+      ),
+      "require_all_hosts_pass" => $this->_request->postVariables(
+        "requireAllHostsPass"
+      ),
+      "configuration"          => $config,
+      "dependencies"           => $deps
+      ]
+    );
+    $stage->saveChanges();
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Deployment Stage created successfully';
+    Redirect::to($this->baseUri() . "/stages")->with('msg', $msg)->now();
+  }
+
+  public function postStageEdit()
+  {
+    //Create configuration object
+    $cKeys  = $this->_request->postVariables("configurationKeys");
+    $cVals  = $this->_request->postVariables("configurationValues");
+    $config = new \StdClass();
+    for($i = 0; $i < count($cKeys); $i++)
+    {
+      $config->{$cKeys[$i]} = $cVals[$i];
+    }
+    //Create dependencies object
+    $dKeys = $this->_request->postVariables("dependencyKeys");
+    $dVals = $this->_request->postVariables("dependencyValues");
+    $deps  = new \StdClass();
+    for($i = 0; $i < count($dKeys); $i++)
+    {
+      $deps->{$dKeys[$i]} = $dVals[$i];
+    }
+    $stage = new DeploymentStage();
+    $stage->hydrate(
+      [
+      "id"                     => $this->_request->postVariables("id"),
+      "platform_id"            => $this->_request->postVariables("platform"),
+      "project_id"             => $this->_request->postVariables("project"),
+      "service_class"          => $this->_request->postVariables(
+        "serviceClass"
+      ),
+      "require_all_hosts_pass" => $this->_request->postVariables(
+        "requireAllHostsPass"
+      ),
+      "configuration"          => $config,
+      "dependencies"           => $deps
+      ]
+    );
+    $stage->saveChanges();
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Deployment Stage updated successfully';
+    Redirect::to($this->baseUri() . "/stages")->with('msg', $msg)->now();
+  }
+
+  public function renderStageDelete()
+  {
+    $stageID = $this->getInt("stageId");
+    $stage   = DeploymentStage::collection()->loadOneWhere(["id" => $stageID]);
+    $stage->delete();
+    $msg       = new \stdClass();
+    $msg->type = "success";
+    $msg->text = "Stage deleted successfully";
+    Redirect::to($this->baseUri() . "/stages")->with('msg', $msg)->now();
+  }
+
   public function getNav($page = "")
   {
     $project = $this->getInt("projectId");
@@ -273,6 +386,10 @@ class DefaultController extends DiffuseController
   {
     return [
       '/create-version'                             => 'createVersion',
+      '/stages'                                     => 'stages',
+      '/stages/add'                                 => 'stageAdd',
+      '/stages/:stageId/edit'                       => 'stageEdit',
+      '/stages/:stageId/delete'                     => 'stageDelete',
       '/:projectId'                                 => 'versions',
       '/:projectId/:versionId@num'                  => 'versionDetails',
       '/:projectId/:versionId@num/changelog'        => 'versionChangeLog',

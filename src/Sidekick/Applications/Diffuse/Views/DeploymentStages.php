@@ -28,6 +28,10 @@ class DeploymentStages extends TemplatedViewModel
 
   public function getDetails($details)
   {
+    if($details==null)
+    {
+      return new HTMLElement("p",[],"");
+    }
     $render = new RenderGroup();
     foreach($details as $key => $value)
     {

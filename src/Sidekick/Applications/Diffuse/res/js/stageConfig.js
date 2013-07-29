@@ -23,8 +23,8 @@ $(document).ready(function(){
 function createRow(name)
 {
   var tr=$("<tr></tr>");
-  tr.append("<td><input type='text' name='" + name + "Keys[]'</td>");
-  tr.append("<td><input type='text' name='" + name + "Values[]'</td>");
+  tr.append("<td><input type='text' name='" + name + "Keys[]' /></td>");
+  tr.append("<td><textarea name='" + name + "Values[]'></textarea></td>");
   tr.append("<td><a href='#' class='deleteRow' title='Delete'><i class='icon icon-trash'></i></a></td>");
   return tr;
 }

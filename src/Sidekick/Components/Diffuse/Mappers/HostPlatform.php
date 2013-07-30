@@ -20,7 +20,7 @@ class HostPlatform extends RecordMapper
   {
     $this->_addCompositeAttribute(
       "id",
-      ["platform_id","project_id"]
+      ["platform_id", "project_id", "host_id"]
     );
   }
 

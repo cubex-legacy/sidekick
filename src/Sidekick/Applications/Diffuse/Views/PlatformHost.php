@@ -24,17 +24,16 @@ class PlatformHost extends TemplatedViewModel
     $this->_projectId = $projectId;
   }
 
-  public function getHostPlatforms()
+  public function getPlatforms()
   {
-    return HostPlatform::collection()->loadWhere(
-      ["project_id" => $this->_projectId]
-    );
+    return Platform::collection()->loadAll();
   }
 
-  public function getPlatformName($id)
+  public function getHostsForPlatform($platformId)
   {
-    $platform = Platform::collection()->loadOneWhere(["id" => $id]);
-    return ($platform == null) ? "" : $platform->name;
+    return HostPlatform::collection()->loadWhere(
+      ["project_id" => $this->_projectId, "platform_id" => $platformId]
+    );
   }
 
   public function getHostName($id)

@@ -33,7 +33,7 @@ class DefaultController extends BaseControl
     $user     = Auth::authByCredentials(
       StdLoginCredentials::make(
         $postData['username'],
-        md5($postData['password'])
+        $postData['password']
       )
     );
 

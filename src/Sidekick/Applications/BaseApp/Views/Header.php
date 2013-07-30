@@ -82,8 +82,8 @@ class Header extends ViewModel
           'dropdown-toggle',
           ('/' . $appPath),
           '',
-          $group . ' <b class="caret"></b>',
-          '<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>'
+        $group . ' <b class="caret"></b>',
+        '<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>'
         );
 
         $subNavItems->clearElements();
@@ -96,7 +96,7 @@ class Header extends ViewModel
           $state,
           '',
           '',
-          '/' . $appPath,
+        '/' . $appPath,
           $apps[$appPath]->description(),
           $group,
           ''
@@ -112,10 +112,12 @@ class Header extends ViewModel
       '</ul>',
       '<div class="nav-collapse collapse">
         <ul class="nav pull-right">
-          <li><a href="/profile">' . Auth::getRawUsername() . '</a></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-      </div>'
+          <li><a href="/profile">',
+      Auth::user()->getDetail("displayName", \Auth::getRawUsername()),
+      '</a></li>
+      <li><a href="/logout">Logout</a></li>
+    </ul>
+  </div>'
     );
   }
 

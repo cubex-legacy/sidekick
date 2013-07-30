@@ -54,29 +54,6 @@ class HostsController extends DiffuseController
     )->now();
   }
 
-  public function renderView()
-  {
-    $hostId = $this->getInt('hostId');
-    $host   = new Host($hostId);
-
-    $hostPlatforms = HostPlatform::collection(['host_id' => $hostId])->load();
-
-    if($hostPlatforms->hasMappers())
-    {
-      $platforms = Platform::collection()->loadWhere(
-        "%C NOT IN (%Ld)",
-        "id",
-        $hostPlatforms->getUniqueField('platform_id')
-      );
-    }
-    else
-    {
-      $platforms = Platform::collection()->loadAll();
-    }
-
-    return $this->createView(new HostPage($host, $platforms, $hostPlatforms));
-  }
-
   public function renderEdit()
   {
     $platformId = $this->getInt('hostId');
@@ -167,7 +144,6 @@ class HostsController extends DiffuseController
       '/create'                              => 'create',
       '/add-platform'                        => 'addPlatform',
       '/delete-platform/:hostId/:platformId' => 'deletePlatform',
-      '/view/:hostId'                        => 'view',
       '/edit/:hostId'                        => 'edit',
       '/delete/:hostId'                      => 'delete'
     ];

@@ -103,47 +103,10 @@ class HostsController extends DiffuseController
     )->now();
   }
 
-  public function postAddPlatform()
-  {
-    $postData = $this->request()->postVariables();
-
-    $hostPlatform             = new HostPlatform();
-    $hostPlatform->hostId     = $postData['hostId'];
-    $hostPlatform->platformId = $postData['platformId'];
-    $hostPlatform->saveChanges();
-
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Platform was successfully added host';
-    Redirect::to($this->baseUri() . '/view/' . $postData['hostId'])->with(
-      'msg',
-      $msg
-    )->now();
-  }
-
-  public function renderDeletePlatform()
-  {
-    $hostId     = $this->getInt('hostId');
-    $platformId = $this->getInt('platformId');
-
-    $hostPlatform = new HostPlatform([$hostId, $platformId]);
-    $hostPlatform->delete();
-
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Platform was successfully deleted';
-    Redirect::to($this->baseUri() . '/view/' . $hostId)->with(
-      'msg',
-      $msg
-    )->now();
-  }
-
   public function getRoutes()
   {
     return [
       '/create'                              => 'create',
-      '/add-platform'                        => 'addPlatform',
-      '/delete-platform/:hostId/:platformId' => 'deletePlatform',
       '/edit/:hostId'                        => 'edit',
       '/delete/:hostId'                      => 'delete'
     ];

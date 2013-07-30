@@ -113,7 +113,7 @@ class Header extends ViewModel
       '<div class="nav-collapse collapse">
         <ul class="nav pull-right">
           <li><a href="/profile">',
-      Auth::user()->getDetail("displayName", \Auth::getRawUsername()),
+      Auth::user()->getDetail("display_name", \Auth::getRawUsername()),
       '</a></li>
       <li><a href="/logout">Logout</a></li>
     </ul>

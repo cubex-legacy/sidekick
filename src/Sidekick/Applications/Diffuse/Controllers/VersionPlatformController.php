@@ -112,7 +112,7 @@ class VersionPlatformController extends DiffuseController
         "action_type" => $action
         ]
       );
-      if(count($previouslyPerformed) != 0)
+      if($previouslyPerformed->count() != 0)
       {
         $msg       = new \stdClass();
         $msg->type = "error";
@@ -206,7 +206,7 @@ class VersionPlatformController extends DiffuseController
       "action_type" => ActionType::REJECT
       ]
     );
-    if(count($rejects) > 0)
+    if($rejects->count() > 0)
     {
       return VersionState::REJECTED;
     }
@@ -240,7 +240,6 @@ class VersionPlatformController extends DiffuseController
 
   public function getApproverCount($versionID, $platformID, $userRole)
   {
-    echo "Count $versionID $userRole, ";
     $approvers = Action::collection()->loadWhere(
       [
       "version_id"  => $versionID,

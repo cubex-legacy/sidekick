@@ -35,6 +35,7 @@ use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Helpers\BuildCommandsHelper;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Mappers\Source;
+use Thrift\Exception\TTransportException;
 
 class FortifyController extends BaseControl
 {
@@ -366,7 +367,7 @@ class FortifyController extends BaseControl
 
       return $view;
     }
-    catch(\Exception $e)
+    catch(TTransportException $e)
     {
       return "Sidekick could not connect to cassandra to read " .
       "command output. Please make sure cassandra service is running";

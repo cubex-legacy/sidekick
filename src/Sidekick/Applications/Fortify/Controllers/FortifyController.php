@@ -333,36 +333,44 @@ class FortifyController extends BaseControl
     $commands, $runId, TemplatedViewModel $view
   )
   {
-    //determine if user has requested for a filtered command list
-    $filter = $this->getStr('commandId');
-    foreach($commands as $c)
+    try
     {
-      if($filter !== null && $filter != $c)
+      //determine if user has requested for a filtered command list
+      $filter = $this->getStr('commandId');
+      foreach($commands as $c)
       {
-        continue;
+        if($filter !== null && $filter != $c)
+        {
+          continue;
+        }
+        $command       = new Command($c);
+        $commandRun    = BuildLog::cf()->get(
+          "$runId-$c",
+          ['exit_code', 'start_time', 'end_time']
+        );
+        $commandOutput = BuildLog::cf()->getSlice(
+          "$runId-$c",
+          'output:0',
+          '',
+          false,
+          1000
+        );
+
+        $view->addCommand(
+          new Command($c),
+          $commandRun,
+          in_array($commandRun['exit_code'], $command->successExitCodes),
+          $commandOutput
+        );
       }
-      $command       = new Command($c);
-      $commandRun    = BuildLog::cf()->get(
-        "$runId-$c",
-        ['exit_code', 'start_time', 'end_time']
-      );
-      $commandOutput = BuildLog::cf()->getSlice(
-        "$runId-$c",
-        'output:0',
-        '',
-        false,
-        1000
-      );
 
-      $view->addCommand(
-        new Command($c),
-        $commandRun,
-        in_array($commandRun['exit_code'], $command->successExitCodes),
-        $commandOutput
-      );
+      return $view;
     }
-
-    return $view;
+    catch(\Exception $e)
+    {
+      return "Sidekick could not connect to cassandra to read " .
+      "command output. Please make sure cassandra service is running";
+    }
   }
 
   public function getRoutes()

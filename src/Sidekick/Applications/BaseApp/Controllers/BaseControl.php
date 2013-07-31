@@ -29,16 +29,8 @@ class BaseControl extends WebpageController
     $this->requireCss('/base');
     $this->requireJs("/hoverdrop");
 
-    $sidebar = $this->getSidebar();
-    if($sidebar !== null)
-    {
-      $this->nest("sidebar", $sidebar);
-    }
-    $header = $this->getHeader();
-    if($header !== null)
-    {
-      $this->nest("header", $header);
-    }
+    $this->tryNest("sidebar", $this->getSidebar());
+    $this->tryNest("header", $this->getHeader());
   }
 
   public function setTitle($title = '')

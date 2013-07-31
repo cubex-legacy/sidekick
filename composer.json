@@ -18,7 +18,6 @@
   "require":           {
     "php":                       ">=5.4.0",
     "cubex/cubex":               "*",
-    "codeless/ziparchiveex":     "*",
     "dflydev/markdown":          "*",
     "cubex/cassandra":           "*",
     "symfony/process":           "*",

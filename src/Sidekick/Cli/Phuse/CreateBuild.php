@@ -6,6 +6,7 @@
 namespace Sidekick\Cli\Phuse;
 
 use Cubex\Cli\CliCommand;
+use Cubex\Data\ZipArchive\RecursiveZipArchive;
 use Sidekick\Components\Phuse\Mappers\Package;
 use Sidekick\Components\Phuse\Mappers\Release;
 use Sidekick\Components\Phuse\PhuseHelper;
@@ -56,9 +57,9 @@ class CreateBuild extends CliCommand
     $zipName .= ".zip";
     $zipLoc = $compileDir . $zipName;
 
-    $zip = new \ZipArchiveEx();
+    $zip = new RecursiveZipArchive();
     $zip->open($zipLoc, \ZipArchive::OVERWRITE);
-    $zip->addDirContents($this->path);
+    $zip->addDir('', $this->path);
     $zip->close();
 
     /**

@@ -20,10 +20,11 @@ class HomePage extends TemplatedViewModel
 {
   protected $_requestedState;
   protected $_allPlatforms;
-  public function __construct($requestedstate="", $allplatforms=false)
+
+  public function __construct($requestedstate = "", $allplatforms = false)
   {
-    $this->_requestedState=$requestedstate;
-    $this->_allPlatforms=$allplatforms;
+    $this->_requestedState = $requestedstate;
+    $this->_allPlatforms   = $allplatforms;
     $this->requireJsLibrary("jquery");
     //For ajax
     $this->requireJs("versionTable");
@@ -43,24 +44,28 @@ class HomePage extends TemplatedViewModel
    */
   public function getMatchingVersions()
   {
-    $versions=Version::collection()->loadAll();
-    $matchingVersions=[];
+    $versions         = Version::collection()->loadAll();
+    $matchingVersions = [];
     foreach($versions as $version)
     {
-      $versionObj=new \StdClass;
-      $project=new Project($version->projectId);
-      $versionObj->projectid=$version->projectId;
-      $versionObj->project=$project->name;
-      $versionObj->versionid=$version->id;
-      $versionObj->version=$version->major . "." . $version->minor . "." . $version->build;
-      $versionObj->type=$version->type;
-      $versionObj->states=$this->getStatesForVersion($version->id, $this->_requestedState, $this->_allPlatforms);
-      if($versionObj->states==null)
+      $versionObj            = new \StdClass;
+      $project               = new Project($version->projectId);
+      $versionObj->projectid = $version->projectId;
+      $versionObj->project   = $project->name;
+      $versionObj->versionid = $version->id;
+      $versionObj->version   = $version->major . "." . $version->minor . "." . $version->build;
+      $versionObj->type      = $version->type;
+      $versionObj->states    = $this->getStatesForVersion(
+        $version->id,
+        $this->_requestedState,
+        $this->_allPlatforms
+      );
+      if($versionObj->states == null)
       {
         continue;
       }
-      $versionObj->updated=date("d/M/Y",strtotime($version->updatedAt));
-      $matchingVersions[]=$versionObj;
+      $versionObj->updated = date("d/M/Y", strtotime($version->updatedAt));
+      $matchingVersions[]  = $versionObj;
     }
     return $matchingVersions;
   }
@@ -74,24 +79,28 @@ class HomePage extends TemplatedViewModel
    * Returns null if $allPlatforms is true and not all of the states equal $requestedState
    * Returns the array otherwise
    */
-  public function getStatesForVersion($versionId, $requestedState, $allPlatforms)
+  public function getStatesForVersion(
+    $versionId, $requestedState, $allPlatforms
+  )
   {
-    $states=PlatformVersionState::collection()->loadWhere(["version_id"=>$versionId]);
-    $stateObj=[];
-    $hasRequestedState=false;
-    $hasAllRequestedStates=true;
+    $states                = PlatformVersionState::collection()->loadWhere(
+      ["version_id" => $versionId]
+    );
+    $stateObj              = [];
+    $hasRequestedState     = false;
+    $hasAllRequestedStates = true;
     foreach($states as $state)
     {
-      if($state->state==$requestedState)
+      if($state->state == $requestedState)
       {
-        $hasRequestedState=true;
+        $hasRequestedState = true;
       }
       else
       {
-        $hasAllRequestedStates=false;
+        $hasAllRequestedStates = false;
       }
-      $platform=new Platform($state->platformId);
-      $stateObj[$platform->name]=$state->state;
+      $platform                  = new Platform($state->platformId);
+      $stateObj[$platform->name] = $state->state;
     }
     if(!$hasRequestedState || ($allPlatforms && !$hasAllRequestedStates))
     {
@@ -99,5 +108,4 @@ class HomePage extends TemplatedViewModel
     }
     return $stateObj;
   }
-
 }

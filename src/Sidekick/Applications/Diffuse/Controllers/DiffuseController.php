@@ -28,8 +28,7 @@ class DiffuseController extends BaseControl
       [
       '/diffuse'           => 'Pending Versions',
       '/diffuse/platforms' => 'Manage Platforms',
-      '/diffuse/hosts'     => 'Manage Hosts',
-      '/diffuse/stages'    => 'Manage Deployment Stages'
+      '/diffuse/hosts'     => 'Manage Hosts'
       ]
     );
 

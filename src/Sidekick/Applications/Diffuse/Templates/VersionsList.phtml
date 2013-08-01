@@ -8,8 +8,19 @@
 ?>
 <!--might be better to pass basePath instead of project id-->
 <h1>Versions</h1>
-<p class="pull-right"><a href="/diffuse/approval/<?= $this->_projectId ?>">Approval Configuration</a></p>
-<p><a href="/diffuse/platformhost/<?= $this->_projectId ?>">Manage Platform Hosts</a></p>
+
+<ul class="nav nav-pills">
+  <li><a href="/diffuse/approval/<?= $this->_projectId ?>">
+      Approval Configuration
+    </a></li>
+  <li><a href="/diffuse/platformhost/<?= $this->_projectId ?>">
+      Manage Platform Hosts
+    </a></li>
+  <li><a href="/diffuse/stages/<?= $this->_projectId ?>">
+      Manage Deployment Process
+    </a></li>
+</ul>
+
 <div class="clearfix"></div>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
@@ -53,13 +64,15 @@
       <td>
         <?php foreach($states as $state): ?>
           <?= $this->getPlatformName($state->platformId) ?>:
-          <span class="text-<?= $this->stateClass(
+          <span class="text-<?=
+          $this->stateClass(
             $state->state
           ) ?>"><?= $state->state ?></span><br/>
         <?php endforeach; ?>
       </td>
       <td>
-        <?= substr($v->fromCommitHash, 0, 8); ?> - <?= substr(
+        <?= substr($v->fromCommitHash, 0, 8); ?> - <?=
+        substr(
           $v->toCommitHash,
           0,
           8

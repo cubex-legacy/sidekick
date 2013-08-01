@@ -33,9 +33,11 @@ class DefaultController extends DiffuseController
 {
   public function renderIndex()
   {
-    $state=$this->_request->getVariables("stateSelect");
-    $platform=$this->_request->getVariables("allPlatforms");
-    return $this->createView(new HomePage($state, ($platform != null)? true : false));
+    $state    = $this->_request->getVariables("stateSelect");
+    $platform = $this->_request->getVariables("allPlatforms");
+    return $this->createView(
+      new HomePage($state, ($platform != null) ? true : false)
+    );
   }
 
   /*
@@ -46,26 +48,32 @@ class DefaultController extends DiffuseController
    */
   public function ajaxIndex()
   {
-    $requestedState=$this->_request->postVariables("state");
-    $allPlatforms=($this->_request->postVariables("allplatforms")=="true") ? true : false;
-    $versions=Version::collection()->loadAll();
-    $json=new \StdClass;
+    $requestedState = $this->_request->postVariables("state");
+    $allPlatforms   = ($this->_request->postVariables(
+      "allplatforms"
+    ) == "true") ? true : false;
+    $versions       = Version::collection()->loadAll();
+    $json           = new \StdClass;
     foreach($versions as $version)
     {
 
-      $versionObj=new \StdClass;
-      $project=new Project($version->projectId);
-      $versionObj->projectid=$version->projectId;
-      $versionObj->project=$project->name;
-      $versionObj->version=$version->major . "." . $version->minor . "." . $version->build;
-      $versionObj->type=$version->type;
-      $versionObj->states=$this->getStatesForVersion($version->id, $requestedState, $allPlatforms);
-      if($versionObj->states==null)
+      $versionObj            = new \StdClass;
+      $project               = new Project($version->projectId);
+      $versionObj->projectid = $version->projectId;
+      $versionObj->project   = $project->name;
+      $versionObj->version   = $version->major . "." . $version->minor . "." . $version->build;
+      $versionObj->type      = $version->type;
+      $versionObj->states    = $this->getStatesForVersion(
+        $version->id,
+        $requestedState,
+        $allPlatforms
+      );
+      if($versionObj->states == null)
       {
         continue;
       }
-      $versionObj->updated=date("d/M/Y",strtotime($version->updatedAt));
-      $json->{$version->id}=$versionObj;
+      $versionObj->updated  = date("d/M/Y", strtotime($version->updatedAt));
+      $json->{$version->id} = $versionObj;
     }
     return new Response($json);
   }
@@ -79,24 +87,28 @@ class DefaultController extends DiffuseController
    * Returns null if $allPlatforms is true and not all of the states equal $requestedState
    * Returns the stdclass otherwise
    */
-  public function getStatesForVersion($versionId, $requestedState, $allPlatforms)
+  public function getStatesForVersion(
+    $versionId, $requestedState, $allPlatforms
+  )
   {
-    $states=PlatformVersionState::collection()->loadWhere(["version_id"=>$versionId]);
-    $stateObj=new \StdClass;
-    $hasRequestedState=false;
-    $hasAllRequestedStates=true;
+    $states                = PlatformVersionState::collection()->loadWhere(
+      ["version_id" => $versionId]
+    );
+    $stateObj              = new \StdClass;
+    $hasRequestedState     = false;
+    $hasAllRequestedStates = true;
     foreach($states as $state)
     {
-      if($state->state==$requestedState)
+      if($state->state == $requestedState)
       {
-        $hasRequestedState=true;
+        $hasRequestedState = true;
       }
       else
       {
-        $hasAllRequestedStates=false;
+        $hasAllRequestedStates = false;
       }
-      $platform=new Platform($state->platformId);
-      $stateObj->{$platform->name}=$state->state;
+      $platform                    = new Platform($state->platformId);
+      $stateObj->{$platform->name} = $state->state;
     }
     if(!$hasRequestedState || ($allPlatforms && !$hasAllRequestedStates))
     {
@@ -109,7 +121,9 @@ class DefaultController extends DiffuseController
   {
     $projectId = $this->getInt('projectId');
 
-    $versions = Version::collection(['project_id' => $projectId])->load();
+    $versions = Version::collection(['project_id' => $projectId])
+    ->load()
+    ->setOrderBy("updated_at", "DESC");
     return new VersionsList($versions, $projectId);
   }
 
@@ -445,7 +459,7 @@ class DefaultController extends DiffuseController
       $list->nestElement(
         "li",
         ($page == $platform->name) ? $active : [],
-        "<a href='/diffuse/platform/$project/$version/" . $platform->id . "'>" . $platform->name . "</a>"
+      "<a href='/diffuse/platform/$project/$version/" . $platform->id . "'>" . $platform->name . "</a>"
       );
     }
     return $list;

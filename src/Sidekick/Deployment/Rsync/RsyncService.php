@@ -29,14 +29,21 @@ class RsyncService extends BaseDeploymentService
     }
 
     //-z optional (disable for lan sync)
-    $options = $cfg->getStr('options', 'z'); //Get options
+    $options = $cfg->getStr('options', 'zp'); //Get options
+    //--chmod=u=rwX,go=rX
+    //--chmod=Du+rwx,og-w,Dog+rx,Fu+rw,Fog+r,F-x
 
     foreach($this->_hosts as $stageHost)
     {
       $host = $stageHost->host();
+      if($host->sshPort < 1)
+      {
+        $host->sshPort = 22;
+      }
 
       //Automatically deploy with hard links
-      $cmd = 'rsync --chmod=u=rwX,go=rX -aH' . $options . ' --link-dest ';
+      $cmd = "rsync --rsh='ssh -p $host->sshPort'";
+      $cmd .= ' -rltH' . $options . ' --link-dest ';
 
       //Remote Old Version Path
       $cmd .= build_path_unix(

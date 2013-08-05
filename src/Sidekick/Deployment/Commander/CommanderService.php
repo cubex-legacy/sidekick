@@ -19,6 +19,7 @@ class CommanderService extends BaseDeploymentService
     $exitCodes = $cfg->getArr("exit_codes", [0]);
 
     //ssh {username}@{server} "ln -fns /home/cubex.nginx/{version_format} /home/cubex.nginx/stage; super restartphp"
+    //ssh {username}@{server} -p {sshport} "ln -fns /home/cubex.nginx/{version_format} /home/cubex.nginx/stage; super restartphp
 
     if($command === null)
     {
@@ -35,6 +36,7 @@ class CommanderService extends BaseDeploymentService
         '{username}',
         '{server}',
         '{hostname}',
+        '{sshport}',
         '{ipv4}',
         '{ipv6}',
         '{version_format}',
@@ -54,6 +56,7 @@ class CommanderService extends BaseDeploymentService
         $host->username,
         $host->getConnPreference(),
         $host->hostname,
+        $host->sshPort,
         $host->ipv4,
         $host->ipv6,
         $this->_version->format(),

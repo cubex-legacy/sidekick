@@ -15,6 +15,7 @@ class Host extends RecordMapper
   public $username = 'root';
   public $ipv4;
   public $ipv6;
+  public $sshPort = 22;
   /**
    * @enumclass \Sidekick\Components\Diffuse\Enums\ConnectType
    */

@@ -59,7 +59,14 @@ class Deploy extends CliCommand
     $deployment->projectId  = $project->id();
     $deployment->saveChanges();
 
-    $hosts = HostPlatform::collectionOn($platform)->preFetch("host");
+    $hosts = HostPlatform::collection(
+      [
+      "platform_id" => $platform->id(),
+      "project_id"  => $project->id()
+      ]
+    )
+    ->preFetch("host");
+
     if(!$hosts)
     {
       throw new \Exception("No Hosts have been assigned to this platform");
@@ -95,7 +102,7 @@ class Deploy extends CliCommand
              * @var $hostPlat \Sidekick\Components\Diffuse\Mappers\HostPlatform
              */
             $stageHost                    = new DeploymentStageHost();
-            $stageHost->hostId            = $hostPlat->host()->id();
+            $stageHost->hostId            = $hostPlat->hostId;
             $stageHost->deploymentId      = $deployment->id();
             $stageHost->deploymentStageId = $stage->id();
             $diffuser->addHost($stageHost);

@@ -65,6 +65,8 @@ class HostController extends DiffuseController
     $form->addTextElement('hostname', $host->hostname);
     $form->addTextElement('ipv4', $host->ipv4);
     $form->addTextElement('ipv6', $host->ipv6);
+    $form->addTextElement('username', $host->username);
+    $form->addNumberElement('sshPort', $host->sshPort);
     $form->addSubmitElement('Update');
 
     return new RenderGroup(

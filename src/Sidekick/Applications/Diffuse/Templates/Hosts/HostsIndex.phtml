@@ -24,6 +24,7 @@
     <th>Host Name</th>
     <th>Ipv 4</th>
     <th>Ipv 6</th>
+    <th>SSH Port</th>
     <th></th>
   </tr>
   <?php foreach($this->getHosts() as $host): ?>
@@ -32,6 +33,7 @@
       <td><?= $host->hostname; ?></td>
       <td><?= $host->ipv4; ?></td>
       <td><?= $host->ipv6; ?></td>
+      <td><?= $host->sshPort; ?></td>
       <td>
         <a href="<?= $this->baseUri() . '/' . $host->id(); ?>/edit"
            title="Edit"><i class="icon-edit"></i></a>

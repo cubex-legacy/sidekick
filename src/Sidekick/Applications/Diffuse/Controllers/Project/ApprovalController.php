@@ -4,13 +4,14 @@
  * Date: 03/07/13 14:15
  */
 
-namespace Sidekick\Applications\Diffuse\Controllers;
+namespace Sidekick\Applications\Diffuse\Controllers\Project;
 
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\RenderGroup;
-use Sidekick\Applications\Diffuse\Views\ApprovalConfigurationPage;
+use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
+use Sidekick\Applications\Diffuse\Views\Project\ApprovalConfigurationPage;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Sidekick\Enums\Consistency;
 use Sidekick\Components\Users\Enums\UserRole;
@@ -27,7 +28,10 @@ class ApprovalController extends DiffuseController
 
   public function renderIndex()
   {
-    return new RenderGroup("<h1>Approval Configuration</h1>", "<p>Select a project on the left to see the approval configuration</p>");
+    return new RenderGroup(
+      "<h1>Approval Configuration</h1>",
+      "<p>Select a project on the left to see the approval configuration</p>"
+    );
   }
 
   public function renderApproval()
@@ -64,7 +68,7 @@ class ApprovalController extends DiffuseController
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Configuration created successfully';
-    Redirect::to($this->baseUri() . "/" . $ac->projectId)->with('msg', $msg)
+    Redirect::to($this->baseUri())->with('msg', $msg)
     ->now();
   }
 
@@ -83,15 +87,16 @@ class ApprovalController extends DiffuseController
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Configuration deleted successfully';
-    Redirect::to($this->baseUri() . '/' . $project)->with('msg', $msg)->now();
+    Redirect::to($this->baseUri())->with('msg', $msg)->now();
   }
 
   public function getRoutes()
   {
     return [
-      '/:projectId'                        => 'approval',
-      '/:projectId/:platform'              => 'configure',
-      '/:projectId/:platform/:role/delete' => 'delete',
+      '/'                       => 'approval',
+      '/:platform'              => 'approval',
+      '/:platform/new'          => 'configure',
+      '/:platform/:role/delete' => 'delete',
     ];
   }
 }

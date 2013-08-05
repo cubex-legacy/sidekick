@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace Sidekick\Applications\Diffuse\Controllers;
+namespace Sidekick\Applications\Diffuse\Controllers\Project;
 
 use Cubex\Facade\Redirect;
 use Cubex\View\HtmlElement;
@@ -16,21 +16,21 @@ use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
+use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
-use Sidekick\Applications\Diffuse\Views\VersionPlatform;
+use Sidekick\Applications\Diffuse\Views\Project\VersionPlatform;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 use Sidekick\Components\Sidekick\Enums\Consistency;
 
-class VersionPlatformController extends DiffuseController
+class VersionsPlatformController extends DiffuseProjectController
 {
-
   public function renderIndex()
   {
     Redirect::to("/diffuse")->now();
   }
 
-  public function renderVersionPlatform()
+  public function renderPlatform()
   {
     $projectID  = $this->getInt("projectId");
     $versionID  = $this->getInt("versionId");
@@ -71,7 +71,7 @@ class VersionPlatformController extends DiffuseController
     return new VersionPlatform($platformID, $projectID, $versionID, $nav);
   }
 
-  public function postVersionPlatform()
+  public function postPlatform()
   {
     $role                 = $this->_request->postVariables("role");
     $action               = $this->_request->postVariables("Action");
@@ -306,39 +306,58 @@ class VersionPlatformController extends DiffuseController
     ->with("msg", $msg)->now();
   }
 
-  public function getNav($page = "")
+  public function renderDeploy()
   {
-    $project = $this->getInt("projectId");
-    $version = $this->getInt("versionId");
-    $active  = ["class" => "active"];
-    $list    = new HTMLElement("ul", ["class" => "nav nav-tabs"]);
-    $list->nestElement(
-      "li",
-      ($page == "") ? $active : [],
-      "<a href='/diffuse/$project/$version/'>Version Details</a>"
-    );
-    $list->nestElement(
-      "li",
-      ($page == "changelog") ? $active : [],
-      "<a href='/diffuse/$project/$version/changelog'>Change Log</a>"
-    );
-    $platforms = Platform::collection()->loadAll();
-    foreach($platforms as $platform)
+    $projectId  = $this->getInt('projectId');
+    $versionId  = $this->getInt('versionId');
+    $platformId = $this->getInt('platform');
+    $platform   = Platform::collection()->loadOneWhere(["id" => $platformId]);
+    //Is it allowed?
+    foreach($platform->requiredPlatforms as $required)
     {
-      $list->nestElement(
-        "li",
-        ($page == $platform->name) ? $active : [],
-        "<a href='/diffuse/platform/$project/$version/" . $platform->id . "'>" . $platform->name . "</a>"
+      $pvs = PlatformVersionState::collection()->loadOneWhere(
+        ["platform_id" => $required, "version_id" => $versionId]
       );
+      if($pvs == null || $pvs->state != VersionState::APPROVED)
+      {
+        $msg       = new \stdClass();
+        $msg->type = 'error';
+        $msg->text = 'Version is not approved on a required previous platform';
+        Redirect::to(
+          $this->baseUri() . '/' . $projectId . '/' . $versionId
+        )
+        ->with('msg', $msg)->now();
+      }
     }
-    return $list;
+    $deployment = new Deployment();
+    $deployment->hydrate(
+      [
+      "version_id"  => $versionId,
+      "platform_id" => $platformId,
+      "user_id"     => \Auth::user()->getId(),
+      "project_id"  => $projectId,
+      "deployed_on" => date("Y-m-d"),
+      "comment"     => ""
+      ]
+    );
+    $deployment->saveChanges();
+
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Version deployed successfully';
+    Redirect::to(
+      $this->baseUri(
+      ) . '/platform/' . $projectId . '/' . $versionId . '/' . $platformId
+    )
+    ->with('msg', $msg)->now();
   }
 
   public function getRoutes()
   {
     return [
-      '/:projectId/:versionId@num/:platform'         => 'versionPlatform',
-      '/:projectId/:versionId@num/:platform/refresh' => 'versionRefresh'
+      ':platform'         => 'platform',
+      ':platform/refresh' => 'refresh',
+      ':platform/deploy'  => 'deploy',
     ];
   }
 }

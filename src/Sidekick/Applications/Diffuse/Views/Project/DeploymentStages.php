@@ -7,30 +7,36 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace Sidekick\Applications\Diffuse\Views;
+namespace Sidekick\Applications\Diffuse\Views\Project;
 
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 
 class DeploymentStages extends TemplatedViewModel
 {
+  /**
+   * @var \Sidekick\Components\Diffuse\Mappers\DeploymentStage[]
+   */
+  protected $_stages;
+  protected $_projectId;
 
-  public function __construct()
+  public function __construct($projectId,$stages)
   {
+    $this->_projectId = $projectId;
+    $this->_stages = $stages;
   }
 
   public function getDeploymentStages()
   {
-    return DeploymentStage::collection()->loadAll();
+    return $this->_stages;
   }
 
   public function getDetails($details)
   {
-    if($details==null)
+    if($details == null)
     {
-      return new HTMLElement("p",[],"");
+      return new HTMLElement("p", [], "");
     }
     $render = new RenderGroup();
     foreach($details as $key => $value)

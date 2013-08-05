@@ -9,7 +9,7 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
-use Sidekick\Applications\Diffuse\Views\PlatformIndex;
+use Sidekick\Applications\Diffuse\Views\Platforms\PlatformIndex;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Fortify\Mappers\Build;
 
@@ -23,8 +23,9 @@ class PlatformController extends DiffuseController
 
   public function renderCreate()
   {
-    $build = Build::collection()->loadAll()->getKeyPair('id', 'name');
-    $platforms = Platform::collection()->loadAll()->getKeyPair("id","name");
+    $build     = Build::collection()->loadAll()->getKeyPair('id', 'name');
+    $platforms = Platform::collection()->loadAll()->getKeyPair("id", "name");
+
     $form = new Form('createPlatform', '');
     $form->addTextElement('name');
     $form->addTextareaElement('description');
@@ -33,6 +34,7 @@ class PlatformController extends DiffuseController
     $form->addSubmitElement('Create');
     $form->getElement('requiredBuilds[]')->setLabel('Required Builds');
     $form->getElement('requiredPlatforms[]')->setLabel('Required Platforms');
+
     return new RenderGroup(
       '<h1>Create Platform</h1>',
       $form
@@ -44,9 +46,11 @@ class PlatformController extends DiffuseController
     $platform = new Platform();
     $platform->hydrate($this->request()->postVariables());
     $platform->saveChanges();
+
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Platform was successfully created - ';
+
     Redirect::to($this->baseUri())->with(
       'msg',
       $msg
@@ -58,12 +62,15 @@ class PlatformController extends DiffuseController
     $platformId    = $this->getInt('platformId');
     $platform      = new Platform($platformId);
     $build         = Build::collection()->loadAll()->getKeyPair('id', 'name');
-    $platforms = Platform::collection()->loadAll()->getKeyPair("id","name");
+    $platforms     = Platform::collection()->loadAll()->getKeyPair(
+      "id",
+      "name"
+    );
     $selectedBuild = [];
     if(is_array($platform->requiredBuilds))
     {
       $selectedBuild = Build::collection()->loadIds($platform->requiredBuilds)
-                       ->getUniqueField('id');
+      ->getUniqueField('id');
     }
 
     $form = new Form('editPlatform', '');
@@ -71,7 +78,11 @@ class PlatformController extends DiffuseController
     $form->addTextElement('name', $platform->name);
     $form->addTextareaElement('description', $platform->description);
     $form->addCheckboxElements('requiredBuilds[]', $selectedBuild, $build);
-    $form->addCheckboxElements('requiredPlatforms[]', $platform->requiredPlatforms, $platforms);
+    $form->addCheckboxElements(
+      'requiredPlatforms[]',
+      $platform->requiredPlatforms,
+      $platforms
+    );
     $form->addSubmitElement('Update');
     $form->getElement('requiredBuilds[]')->setLabel('Required Builds');
     $form->getElement('requiredPlatforms[]')->setLabel('Required Platforms');
@@ -86,9 +97,11 @@ class PlatformController extends DiffuseController
     $platform = new Platform();
     $platform->hydrateFromUnserialized($this->request()->postVariables());
     $platform->saveChanges();
+
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Platform was successfully updated - ';
+
     Redirect::to($this->baseUri())->with(
       'msg',
       $msg
@@ -104,6 +117,7 @@ class PlatformController extends DiffuseController
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Platform was successfully deleted';
+
     Redirect::to($this->baseUri())->with(
       'msg',
       $msg
@@ -114,8 +128,8 @@ class PlatformController extends DiffuseController
   {
     return [
       '/create'             => 'create',
-      '/edit/:platformId'   => 'edit',
-      '/delete/:platformId' => 'delete'
+      '/:platformId/edit'   => 'edit',
+      '/:platformId/delete' => 'delete'
     ];
   }
 }

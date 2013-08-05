@@ -10,12 +10,12 @@ use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Views\HostPage;
-use Sidekick\Applications\Diffuse\Views\HostsIndex;
+use Sidekick\Applications\Diffuse\Views\Hosts\HostsIndex;
 use Sidekick\Components\Diffuse\Mappers\Host;
 use Sidekick\Components\Diffuse\Mappers\HostPlatform;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 
-class HostsController extends DiffuseController
+class HostController extends DiffuseController
 {
   public function renderIndex()
   {
@@ -106,9 +106,9 @@ class HostsController extends DiffuseController
   public function getRoutes()
   {
     return [
-      '/create'                              => 'create',
-      '/edit/:hostId'                        => 'edit',
-      '/delete/:hostId'                      => 'delete'
+      '/create'         => 'create',
+      '/:hostId/edit'   => 'edit',
+      '/:hostId/delete' => 'delete'
     ];
   }
 }

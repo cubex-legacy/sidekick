@@ -4,7 +4,7 @@
  * Date: 02/07/13 13:21
  */
 
-namespace Sidekick\Applications\Diffuse\Views;
+namespace Sidekick\Applications\Diffuse\Views\Project;
 
 use Cubex\Facade\Auth;
 use Cubex\Form\Form;

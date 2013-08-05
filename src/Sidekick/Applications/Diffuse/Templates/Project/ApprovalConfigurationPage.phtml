@@ -3,7 +3,7 @@
  * Author: oke.ugwu
  * Date: 02/07/13 17:16
  *
- * @var $this \Sidekick\Applications\Diffuse\Views\ApprovalConfigurationPage
+ * @var $this \Sidekick\Applications\Diffuse\Views\Project\ApprovalConfigurationPage
  */
 ?>
 <h1>Approval Configuration</h1>
@@ -27,7 +27,7 @@
   <?php foreach($this->getPlatforms() as $platform): ?>
     <tr class="info">
       <td colspan="3"><strong><?= $platform->name ?></strong></td>
-      <td><a href="/diffuse/approval/<?= $this->projectId . "/" . $platform->id ?>" title="Create"><i class="icon-plus"></i></a></td>
+      <td><a href="/diffuse/<?= $this->projectId; ?>/approval/<?= $platform->id ?>/new" title="Create"><i class="icon-plus"></i></a></td>
     </tr>
     <?php
       $ac = $this->getConfigurations($platform->id);
@@ -44,7 +44,7 @@
         <td><?= $a->role ?></td>
         <td><?= $a->consistency_level ?></td>
         <td><?= ($a->required) ? "Yes" : "No" ?></td>
-        <td><a href="<?= $this->projectId . "/" . $platform->id . "/" . $a->role ?>/delete" title="Delete"><i class="icon-trash"></i></a></td>
+        <td><a href="/diffuse/<?= $this->projectId; ?>/approval/<?= $platform->id . "/" . $a->role ?>/delete" title="Delete"><i class="icon-trash"></i></a></td>
       </tr>
     <?php
        endforeach;

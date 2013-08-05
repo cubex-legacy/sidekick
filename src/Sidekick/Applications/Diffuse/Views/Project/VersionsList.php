@@ -4,7 +4,7 @@
  * Date: 02/07/13 12:13
  */
 
-namespace Sidekick\Applications\Diffuse\Views;
+namespace Sidekick\Applications\Diffuse\Views\Project;
 
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;

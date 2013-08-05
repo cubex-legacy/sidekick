@@ -67,11 +67,6 @@ class BaseControl extends WebpageController
     return new Header($project);
   }
 
-  public function renderIndex()
-  {
-    echo "Hey";
-  }
-
   public function defaultAction()
   {
     return "index";

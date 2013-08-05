@@ -14,7 +14,7 @@
   </div>
 <?php endif; ?>
 <p class="pull-right">
-  <a class="btn btn-info" href="/diffuse/platformhost/<?= $this->_projectId ?>/add">Add Platform Host</a>
+  <a class="btn btn-info" href="/diffuse/<?= $this->_projectId ?>/hosts/new">Add Platform Host</a>
 </p>
 <ul class="nav nav-tabs">
   <?php foreach($this->getPlatforms() as $platform): ?>
@@ -34,7 +34,7 @@
     <tr>
       <td><?= $this->getHostName($hp->host_id) ?></td>
       <td>
-        <a href="/diffuse/platformhost/<?= $hp->project_id . "/" . $hp->platform_id . "/" . $hp->host_id ?>/delete">
+        <a href="/diffuse/<?= $hp->project_id . "/hosts/" . $hp->platform_id . "/" . $hp->host_id ?>/delete">
           <i class="icon icon-trash"></i>
         </a>
       </td>

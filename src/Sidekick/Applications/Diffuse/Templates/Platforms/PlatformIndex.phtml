@@ -2,7 +2,7 @@
 /**
  * @author: oke.ugwu
  *        Application: Projects
- * @var $this \Sidekick\Applications\Diffuse\Views\PlatformIndex
+ * @var $this \Sidekick\Applications\Diffuse\Views\Platforms\PlatformIndex
  */
 ?>
 <h1>Deployment Platforms</h1>
@@ -42,12 +42,12 @@
           ); ?>
         <?php endif; ?>
       </td>
-      <td><?= implode(",",$platform->requiredPlatforms); ?></td>
+      <td><?= implode(",", $platform->requiredPlatforms); ?></td>
       <td><?= date('d/M/Y', strtotime($platform->updated_at)); ?></td>
       <td>
-        <a href="<?= $this->baseUri() . '/edit/' . $platform->id; ?>"
+        <a href="<?= $this->baseUri() . '/' . $platform->id; ?>/edit"
            title="Edit"><i class="icon-edit"></i></a>
-        <a href="<?= $this->baseUri() . '/delete/' . $platform->id; ?>"
+        <a href="<?= $this->baseUri() . '/' . $platform->id; ?>/delete"
            title="Delete"><i class="icon-trash"></i></a>
       </td>
     </tr>

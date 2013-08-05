@@ -14,18 +14,25 @@ class DiffuseApp extends BaseApp
   public function getRoutes()
   {
     return [
-      'projects/(.*)'     => 'ProjectController',
-      'platforms/(.*)'    => 'PlatformController',
-      'hosts/(.*)'        => 'HostsController',
-      'approval/(.*)'     => 'ApprovalController',
-      'platform/(.*)'     => 'VersionPlatformController',
-      'platformhost/(.*)' => 'PlatformHostController'
+      '/'               => 'DefaultController',
+      '/hosts/(.*)'     => 'HostController',
+      '/platforms/(.*)' => 'PlatformController',
+      '/:projectId@num' => [
+        '/stages/(.*)'             => 'Project\StagesController',
+        '/approval/(.*)'           => 'Project\ApprovalController',
+        '/hosts/(.*)'              => 'Project\HostsController',
+        '/v/new'                   => 'Project\VersionsController@new',
+        '/v/:versionId@num/p/(.*)' => 'Project\VersionsPlatformController',
+        '/v/:versionId@num/(.*)'   => 'Project\VersionsController',
+        '/v/(.*)'                  => 'Project\VersionsController',
+        '/'                        => 'Project\DiffuseProjectController',
+      ]
     ];
   }
 
   public function defaultController()
   {
-    return new DefaultController();
+    return null; //return new DefaultController();
   }
 
   public function getNavGroup()
@@ -36,7 +43,7 @@ class DiffuseApp extends BaseApp
   public function getBundles()
   {
     return [
-      //      new DebuggerBundle()
+      //new DebuggerBundle()
     ];
   }
 

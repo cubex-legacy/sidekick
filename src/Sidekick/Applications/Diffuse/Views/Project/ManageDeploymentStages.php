@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace Sidekick\Applications\Diffuse\Views;
+namespace Sidekick\Applications\Diffuse\Views\Project;
 
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
@@ -16,7 +16,7 @@ use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Projects\Mappers\Project;
 
-class DeploymentStagesAddEdit extends TemplatedViewModel
+class ManageDeploymentStages extends TemplatedViewModel
 {
 
   protected $_stage;
@@ -51,7 +51,7 @@ class DeploymentStagesAddEdit extends TemplatedViewModel
 
     $form->addSubmitElement(
       ($this->_stage->id(
-        ) == null) ? "Create Deployment Stage" : "Update Deployment Stage"
+      ) == null) ? "Create Deployment Stage" : "Update Deployment Stage"
     );
     return $form;
   }

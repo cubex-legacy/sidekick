@@ -7,30 +7,23 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace Sidekick\Applications\Diffuse\Controllers;
+namespace Sidekick\Applications\Diffuse\Controllers\Project;
 
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
-use Sidekick\Applications\Diffuse\Views\PlatformHost;
+use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
+use Sidekick\Applications\Diffuse\Views\Project\PlatformHost;
 use Sidekick\Components\Diffuse\Mappers\Host;
 use Sidekick\Components\Diffuse\Mappers\HostPlatform;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 
-class PlatformHostController extends DiffuseController
+class HostsController extends DiffuseController
 {
 
   public function renderIndex()
-  {
-    $render = new RenderGroup();
-    $render->add(new HtmlElement("h1", [], "Platform Hosts"));
-    $render->add(new HtmlElement("p", [], "Select a project"));
-    return $render;
-  }
-
-  public function renderManage()
   {
     return new PlatformHost($this->getInt("projectId"));
   }
@@ -72,7 +65,7 @@ class PlatformHostController extends DiffuseController
     $msg->type = "success";
     $msg->text = "Platform Host created successfully";
     Redirect::to(
-      $this->baseUri() . "/" . $project
+      $this->baseUri()
     )
     ->with("msg", $msg)->now();
   }
@@ -94,7 +87,7 @@ class PlatformHostController extends DiffuseController
     $msg->type = "success";
     $msg->text = "Platform Host deleted successfully";
     Redirect::to(
-      $this->baseUri() . "/" . $projectId
+      $this->baseUri()
     )
     ->with("msg", $msg)->now();
   }
@@ -102,9 +95,9 @@ class PlatformHostController extends DiffuseController
   public function getRoutes()
   {
     return [
-      "/:projectId"                            => "manage",
-      "/:projectId/add"                        => "add",
-      "/:projectId/:platformId/:hostId/delete" => "delete"
+      "/"                           => "index",
+      "/new"                        => "add",
+      "/:platformId/:hostId/delete" => "delete"
     ];
   }
 }

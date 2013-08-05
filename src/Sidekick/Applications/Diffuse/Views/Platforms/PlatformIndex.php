@@ -4,7 +4,7 @@
  * Date: 03/07/13 10:29
  */
 
-namespace Sidekick\Applications\Diffuse\Views;
+namespace Sidekick\Applications\Diffuse\Views\Platforms;
 
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Fortify\Mappers\Build;

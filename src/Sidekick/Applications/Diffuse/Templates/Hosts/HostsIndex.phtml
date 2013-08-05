@@ -2,7 +2,7 @@
 /**
  * @author: oke.ugwu
  *        Application: Projects
- * @var $this \Sidekick\Applications\Diffuse\Views\HostsIndex
+ * @var $this \Sidekick\Applications\Diffuse\Views\Hosts\HostsIndex
  */
 ?>
 <h1>Deployment Hosts</h1>
@@ -33,9 +33,9 @@
       <td><?= $host->ipv4; ?></td>
       <td><?= $host->ipv6; ?></td>
       <td>
-        <a href="<?= $this->baseUri() . '/edit/' . $host->id(); ?>"
+        <a href="<?= $this->baseUri() . '/' . $host->id(); ?>/edit"
            title="Edit"><i class="icon-edit"></i></a>
-        <a href="<?= $this->baseUri() . '/delete/' . $host->id(); ?>"
+        <a href="<?= $this->baseUri() . '/' . $host->id(); ?>/delete"
            title="Delete"><i class="icon-trash"></i></a>
       </td>
     </tr>

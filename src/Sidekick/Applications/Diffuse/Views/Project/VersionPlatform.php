@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace Sidekick\Applications\Diffuse\Views;
+namespace Sidekick\Applications\Diffuse\Views\Project;
 
 use Cubex\Form\Form;
 use Cubex\View\HtmlElement;
@@ -75,11 +75,11 @@ class VersionPlatform extends TemplatedViewModel
   public function getActionHistory()
   {
     $actions = Action::collection()->loadWhere(
-                 [
-                 "platform_id" => $this->_platformID,
-                 "version_id"  => $this->_versionID
-                 ]
-               )->setOrderBy("updated_at", "DESC");
+      [
+      "platform_id" => $this->_platformID,
+      "version_id"  => $this->_versionID
+      ]
+    )->setOrderBy("updated_at", "DESC");
     return $actions;
   }
 
@@ -118,9 +118,9 @@ class VersionPlatform extends TemplatedViewModel
   {
     if($this->_state != VersionState::REJECTED)
     {
-      $container = new HTMLElement("p");
+      $container = new HtmlElement("p");
       $container->nest(
-        new HTMLElement("a", [
+        new HtmlElement("a", [
                              "class" => "btn btn-primary",
                              "href"  => "/diffuse/" . $this->_projectID . "/" . $this->_versionID . "/" . $this->_platformID . "/deploy"
                              ], "Deploy to " . $this->_platform->name)
@@ -129,7 +129,7 @@ class VersionPlatform extends TemplatedViewModel
     }
     else
     {
-      return new HTMLElement("p", [], "This version cannot be deployed");
+      return new HtmlElement("p", [], "This version cannot be deployed");
     }
   }
 

@@ -4,7 +4,7 @@
  * Date: 02/07/13 17:16
  */
 
-namespace Sidekick\Applications\Diffuse\Views;
+namespace Sidekick\Applications\Diffuse\Views\Project;
 
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Applications\Diffuse\Forms\ApprovalConfigurationForm;

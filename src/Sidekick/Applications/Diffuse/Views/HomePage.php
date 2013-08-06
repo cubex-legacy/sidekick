@@ -32,8 +32,7 @@ class HomePage extends TemplatedViewModel
 
   public function getStates()
   {
-    $reflect = new \ReflectionClass(new VersionState);
-    return $reflect->getConstants();
+    return (new VersionState)->getConstList();
   }
 
   /*

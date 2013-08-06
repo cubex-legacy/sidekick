@@ -53,7 +53,7 @@ class BuildQueue extends CliCommand
     else
     {
       $buildIds = Build::collection(['build_level' => BuildLevel::BUILD])
-                  ->get()->loadedIds();
+      ->get()->loadedIds();
     }
 
     Log::debug("Build IDs Available: " . implode(',', $buildIds));
@@ -70,17 +70,21 @@ class BuildQueue extends CliCommand
         '-b',
         $buildId,
         '-p',
-        $project
+        $project,
+        '--echo-level',
+        $this->_logger->getEchoLevel(),
+        '--log-level',
+        $this->_logger->getLogLevel(),
       ];
 
       if($this->verbose)
       {
-        $rawArgs[] = '-v';
+        $rawArgs[] = '--verbose';
       }
 
       Log::debug("Starting Build");
 
-      $command = 'php ' . WEB_ROOT . DS . 'cubex ' . implode(' ', $rawArgs);
+      $command = 'php "' . WEB_ROOT . DS . 'cubex" ' . implode(' ', $rawArgs);
 
       Log::debug("Executing: $command");
 

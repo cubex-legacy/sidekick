@@ -122,7 +122,7 @@ class VersionPlatform extends TemplatedViewModel
       $container->nest(
         new HtmlElement("a", [
                              "class" => "btn btn-primary",
-                             "href"  => "/diffuse/" . $this->_projectID . "/" . $this->_versionID . "/" . $this->_platformID . "/deploy"
+                             "href"  => "/diffuse/" . $this->_projectID . "/v/" . $this->_versionID . "/p/" . $this->_platformID . "/deploy"
                              ], "Deploy to " . $this->_platform->name)
       );
       return $container;

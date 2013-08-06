@@ -8,6 +8,7 @@ namespace Sidekick\Components\Diffuse\Mappers;
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Enums\VersionType;
+use Sidekick\Components\Projects\Mappers\Project;
 
 /**
  * Class Version
@@ -84,5 +85,13 @@ class Version extends RecordMapper
   public function deployments()
   {
     return $this->hasMany(new Deployment());
+  }
+
+  /**
+   * @return Project
+   */
+  public function project()
+  {
+    return $this->belongsTo(new Project());
   }
 }

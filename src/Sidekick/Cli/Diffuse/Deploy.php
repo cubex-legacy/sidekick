@@ -24,6 +24,9 @@ class Deploy extends CliCommand
    * @valuerequired
    */
   public $versionId;
+
+  public $verbose;
+
   /**
    * @valuerequired
    */

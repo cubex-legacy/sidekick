@@ -7,6 +7,7 @@ namespace Sidekick\Deployment\Rsync;
 
 use Cubex\Cli\Shell;
 use Cubex\Data\Handler\DataHandler;
+use Cubex\Helpers\System;
 use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
@@ -29,9 +30,17 @@ class RsyncService extends BaseDeploymentService
     }
 
     //-z optional (disable for lan sync)
-    $options = $cfg->getStr('options', 'zp'); //Get options
-    //--chmod=u=rwX,go=rX
-    //--chmod=Du+rwx,og-w,Dog+rx,Fu+rw,Fog+r,F-x
+    $options = $cfg->getStr('options', 'z'); //Get options
+    if(System::isWindows())
+    {
+      //--chmod=u=rwX,go=rX
+      //--chmod=Du+rwx,og-w,Dog+rx,Fu+rw,Fog+r,F-x
+      $options .= " --chmod=Du+rwx,og-w,Dog+rx,Fu+rw,Fog+r,F-x";
+    }
+    else
+    {
+      $options .= "p";
+    }
 
     foreach($this->_hosts as $stageHost)
     {

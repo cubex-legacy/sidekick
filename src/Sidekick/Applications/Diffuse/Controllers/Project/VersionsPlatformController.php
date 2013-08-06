@@ -10,13 +10,13 @@
 namespace Sidekick\Applications\Diffuse\Controllers\Project;
 
 use Cubex\Facade\Redirect;
+use Cubex\Queue\StdQueue;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
-use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Applications\Diffuse\Views\Project\VersionPlatform;
@@ -98,8 +98,8 @@ class VersionsPlatformController extends DiffuseProjectController
         $msg->type = "error";
         $msg->text = "You are not a $role on this project";
         Redirect::to(
-          $this->baseUri(
-          ) . "/" . $projectID . "/" . $versionID . "/" . $platformID
+          $this->baseUri() .
+          "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
         )
         ->with("msg", $msg)->now();
       }
@@ -147,8 +147,8 @@ class VersionsPlatformController extends DiffuseProjectController
       $msg->type = "success";
       $msg->text = "Action executed successfully";
       Redirect::to(
-        $this->baseUri(
-        ) . "/" . $projectID . "/" . $versionID . "/" . $platformID
+        $this->baseUri() .
+        "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
       )
       ->with("msg", $msg)->now();
     }
@@ -178,8 +178,8 @@ class VersionsPlatformController extends DiffuseProjectController
       $msg->type = "success";
       $msg->text = "Comment added successfully";
       Redirect::to(
-        $this->baseUri(
-        ) . "/" . $projectID . "/" . $versionID . "/" . $platformID
+        $this->baseUri() .
+        "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
       )
       ->with("msg", $msg)->now();
     }
@@ -301,7 +301,8 @@ class VersionsPlatformController extends DiffuseProjectController
     $msg->type = "success";
     $msg->text = "Status refreshed successfully";
     Redirect::to(
-      $this->baseUri() . "/" . $projectID . "/" . $versionID . "/" . $platformID
+      $this->baseUri() .
+      "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
     )
     ->with("msg", $msg)->now();
   }
@@ -324,12 +325,18 @@ class VersionsPlatformController extends DiffuseProjectController
         $msg->type = 'error';
         $msg->text = 'Version is not approved on a required previous platform';
         Redirect::to(
-          $this->baseUri() . '/' . $projectId . '/' . $versionId
+          $this->baseUri() . '/' . $projectId . '/v/' . $versionId
         )
         ->with('msg', $msg)->now();
       }
     }
-    $deployment = new Deployment();
+
+    $deployRequest             = new \stdClass;
+    $deployRequest->platformId = $platformId;
+    $deployRequest->versionId  = $versionId;
+    \Queue::push(new StdQueue('DeployRequest'), $deployRequest);
+
+    /*$deployment = new Deployment();
     $deployment->hydrate(
       [
       "version_id"  => $versionId,
@@ -340,14 +347,13 @@ class VersionsPlatformController extends DiffuseProjectController
       "comment"     => ""
       ]
     );
-    $deployment->saveChanges();
+    $deployment->saveChanges();*/
 
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Version deployed successfully';
     Redirect::to(
-      $this->baseUri(
-      ) . '/platform/' . $projectId . '/' . $versionId . '/' . $platformId
+      '/diffuse/' . $projectId . '/v/' . $versionId . '/p/' . $platformId
     )
     ->with('msg', $msg)->now();
   }

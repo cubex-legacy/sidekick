@@ -98,7 +98,7 @@ class VersionsPlatformController extends DiffuseProjectController
         $msg->type = "error";
         $msg->text = "You are not a $role on this project";
         Redirect::to(
-          $this->baseUri() .
+          '/diffuse/' .
           "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
         )
         ->with("msg", $msg)->now();
@@ -118,8 +118,7 @@ class VersionsPlatformController extends DiffuseProjectController
         $msg->type = "error";
         $msg->text = "You have already performed '$action' on this project";
         Redirect::to(
-          $this->baseUri(
-          ) . "/" . $projectID . "/" . $versionID . "/" . $platformID
+          '/diffuse/' . "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
         )
         ->with("msg", $msg)->now();
       }
@@ -147,7 +146,7 @@ class VersionsPlatformController extends DiffuseProjectController
       $msg->type = "success";
       $msg->text = "Action executed successfully";
       Redirect::to(
-        $this->baseUri() .
+        '/diffuse/' .
         "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
       )
       ->with("msg", $msg)->now();
@@ -178,7 +177,7 @@ class VersionsPlatformController extends DiffuseProjectController
       $msg->type = "success";
       $msg->text = "Comment added successfully";
       Redirect::to(
-        $this->baseUri() .
+        '/diffuse/' .
         "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
       )
       ->with("msg", $msg)->now();
@@ -301,7 +300,7 @@ class VersionsPlatformController extends DiffuseProjectController
     $msg->type = "success";
     $msg->text = "Status refreshed successfully";
     Redirect::to(
-      $this->baseUri() .
+      '/diffuse/' .
       "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
     )
     ->with("msg", $msg)->now();
@@ -325,7 +324,7 @@ class VersionsPlatformController extends DiffuseProjectController
         $msg->type = 'error';
         $msg->text = 'Version is not approved on a required previous platform';
         Redirect::to(
-          $this->baseUri() . '/' . $projectId . '/v/' . $versionId
+          '/diffuse/' . $projectId . '/v/' . $versionId
         )
         ->with('msg', $msg)->now();
       }

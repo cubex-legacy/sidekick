@@ -32,7 +32,7 @@ class DiffuseProjectController extends DiffuseController
     $list->nestElement(
       "li",
       ($page == "") ? $active : [],
-      "<a href='/diffuse/$project/v/$version/'>Version Details</a>"
+      "<a href='/diffuse/$project/v/$version/'>Details</a>"
     );
     $list->nestElement(
       "li",

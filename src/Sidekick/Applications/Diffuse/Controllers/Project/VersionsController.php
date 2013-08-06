@@ -14,10 +14,10 @@ use Sidekick\Applications\Diffuse\Views\Project\VersionDetails;
 use Sidekick\Applications\Diffuse\Views\Project\VersionHistory;
 use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
-use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
+use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Mappers\Commit;
 
 class VersionsController extends DiffuseProjectController

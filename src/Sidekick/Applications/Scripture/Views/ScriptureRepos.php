@@ -17,7 +17,7 @@ class ScriptureRepos extends ViewModel
   /**
    * @var \Sidekick\Components\Projects\Mappers\Project[]
    */
-  protected $_projecs;
+  protected $_projects;
 
   public function __construct($repos, $currentProject = 0)
   {
@@ -25,14 +25,14 @@ class ScriptureRepos extends ViewModel
     {
       $repos = $repos->getIterator();
     }
-    $this->_projecs     = assert_instances_of((array)$repos, new Project());
+    $this->_projects     = assert_instances_of((array)$repos, new Project());
     $this->_currentRepo = $currentProject;
   }
 
   public function render()
   {
     $partial = new Partial('<li class="%s"><a href="%s">%s</a></li>');
-    foreach($this->_projecs as $project)
+    foreach($this->_projects as $project)
     {
       $link = $this->baseUri() . '/' . $project->id() . '/README';
       $partial->addElement(

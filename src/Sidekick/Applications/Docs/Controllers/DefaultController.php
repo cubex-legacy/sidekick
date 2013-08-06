@@ -36,6 +36,7 @@ class DefaultController extends BaseControl
   {
     $projectId = $this->getInt('projectId');
     $versions  = Version::collection(['project_id' => $projectId]);
+    $versions->setOrderBy('id', "DESC");
 
     if($versions->hasMappers())
     {
@@ -55,6 +56,13 @@ class DefaultController extends BaseControl
             $this->baseUri() . '/' . $projectId . '/' . $version->id(
             ) . '/view',
             VersionHelper::getVersionString($version)
+          );
+        }
+        else
+        {
+          $versionList->addElement(
+            '#',
+            (VersionHelper::getVersionString($version) . ' (No Data Found)')
           );
         }
       }
@@ -133,7 +141,7 @@ class DefaultController extends BaseControl
       ':projectId/:versionId/view'      => 'docview',
       ':projectId/:versionId/'          => 'doc',
       ':projectId/:versionId/:file@all' => 'doc',
-      ':projectId/'                     => 'index',
+      ':projectId'                      => 'index',
     ];
   }
 }

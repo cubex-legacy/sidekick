@@ -99,7 +99,7 @@ class VersionsPlatformController extends DiffuseProjectController
         $msg->text = "You are not a $role on this project";
         Redirect::to(
           '/diffuse/' .
-          "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
+          $projectID . "/v/" . $versionID . "/p/" . $platformID
         )
         ->with("msg", $msg)->now();
       }
@@ -118,7 +118,7 @@ class VersionsPlatformController extends DiffuseProjectController
         $msg->type = "error";
         $msg->text = "You have already performed '$action' on this project";
         Redirect::to(
-          '/diffuse/' . "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
+          '/diffuse/' . $projectID . "/v/" . $versionID . "/p/" . $platformID
         )
         ->with("msg", $msg)->now();
       }
@@ -147,7 +147,7 @@ class VersionsPlatformController extends DiffuseProjectController
       $msg->text = "Action executed successfully";
       Redirect::to(
         '/diffuse/' .
-        "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
+        $projectID . "/v/" . $versionID . "/p/" . $platformID
       )
       ->with("msg", $msg)->now();
     }
@@ -178,7 +178,7 @@ class VersionsPlatformController extends DiffuseProjectController
       $msg->text = "Comment added successfully";
       Redirect::to(
         '/diffuse/' .
-        "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
+        $projectID . "/v/" . $versionID . "/p/" . $platformID
       )
       ->with("msg", $msg)->now();
     }
@@ -301,7 +301,7 @@ class VersionsPlatformController extends DiffuseProjectController
     $msg->text = "Status refreshed successfully";
     Redirect::to(
       '/diffuse/' .
-      "/" . $projectID . "/v/" . $versionID . "/p/" . $platformID
+      $projectID . "/v/" . $versionID . "/p/" . $platformID
     )
     ->with("msg", $msg)->now();
   }

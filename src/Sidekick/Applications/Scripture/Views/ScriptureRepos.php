@@ -5,13 +5,12 @@
  */
 namespace Sidekick\Applications\Scripture\Views;
 
-use Cubex\Data\Refine\Refinements\PropertyEqual;
 use Cubex\Helpers\Strings;
+use Cubex\Mapper\Database\RecordCollection;
 use Cubex\View\HtmlElement;
 use Cubex\View\Partial;
 use Cubex\View\ViewModel;
 use Sidekick\Components\Projects\Mappers\Project;
-use Sidekick\Components\Repository\Mappers\Source;
 
 class ScriptureRepos extends ViewModel
 {
@@ -20,9 +19,13 @@ class ScriptureRepos extends ViewModel
    */
   protected $_projecs;
 
-  public function __construct($repositories, $currentProject = 0)
+  public function __construct($repos, $currentProject = 0)
   {
-    $this->_projecs     = assert_instances_of($repositories, new Project());
+    if($repos instanceof RecordCollection)
+    {
+      $repos = $repos->getIterator();
+    }
+    $this->_projecs     = assert_instances_of((array)$repos, new Project());
     $this->_currentRepo = $currentProject;
   }
 

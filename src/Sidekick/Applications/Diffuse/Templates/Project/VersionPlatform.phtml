@@ -1,10 +1,6 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: Sam.Waters
- * Date: 23/07/13
- * Time: 11:09
- * To change this template use File | Settings | File Templates.
+ * @var $this \Sidekick\Applications\Diffuse\Views\Project\VersionPlatform
  */
 ?>
 <h1 class="pull-right">Status: <span class="text-<?=
@@ -54,7 +50,10 @@
   </tbody>
 </table>
 <p>
-  <a class="btn btn-info btn-small" href="/diffuse/<?= $this->_projectID . "/v/" . $this->_versionID . "/p/" . $this->_platformID; ?>/refresh">Refresh Approval Status</a>
+  <a class="btn btn-info btn-small"
+     href="/diffuse/<?= $this->_projectID . "/v/" . $this->_versionID . "/p/" . $this->_platformID; ?>/refresh">Refresh
+                                                                                                                Approval
+                                                                                                                Status</a>
 </p>
 <div class="row-fluid">
   <div class="span6">
@@ -69,12 +68,24 @@
 </div>
 <h2>Action History</h2>
 <?php foreach($this->getActionHistory() as $action): ?>
-  <div class="comment">
-    <strong><?= $action->user()->displayName ?></strong>
-    (<?= $action->user_role ?>)
-    <small><?= date("d M Y H:i", strtotime($action->updatedAt)) ?></small>
-    <span class="label label-info"><?= $action->actionType ?></span>
+  <div class="media">
+    <a class="pull-left" href="#">
+      <img class="media-object"
+           src="http://www.gravatar.com/avatar/<?php echo md5(
+             strtolower($action->user()->email)
+           ); ?>?s=50">
+    </a>
 
-    <p><?= $action->comment ?></p>
+    <div class="media-body action-box <?php echo $action->actionType; ?>">
+      <h4 class="media-deading">
+        <?= $action->user()->displayName ?>
+        <small>(<?= $action->user_role ?>)</small>
+        <small class="pull-right">
+          <?= date("d M Y H:i", strtotime($action->updatedAt)) ?>
+        </small>
+      </h4>
+
+      <p><?= $action->comment ?></p>
+    </div>
   </div>
 <?php endforeach; ?>

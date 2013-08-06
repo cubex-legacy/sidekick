@@ -6,3 +6,31 @@
 #sidekick-logo img {
   margin-top: 7px;
 }
+
+.action-box .media-deading {
+  background: #F3F3F3;
+  margin:     -10px -10px 5px -10px;
+  padding:    3px 10px;
+}
+
+.action-box hr {
+  margin: 5px 0;
+}
+
+.action-box {
+  border:       1px solid;
+  border-right: 10px solid;
+  border-left:  10px solid;
+  border-color: #DDDDDD;
+  padding:      10px 10px 5px 10px;
+}
+
+.action-box.error,
+.action-box.reject {
+  border-color: #B20000;
+}
+
+.action-box.success,
+.action-box.approve {
+  border-color: #18820A;
+}

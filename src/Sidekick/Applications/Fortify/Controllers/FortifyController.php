@@ -39,7 +39,6 @@ use Thrift\Exception\TTransportException;
 
 class FortifyController extends BaseControl
 {
-
   public function getSidebar()
   {
     $projects    = Project::collection()->loadAll()->setOrderBy('name');

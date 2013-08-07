@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\Helpers\DateTimeHelper;
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Fortify\Mappers\Command;
 
 class BuildDetailsView extends TemplatedViewModel
 {

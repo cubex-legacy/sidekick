@@ -5,6 +5,7 @@
 
 namespace Sidekick\Components\Diffuse\Mappers;
 
+use Cubex\Helpers\DependencyArray;
 use Cubex\Mapper\Database\RecordMapper;
 
 /**
@@ -20,10 +21,26 @@ class Platform extends RecordMapper
    * (builds must cover every commit contained in version)
    */
   public $requiredBuilds = [];
-  public $requiredPlatforms=[];
+  public $requiredPlatforms = [];
+
   protected function _configure()
   {
     $this->_setSerializer("requiredBuilds");
     $this->_setSerializer("requiredPlatforms");
+  }
+
+  public static function orderedCollection()
+  {
+    $collection = static::collection();
+    $order      = new DependencyArray();
+    foreach($collection as $platform)
+    {
+      /**
+       * @var $platform self
+       */
+      $order->add($platform->id(), $platform->requiredPlatforms);
+    }
+    $collection->orderByKeys($order->getLoadOrder());
+    return $collection;
   }
 }

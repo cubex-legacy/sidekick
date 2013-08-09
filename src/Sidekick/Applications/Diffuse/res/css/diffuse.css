@@ -1,0 +1,57 @@
+.flow-container {
+  text-align: center;
+  padding:    20px 10px 10px 50px;
+}
+
+.flow-content {
+  position: relative;
+  width:    auto;
+  display:  inline-block;
+  margin:   0 auto;
+}
+
+.flow-container .progress {
+  position:   absolute;
+  left:       0px;
+  right:      40px;
+  top:        50%;
+  margin-top: -2px;
+}
+
+.flow-block {
+  padding:               10px 15px;
+  float:                 left;
+  border:                2px dashed #CCCCCC;
+  margin-right:          40px;
+  min-width:             60px;
+  background:            #FFF;
+  position:              relative;
+  -webkit-border-radius: 10px;
+  -moz-border-radius:    10px;
+  border-radius:         10px;
+}
+
+.flow-block.success {
+  border-color:     #5EB95E;
+  background-color: #E6FCE6;
+}
+
+.flow-block.warning {
+  border-color:     #FAA732;
+  background-color: #FCF3E6;
+}
+
+.flow-block.error {
+  border-color:     #C43A35;
+  background-color: #F7D8D7;
+}
+
+
+.bar-none,
+.progress .bar-none,
+.progress-striped .bar-none,
+.progress .bar + .bar.bar-none
+{
+  background:none;
+  box-shadow: none;
+}

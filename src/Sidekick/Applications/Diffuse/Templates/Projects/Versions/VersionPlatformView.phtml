@@ -1,0 +1,98 @@
+<?php
+/**
+ * @var $this Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView
+ */
+$deployments = $this->getDeployments();
+if(count($deployments) > 0):
+  ?>
+  <?= $this->getApprovalBoxes(); ?>
+
+  <button class="btn btn-primary pull-right">Deploy to Dev</button>
+  <h2>Deployments</h2>
+
+  <?php foreach($deployments as $deployment): ?>
+
+  <div class="media">
+    <a class="pull-left" href="#">
+      <img class="media-object"
+           src="http://www.gravatar.com/avatar/<?php echo md5(
+             strtolower('brooke@bajb.net')
+           ); ?>?s=50">
+    </a>
+
+    <div class="media-body action-box">
+      <h4 class="media-deading">
+        Dev Deployment
+        <small><a href="#">#<?php echo rand(23987, 4239753); ?></a></small>
+        <small class="pull-right">
+          <span class="text-success">PASSED</span> -
+          <?= date("d M Y H:i") ?>
+        </small>
+      </h4>
+      <p><?= $deployment->comment; ?></p>
+    </div>
+  </div>
+
+<?php endforeach ?>
+
+  <h2>Actions</h2>
+  <div class="well">
+    <div class="row-fluid">
+      <div class="span3">
+        <label>Action</label>
+        <select>
+          <option>Approve</option>
+        </select>
+        <label>Action As</label>
+        <select>
+          <option>Developer</option>
+        </select>
+      </div>
+      <div class="span9">
+        <label>Comment</label>
+        <textarea rows="3" class="span12"></textarea>
+        <button class="btn btn-primary pull-right">Have Your Say</button>
+      </div>
+    </div>
+  </div>
+  <?php foreach($this->getActions() as $action): ?>
+  <div class="media">
+    <a class="pull-left" href="#">
+      <img class="media-object"
+           src="http://www.gravatar.com/avatar/<?php echo md5(
+             strtolower($action->user()->email)
+           ); ?>?s=50">
+    </a>
+
+    <div class="media-body action-box <?php echo $action->actionType; ?>">
+      <h4 class="media-deading">
+        <?= $action->user()->displayName ?>
+        <small>(<?= $action->user_role ?>)</small>
+        <small class="pull-right">
+          <?= date("d M Y H:i", strtotime($action->updatedAt)) ?>
+        </small>
+      </h4>
+
+      <p><?= $action->comment ?></p>
+    </div>
+  </div>
+<?php endforeach; ?>
+<?php else: ?>
+  <?php if(false): ?>
+    <div class="well">
+      <button class="btn btn-primary pull-right">Deploy to Dev</button>
+      <h2>Nobody has deployed this version to the "X" platform yet.</h2>
+
+      <p>To continue with the approval process, you must now deploy the
+         code.</p>
+    </div>
+  <?php else: ?>
+    <div class="well">
+      <h2>Platform Locked</h2>
+
+      <p>Dependant <?= $this->tp("platform(s)",count($this->requiredPlatforms())); ?>
+        <strong><?= implode_list($this->requiredPlatforms()); ?></strong>
+         must be approved before you can deploy.</p>
+    </div>
+  <?php endif; ?>
+<?php endif; ?>

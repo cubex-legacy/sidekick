@@ -18,6 +18,7 @@
   "require":           {
     "php":                       ">=5.4.0",
     "cubex/cubex":               "*",
+    "qubes/bootstrap":           "*",
     "dflydev/markdown":          "*",
     "cubex/cassandra":           "*",
     "symfony/process":           "*",

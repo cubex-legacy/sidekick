@@ -16,6 +16,18 @@ class DiffuseApp extends BaseApp
     return [
       '/'               => 'DefaultController',
       '/hosts/(.*)'     => 'HostController',
+      '/projects'       => [
+        '/configuration'    => [
+          '/approval/(.*)'   => 'Projects\Configuration\ApprovalController',
+          '/deployment/(.*)' => 'Projects\Configuration\DeploymentController',
+          ''                 => 'Projects\Configuration\DeploymentController',
+        ],
+        '/v/:versionId@num' => [
+          '/p/:platformId@num' => 'Projects\Versions\VersionPlatformController',
+          '/(details|)'        => 'Projects\Versions\VersionDetailController',
+        ],
+        '/'                 => 'Projects\OverviewController',
+      ],
       '/platforms/(.*)' => 'PlatformController',
       '/:projectId@num' => [
         '/stages/(.*)'             => 'Project\StagesController',

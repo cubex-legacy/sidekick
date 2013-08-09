@@ -1,0 +1,62 @@
+<?php
+/**
+ * @var $this Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionDetailsView
+ */
+?>
+<div class="flow-container">
+  <div class="flow-content">
+
+    <div class="progress progress-striped active" style="height:4px;">
+      <?php foreach($this->getPlatformPercentages() as $perc): ?>
+        <div class="bar bar-<?= $perc[0]; ?>"
+             style="width: <?= $perc[1]; ?>%;"></div>
+      <?php endforeach; ?>
+    </div>
+
+    <div class="flow-block success">Initiation</div>
+    <?php foreach($this->getPlatforms() as $platform): ?>
+      <div
+      class="flow-block <?= $this->getPlatformStateClass($platform->id()); ?>">
+        <?= \Cubex\Helpers\Strings::titleize($platform->name); ?>
+      </div>
+    <?php endforeach; ?>
+
+    <div class="clearfix"></div>
+  </div>
+</div>
+
+<h4>
+  Change Log
+  <small class="pull-right"><a href="#">Edit Change Log</a></small>
+</h4>
+<div class="well">
+  <?php $changeLog = $this->getVersion()->changeLog; ?>
+  <?php if(!empty($changeLog)): ?>
+    <?= nl2br($changeLog); ?>
+  <?php else: ?>
+    No change log exists for this version.  Please <a href="#">make one</a> :)
+  <?php endif ?>
+</div>
+
+<?php for($i = 0; $i < 5; $i++): ?>
+  <div class="media">
+    <a class="pull-left" href="#">
+      <img class="media-object"
+           src="http://www.gravatar.com/avatar/<?php echo md5(
+             strtolower('brooke@bajb.net')
+           ); ?>?s=50">
+    </a>
+
+    <div class="media-body action-box">
+      <h4 class="media-deading">
+        Brooke
+        <small><a href="#">@bajbnet</a></small>
+        <small class="pull-right">
+          <a href="#">573807bc3c84</a> -
+          <?= date("d M Y H:i") ?>
+        </small>
+      </h4>
+      <p>Commit Message</p>
+    </div>
+  </div>
+<?php endfor ?>

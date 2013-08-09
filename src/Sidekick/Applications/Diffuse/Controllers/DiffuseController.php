@@ -14,6 +14,12 @@ class DiffuseController extends BaseControl
 {
   protected $_titlePrefix = 'Diffuse';
 
+  public function preRender()
+  {
+    parent::preRender();
+    $this->requireCss('diffuse');
+  }
+
   public function getSidebar()
   {
     $projects    = Project::collection()->loadAll()->setOrderBy('name');

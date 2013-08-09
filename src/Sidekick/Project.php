@@ -5,6 +5,7 @@
 
 namespace Sidekick;
 
+use Bundl\Debugger\DebuggerBundle;
 use Cubex\Core\Application\Application;
 use Cubex\Core\Http\Request;
 use Cubex\Facade\Auth;
@@ -40,6 +41,11 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('scripture', new ScriptureApp());
     $this->addApplication('docs', new DocsApp());
     $this->addApplication('users', new UsersApp());
+  }
+
+  public function getBundles()
+  {
+    //return [new DebuggerBundle()];
   }
 
   public function getApplication(Request $req)

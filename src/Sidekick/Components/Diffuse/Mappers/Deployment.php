@@ -30,5 +30,4 @@ class Deployment extends RecordMapper
   {
     return new User($this->userId);
   }
-
 }

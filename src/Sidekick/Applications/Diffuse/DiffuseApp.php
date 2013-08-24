@@ -17,16 +17,17 @@ class DiffuseApp extends BaseApp
       '/'               => 'DefaultController',
       '/hosts/(.*)'     => 'HostController',
       '/projects'       => [
-        '/configuration'    => [
+        '/configuration'       => [
           '/approval/(.*)'   => 'Projects\Configuration\ApprovalController',
           '/deployment/(.*)' => 'Projects\Configuration\DeploymentController',
           ''                 => 'Projects\Configuration\DeploymentController',
         ],
-        '/v/:versionId@num' => [
+        '/d/:deploymentId@num' => 'Projects\DeploymentController',
+        '/v/:versionId@num'    => [
           '/p/:platformId@num/(.*)' => 'Projects\Versions\VersionPlatformController',
-          '/(details|)'        => 'Projects\Versions\VersionDetailController',
+          '/(details|)'             => 'Projects\Versions\VersionDetailController',
         ],
-        '/'                 => 'Projects\OverviewController',
+        '/'                    => 'Projects\OverviewController',
       ],
       '/platforms/(.*)' => 'PlatformController',
       '/:projectId@num' => [

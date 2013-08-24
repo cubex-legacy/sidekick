@@ -15,10 +15,15 @@
 
     <div class="flow-block success">Initiation</div>
     <?php foreach($this->getPlatforms() as $platform): ?>
-      <div
-      class="flow-block <?= $this->getPlatformStateClass($platform->id()); ?>">
-        <?= \Cubex\Helpers\Strings::titleize($platform->name); ?>
-      </div>
+      <a href="<?= $this->baseUri() . '/p/' . $platform->id(); ?>">
+        <div
+        class="flow-block <?= $this->getPlatformStateClass(
+          $platform->id()
+        ); ?>">
+
+          <?= \Cubex\Helpers\Strings::titleize($platform->name); ?>
+        </div>
+      </a>
     <?php endforeach; ?>
 
     <div class="clearfix"></div>
@@ -39,31 +44,31 @@
 </div>
 
 <?php if($this->_commits !== null): ?>
-<?php foreach($this->_commits as $commit): ?>
-  <div class="media">
-    <a class="pull-left" href="#">
-      <img class="media-object"
-           src="http://www.gravatar.com/avatar/<?php
-           echo md5(strtolower($commit->author)); ?>?s=50">
-    </a>
+  <?php foreach($this->_commits as $commit): ?>
+    <div class="media">
+      <a class="pull-left" href="#">
+        <img class="media-object"
+             src="http://www.gravatar.com/avatar/<?php
+             echo md5(strtolower($commit->author)); ?>?s=50">
+      </a>
 
-    <div class="media-body action-box">
-      <h4 class="media-deading">
-        <?= $commit->author; ?>
-        <small class="pull-right">
-          <a href="#"><?= substr($commit->commitHash, 0, 6); ?></a> -
-          <?= date("d M Y H:i", strtotime($commit->committedAt)) ?>
-        </small>
-      </h4>
-      <?php if(empty($commit->message)): ?>
-        <p><?= $commit->subject; ?></p>
-      <?php else: ?>
-        <h3><?= $commit->subject; ?></h3>
-        <p><?= $commit->message; ?></p>
-      <?php endif ?>
+      <div class="media-body action-box">
+        <h4 class="media-deading">
+          <?= $commit->author; ?>
+          <small class="pull-right">
+            <a href="#"><?= substr($commit->commitHash, 0, 6); ?></a> -
+            <?= date("d M Y H:i", strtotime($commit->committedAt)) ?>
+          </small>
+        </h4>
+        <?php if(empty($commit->message)): ?>
+          <p><?= $commit->subject; ?></p>
+        <?php else: ?>
+          <h3><?= $commit->subject; ?></h3>
+          <p><?= $commit->message; ?></p>
+        <?php endif ?>
+      </div>
     </div>
-  </div>
-<?php endforeach; ?>
+  <?php endforeach; ?>
 <?php else: ?>
-<p class="text-center">No commits have been tracked to this version :s</p>
+  <p class="text-center">No commits have been tracked to this version :s</p>
 <?php endif ?>

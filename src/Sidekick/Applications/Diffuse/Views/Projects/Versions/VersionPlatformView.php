@@ -12,6 +12,7 @@ use Cubex\View\Impart;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedViewModel;
 use Qubes\Bootstrap\Icon;
+use Sidekick\Applications\Diffuse\Forms\DiffuseActionForm;
 use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
@@ -41,6 +42,10 @@ class VersionPlatformView extends TemplatedViewModel
    * @var Platform[]|RecordCollection
    */
   protected $_requiredPlatforms;
+  /**
+   * @var DiffuseActionForm
+   */
+  protected $_form;
 
   public function __construct(
     Platform $platform, $actions, $deployments, $approvals
@@ -102,11 +107,11 @@ class VersionPlatformView extends TemplatedViewModel
     {
       if($action->actionType === ActionType::APPROVE)
       {
-        $approvers[$action->userRole][] = $action->userId;
+        $approvers[$action->userRole][$action->userId] = true;
       }
       else if($action->actionType === ActionType::REJECT)
       {
-        $rejecters[$action->userRole][] = $action->userId;
+        $rejecters[$action->userRole][$action->userId] = true;
       }
     }
 
@@ -174,7 +179,7 @@ class VersionPlatformView extends TemplatedViewModel
       );
       $approvalBox->nest(
         new Impart($message ? : implode_list(
-          User::collection()->loadIds($approvers[$approval->role])
+          User::collection()->loadIds(array_keys($approvers[$approval->role]))
           ->getUniqueField("displayName")
         ))
       );
@@ -183,6 +188,21 @@ class VersionPlatformView extends TemplatedViewModel
     }
 
     return $boxes;
+  }
+
+  public function setActionForm(DiffuseActionForm $form)
+  {
+    $form->getElement("comment")
+    ->addAttribute("class", "span12")
+    ->addAttribute("rows", 3);
+
+    $this->_form = $form;
+    return $this;
+  }
+
+  public function getActionForm()
+  {
+    return $this->_form;
   }
 
   public function requiredPlatforms()

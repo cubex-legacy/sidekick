@@ -7,9 +7,11 @@ namespace Sidekick\Applications\Diffuse\Controllers\Projects\Versions;
 
 use Cubex\Core\Http\Redirect;
 use Cubex\Data\Transportable\TransportMessage;
+use Cubex\Form\Form;
 use Cubex\Helpers\Strings;
 use Cubex\Queue\StdQueue;
 use Cubex\View\RenderGroup;
+use Sidekick\Applications\Diffuse\Forms\DiffuseActionForm;
 use Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView;
 use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Mappers\Action;
@@ -20,6 +22,8 @@ use Sidekick\Components\Projects\Mappers\ProjectUser;
 
 class VersionPlatformController extends VersionsController
 {
+  protected $_form;
+
   public function renderIndex()
   {
     $platformId = $this->getInt("platformId");
@@ -74,9 +78,49 @@ class VersionPlatformController extends VersionsController
       );
     }
 
+    $platformView->setActionForm($this->_buildForm());
+
     return $this->_buildView(
       $platformView
     );
+  }
+
+  public function postIndex()
+  {
+    if($this->_request->isForm() && Form::csrfCheck())
+    {
+      $action = new Action();
+      $action->hydrate(
+        $this->postVariables(["actionType", "comment", "userRole"])
+      );
+      $action->versionId  = $this->getInt("versionId");
+      $action->userId     = \Auth::user()->getId();
+      $action->platformId = $this->getInt("platformId");
+      $action->saveChanges();
+      //TODO: If reject, handle closing version
+      //TODO: Comment and Reject actions should always have a comment
+    }
+    return (new Redirect())->to($this->baseUri());
+  }
+
+  protected function _buildForm()
+  {
+    if($this->_form === null)
+    {
+      $this->_form = new DiffuseActionForm("diffuseAction");
+      $roles       = new ProjectUser([
+                                     $this->_version->projectId,
+                                     \Auth::user()->getId()
+                                     ]);
+      $this->_form->getElement("userRole")->setOptions(
+        array_fuse($roles->roles)
+      );
+    }
+    return $this->_form;
+  }
+
+  public function processAction()
+  {
   }
 
   public function deploy()

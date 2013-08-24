@@ -13,7 +13,7 @@ if(count($deployments) > 0):
   <?= $this->getApprovalBoxes(); ?>
 
   <a class="btn btn-primary pull-right"
-     href="<?=$this->baseUri(); ?>/deploy">
+     href="<?= $this->baseUri(); ?>/deploy">
     Deploy to <?= ucwords($this->_platform->name); ?>
   </a>
   <h2>Deployments</h2>
@@ -34,7 +34,7 @@ if(count($deployments) > 0):
         <small><a href="#">#<?= $deployment->id(); ?></a></small>
         <small class="pull-right">
           <span class="text-success">PASSED</span> -
-          <?= date("d M Y H:i") ?>
+          <?= date("d M Y H:i", strtotime($deployment->updatedAt)) ?>
         </small>
       </h4>
       <p><?= $deployment->comment ? : 'No Comment'; ?></p>
@@ -42,26 +42,23 @@ if(count($deployments) > 0):
   </div>
 
 <?php endforeach ?>
-
   <h2>Actions</h2>
   <div class="well">
+    <?= $this->getActionForm()->open(); ?>
+    <?= $this->getActionForm()->formNameInput(); ?>
+    <?= $this->getActionForm()->token(); ?>
     <div class="row-fluid">
       <div class="span3">
-        <label>Action</label>
-        <select>
-          <option>Approve</option>
-        </select>
-        <label>Action As</label>
-        <select>
-          <option>Developer</option>
-        </select>
+        <?= $this->getActionForm()->getElement("actionType"); ?>
+        <?= $this->getActionForm()->getElement("userRole"); ?>
       </div>
       <div class="span9">
-        <label>Comment</label>
-        <textarea rows="3" class="span12"></textarea>
-        <button class="btn btn-primary pull-right">Have Your Say</button>
+        <?= $this->getActionForm()->getElement("comment"); ?>
+        <input type="submit" value="Have Your Say"
+               class="btn btn-primary pull-right"/>
       </div>
     </div>
+    <?= $this->getActionForm()->close(); ?>
   </div>
   <?php foreach($this->getActions() as $action): ?>
   <div class="media">
@@ -74,8 +71,9 @@ if(count($deployments) > 0):
 
     <div class="media-body action-box <?php echo $action->actionType; ?>">
       <h4 class="media-deading">
+        <?= $action->actionType !== \Sidekick\Components\Diffuse\Enums\ActionType::APPROVE ? ucwords($action->actionType) : 'Approv'; ?>ed by
         <?= $action->user()->displayName ?>
-        <small>(<?= $action->user_role ?>)</small>
+        <small>(<?= $action->userRole ?>)</small>
         <small class="pull-right">
           <?= date("d M Y H:i", strtotime($action->updatedAt)) ?>
         </small>
@@ -89,9 +87,10 @@ if(count($deployments) > 0):
   <?php if($this->requiredPlatforms() === null): ?>
     <div class="well">
       <a class="btn btn-primary pull-right"
-         href="<?=$this->baseUri(); ?>/deploy">
+         href="<?= $this->baseUri(); ?>/deploy">
         Deploy to <?= ucwords($this->_platform->name); ?>
       </a>
+
       <h2>Nobody has deployed this version to the
           "<?= ucwords($this->_platform->name); ?>" platform yet.</h2>
 

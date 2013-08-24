@@ -42,37 +42,14 @@ class FortifyBuildChanges
       $lastCommitHash->whereLessThan("id", $this->runId);
     }
     $lastCommitHash = $lastCommitHash
-                      ->setOrderBy("created_at", 'DESC')
-                      ->setLimit(0, 1)
-                      ->setColumns(['commit_hash'])
-                      ->first();
+    ->setOrderBy("created_at", 'DESC')
+    ->setColumns(['commit_hash'])
+    ->setLimit(0, 1)
+    ->first();
 
-    $findCommits = [$this->_commitHash];
-    if($lastCommitHash !== null)
-    {
-      $findCommits[] = trim($lastCommitHash->commitHash);
-    }
-
-    $commitIds = Commit::collection()
-                 ->whereIn('commit_hash', $findCommits)
-                 ->setColumns(['commit_hash', 'repository_id', 'id'])
-                 ->get();
-
-    $range = Commit::collection();
-
-    switch($commitIds->count())
-    {
-      case 2:
-        $range->whereBetween("id", $commitIds->loadedIds());
-        break;
-      case 1:
-        $range->whereLessThan("id", $commitIds->loadedIds()[0]);
-        break;
-    }
-
-    $range->whereEq("repository_id", $commitIds->getField('repository_id'))
-    ->setOrderBy('committed_at', 'DESC');
-
-    return $range;
+    return Commit::collectionBetween(
+      $this->_commitHash,
+      $lastCommitHash->commitHash
+    );
   }
 }

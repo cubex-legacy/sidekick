@@ -11,6 +11,7 @@ use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
+use Sidekick\Components\Repository\Mappers\Commit;
 
 class VersionDetailsView extends TemplatedViewModel
 {
@@ -20,6 +21,10 @@ class VersionDetailsView extends TemplatedViewModel
    * @var RecordCollection|PlatformVersionState[]
    */
   protected $_platformStates;
+  /**
+   * @var RecordCollection|Commit[]
+   */
+  protected $_commits;
 
   public function __construct(Version $version, $platforms, $platformStates)
   {
@@ -31,6 +36,18 @@ class VersionDetailsView extends TemplatedViewModel
   public function getPlatforms()
   {
     return $this->_platforms;
+  }
+
+  public function setCommits($commits)
+  {
+    $this->_commits = $commits;
+    return $this;
+  }
+
+  public function addCommit(Commit $commit)
+  {
+    $this->_commits[] = $commit;
+    return $this;
   }
 
   /**

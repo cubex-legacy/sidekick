@@ -40,7 +40,7 @@ class VersionPlatformView extends TemplatedViewModel
   /**
    * @var Platform[]|RecordCollection
    */
-  protected $_requiredPlatforms = [];
+  protected $_requiredPlatforms;
 
   public function __construct(
     Platform $platform, $actions, $deployments, $approvals

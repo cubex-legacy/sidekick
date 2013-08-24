@@ -1,3 +1,8 @@
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
+    <?php echo Session::getFlash('msg')->message; ?>
+  </div>
+<?php endif; ?>
 <?php
 /**
  * @var $this Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView
@@ -7,7 +12,10 @@ if(count($deployments) > 0):
   ?>
   <?= $this->getApprovalBoxes(); ?>
 
-  <button class="btn btn-primary pull-right">Deploy to Dev</button>
+  <a class="btn btn-primary pull-right"
+     href="<?=$this->baseUri(); ?>/deploy">
+    Deploy to <?= ucwords($this->_platform->name); ?>
+  </a>
   <h2>Deployments</h2>
 
   <?php foreach($deployments as $deployment): ?>
@@ -22,14 +30,14 @@ if(count($deployments) > 0):
 
     <div class="media-body action-box">
       <h4 class="media-deading">
-        Dev Deployment
-        <small><a href="#">#<?php echo rand(23987, 4239753); ?></a></small>
+        Deployment
+        <small><a href="#">#<?= $deployment->id(); ?></a></small>
         <small class="pull-right">
           <span class="text-success">PASSED</span> -
           <?= date("d M Y H:i") ?>
         </small>
       </h4>
-      <p><?= $deployment->comment; ?></p>
+      <p><?= $deployment->comment ? : 'No Comment'; ?></p>
     </div>
   </div>
 
@@ -78,10 +86,14 @@ if(count($deployments) > 0):
   </div>
 <?php endforeach; ?>
 <?php else: ?>
-  <?php if(false): ?>
+  <?php if($this->requiredPlatforms() === null): ?>
     <div class="well">
-      <button class="btn btn-primary pull-right">Deploy to Dev</button>
-      <h2>Nobody has deployed this version to the "X" platform yet.</h2>
+      <a class="btn btn-primary pull-right"
+         href="<?=$this->baseUri(); ?>/deploy">
+        Deploy to <?= ucwords($this->_platform->name); ?>
+      </a>
+      <h2>Nobody has deployed this version to the
+          "<?= ucwords($this->_platform->name); ?>" platform yet.</h2>
 
       <p>To continue with the approval process, you must now deploy the
          code.</p>
@@ -90,7 +102,8 @@ if(count($deployments) > 0):
     <div class="well">
       <h2>Platform Locked</h2>
 
-      <p>Dependant <?= $this->tp("platform(s)",count($this->requiredPlatforms())); ?>
+      <p>Dependant
+        <?= $this->tp("platform(s)", count($this->requiredPlatforms())); ?>
         <strong><?= implode_list($this->requiredPlatforms()); ?></strong>
          must be approved before you can deploy.</p>
     </div>

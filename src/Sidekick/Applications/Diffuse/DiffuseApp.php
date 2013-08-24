@@ -23,7 +23,7 @@ class DiffuseApp extends BaseApp
           ''                 => 'Projects\Configuration\DeploymentController',
         ],
         '/v/:versionId@num' => [
-          '/p/:platformId@num' => 'Projects\Versions\VersionPlatformController',
+          '/p/:platformId@num/(.*)' => 'Projects\Versions\VersionPlatformController',
           '/(details|)'        => 'Projects\Versions\VersionDetailController',
         ],
         '/'                 => 'Projects\OverviewController',

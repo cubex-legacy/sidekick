@@ -19,6 +19,7 @@ use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 
 class VersionPlatformController extends VersionsController
@@ -160,6 +161,13 @@ class VersionPlatformController extends VersionsController
     $deployRequest->platformId = $this->getInt("platformId");
     $deployRequest->versionId  = $this->getInt("versionId");
     \Queue::push(new StdQueue('DeployRequest'), $deployRequest);
+
+    //Change pending versions to review when first deployment made
+    if($this->_version->versionState === VersionState::PENDING)
+    {
+      $this->_version->versionState = VersionState::REVIEW;
+      $this->_version->saveChanges();
+    }
 
     \Session::flash(
       "msg",

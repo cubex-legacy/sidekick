@@ -112,7 +112,9 @@ class VersionPlatformController extends VersionsController
       switch($action->actionType)
       {
         case ActionType::REJECT;
-          //TODO: If reject, handle closing version
+          //If rejected, close version
+          $this->_version->versionState = VersionState::REJECTED;
+          $this->_version->saveChanges();
           break;
         case ActionType::APPROVE:
           //TODO: If accepted, check for platform signoff and possibly proceed
@@ -127,10 +129,24 @@ class VersionPlatformController extends VersionsController
     if($this->_form === null)
     {
       $this->_form = new DiffuseActionForm("diffuseAction");
-      $roles       = new ProjectUser([
-                                     $this->_version->projectId,
-                                     \Auth::user()->getId()
-                                     ]);
+
+      //Only allow comments on non "complete" versions
+      if(!in_array(
+        $this->_version->versionState,
+        [VersionState::PENDING, VersionState::REVIEW, VersionState::UNKNOWN]
+      )
+      )
+      {
+        $this->_form->getElement("actionType")->setOptions(
+          ["comment" => "Comment"]
+        );
+      }
+
+      //Show users own roles on form
+      $roles = new ProjectUser([
+                               $this->_version->projectId,
+                               \Auth::user()->getId()
+                               ]);
       $this->_form->getElement("userRole")->setOptions(
         array_fuse($roles->roles)
       );

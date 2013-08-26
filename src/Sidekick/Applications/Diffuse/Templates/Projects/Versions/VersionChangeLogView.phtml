@@ -1,0 +1,16 @@
+<?php
+/**
+ * @var $this Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionChangeLogView
+ */
+?>
+<div class="well">
+  <div class="row-fluid">
+    <?= $this->getForm()->open(); ?>
+    <?= $this->getForm()->formNameInput(); ?>
+    <?= $this->getForm()->token(); ?>
+    <?= $this->getForm()->getElement("changelog"); ?>
+    <input type="submit" value="Update Change Log"
+           class="btn btn-primary pull-right"/>
+    <?= $this->getForm()->close(); ?>
+  </div>
+</div>

@@ -3,6 +3,12 @@
  * @var $this Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionDetailsView
  */
 ?>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
+    <?php echo Session::getFlash('msg')->message; ?>
+  </div>
+<?php endif; ?>
+
 <div class="flow-container">
   <div class="flow-content">
 
@@ -17,7 +23,8 @@
     <?php foreach($this->getPlatforms() as $platform): ?>
       <a href="<?= $this->baseUri() . '/p/' . $platform->id(); ?>">
         <div
-        class="flow-block <?= $this->getPlatformStateClass(
+        class="flow-block <?=
+        $this->getPlatformStateClass(
           $platform->id()
         ); ?>">
 
@@ -32,14 +39,18 @@
 
 <h4>
   Change Log
-  <small class="pull-right"><a href="#">Edit Change Log</a></small>
+  <small class="pull-right"><a href="<?= $this->baseUri(); ?>/changelog">Edit
+                                                                         Change
+                                                                         Log</a>
+  </small>
 </h4>
 <div class="well">
   <?php $changeLog = $this->getVersion()->changeLog; ?>
   <?php if(!empty($changeLog)): ?>
     <?= nl2br($changeLog); ?>
   <?php else: ?>
-    No change log exists for this version.  Please <a href="#">make one</a> :)
+    No change log exists for this version.  Please <a
+    href="<?= $this->baseUri(); ?>/changelog">make one</a> :)
   <?php endif ?>
 </div>
 

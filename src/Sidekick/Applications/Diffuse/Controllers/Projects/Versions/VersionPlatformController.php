@@ -13,6 +13,7 @@ use Cubex\Queue\StdQueue;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Forms\DiffuseActionForm;
 use Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView;
+use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
@@ -96,9 +97,27 @@ class VersionPlatformController extends VersionsController
       $action->versionId  = $this->getInt("versionId");
       $action->userId     = \Auth::user()->getId();
       $action->platformId = $this->getInt("platformId");
+
+      if($action->actionType !== ActionType::APPROVE)
+      {
+        $form = $this->_buildForm();
+        $form->hydrateFromMapper($action);
+        if(!$form->isValid("comment"))
+        {
+          return $this->renderIndex();
+        }
+      }
       $action->saveChanges();
-      //TODO: If reject, handle closing version
-      //TODO: Comment and Reject actions should always have a comment
+
+      switch($action->actionType)
+      {
+        case ActionType::REJECT;
+          //TODO: If reject, handle closing version
+          break;
+        case ActionType::APPROVE:
+          //TODO: If accepted, check for platform signoff and possibly proceed
+          break;
+      }
     }
     return (new Redirect())->to($this->baseUri());
   }
@@ -117,10 +136,6 @@ class VersionPlatformController extends VersionsController
       );
     }
     return $this->_form;
-  }
-
-  public function processAction()
-  {
   }
 
   public function deploy()

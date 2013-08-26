@@ -43,6 +43,18 @@ if(count($deployments) > 0):
 
 <?php endforeach ?>
   <h2>Actions</h2>
+  <?php if($this->getActionForm()->validationErrors()): ?>
+  <div class="alert alert-error">
+    <strong>The following errors occurred:</strong>
+    <ul>
+      <?php
+      foreach($this->getActionForm()->validationErrors() as $field => $errors):
+        ?>
+      <li><strong><?=$field; ?></strong> - <?= implode_list($errors); ?></li>
+      <?php endforeach ?>
+    </ul>
+  </div>
+<?php endif; ?>
   <div class="well">
     <?= $this->getActionForm()->open(); ?>
     <?= $this->getActionForm()->formNameInput(); ?>
@@ -71,7 +83,10 @@ if(count($deployments) > 0):
 
     <div class="media-body action-box <?php echo $action->actionType; ?>">
       <h4 class="media-deading">
-        <?= $action->actionType !== \Sidekick\Components\Diffuse\Enums\ActionType::APPROVE ? ucwords($action->actionType) : 'Approv'; ?>ed by
+        <?=
+        $action->actionType !== \Sidekick\Components\Diffuse\Enums\ActionType::APPROVE ? ucwords(
+          $action->actionType
+        ) : 'Approv'; ?>ed by
         <?= $action->user()->displayName ?>
         <small>(<?= $action->userRole ?>)</small>
         <small class="pull-right">

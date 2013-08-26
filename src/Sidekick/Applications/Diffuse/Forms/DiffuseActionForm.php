@@ -5,6 +5,7 @@
 
 namespace Sidekick\Applications\Diffuse\Forms;
 
+use Cubex\Data\Validator\Validator;
 use Cubex\Form\Form;
 use Cubex\Form\FormElement;
 use Cubex\Form\OptionBuilder;
@@ -18,10 +19,12 @@ class DiffuseActionForm extends Form
 
   protected function _configure()
   {
-    $this->_attribute("comment")->setType(FormElement::TEXTAREA);
+    $this->_attribute("comment")->setType(FormElement::TEXTAREA)
+    ->addValidator(Validator::VALIDATE_LENGTH, [10]);
+
     $this->_attribute("userRole")->setType(FormElement::SELECT);
-    $this->_attribute("actionType")->setType(FormElement::SELECT)->setOptions(
-      (new OptionBuilder(new ActionType()))->getOptions()
-    );
+
+    $this->_attribute("actionType")->setType(FormElement::SELECT)
+    ->setOptions((new OptionBuilder(new ActionType()))->getOptions());
   }
 }

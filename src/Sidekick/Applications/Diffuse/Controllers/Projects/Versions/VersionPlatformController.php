@@ -9,17 +9,19 @@ use Cubex\Core\Http\Redirect;
 use Cubex\Data\Transportable\TransportMessage;
 use Cubex\Form\Form;
 use Cubex\Helpers\Strings;
+use Cubex\Mapper\Database\RecordCollection;
 use Cubex\Queue\StdQueue;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Forms\DiffuseActionForm;
 use Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView;
 use Sidekick\Components\Diffuse\Enums\ActionType;
 use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Diffuse\Helpers\VersionApproval;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
-use Sidekick\Components\Diffuse\Mappers\Version;
+use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 
 class VersionPlatformController extends VersionsController
@@ -51,8 +53,14 @@ class VersionPlatformController extends VersionsController
       ['project_id' => $this->_version->projectId]
     );
 
+    $platformState = new PlatformVersionState(
+      [$platformId, $this->_version->id()]
+    );
+
+    $this->verifyPlatform($users, $actions, $approvals, $platformState);
+
     $platformView = new VersionPlatformView(
-      $platform, $actions, $deployments, $approvals
+      $platform, $actions, $deployments, $approvals, $platformState
     );
     $platformView->setProjectUsers($users);
 
@@ -80,11 +88,72 @@ class VersionPlatformController extends VersionsController
       );
     }
 
-    $platformView->setActionForm($this->_buildForm());
+    $platformView->setActionForm($this->_buildForm($platformState));
 
     return $this->_buildView(
       $platformView
     );
+  }
+
+  /**
+   * @param $projectUsers  RecordCollection|ProjectUser[]
+   * @param $actions       RecordCollection|Action[]
+   * @param $approvalRules RecordCollection|ApprovalConfiguration[]
+   * @param $platformState PlatformVersionState
+   *
+   * @return array
+   */
+  protected function verifyPlatform(
+    $projectUsers, $actions, $approvalRules, PlatformVersionState $platformState
+  )
+  {
+    $requires  = $optional = [];
+    $rejected  = false;
+    $approvers = 0;
+    foreach(VersionApproval::status(
+              $projectUsers,
+              $actions,
+              $approvalRules
+            ) as $state)
+    {
+      if($state['require_pass'])
+      {
+        $requires[] = $state['pending'] == 0;
+      }
+      else
+      {
+        $optional[] = $state['pending'] == 0;
+      }
+
+      $approvers += count($state['approvers']);
+
+      if(!empty($state['rejectors']))
+      {
+        $rejected = true;
+      }
+    }
+
+    if($rejected)
+    {
+      $platformState->state = VersionState::REJECTED;
+    }
+    else if(!(in_array(false, $requires) ||
+    (empty($requires) && in_array(false, $optional)))
+    )
+    {
+      //Any requirements fail, or any optionals require if no required pass
+      $platformState->state = VersionState::APPROVED;
+    }
+    else if($approvers === 0)
+    {
+      $platformState->state = VersionState::PENDING;
+    }
+    else
+    {
+      $platformState->state = VersionState::REVIEW;
+    }
+
+    $platformState->saveChanges();
   }
 
   public function postIndex()
@@ -117,15 +186,12 @@ class VersionPlatformController extends VersionsController
           $this->_version->versionState = VersionState::REJECTED;
           $this->_version->saveChanges();
           break;
-        case ActionType::APPROVE:
-          //TODO: If accepted, check for platform signoff and possibly proceed
-          break;
       }
     }
     return (new Redirect())->to($this->baseUri());
   }
 
-  protected function _buildForm()
+  protected function _buildForm(PlatformVersionState $platformState = null)
   {
     if($this->_form === null)
     {
@@ -133,7 +199,7 @@ class VersionPlatformController extends VersionsController
 
       //Only allow comments on non "complete" versions
       if(!in_array(
-        $this->_version->versionState,
+        $platformState ? $platformState->state : $this->_version->versionState,
         [VersionState::PENDING, VersionState::REVIEW, VersionState::UNKNOWN]
       )
       )

@@ -50,7 +50,7 @@ if(count($deployments) > 0):
       <?php
       foreach($this->getActionForm()->validationErrors() as $field => $errors):
         ?>
-      <li><strong><?=$field; ?></strong> - <?= implode_list($errors); ?></li>
+        <li><strong><?= $field; ?></strong> - <?= implode_list($errors); ?></li>
       <?php endforeach ?>
     </ul>
   </div>

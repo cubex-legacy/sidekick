@@ -13,13 +13,12 @@ use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedViewModel;
 use Qubes\Bootstrap\Icon;
 use Sidekick\Applications\Diffuse\Forms\DiffuseActionForm;
-use Sidekick\Components\Diffuse\Enums\ActionType;
+use Sidekick\Components\Diffuse\Helpers\VersionApproval;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
-use Sidekick\Components\Sidekick\Enums\Consistency;
 use Sidekick\Components\Users\Mappers\User;
 
 class VersionPlatformView extends TemplatedViewModel
@@ -90,83 +89,34 @@ class VersionPlatformView extends TemplatedViewModel
 
   public function getApprovalBoxes()
   {
-    $boxes     = new RenderGroup();
-    $approvers = [];
-    $rejecters = [];
-    $users     = [];
+    $boxes = new RenderGroup();
 
-    foreach($this->_projectUsers as $user)
+    foreach(VersionApproval::status(
+              $this->_projectUsers,
+              $this->_actions,
+              $this->_approvals
+            ) as $state)
     {
-      foreach($user->roles as $role)
-      {
-        $users[$role] = $user->id();
-      }
-    }
+      $message = '';
 
-    foreach($this->_actions as $action)
-    {
-      if($action->actionType === ActionType::APPROVE)
-      {
-        $approvers[$action->userRole][$action->userId] = true;
-      }
-      else if($action->actionType === ActionType::REJECT)
-      {
-        $rejecters[$action->userRole][$action->userId] = true;
-      }
-    }
-
-    foreach($this->_approvals as $approval)
-    {
-      if(!isset($users[$approval->role]))
-      {
-        $users[$approval->role] = [];
-      }
-      if(!isset($rejecters[$approval->role]))
-      {
-        $rejecters[$approval->role] = [];
-      }
-      if(!isset($approvers[$approval->role]))
-      {
-        $approvers[$approval->role] = [];
-      }
-
-      $passed        = $pending = $message = false;
-      $totalRequired = 0;
-      switch($approval->consistencyLevel)
-      {
-        case Consistency::ONE:
-          $totalRequired = 1;
-          break;
-        case Consistency::TWO:
-          $totalRequired = 2;
-          break;
-        case Consistency::ALL:
-          $totalRequired = count($users[$approval->role]);
-          break;
-        case Consistency::QUORUM:
-          $totalRequired = ceil(count($users[$approval->role]) / 2) + 1;
-          break;
-      }
-      $pending = $totalRequired - count($approvers[$approval->role]);
-
-      if($pending < 1)
+      if($state['pending'] < 1)
       {
         $status = new Icon(Icon::ICON_OK);
         $class  = 'alert-success';
       }
-      else if($pending && count($approvers[$approval->role]) > 0)
+      else if($state['pending'] && count($state['approvers']) > 0)
       {
-        $status = 'Waiting for ' . $this->tp("%d other(s)", $pending);
+        $status = 'Waiting for ' . $this->tp("%d other(s)", $state['pending']);
         $class  = 'alert-success';
       }
       else
       {
-        $message = $this->tp("%d required", $totalRequired);
+        $message = $this->tp("%d required", $state['required']);
         $status  = 'Awaiting Approval';
         $class   = 'alert-error';
       }
 
-      if(!$passed && !$approval->required)
+      if(!$state['require_pass'])
       {
         $class = 'alert-info';
       }
@@ -175,11 +125,11 @@ class VersionPlatformView extends TemplatedViewModel
       $approvalBox->nestElement(
         'strong',
         [],
-        (Strings::titleize($approval->role) . " Approval: ")
+        (Strings::titleize($state['role']) . " Approval: ")
       );
       $approvalBox->nest(
         new Impart($message ? : implode_list(
-          User::collection()->loadIds(array_keys($approvers[$approval->role]))
+          User::collection()->loadIds($state['approvers'])
           ->getUniqueField("displayName")
         ))
       );

@@ -198,8 +198,17 @@ class VersionPlatformController extends VersionsController
       {
         case ActionType::REJECT;
           //If rejected, close version
-          $this->_version->versionState = VersionState::REJECTED;
-          $this->_version->saveChanges();
+          if($this->_version->versionState !== VersionState::APPROVED)
+          {
+            $this->_version->versionState = VersionState::REJECTED;
+            $this->_version->saveChanges();
+          }
+          else
+          {
+            throw new \Exception(
+              "Why are you trying to reject an approved version?"
+            );
+          }
           break;
       }
     }

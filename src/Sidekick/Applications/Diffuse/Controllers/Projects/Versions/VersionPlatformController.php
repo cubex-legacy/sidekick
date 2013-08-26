@@ -57,13 +57,6 @@ class VersionPlatformController extends VersionsController
       [$platformId, $this->_version->id()]
     );
 
-    $this->verifyPlatform($users, $actions, $approvals, $platformState);
-
-    $platformView = new VersionPlatformView(
-      $platform, $actions, $deployments, $approvals, $platformState
-    );
-    $platformView->setProjectUsers($users);
-
     $reqPlatforms = $platform->requiredPlatforms;
     foreach($this->_platformStates as $state)
     {
@@ -76,6 +69,16 @@ class VersionPlatformController extends VersionsController
         }
       }
     }
+
+    if(empty($reqPlatforms))
+    {
+      $this->verifyPlatform($users, $actions, $approvals, $platformState);
+    }
+
+    $platformView = new VersionPlatformView(
+      $platform, $actions, $deployments, $approvals, $platformState
+    );
+    $platformView->setProjectUsers($users);
 
     if($reqPlatforms)
     {
@@ -154,6 +157,18 @@ class VersionPlatformController extends VersionsController
     }
 
     $platformState->saveChanges();
+
+    $states   = $this->_platformStates->getKeyPair("platformId", "state");
+    $complete = array_fill_keys(
+      $this->_platforms->loadedIds(),
+      VersionState::APPROVED
+    );
+    $diff     = array_diff_assoc($complete, $states);
+    if(empty($diff))
+    {
+      $this->_version->versionState = VersionState::APPROVED;
+      $this->_version->saveChanges();
+    }
   }
 
   public function postIndex()

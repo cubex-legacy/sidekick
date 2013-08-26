@@ -1,105 +1,117 @@
-<?php if(Session::getFlash('msg')): ?>
-  <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
-    <?php echo Session::getFlash('msg')->message; ?>
-  </div>
-<?php endif; ?>
-<?php
-/**
- * @var $this Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView
- */
-$deployments = $this->getDeployments();
-if(count($deployments) > 0):
-  ?>
-  <?= $this->getApprovalBoxes(); ?>
-
-  <a class="btn btn-primary pull-right"
-     href="<?= $this->baseUri(); ?>/deploy">
-    Deploy to <?= ucwords($this->_platform->name); ?>
-  </a>
-  <h2>Deployments</h2>
-
-  <?php foreach($deployments as $deployment): ?>
-
-  <div class="media">
-    <a class="pull-left" href="#">
-      <img class="media-object"
-           src="http://www.gravatar.com/avatar/<?php echo md5(
-             strtolower('brooke@bajb.net')
-           ); ?>?s=50">
-    </a>
-
-    <div class="media-body action-box">
-      <h4 class="media-deading">
-        Deployment
-        <small><a href="#">#<?= $deployment->id(); ?></a></small>
-        <small class="pull-right">
-          <span class="text-success">PASSED</span> -
-          <?= date("d M Y H:i", strtotime($deployment->updatedAt)) ?>
-        </small>
-      </h4>
-      <p><?= $deployment->comment ? : 'No Comment'; ?></p>
-    </div>
-  </div>
-
-<?php endforeach ?>
-  <h2>Actions</h2>
-  <?php if($this->getActionForm()->validationErrors()): ?>
-  <div class="alert alert-error">
-    <strong>The following errors occurred:</strong>
-    <ul>
-      <?php
-      foreach($this->getActionForm()->validationErrors() as $field => $errors):
-        ?>
-        <li><strong><?= $field; ?></strong> - <?= implode_list($errors); ?></li>
-      <?php endforeach ?>
-    </ul>
-  </div>
-<?php endif; ?>
+<?php if($this->requiredPlatforms() !== null): ?>
   <div class="well">
-    <?= $this->getActionForm()->open(); ?>
-    <?= $this->getActionForm()->formNameInput(); ?>
-    <?= $this->getActionForm()->token(); ?>
-    <div class="row-fluid">
-      <div class="span3">
-        <?= $this->getActionForm()->getElement("actionType"); ?>
-        <?= $this->getActionForm()->getElement("userRole"); ?>
-      </div>
-      <div class="span9">
-        <?= $this->getActionForm()->getElement("comment"); ?>
-        <input type="submit" value="Have Your Say"
-               class="btn btn-primary pull-right"/>
-      </div>
-    </div>
-    <?= $this->getActionForm()->close(); ?>
-  </div>
-  <?php foreach($this->getActions() as $action): ?>
-  <div class="media">
-    <a class="pull-left" href="#">
-      <img class="media-object"
-           src="http://www.gravatar.com/avatar/<?php echo md5(
-             strtolower($action->user()->email)
-           ); ?>?s=50">
-    </a>
+    <h2>Platform Locked</h2>
 
-    <div class="media-body action-box <?php echo $action->actionType; ?>">
-      <h4 class="media-deading">
-        <?=
-        $action->actionType !== \Sidekick\Components\Diffuse\Enums\ActionType::APPROVE ? ucwords(
-          $action->actionType
-        ) : 'Approv'; ?>ed by
-        <?= $action->user()->displayName ?>
-        <small>(<?= $action->userRole ?>)</small>
-        <small class="pull-right">
-          <?= date("d M Y H:i", strtotime($action->updatedAt)) ?>
-        </small>
-      </h4>
-
-      <p><?= $action->comment ?></p>
-    </div>
+    <p>Dependant
+      <?= $this->tp("platform(s)", count($this->requiredPlatforms())); ?>
+      <strong><?= implode_list($this->requiredPlatforms()); ?></strong>
+       must be approved before you can deploy.</p>
   </div>
-<?php endforeach; ?>
 <?php else: ?>
-  <?php if($this->requiredPlatforms() === null): ?>
+
+  <?php if(Session::getFlash('msg')): ?>
+    <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
+      <?php echo Session::getFlash('msg')->message; ?>
+    </div>
+  <?php endif; ?>
+  <?php
+  /**
+   * @var $this Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView
+   */
+  $deployments = $this->getDeployments();
+  if(count($deployments) > 0):
+    ?>
+    <?= $this->getApprovalBoxes(); ?>
+
+    <a class="btn btn-primary pull-right"
+       href="<?= $this->baseUri(); ?>/deploy">
+      Deploy to <?= ucwords($this->_platform->name); ?>
+    </a>
+    <h2>Deployments</h2>
+
+    <?php foreach($deployments as $deployment): ?>
+
+    <div class="media">
+      <a class="pull-left" href="#">
+        <img class="media-object"
+             src="http://www.gravatar.com/avatar/<?php echo md5(
+               strtolower('brooke@bajb.net')
+             ); ?>?s=50">
+      </a>
+
+      <div class="media-body action-box">
+        <h4 class="media-deading">
+          Deployment
+          <small><a href="#">#<?= $deployment->id(); ?></a></small>
+          <small class="pull-right">
+            <span class="text-success">PASSED</span> -
+            <?= date("d M Y H:i", strtotime($deployment->updatedAt)) ?>
+          </small>
+        </h4>
+        <p><?= $deployment->comment ? : 'No Comment'; ?></p>
+      </div>
+    </div>
+
+  <?php endforeach ?>
+    <h2>Actions</h2>
+    <?php if($this->getActionForm()->validationErrors()): ?>
+    <div class="alert alert-error">
+      <strong>The following errors occurred:</strong>
+      <ul>
+        <?php
+        foreach($this->getActionForm()->validationErrors(
+                ) as $field => $errors):
+          ?>
+          <li><strong><?= $field; ?></strong> - <?= implode_list($errors); ?>
+          </li>
+        <?php endforeach ?>
+      </ul>
+    </div>
+  <?php endif; ?>
+    <div class="well">
+      <?= $this->getActionForm()->open(); ?>
+      <?= $this->getActionForm()->formNameInput(); ?>
+      <?= $this->getActionForm()->token(); ?>
+      <div class="row-fluid">
+        <div class="span3">
+          <?= $this->getActionForm()->getElement("actionType"); ?>
+          <?= $this->getActionForm()->getElement("userRole"); ?>
+        </div>
+        <div class="span9">
+          <?= $this->getActionForm()->getElement("comment"); ?>
+          <input type="submit" value="Have Your Say"
+                 class="btn btn-primary pull-right"/>
+        </div>
+      </div>
+      <?= $this->getActionForm()->close(); ?>
+    </div>
+    <?php foreach($this->getActions() as $action): ?>
+    <div class="media">
+      <a class="pull-left" href="#">
+        <img class="media-object"
+             src="http://www.gravatar.com/avatar/<?php echo md5(
+               strtolower($action->user()->email)
+             ); ?>?s=50">
+      </a>
+
+      <div class="media-body action-box <?php echo $action->actionType; ?>">
+        <h4 class="media-deading">
+          <?=
+          $action->actionType !== \Sidekick\Components\Diffuse\Enums\ActionType::APPROVE ? ucwords(
+            $action->actionType
+          ) : 'Approv'; ?>ed by
+          <?= $action->user()->displayName ?>
+          <small>(<?= $action->userRole ?>)</small>
+          <small class="pull-right">
+            <?= date("d M Y H:i", strtotime($action->updatedAt)) ?>
+          </small>
+        </h4>
+
+        <p><?= $action->comment ?></p>
+      </div>
+    </div>
+  <?php endforeach; ?>
+  <?php else: ?>
     <div class="well">
       <a class="btn btn-primary pull-right"
          href="<?= $this->baseUri(); ?>/deploy">
@@ -111,15 +123,6 @@ if(count($deployments) > 0):
 
       <p>To continue with the approval process, you must now deploy the
          code.</p>
-    </div>
-  <?php else: ?>
-    <div class="well">
-      <h2>Platform Locked</h2>
-
-      <p>Dependant
-        <?= $this->tp("platform(s)", count($this->requiredPlatforms())); ?>
-        <strong><?= implode_list($this->requiredPlatforms()); ?></strong>
-         must be approved before you can deploy.</p>
     </div>
   <?php endif; ?>
 <?php endif; ?>

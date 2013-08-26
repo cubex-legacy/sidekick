@@ -26,7 +26,7 @@ class VersionsController extends DiffuseController
    */
   protected $_platforms;
   /**
-   * @var PlatformVersionState[]
+   * @var PlatformVersionState[]|RecordCollection
    */
   protected $_platformStates;
 

@@ -1,1 +1,39 @@
-Approval Configuration
+<?php
+/**
+ * @var $this Sidekick\Applications\Diffuse\Views\Projects\Configuration\ApprovalConfigurationView
+ */
+?>
+
+<h2><?= $this->project()->name; ?> Approval Configuration</h2>
+
+<p>Please select the consistency level required for sign-off of each
+   platform.</p>
+<p>If you do not wish for a group to require sign-off, select none.</p>
+
+<?= $this->form()->open(); ?>
+<?= $this->form()->formNameInput(); ?>
+<?= $this->form()->token(); ?>
+
+<?php foreach($this->platforms() as $platform): ?>
+  <fieldset>
+    <legend><?= ucwords($platform->name); ?></legend>
+    <br/>
+    <table class="table table-striped table-bordered table-condensed">
+      <tr>
+        <?php foreach($this->roles() as $role => $roleCount): ?>
+          <th><?= ucwords($role); ?> (<?= $roleCount ?>)</th>
+        <?php endforeach; ?>
+      </tr>
+      <tr>
+        <?php foreach($this->roles() as $role => $roleCount): ?>
+          <td>
+            <?= $this->form()->getElement($platform->id() . '-' . $role); ?>
+          </td>
+        <?php endforeach; ?>
+      </tr>
+    </table>
+  </fieldset>
+<?php endforeach; ?>
+<input type="submit" value="Update Approval Configurations"
+       class="btn btn-primary pull-right"/>
+<?= $this->form()->close(); ?>

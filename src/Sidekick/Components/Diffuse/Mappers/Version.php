@@ -94,4 +94,9 @@ class Version extends RecordMapper
   {
     return $this->belongsTo(new Project());
   }
+
+  public function platformStates()
+  {
+    return $this->hasMany(new PlatformVersionState());
+  }
 }

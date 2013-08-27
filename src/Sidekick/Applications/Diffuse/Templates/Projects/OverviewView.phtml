@@ -1,1 +1,60 @@
-Overview Page
+<?php
+/**
+ * @var $this Sidekick\Applications\Diffuse\Views\Projects\OverviewView
+ */
+use \Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionsViewHelper;
+
+?>
+<h2><?= $this->project()->name; ?> Versions</h2>
+
+<?php if($this->versions()->hasMappers()): ?>
+
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+  <tr>
+    <th>Version</th>
+    <th>Status</th>
+    <th>Commit Range</th>
+    <?php foreach($this->platforms() as $platform): ?>
+      <th><?= ucwords($platform->name); ?></th>
+    <?php endforeach; ?>
+    <th>Created</th>
+    <th>Last Updated</th>
+  </tr>
+  </thead>
+  <tbody>
+  <?php foreach($this->versions() as $version): ?>
+    <tr>
+      <td><strong><a
+          href="<?= $this->request()->path(2); ?>/v/<?=
+          $version->id();
+          ?>"><?= $version->format(); ?></a>
+        </strong></td>
+      <td><?= VersionsViewHelper::colourState($version->versionState); ?></td>
+      <td><?= substr($version->fromCommitHash, 0, 6); ?> -
+        <?= substr($version->toCommitHash, 0, 6); ?></td>
+      <?php foreach($this->platforms() as $platform): ?>
+        <td>
+          <a href="<?= $this->request()->path(2); ?>/v/<?=
+          $version->id(); ?>/p/<?= $platform->id(); ?>">
+            <?=
+            VersionsViewHelper::colourState(
+              $version->platformStates()->getById(
+                [$platform->id(), $version->id()]
+              )->state
+            );
+            ?></a>
+        </td>
+      <?php endforeach; ?>
+      <td><?= date('d M Y H:i', strtotime($version->createdAt)); ?></td>
+      <td><?= date('d M Y H:i', strtotime($version->updatedAt)); ?></td>
+    </tr>
+  <?php endforeach; ?>
+  </tbody>
+</table>
+
+<?php else: ?>
+
+No versions exist for this project yet.  Please run a relevant build.
+
+<?php endif ?>

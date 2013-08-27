@@ -7,11 +7,32 @@ namespace Sidekick\Applications\Diffuse\Controllers\Projects;
 
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use Sidekick\Applications\Diffuse\Views\Projects\OverviewView;
+use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\Version;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class OverviewController extends DiffuseController
 {
+  protected $_projectId;
+
+  public function preProcess()
+  {
+    $this->_projectId = $this->getInt("projectId");
+  }
+
   public function renderIndex()
   {
-    return new OverviewView();
+    $project = new Project($this->_projectId);
+    if($project->exists())
+    {
+      $versions = Version::collection(['project_id' => $this->_projectId])
+      ->setOrderBy("id", "DESC")->setLimit(0, 50)->preFetch("platformStates");
+      return new OverviewView($project, $versions, Platform::orderedCollection(
+      ));
+    }
+    else
+    {
+      throw new \Exception("You seem to have stumbed upon.... nothing.");
+    }
   }
 }

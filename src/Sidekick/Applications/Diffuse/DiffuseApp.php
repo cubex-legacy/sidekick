@@ -22,12 +22,12 @@ class DiffuseApp extends BaseApp
           '/deployment/(.*)' => 'Projects\Configuration\DeploymentController',
           ''                 => 'Projects\Configuration\DeploymentController',
         ],
-        '/d/:deploymentId@num' => 'Projects\DeploymentController',
+        '/d/:deploymentId@num' => 'Projects\Deployments\DeploymentController',
         '/v/:versionId@num'    => [
           '/p/:platformId@num/(.*)' => 'Projects\Versions\VersionPlatformController',
           '/(.*)'                   => 'Projects\Versions\VersionDetailController',
         ],
-        '/'                    => 'Projects\OverviewController',
+        '/(:projectId@num|)'   => 'Projects\OverviewController',
       ],
       '/platforms/(.*)' => 'PlatformController',
       '/:projectId@num' => [

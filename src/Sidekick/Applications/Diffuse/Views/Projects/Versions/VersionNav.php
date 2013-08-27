@@ -58,30 +58,11 @@ class VersionNav extends ViewModel
 
     $nav->nest($navItems);
 
-    $status = Strings::humanize($this->_version->versionState);
-    switch($this->_version->versionState)
-    {
-      case VersionState::APPROVED:
-        $statusClass = 'success';
-        break;
-      case VersionState::REJECTED:
-        $statusClass = 'error';
-        break;
-      case VersionState::REVIEW:
-        $statusClass = 'warning';
-        $status      = 'In Review';
-        break;
-      default:
-        $statusClass = 'info';
-        $status      = "Pending";
-        break;
-    }
-
+    $state = VersionsViewHelper::colourState($this->_version->versionState);
     $nav->nest(
       new Impart(
-        '<div class="pull-right"><span class="brand">Status: ' .
-        '<span class="text-' . $statusClass . '">' . $status .
-        '</span></span></div>'
+        '<div class="pull-right"><span class="brand">Status: ' . $state .
+        '</span></div>'
       )
     );
 

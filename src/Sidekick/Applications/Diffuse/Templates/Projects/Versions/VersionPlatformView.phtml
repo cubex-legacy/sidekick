@@ -42,7 +42,7 @@
       <div class="media-body action-box">
         <h4 class="media-deading">
           Deployment
-          <small><a href="#">#<?= $deployment->id(); ?></a></small>
+          <small><a href="<?=$this->request()->path(2); ?>/d/<?= $deployment->id(); ?>">#<?= $deployment->id(); ?></a></small>
           <small class="pull-right">
             <span class="text-success">PASSED</span> -
             <?= date("d M Y H:i", strtotime($deployment->updatedAt)) ?>

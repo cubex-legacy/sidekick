@@ -26,7 +26,7 @@ class DiffuseController extends BaseControl
     $sidebarMenu = [];
     foreach($projects as $project)
     {
-      $sidebarMenu['/diffuse/' . $project->id] = $project->name;
+      $sidebarMenu['/diffuse/projects/' . $project->id] = $project->name;
     }
 
     $main = new Sidebar(

@@ -41,7 +41,7 @@ class DiffuseController extends BaseControl
     return new RenderGroup(
       $main,
       '<hr>',
-      new Sidebar($this->request()->path(2), $sidebarMenu)
+      new Sidebar($this->request()->path(3), $sidebarMenu)
     );
   }
 }

@@ -14,9 +14,9 @@ class DiffuseApp extends BaseApp
   public function getRoutes()
   {
     return [
-      '/'               => 'DefaultController',
-      '/hosts/(.*)'     => 'HostController',
-      '/projects'       => [
+      '/'                        => 'DefaultController',
+      '/hosts/(.*)'              => 'HostController',
+      '/projects/:projectId@num' => [
         '/configuration'       => [
           '/approval/(.*)'   => 'Projects\Configuration\ApprovalController',
           '/deployment/(.*)' => 'Projects\Configuration\DeploymentController',
@@ -27,10 +27,10 @@ class DiffuseApp extends BaseApp
           '/p/:platformId@num/(.*)' => 'Projects\Versions\VersionPlatformController',
           '/(.*)'                   => 'Projects\Versions\VersionDetailController',
         ],
-        '/(:projectId@num|)'   => 'Projects\OverviewController',
+        '/'                    => 'Projects\OverviewController',
       ],
-      '/platforms/(.*)' => 'PlatformController',
-      '/:projectId@num' => [
+      '/platforms/(.*)'          => 'PlatformController',
+      '/:projectId@num'          => [
         '/stages/(.*)'             => 'Project\StagesController',
         '/approval/(.*)'           => 'Project\ApprovalController',
         '/hosts/(.*)'              => 'Project\HostsController',

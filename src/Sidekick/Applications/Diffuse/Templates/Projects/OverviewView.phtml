@@ -26,7 +26,7 @@ use \Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionsViewHelper;
   <?php foreach($this->versions() as $version): ?>
     <tr>
       <td><strong><a
-          href="<?= $this->request()->path(2); ?>/v/<?=
+          href="<?= $this->baseUri(); ?>/v/<?=
           $version->id();
           ?>"><?= $version->format(); ?></a>
         </strong></td>
@@ -35,7 +35,7 @@ use \Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionsViewHelper;
         <?= substr($version->toCommitHash, 0, 6); ?></td>
       <?php foreach($this->platforms() as $platform): ?>
         <td>
-          <a href="<?= $this->request()->path(2); ?>/v/<?=
+          <a href="<?= $this->baseUri(); ?>/v/<?=
           $version->id(); ?>/p/<?= $platform->id(); ?>">
             <?=
             VersionsViewHelper::colourState(

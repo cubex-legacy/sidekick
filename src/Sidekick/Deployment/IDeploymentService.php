@@ -49,5 +49,5 @@ interface IDeploymentService
    *
    * @return array|null
    */
-  public function getConfigurationItems();
+  public static function getConfigurationItems();
 }

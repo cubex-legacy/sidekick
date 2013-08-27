@@ -53,7 +53,7 @@ abstract class BaseDeploymentService implements IDeploymentService
     return isset($this->_hosts[$hostId]) ? $this->_hosts[$hostId] : null;
   }
 
-  public function getConfigurationItems()
+  public static function getConfigurationItems()
   {
     return [];
   }

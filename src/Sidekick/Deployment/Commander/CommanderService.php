@@ -83,7 +83,7 @@ class CommanderService extends BaseDeploymentService
     }
   }
 
-  public function getConfigurationItems()
+  public static function getConfigurationItems()
   {
     return [
       'command'    => 'Bash command to execute',

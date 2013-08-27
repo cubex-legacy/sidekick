@@ -82,4 +82,12 @@ class CommanderService extends BaseDeploymentService
       $stageHost->passed = in_array($process->getExitCode(), $exitCodes);
     }
   }
+
+  public function getConfigurationItems()
+  {
+    return [
+      'command'    => 'Bash command to execute',
+      'exit_codes' => 'Passing Exit codes, defaults to: 0'
+    ];
+  }
 }

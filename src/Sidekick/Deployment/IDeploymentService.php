@@ -40,4 +40,14 @@ interface IDeploymentService
    * @return void
    */
   public function deploy();
+
+  /**
+   * Return a keyed array of configuration items.
+   *
+   * key = configuration item name
+   * value = description of configuration item
+   *
+   * @return array|null
+   */
+  public function getConfigurationItems();
 }

@@ -97,4 +97,12 @@ class RsyncService extends BaseDeploymentService
   {
     return new Version();
   }
+
+  public function getConfigurationItems()
+  {
+    return [
+      'deploy_base' => 'Remote base path to deploy code to',
+      'options'     => 'Rsync options, defaults to: z'
+    ];
+  }
 }

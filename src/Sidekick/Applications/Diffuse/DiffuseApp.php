@@ -16,6 +16,7 @@ class DiffuseApp extends BaseApp
     return [
       '/'                        => 'DefaultController',
       '/hosts/(.*)'              => 'HostController',
+      '/platforms/(.*)'          => 'PlatformController',
       '/projects/:projectId@num' => [
         '/configuration'       => [
           '/approval/(.*)'   => 'Projects\Configuration\ApprovalController',
@@ -29,16 +30,9 @@ class DiffuseApp extends BaseApp
         ],
         '/'                    => 'Projects\OverviewController',
       ],
-      '/platforms/(.*)'          => 'PlatformController',
       '/:projectId@num'          => [
-        '/stages/(.*)'             => 'Project\StagesController',
-        '/approval/(.*)'           => 'Project\ApprovalController',
-        '/hosts/(.*)'              => 'Project\HostsController',
-        '/v/new'                   => 'Project\VersionsController@new',
-        '/v/:versionId@num/p/(.*)' => 'Project\VersionsPlatformController',
-        '/v/:versionId@num/(.*)'   => 'Project\VersionsController',
-        '/v/(.*)'                  => 'Project\VersionsController',
-        '/'                        => 'Project\DiffuseProjectController',
+        '/stages/(.*)' => 'Project\StagesController',
+        '/hosts/(.*)'  => 'Project\HostsController',
       ]
     ];
   }

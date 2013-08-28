@@ -11,18 +11,13 @@ namespace Sidekick\Applications\Diffuse\Views\Projects\Configuration;
 
 use Cubex\Form\Form;
 use Cubex\Form\FormElement;
-use Cubex\Form\OptionBuilder;
 use Cubex\Foundation\Container;
 use Cubex\View\TemplatedViewModel;
-use Nette\Utils\FileSystem;
 use Sidekick\Applications\Diffuse\Forms\DeploymentStageForm;
 use Sidekick\Components\Diffuse\Helpers\DeploymentHelper;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
-use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Projects\Mappers\Project;
-use Sidekick\Deployment\BaseDeploymentService;
 
-class ManageDeploymentStages extends TemplatedViewModel
+class ManageDeploymentStagesView extends TemplatedViewModel
 {
   protected $_stage;
 
@@ -37,24 +32,17 @@ class ManageDeploymentStages extends TemplatedViewModel
     return $this->_stage;
   }
 
-  public function getStageName($stageId)
-  {
-    $stage = new DeploymentStage($stageId);
-    if($stage->exists())
-    {
-      return $stage->name;
-    }
-
-    return "Unknown";
-  }
-
   public function form()
   {
     $form = new DeploymentStageForm();
     $form->hydrateFromMapper($this->_stage);
 
-    $buttonText = (!$this->_stage->exists()) ?
-      "Create" : "Update";
+    $buttonText = 'Create';
+    if($this->_stage->exists())
+    {
+      $buttonText = 'Update';
+      $form->getElement('platformId')->setType(FormElement::HIDDEN);
+    }
 
     $form->addSubmitElement($buttonText);
     $form->getElement('submit')->addAttribute('class', 'btn');

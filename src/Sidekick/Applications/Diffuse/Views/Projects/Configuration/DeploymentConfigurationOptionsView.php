@@ -8,7 +8,7 @@ namespace Sidekick\Applications\Diffuse\Views\Projects\Configuration;
 
 use Cubex\View\TemplatedViewModel;
 
-class DeploymentConfigurationOptions extends TemplatedViewModel
+class DeploymentConfigurationOptionsView extends TemplatedViewModel
 {
   protected $_serviceClass;
   protected $_configuration;

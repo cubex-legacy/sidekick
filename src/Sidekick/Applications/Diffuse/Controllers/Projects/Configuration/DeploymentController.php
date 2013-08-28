@@ -13,13 +13,13 @@ use Cubex\Routing\Templates\ResourceTemplate;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use
-  Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationOptions;
+  Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationOptionsView;
 use
   Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationView;
 use
   Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentDependencyModal;
 use
-  Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStages;
+  Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStagesView;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -39,7 +39,7 @@ class DeploymentController extends DiffuseController
   public function renderNew()
   {
     $stage = new DeploymentStage();
-    return new ManageDeploymentStages($stage);
+    return new ManageDeploymentStagesView($stage);
   }
 
   public function postNew()
@@ -57,7 +57,7 @@ class DeploymentController extends DiffuseController
     $stageId = $this->getInt("id");
     $stage   = new DeploymentStage($stageId);
 
-    return new ManageDeploymentStages($stage);
+    return new ManageDeploymentStagesView($stage);
   }
 
   public function postEdit()
@@ -127,7 +127,10 @@ class DeploymentController extends DiffuseController
     $stage   = new DeploymentStage($stageId);
 
     return new Response(
-      new DeploymentConfigurationOptions($serviceClass, $stage->configuration)
+      new DeploymentConfigurationOptionsView(
+        $serviceClass,
+        $stage->configuration
+      )
     );
   }
 
@@ -155,6 +158,7 @@ class DeploymentController extends DiffuseController
     else
     {
       $oldOrder = (int)$oldOrder;
+      $swapOrder = null;
       switch($direction)
       {
         case 'up':
@@ -166,21 +170,24 @@ class DeploymentController extends DiffuseController
           break;
       }
 
-      $swapStage = DeploymentStage::collection()->loadWhere(
-                     [
-                     'project_id'  => $projectId,
-                     'platform_id' => $platformId,
-                     'order'       => $swapOrder
-                     ]
-                   )->first();
-      if($swapStage !== null)
+      if($swapOrder !== null)
       {
-        $swapStage->order = $oldOrder;
-        $swapStage->saveChanges();
-      }
+        $swapStage = DeploymentStage::collection()->loadWhere(
+                       [
+                       'project_id'  => $projectId,
+                       'platform_id' => $platformId,
+                       'order'       => $swapOrder
+                       ]
+                     )->first();
+        if($swapStage !== null)
+        {
+          $swapStage->order = $oldOrder;
+          $swapStage->saveChanges();
+        }
 
-      $stage->order = $swapOrder;
-      $stage->saveChanges();
+        $stage->order = $swapOrder;
+        $stage->saveChanges();
+      }
     }
     Redirect::to($this->baseUri())->now();
   }

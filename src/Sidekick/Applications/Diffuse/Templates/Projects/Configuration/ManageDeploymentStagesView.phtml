@@ -4,7 +4,7 @@
  * User: Sam.Waters
  * Date: 26/07/13
  * Time: 10:08
- * @var $this \Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStages
+ * @var $this \Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStagesView
  */
 ?>
 <h2><?= (!$this->stage()->exists()) ? "Add" : "Edit" ?> Deployment Stage</h2>
@@ -13,6 +13,11 @@
 <?= $form->formNameInput(); ?>
 <?= $form->token(); ?>
 <?= $form->getElement("id"); ?>
+<?php if($this->stage()->exists()): ?>
+<h3>Platform: <?= \Cubex\Helpers\Strings::titleize(
+    $this->stage()->platform()->name
+  ); ?></h3>
+<?php endif; ?>
 <?= $form->getElement("platformId"); ?>
 <?= $form->getElement("serviceClass"); ?>
 <?= $form->getElement("requireAllHostsPass"); ?>

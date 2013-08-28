@@ -6,25 +6,35 @@
  * To change this template use File | Settings | File Templates.
  */
 $(document).ready(function(){
-  $("#addConfig").on("click", function(e) {
-    e.preventDefault();
-    $("#configurationTable").append(createRow("configuration"));
+  var postData = {};
+  postData['serviceClass'] = $('#form-StageEdit-serviceClass').val();
+  console.log($('#form-StageEdit-serviceClass').val());
+  $.post('getConfigurationOptions', postData, function(data){
+    setInnerHtml(data)
   });
-  $("#addDep").on("click", function(e) {
-    e.preventDefault();
-    $("#dependencyTable").append(createRow("dependency"));
+
+  $('#form-StageEdit-serviceClass').on("change", function(){
+    var postData = {};
+    postData['serviceClass'] = $(this).val();
+    $.post('getConfigurationOptions', postData, function(data){
+      setInnerHtml(data)
+    });
   });
-  $(document).on("click","a.deleteRow",function(e) {
-    e.preventDefault();
-    $(this).closest("tr").remove();
-  })
+
+  function setInnerHtml(data)
+  {
+    $('#configurationTable').html(data);
+    $(".config-value-toggle").on("change", function(){
+      var textareaId = $(this).data('config-id');
+      if($(this).is(':checked'))
+      {
+        $('#'+textareaId).removeAttr('disabled');
+      }
+      else
+      {
+        $('#'+textareaId).attr('disabled', 'disabled');
+      }
+    });
+  }
 });
 
-function createRow(name)
-{
-  var tr=$("<tr></tr>");
-  tr.append("<td><input type='text' name='" + name + "Keys[]' /></td>");
-  tr.append("<td><textarea name='" + name + "Values[]'></textarea></td>");
-  tr.append("<td><a href='#' class='deleteRow' title='Delete'><i class='icon icon-trash'></i></a></td>");
-  return tr;
-}

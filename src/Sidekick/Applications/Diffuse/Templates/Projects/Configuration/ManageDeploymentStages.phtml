@@ -1,0 +1,21 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Sam.Waters
+ * Date: 26/07/13
+ * Time: 10:08
+ * @var $this \Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStages
+ */
+?>
+<h2><?= (!$this->stage()->exists()) ? "Add" : "Edit" ?> Deployment Stage</h2>
+<?php $form = $this->form(); ?>
+<?= $form->open(); ?>
+<?= $form->formNameInput(); ?>
+<?= $form->token(); ?>
+<?= $form->getElement("id"); ?>
+<?= $form->getElement("platformId"); ?>
+<?= $form->getElement("serviceClass"); ?>
+<?= $form->getElement("requireAllHostsPass"); ?>
+<div id="configurationTable"></div>
+<?= $form->getElement("submit"); ?>
+<?= $form->close(); ?>

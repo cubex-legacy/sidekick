@@ -19,9 +19,12 @@ class DiffuseApp extends BaseApp
       '/platforms/(.*)'          => 'PlatformController',
       '/projects/:projectId@num' => [
         '/configuration'       => [
-          '/approval/(.*)'   => 'Projects\Configuration\ApprovalController',
-          '/deployment/(.*)' => 'Projects\Configuration\DeploymentController',
-          ''                 => 'Projects\Configuration\DeploymentController',
+          '/approval/(.*)' => 'Projects\Configuration\ApprovalController',
+          '/deployment'    => [
+            '/stages/(.*)' => 'Projects\Configuration\DeploymentController',
+            '(.*)'         => 'Projects\Configuration\DeploymentController',
+          ],
+          ''               => 'Projects\Configuration\DeploymentController',
         ],
         '/d/:deploymentId@num' => 'Projects\Deployments\DeploymentController',
         '/v/:versionId@num'    => [
@@ -31,8 +34,7 @@ class DiffuseApp extends BaseApp
         '/'                    => 'Projects\OverviewController',
       ],
       '/:projectId@num'          => [
-        '/stages/(.*)' => 'Project\StagesController',
-        '/hosts/(.*)'  => 'Project\HostsController',
+        '/hosts/(.*)' => 'Project\HostsController',
       ]
     ];
   }

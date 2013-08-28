@@ -1,1 +1,59 @@
-Deployment Configuration
+<?php
+/**
+ * @var $this Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationView
+ */
+?>
+<h2><?= $this->project()->name; ?> Deployment Stages</h2>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
+    <?php echo Session::getFlash('msg')->message; ?>
+  </div>
+<?php endif; ?>
+<p class="pull-right">
+  <a class="btn btn-success"
+     href="<?= $this->baseUri() ?>/new"><i class="icon-white icon-plus"></i> Add Deployment Stage</a>
+</p>
+<?php foreach($this->platforms() as $platform): ?>
+  <h2><?= \Cubex\Helpers\Strings::titleize($platform->name) ?></h2>
+  <table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <tr>
+      <th>Service Class</th>
+      <th>Require All Hosts</th>
+      <th>Configuration</th>
+      <th>Order</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php $platformStages = $this->platformStages($platform->id()); ?>
+    <?php foreach($platformStages as $stage): ?>
+      <tr>
+        <td><?= $this->className($stage->serviceClass); ?></td>
+        <td><?= ($stage->requireAllHostsPass) ? "Yes" : "No" ?></td>
+        <td><?= $this->getDetails($stage->configuration); ?></td>
+        <td>
+          <?php if($stage->order > 1): ?>
+            <a href="<?= $this->baseUri(
+            ) ?>/<?= $stage->id ?>/<?= $stage->platformId ?>/order/up"
+               class="btn" style="display:block; width:10px;">
+              <i class="icon icon-arrow-up"></i></a>
+          <?php endif; ?>
+          <?php if($stage->order != $platformStages->count()): ?>
+            <a href="<?= $this->baseUri(
+            ) ?>/<?= $stage->id ?>/<?= $stage->platformId ?>/order/down"
+               class="btn" style="display:block; width:10px;">
+              <i class="icon icon-arrow-down"></i></a>
+          <?php endif; ?>
+        </td>
+        <td>
+          <a href="<?= $this->baseUri() ?>/<?= $stage->id ?>/edit"><i
+              class="icon icon-edit"></i></a>
+          <a href="<?= $this->baseUri() ?>/<?= $stage->id ?>/delete"><i
+              class="icon icon-trash"></i></a>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+    </tbody>
+  </table>
+<?php endforeach; ?>

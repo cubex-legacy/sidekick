@@ -15,12 +15,14 @@ class DeploymentStage extends RecordMapper
   public $serviceClass;
   public $requireAllHostsPass;
   public $configuration = [];
-  public $dependencies = [];
+  /**
+   * @datatype int
+   */
+  public $order;
 
   protected function _configure()
   {
     $this->_setSerializer("configuration");
-    $this->_setSerializer("dependencies");
   }
 
   /**

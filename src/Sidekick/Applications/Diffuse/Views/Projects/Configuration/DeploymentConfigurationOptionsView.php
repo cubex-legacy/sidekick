@@ -22,9 +22,13 @@ class DeploymentConfigurationOptionsView extends TemplatedViewModel
   public function getConfigurationOptions()
   {
     $serviceProvider = $this->_serviceClass;
-    if(class_exists($this->_serviceClass))
+    if(class_exists($serviceProvider))
     {
-      return $serviceProvider::getConfigurationItems();
+      $interfaces = class_implements($serviceProvider);
+      if(in_array("Sidekick\\Deployment\\IDeploymentService", $interfaces))
+      {
+        return $serviceProvider::getConfigurationItems();
+      }
     }
 
     return [];

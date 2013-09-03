@@ -7,7 +7,6 @@
 namespace Sidekick\Applications\Diffuse\Views\Projects\Configuration;
 
 use Cubex\Form\Form;
-use Cubex\Form\FormElement;
 use Cubex\View\TemplatedViewModel;
 use Qubes\Bootstrap\Label;
 use Sidekick\Components\Diffuse\Mappers\HostPlatform;

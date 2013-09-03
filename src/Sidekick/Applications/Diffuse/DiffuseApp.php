@@ -22,6 +22,7 @@ class DiffuseApp extends BaseApp
           '/approval/(.*)' => 'Projects\Configuration\ApprovalController',
           '/deployment'    => [
             '/stages/(.*)' => 'Projects\Configuration\DeploymentController',
+            '/hosts/(.*)' => 'Projects\Configuration\DeploymentHostsController',
             '(.*)'         => 'Projects\Configuration\DeploymentController',
           ],
           ''               => 'Projects\Configuration\DeploymentController',
@@ -33,9 +34,6 @@ class DiffuseApp extends BaseApp
         ],
         '/'                    => 'Projects\OverviewController',
       ],
-      '/:projectId@num'          => [
-        '/hosts/(.*)' => 'Project\HostsController',
-      ]
     ];
   }
 

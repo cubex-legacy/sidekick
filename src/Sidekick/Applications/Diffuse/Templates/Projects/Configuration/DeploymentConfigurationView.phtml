@@ -11,7 +11,8 @@
 <?php endif; ?>
 <p class="pull-right">
   <a class="btn btn-success"
-     href="<?= $this->baseUri() ?>/new"><i class="icon-white icon-plus"></i> Add Deployment Stage</a>
+     href="<?= $this->baseUri() ?>/new">
+    <i class="icon-white icon-plus"></i> Add Deployment Stage</a>
 </p>
 <?php foreach($this->platforms() as $platform): ?>
   <h2><?= \Cubex\Helpers\Strings::titleize($platform->name) ?></h2>
@@ -26,8 +27,7 @@
     </tr>
     </thead>
     <tbody>
-    <?php $platformStages = $this->platformStages($platform->id()); ?>
-    <?php foreach($platformStages as $stage): ?>
+    <?php foreach($this->platformStages($platform->id()) as $stage): ?>
       <tr>
         <td><?= $this->className($stage->serviceClass); ?></td>
         <td><?= ($stage->requireAllHostsPass) ? "Yes" : "No" ?></td>
@@ -39,7 +39,7 @@
                class="btn" style="display:block; width:10px;">
               <i class="icon icon-arrow-up"></i></a>
           <?php endif; ?>
-          <?php if($stage->order != $platformStages->count()): ?>
+          <?php if($stage->order != $this->platformStages($platform->id())->count()): ?>
             <a href="<?= $this->baseUri(
             ) ?>/<?= $stage->id ?>/<?= $stage->platformId ?>/order/down"
                class="btn" style="display:block; width:10px;">

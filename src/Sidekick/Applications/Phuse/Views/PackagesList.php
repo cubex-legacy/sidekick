@@ -9,6 +9,7 @@ namespace Sidekick\Applications\Phuse\Views;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Views\MapperList;
+use Sidekick\Components\Phuse\Mappers\Package;
 
 class PackagesList extends MapperList
 {
@@ -25,7 +26,7 @@ class PackagesList extends MapperList
 
   public function renderFilters()
   {
-    $vendor  = $this->packages->getUniqueField('vendor');
+    $vendor  = Package::collection()->getUniqueField('vendor');
     return $this->filters($vendor);
   }
 }

@@ -27,7 +27,7 @@ class DeploymentHelper
         {
           if(is_dir($deploymentDir . $file))
           {
-            $classes = glob($deploymentDir . $file . '\*.php');
+            $classes = glob($deploymentDir . $file . '/*.php');
             foreach($classes as $class)
             {
               $pathInfo  = pathinfo($class);

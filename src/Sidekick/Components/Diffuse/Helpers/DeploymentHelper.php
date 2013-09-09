@@ -43,7 +43,7 @@ class DeploymentHelper
 
     if(empty($serviceClassOptions))
     {
-      throw new \Exception('No Deployment Service Classes found');
+      throw new \Exception('No Deployment Service Classes found in ' . $deploymentDir);
     }
 
     return $serviceClassOptions;

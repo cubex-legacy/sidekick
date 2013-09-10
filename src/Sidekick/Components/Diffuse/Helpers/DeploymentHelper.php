@@ -16,7 +16,7 @@ class DeploymentHelper
     $serviceClassOptions = [];
     $projectBase         = Container::config()->get('_cubex_')
                            ->getStr('project_base');
-    $deploymentDir       = $projectBase . "Sidekick/Deployment/";
+    $deploymentDir       = $projectBase . 'Sidekick' . DS . 'Deployment' . DS;
 
     if(file_exists($deploymentDir))
     {
@@ -27,7 +27,7 @@ class DeploymentHelper
         {
           if(is_dir($deploymentDir . $file))
           {
-            $classes = glob($deploymentDir . $file . '/*.php');
+            $classes = glob($deploymentDir . $file . DS . '*.php');
             foreach($classes as $class)
             {
               $pathInfo  = pathinfo($class);

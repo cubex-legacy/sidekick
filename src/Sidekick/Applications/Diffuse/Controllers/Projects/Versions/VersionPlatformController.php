@@ -7,6 +7,7 @@ namespace Sidekick\Applications\Diffuse\Controllers\Projects\Versions;
 
 use Cubex\Core\Http\Redirect;
 use Cubex\Data\Transportable\TransportMessage;
+use Cubex\Facade\Session;
 use Cubex\Form\Form;
 use Cubex\Helpers\Strings;
 use Cubex\Mapper\Database\RecordCollection;
@@ -92,6 +93,9 @@ class VersionPlatformController extends VersionsController
     }
 
     $platformView->setActionForm($this->_buildForm($platformState));
+
+    //used in deploymentDetailsView to return back to $platformView
+    Session::set('backUri', $this->baseUri());
 
     return $this->_buildView(
       $platformView

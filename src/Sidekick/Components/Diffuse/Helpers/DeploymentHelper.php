@@ -70,4 +70,10 @@ class DeploymentHelper
 
     return $serviceClassOptions;
   }
+
+  public static function className($namespace)
+  {
+    $parts = explode('\\', $namespace);
+    return end($parts);
+  }
 }

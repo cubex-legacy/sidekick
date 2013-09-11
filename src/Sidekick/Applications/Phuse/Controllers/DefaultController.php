@@ -100,6 +100,7 @@ class DefaultController extends PhuseController
     $pager        = $packagesList->pager($page, $totalCount, $perPage);
     $pager->getOffset();
     $packages->setLimit($pager->getOffset(), $perPage);
+    $packagesList->showFilters();
 
     $list = $this->createView($packagesList);
 

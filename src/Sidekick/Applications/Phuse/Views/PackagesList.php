@@ -13,20 +13,46 @@ use Sidekick\Components\Phuse\Mappers\Package;
 
 class PackagesList extends MapperList
 {
-  public $packages;
-  public $heading;
-  public $showFullList;
+  protected $_packages;
+  protected $_heading;
+  protected $_showFullList;
+  private $_renderFilters = false;
 
   public function __construct($packages, $heading, $showFullList = true)
   {
-    $this->packages     = $packages;
-    $this->heading      = $heading;
-    $this->showFullList = $showFullList;
+    $this->_packages     = $packages;
+    $this->_heading      = $heading;
+    $this->_showFullList = $showFullList;
+  }
+
+  public function getPackages()
+  {
+    return $this->_packages;
+  }
+
+  public function getHeading()
+  {
+    return $this->_heading;
+  }
+
+  public function showFullList()
+  {
+    return $this->_showFullList;
   }
 
   public function renderFilters()
   {
-    $vendor  = Package::collection()->getUniqueField('vendor');
-    return $this->filters($vendor);
+    if($this->_renderFilters)
+    {
+      $vendor = Package::collection()->getUniqueField('vendor');
+      return $this->filters($vendor);
+    }
+
+    return '';
+  }
+
+  public function showFilters()
+  {
+    $this->_renderFilters = true;
   }
 }

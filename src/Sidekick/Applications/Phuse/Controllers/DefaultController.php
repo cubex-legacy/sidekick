@@ -78,27 +78,10 @@ class DefaultController extends PhuseController
 
   public function renderRecentReleases()
   {
-    $recentDate = date('Y-m-d 00:00:00', strtotime('-2 months'));
-    $releases   = Release::collection()->whereGreaterThan(
-                    'created_at',
-                    $recentDate
-                  )->setOrderBy('created_at', 'DESC');
+    $releases = Release::collection()->setOrderBy('created_at', 'DESC')
+                ->setLimit(0, 10);
 
-    $perPage        = 30;
-    $page           = $this->getStr('page');
-    $totalCount     = $releases->count();
-    $recentReleases = new RecentReleases($releases);
-    $pager          = $recentReleases->pager($page, $totalCount, $perPage);
-
-    $pager->getOffset();
-    $releases->setLimit($pager->getOffset(), $perPage);
-
-    $list = $this->createView($recentReleases);
-
-    return new RenderGroup(
-      $list,
-      $pager->getPager()
-    );
+    return new RecentReleases($releases);
   }
 
   public function renderAllPackages()

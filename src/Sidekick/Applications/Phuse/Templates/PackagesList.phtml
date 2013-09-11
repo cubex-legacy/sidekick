@@ -7,7 +7,8 @@
  */
 ?>
 <h1><?= $this->heading ?></h1>
-<?= $this->renderFilters() ?>
+<?php if($this->packages): ?>
+  <?= $this->renderFilters() ?>
 <table class="table table-striped table-bordered table-condensed">
   <tr class="info">
     <th>Name</th>
@@ -19,7 +20,6 @@
       <th>Date Created</th>
     <?php endif; ?>
   </tr>
-  <?php if($this->packages): ?>
     <?php foreach($this->packages as $package): ?>
       <tr>
         <td>
@@ -48,5 +48,9 @@
         <?php endif; ?>
       </tr>
     <?php endforeach; ?>
-  <?php endif; ?>
 </table>
+<?php else: ?>
+  <div class="alert alert-warning">
+    <strong>No new packages released with the last 2 months</strong>
+  </div>
+<?php endif; ?>

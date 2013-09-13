@@ -38,16 +38,16 @@ class Create extends CliCommand
       {
         $user->password = password_hash($this->password, PASSWORD_DEFAULT);
         $user->saveChanges();
-        echo "Password updated!".PHP_EOL;
+        echo "Password updated!" . PHP_EOL;
       }
     }
     else
     {
-      $user = new User();
+      $user           = new User();
       $user->username = $this->username;
       $user->password = password_hash($this->password, PASSWORD_DEFAULT);
       $user->saveChanges();
-      echo "User Account created!".PHP_EOL;
+      echo "User Account created!" . PHP_EOL;
     }
   }
 }

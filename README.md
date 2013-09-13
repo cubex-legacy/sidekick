@@ -1,8 +1,12 @@
-sidekick
+Cubex Sidekick
 ========
 
-Cubex Sidekick
+MySQL Setup
 
+  CREATE DATABASE sidekick
+  CREATE USER 'sidekick'@'localhost' IDENTIFIED BY 'EnterPasswordHere';
+  GRANT ALL PRIVILEGES ON sidekick.* TO 'sidekick'@'localhost';
+  FLUSH PRIVILEGES;
 
 Monit Config
 

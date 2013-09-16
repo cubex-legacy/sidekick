@@ -12,6 +12,7 @@ use Cubex\Cli\Shell;
 use Cubex\Facade\Queue;
 use Cubex\Helpers\Strings;
 use Cubex\I18n\TranslateTraits;
+use Cubex\Log\Log;
 use Cubex\Queue\StdQueue;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Sidekick\Components\Repository\Mappers\CommitFile;
@@ -84,6 +85,7 @@ class Update extends CliCommand
         $cloneCommand .= " $repo->fetchUrl";
         $cloneCommand .= " --branch " . $repo->branch;
         $cloneCommand .= " " . $repo->localpath;
+        Log::debug($cloneCommand);
         $process = new Process($cloneCommand);
         $process->run();
         if($this->verbose)

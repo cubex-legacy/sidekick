@@ -86,6 +86,10 @@ class Update extends CliCommand
         $cloneCommand .= " " . $repo->localpath;
         $process = new Process($cloneCommand);
         $process->run();
+        if($this->verbose)
+        {
+          echo $process->getOutput();
+        }
       }
 
       if(!file_exists($repo->localpath))
@@ -102,6 +106,11 @@ class Update extends CliCommand
           echo $data;
         }
       );
+
+      if($this->verbose)
+      {
+        echo $process->getOutput();
+      }
 
       echo "Repository up to date.\n";
 
@@ -136,12 +145,12 @@ class Update extends CliCommand
     if($lastCommit)
     {
       $latest = Commit::collection(
-                  "%C = %d AND %C = %s",
-                  'repository_id',
-                  $this->_currentRepoId,
-                  'committed_at',
-                  $lastCommit
-                )->setOrderBy("id", "DESC")->setLimit(0, 1)->first();
+        "%C = %d AND %C = %s",
+        'repository_id',
+        $this->_currentRepoId,
+        'committed_at',
+        $lastCommit
+      )->setOrderBy("id", "DESC")->setLimit(0, 1)->first();
       /**
        * @var $latest Commit
        */

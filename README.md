@@ -24,3 +24,6 @@ check process buildQueue
 # Recommended Tools
 pear config-set auto_discover 1
 pear install pear.phpqatools.org/phpqatools
+
+
+git clone https://github.com/qbex/CubexCodeStandards.git /usr/share/php/PHP/CodeSniffer/Standards/CubexCodeStandards

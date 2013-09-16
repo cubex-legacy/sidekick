@@ -128,10 +128,6 @@ class Update extends CliCommand
     $fromHash = '';
     try
     {
-      $x         = new Commit(1);
-      $x->author = 'Sample';
-      $x->saveChanges();
-
       $lastCommit = Commit::max(
         "committed_at",
         "%C = %d",

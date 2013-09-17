@@ -12,13 +12,13 @@ Monit Config
 
 check process repositoryUpdate
   with pidfile "/var/run/cubex/Repository.Update:longRun.pid"
-    start program "/sidekick/sidekick/bin/cubex --cubex-env=production Repository.Update:longRun -r all -v"
-    stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Repository.Update:longRun"
+    start program "/bin/bash -c '/sidekick/sidekick/bin/repeat /sidekick/sidekick/bin/cubex --cubex-env=production Repository.Update:longRun -r all -v'" as uid sidekick
+    stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Repository.Update:longRun" as uid sidekick
 
 check process buildQueue
   with pidfile "/var/run/cubex/Fortify.BuildQueue.pid"
-    start program "/sidekick/sidekick/bin/cubex --cubex-env=production Fortify.BuildQueue"
-    stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Fortify.BuildQueue"
+    start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Fortify.BuildQueue'" as uid sidekick
+    stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Fortify.BuildQueue" as uid sidekick
 
 
 # Recommended Tools

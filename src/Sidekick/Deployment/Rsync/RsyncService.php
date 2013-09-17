@@ -80,10 +80,9 @@ class RsyncService extends BaseDeploymentService
         "Deploying to " . $host->name . " with '" . $cmd . "'"
       );
 
-      $stageHost->log = $cmd;
-
       $proc = new Process($cmd);
       $proc->run();
+      $stageHost->log    = $cmd . "\n" . $proc->getOutput();
       $stageHost->passed = $proc->getExitCode() === 0;
     }
   }

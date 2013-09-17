@@ -20,6 +20,11 @@ check process buildQueue
     start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Fortify.BuildQueue'" as uid sidekick
     stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Fortify.BuildQueue" as uid sidekick
 
+check process deployQueue
+  with pidfile "/var/run/cubex/Diffuse.DeployQueue.pid"
+    start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Diffuse.DeployQueue'" as uid sidekick
+    stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Diffuse.DeployQueue" as uid sidekick
+
 
 # Recommended Tools
 pear config-set auto_discover 1

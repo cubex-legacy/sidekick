@@ -19,7 +19,10 @@ class DeploymentStageHost extends RecordMapper
    * @datatype tinyint
    */
   public $passed;
+  public $command;
   public $log;
+  public $stdOut;
+  public $stdErr;
 
   protected function _configure()
   {

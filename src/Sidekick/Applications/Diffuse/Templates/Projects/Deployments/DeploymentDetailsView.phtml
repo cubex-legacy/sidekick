@@ -13,7 +13,8 @@ use Sidekick\Components\Diffuse\Helpers\DeploymentHelper;
 <a href="<?= Session::get('backUri') ?>" class="btn pull-right">Back</a>
 <h1>Deployment #<?= $this->getDeployment()->id() ?></h1>
 
-<p>Deployed to <?= Strings::titleize(
+<p>Deployed to <?=
+  Strings::titleize(
     $this->getDeployment()->platform()->name
   ) ?> on <strong><?=
     date(
@@ -47,7 +48,7 @@ use Sidekick\Components\Diffuse\Helpers\DeploymentHelper;
           <td class="text-<?= $d->passed ? 'success' : 'error' ?>">
             <?= $d->passed ? 'Passed' : 'Failed' ?>
           </td>
-          <td style="width:550px;"><?= $d->log ?></td>
+          <td style="width:550px;"><?= $d->stdErr ?> <?= $d->stdOut ?></td>
         </tr>
       <?php endif; ?>
     <?php endforeach; ?>

@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Repository\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Enums\RepositoryProvider;
 
@@ -27,6 +28,7 @@ class Source extends RecordMapper
   public $username;
   public $password;
   public $projectId;
+  public $commitBuildId;
 
   protected function _configure()
   {
@@ -45,6 +47,11 @@ class Source extends RecordMapper
 
   public function commits()
   {
-    return $this->hasMany(new Commit(),'repository_id');
+    return $this->hasMany(new Commit(), 'repository_id');
+  }
+
+  public function commitBuild()
+  {
+    return $this->belongsTo(new Build(), 'commit_build_id');
   }
 }

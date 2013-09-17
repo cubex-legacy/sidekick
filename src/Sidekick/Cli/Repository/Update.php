@@ -42,6 +42,10 @@ class Update extends CliCommand
   protected $_pidFile;
 
   protected $_currentRepoId;
+  /**
+   * @var Source
+   */
+  protected $_currentSource;
 
   public function longRun()
   {
@@ -67,9 +71,10 @@ class Update extends CliCommand
     {
       $this->_currentRepoId = $repoId;
       $repo                 = new Source($this->_currentRepoId);
+      $this->_currentSource = $repo;
       if(!$repo->exists())
       {
-        echo "The repository specified could not be located\n";
+        Log::error("The repository specified could not be located");
         return;
       }
 
@@ -80,7 +85,7 @@ class Update extends CliCommand
 
       if(!file_exists($repo->localpath))
       {
-        echo "Attempting to clone repo\n";
+        Log::info("Attempting to clone repo");
         $cloneCommand = 'git clone -v';
         $cloneCommand .= " $repo->fetchUrl";
         $cloneCommand .= " --branch " . $repo->branch;
@@ -96,7 +101,7 @@ class Update extends CliCommand
 
       if(!file_exists($repo->localpath))
       {
-        echo "The repo has not been checked out to: " . $repo->localpath . "\n";
+        Log::error("The repo has not been checked out to: " . $repo->localpath);
         return;
       }
 
@@ -114,13 +119,14 @@ class Update extends CliCommand
         echo $process->getOutput();
       }
 
-      echo "Repository up to date.\n";
+      Log::info("Repository up to date.");
 
-      echo "Reading Commits\n";
+      Log::debug("Reading Commits");
 
       $this->_readCommits();
     }
-    echo "\nRepository Update Complete\n";
+    Log::info("Repository Update Complete");
+    echo "\n";
   }
 
   protected function _readCommits()
@@ -195,7 +201,7 @@ class Update extends CliCommand
 
       if($this->verbose)
       {
-        echo 'Adding ' . $commitHash . " - $subject\n";
+        Log::info('Adding ' . $commitHash . " - $subject");
       }
 
       $command = "git diff-tree --no-commit-id -r --name-status " . $commitHash;
@@ -218,16 +224,24 @@ class Update extends CliCommand
       }
     }
 
-    echo number_format($commitCount, 0) . $this->tp(
-      " Commit(s) added\n",
-      $commitCount
+    Log::info(
+      number_format($commitCount, 0) . $this->tp(
+        " Commit(s) added",
+        $commitCount
+      )
     );
 
     if($commitCount > 0)
     {
-      echo "Writing to queue";
-      $queue = new StdQueue('buildRequest');
-      Queue::push($queue, ['respositoryId' => $this->_currentRepoId]);
+      Log::info("Writing to build queue");
+      $queue     = new StdQueue('buildRequest');
+      $queueData = ['respositoryId' => $this->_currentRepoId];
+      if($this->_currentSource->commitBuildId > 0)
+      {
+        Log::info("Pushing to build " . $this->_currentSource->commitBuildId);
+        $queueData['buildId'] = $this->_currentSource->commitBuildId;
+      }
+      Queue::push($queue, $queueData);
     }
   }
 }

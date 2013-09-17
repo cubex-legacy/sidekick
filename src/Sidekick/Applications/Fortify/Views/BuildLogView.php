@@ -48,18 +48,25 @@ class BuildLogView extends TemplatedViewModel
 
   public function getOutputLine($key, $lineValue)
   {
-    $keyParts   = explode(':', $key);
+    $keyParts = explode(':', $key);
     if($keyParts[0] == 'output')
     {
-      $this->_outputLine = new \stdClass();
-      $this->_outputLine->lineTime   = date('H:i:s', $keyParts[1]);
+      $this->_outputLine           = new \stdClass();
+      $this->_outputLine->lineTime = date('H:i:s', $keyParts[1]);
+      $this->_outputLine->lines    = [];
 
-      $lines = explode("\n", $lineValue);
-      foreach($lines as $line)
+      if($lineValue)
       {
-        //we don't want empty lines
-        if($line == '') continue;
-        $this->_outputLine->lines[] = $line;
+        $lines = explode("\n", $lineValue);
+        foreach($lines as $line)
+        {
+          //we don't want empty lines
+          if(empty($line))
+          {
+            continue;
+          }
+          $this->_outputLine->lines[] = $line;
+        }
       }
     }
 

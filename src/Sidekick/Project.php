@@ -84,11 +84,11 @@ class Project extends \Cubex\Core\Project\Project
 
   public function getBySubDomain($subdomain)
   {
-    if($subdomain == 'phuse')
+    if($subdomain == 'phuse' || $subdomain == 'phuse.sidekick')
     {
       return new PhuseApp(true);
     }
-    else if($subdomain == 'api')
+    else if($subdomain == 'api' || $subdomain == 'api.sidekick')
     {
       return new ApiApp();
     }

@@ -78,7 +78,12 @@ class CommanderService extends BaseDeploymentService
       Log::info($cmd);
 
       $process = new Process($cmd);
-      $process->run();
+      $process->run(
+        function ($type, $buffer)
+        {
+          Log::debug($type . ") " . $buffer);
+        }
+      );
 
       $stageHost->log = $process->getOutput();
 

@@ -82,6 +82,7 @@ class RsyncService extends BaseDeploymentService
 
       $proc = new Process($cmd);
       $proc->run();
+      Log::debug($proc->getOutput());
       $stageHost->log    = $cmd . "\n" . $proc->getOutput();
       $stageHost->passed = $proc->getExitCode() === 0;
     }

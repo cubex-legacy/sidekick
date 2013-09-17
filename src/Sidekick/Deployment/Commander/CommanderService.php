@@ -82,6 +82,9 @@ class CommanderService extends BaseDeploymentService
 
       $stageHost->log = $process->getOutput();
 
+      Log::info($cmd);
+      Log::debug($process->getOutput());
+
       $stageHost->passed = in_array($process->getExitCode(), $exitCodes);
     }
   }

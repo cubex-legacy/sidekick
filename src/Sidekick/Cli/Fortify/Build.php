@@ -270,6 +270,7 @@ class Build extends CliCommand
       '{CUBEX_ENV}',
       '{PROJECT_ID}',
       '{BUILD_ID}',
+      '{BUILD_RUN_ID}',
       '{branch}'
       ],
       [
@@ -278,6 +279,7 @@ class Build extends CliCommand
       CUBEX_ENV,
       (int)$this->project,
       (int)$this->build,
+      (int)$this->_buildRunId,
       $this->_branch
       ],
       $runCommand
@@ -297,18 +299,18 @@ class Build extends CliCommand
       if($command->fileSet === FileSet::MODIFIED)
       {
         $commitIds = $this->buildCommitRange()
-                     ->setColumns(['id'])
-                     ->get()
-                     ->loadedIds();
+        ->setColumns(['id'])
+        ->get()
+        ->loadedIds();
 
         if($commitIds)
         {
           $files = CommitFile::collection()
-                   ->whereIn('commit_id', $commitIds, 'd')
-                   ->whereIn("change_type", ['A', 'M'])
-                   ->setColumns(['file_path'])
-                   ->get()
-                   ->getUniqueField('file_path');
+          ->whereIn('commit_id', $commitIds, 'd')
+          ->whereIn("change_type", ['A', 'M'])
+          ->setColumns(['file_path'])
+          ->get()
+          ->getUniqueField('file_path');
 
           foreach($files as $file)
           {
@@ -438,7 +440,7 @@ class Build extends CliCommand
       'Start Time'     => $buildRun->startTime->format('Y-m-d H:i:s'),
       'End Time'       => $buildRun->endTime->format('Y-m-d H:i:s'),
       'Total Duration' => $buildRun->startTime->diff($buildRun->endTime)
-                          ->format("%H:%I:%S"),
+      ->format("%H:%I:%S"),
     ];
 
     foreach($results as $name => $value)

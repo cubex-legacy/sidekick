@@ -231,17 +231,19 @@ class Update extends CliCommand
       )
     );
 
-    if($commitCount > 0)
+    if($commitCount > 0 && $this->_currentSource->commitBuildId > 0)
     {
-      Log::info("Writing to build queue");
-      $queue     = new StdQueue('buildRequest');
-      $queueData = ['respositoryId' => $this->_currentRepoId];
-      if($this->_currentSource->commitBuildId > 0)
-      {
-        Log::info("Pushing to build " . $this->_currentSource->commitBuildId);
-        $queueData['buildId'] = $this->_currentSource->commitBuildId;
-      }
-      Queue::push($queue, $queueData);
+      $queue = new StdQueue('buildRequest');
+      Log::info(
+        "Pushing to build queue " . $this->_currentSource->commitBuildId
+      );
+      Queue::push(
+        $queue,
+        [
+        'respositoryId' => $this->_currentRepoId,
+        'buildId'       => $this->_currentSource->commitBuildId,
+        ]
+      );
     }
   }
 }

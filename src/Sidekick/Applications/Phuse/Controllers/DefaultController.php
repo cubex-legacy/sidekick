@@ -33,7 +33,7 @@ class DefaultController extends PhuseController
 
   public function renderIndex()
   {
-    return new PhuseIndex();
+    return new PhuseIndex($this->config("project")->getStr("base_uri"));
   }
 
   public function renderViewPackage()
@@ -70,16 +70,16 @@ class DefaultController extends PhuseController
   {
     $recentDate = date('Y-m-d 00:00:00', strtotime('-2 months'));
     $packages   = Package::collection()->whereGreaterThan(
-                    'created_at',
-                    $recentDate
-                  )->setOrderBy('created_at', 'DESC');
+      'created_at',
+      $recentDate
+    )->setOrderBy('created_at', 'DESC');
     return $this->createView(new PackagesList($packages, 'New Packages'));
   }
 
   public function renderRecentReleases()
   {
     $releases = Release::collection()->setOrderBy('created_at', 'DESC')
-                ->setLimit(0, 10);
+    ->setLimit(0, 10);
 
     return new RecentReleases($releases);
   }

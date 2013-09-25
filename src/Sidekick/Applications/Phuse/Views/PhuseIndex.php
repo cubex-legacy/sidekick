@@ -13,8 +13,14 @@ use Cubex\View\TemplatedViewModel;
 
 class PhuseIndex extends TemplatedViewModel
 {
-  public function __construct()
-  {
+  public $baseUri;
 
+  public function __construct($baseUri = null)
+  {
+    if($baseUri === null)
+    {
+      $baseUri = url("%d.%t");
+    }
+    $this->baseUri = $baseUri;
   }
 }

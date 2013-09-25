@@ -284,7 +284,7 @@ class FortifyController extends BaseControl
       if($buildRepo === null)
       {
         //try to get the master repo for project
-        $project   = new Project($buildId);
+        $project   = new Project($projectId);
         $buildRepo = $project->repository();
       }
 
@@ -305,7 +305,7 @@ class FortifyController extends BaseControl
         $msg       = new \stdClass();
         $msg->type = 'error';
         $msg->text = 'Your Build Request could not be processed.' .
-          'No Repository is linked to this build type';
+          ' No Repository is linked to this build type';
       }
     }
     catch(\Exception $e)
@@ -320,7 +320,7 @@ class FortifyController extends BaseControl
       $msg       = new \stdClass();
       $msg->type = 'error';
       $msg->text = 'Your Build Request could not be processed.' .
-        'More than one Repository is linked to this build type';
+         'More than one Repository is linked to this build type';
     }
 
     Redirect::to($this->baseUri() . '/' . $projectId . '/' . $buildId)->with(

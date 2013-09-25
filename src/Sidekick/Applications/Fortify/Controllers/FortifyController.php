@@ -215,7 +215,7 @@ class FortifyController extends BaseControl
           {
             return new ReportErrorPage(
               $command->name,
-              $reportProvider->getReportFile() . ' does not exist',
+            $reportProvider->getReportFile() . ' does not exist',
               $this->request()->path(4)
             );
           }
@@ -225,7 +225,7 @@ class FortifyController extends BaseControl
       {
         return new ReportErrorPage(
           $command->name,
-          $command->reportNamespace . $e->getMessage(),
+        $command->reportNamespace . $e->getMessage(),
           $this->request()->path(4)
         );
       }
@@ -293,7 +293,7 @@ class FortifyController extends BaseControl
         $queue = new StdQueue('buildRequest');
         Queue::push(
           $queue,
-          ['respositoryId' => $buildRepo->buildSourceId, 'buildId' => $buildId]
+          ['respositoryId' => $buildRepo->id(), 'buildId' => $buildId]
         );
 
         $msg       = new \stdClass();
@@ -305,7 +305,7 @@ class FortifyController extends BaseControl
         $msg       = new \stdClass();
         $msg->type = 'error';
         $msg->text = 'Your Build Request could not be processed.' .
-          ' No Repository is linked to this build type';
+        ' No Repository is linked to this build type';
       }
     }
     catch(\Exception $e)
@@ -320,13 +320,11 @@ class FortifyController extends BaseControl
       $msg       = new \stdClass();
       $msg->type = 'error';
       $msg->text = 'Your Build Request could not be processed.' .
-         'More than one Repository is linked to this build type';
+      'More than one Repository is linked to this build type';
     }
 
-    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $buildId)->with(
-      'msg',
-      $msg
-    )->now();
+    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $buildId)
+    ->with('msg', $msg)->now();
   }
 
   private function _addCommandToView(

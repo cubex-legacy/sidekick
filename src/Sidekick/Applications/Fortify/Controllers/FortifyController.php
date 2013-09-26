@@ -277,23 +277,33 @@ class FortifyController extends BaseControl
 
     try
     {
+      $repoId = 0;
+
       $buildRepo = BuildsProjects::collection()->loadOneWhere(
         ['project_id' => $projectId, 'build_id' => $buildId]
       );
 
-      if($buildRepo === null)
+      if($buildRepo !== null)
       {
         //try to get the master repo for project
         $project   = new Project($projectId);
         $buildRepo = $project->repository();
+        if($buildRepo->exists())
+        {
+          $repoId = $buildRepo->id();
+        }
+      }
+      else if($buildRepo->exists())
+      {
+        $repoId = $buildRepo->buildSourceId;
       }
 
-      if($buildRepo !== null)
+      if($repoId > 0)
       {
         $queue = new StdQueue('buildRequest');
         Queue::push(
           $queue,
-          ['respositoryId' => $buildRepo->id(), 'buildId' => $buildId]
+          ['respositoryId' => $repoId, 'buildId' => $buildId]
         );
 
         $msg       = new \stdClass();

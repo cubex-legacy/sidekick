@@ -51,7 +51,7 @@
           </td>
           <td>
             <a target="_blank"
-               href="/sourcecode/<?= $error->line ?>/<?= $error->fileName ?>/">
+               href="/sourcecode/build/<?= $this->getBuildId() ?>/<?= $error->fileName ?>;<?= $error->line ?>">
               <?= $error->line ?>,<?= $error->column ?></a>
           </td>
           <td><?= $error->message ?></td>

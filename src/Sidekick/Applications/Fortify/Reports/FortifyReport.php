@@ -10,12 +10,14 @@ use Cubex\Foundation\Container;
 
 abstract class FortifyReport
 {
+  public $buildId;
   public $rundId;
   public $filter;
   public $basePath;
 
-  public function __construct($runId, $filter = null, $basePath = null)
+  public function __construct($buildId, $runId, $filter = null, $basePath = null)
   {
+    $this->buildId    = $buildId;
     $this->runId    = $runId;
     $this->filter   = $filter;
     $this->basePath = $basePath;

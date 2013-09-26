@@ -16,7 +16,8 @@ class ReportProvider extends FortifyReport
     return new PhpCsReport(
       $this->getReportFile(),
       $this->filter,
-      $this->basePath
+      $this->basePath,
+      $this->buildId
     );
   }
 

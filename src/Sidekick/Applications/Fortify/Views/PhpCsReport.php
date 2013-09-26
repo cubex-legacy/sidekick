@@ -12,13 +12,14 @@ use Sidekick\Applications\Fortify\Reports\PhpCs\PhpCsFile;
 
 class PhpCsReport extends TemplatedViewModel
 {
+  private $_buildId;
   private $_file;
   private $_filter;
   private $_parsedData;
   public $basePath;
   public $reportFileFound = true;
 
-  public function __construct($file, $filter, $basePath)
+  public function __construct($file, $filter, $basePath, $buildId)
   {
     if($filter !== null)
     {
@@ -32,11 +33,17 @@ class PhpCsReport extends TemplatedViewModel
     $this->_filter  = $filter;
     $this->basePath = $basePath;
     $this->_setParsedData();
+    $this->_buildId = $buildId;
 
     $this->requireJs(
       'https://google-code-prettify.googlecode.com/svn/'
       . 'loader/run_prettify.js?skin=sons-of-obsidian'
     );
+  }
+
+  public function getBuildId()
+  {
+    return $this->_buildId;
   }
 
   /**
@@ -114,6 +121,9 @@ class PhpCsReport extends TemplatedViewModel
       {
         $fileName       = basename((string)$file['name']);
         $fullFileName   = (string)$file['name'];
+
+        //get just the relative file name starting from src
+        $fullFileName = substr($fullFileName, strpos($fullFileName, 'src'));
         $errors         = [];
         $filteredErrors = [];
         foreach($file->error as $error)

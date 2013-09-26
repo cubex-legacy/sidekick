@@ -7,6 +7,7 @@ namespace Sidekick\Applications\Fortify\Controllers;
 
 use Cubex\Facade\Queue;
 use Cubex\Facade\Redirect;
+use Cubex\Facade\Session;
 use Cubex\Form\Form;
 use Cubex\Mapper\Collection;
 use Cubex\Queue\StdQueue;
@@ -199,7 +200,7 @@ class FortifyController extends BaseControl
           $command->reportNamespace
         );
 
-        $reportProvider = new $className($runId, $filter, $basePath);
+        $reportProvider = new $className($buildId, $runId, $filter, $basePath);
 
         if($reportProvider instanceof FortifyReport)
         {
@@ -215,7 +216,7 @@ class FortifyController extends BaseControl
           {
             return new ReportErrorPage(
               $command->name,
-            $reportProvider->getReportFile() . ' does not exist',
+              $reportProvider->getReportFile() . ' does not exist',
               $this->request()->path(4)
             );
           }
@@ -225,7 +226,7 @@ class FortifyController extends BaseControl
       {
         return new ReportErrorPage(
           $command->name,
-        $command->reportNamespace . $e->getMessage(),
+          $command->reportNamespace . $e->getMessage(),
           $this->request()->path(4)
         );
       }
@@ -315,7 +316,7 @@ class FortifyController extends BaseControl
         $msg       = new \stdClass();
         $msg->type = 'error';
         $msg->text = 'Your Build Request could not be processed.' .
-        ' No Repository is linked to this build type';
+          ' No Repository is linked to this build type';
       }
     }
     catch(\Exception $e)
@@ -330,7 +331,7 @@ class FortifyController extends BaseControl
       $msg       = new \stdClass();
       $msg->type = 'error';
       $msg->text = 'Your Build Request could not be processed.' .
-      'More than one Repository is linked to this build type';
+        'More than one Repository is linked to this build type';
     }
 
     Redirect::to($this->baseUri() . '/' . $projectId . '/' . $buildId)

@@ -57,10 +57,10 @@ class ApprovalConfigurationView extends TemplatedViewModel
         }
         if($roleCount > 1)
         {
-          $options['two'] = 'Two (2)';
+          $options['two']    = 'Two (2)';
+          $options['quorum'] = 'Quorum (' . (ceil($roleCount / 2) + 1) . ')';
         }
-        $options['quorum'] = 'Quorum ' . (ceil($roleCount / 2) + 1) . ')';
-        $options['all']    = 'All (' . $roleCount . ')';
+        $options['all'] = 'All (' . $roleCount . ')';
 
         $current = new ApprovalConfiguration(
           [

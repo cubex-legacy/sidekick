@@ -8,12 +8,14 @@ namespace Sidekick\Cli\Diffuse;
 use Cubex\Cli\CliCommand;
 use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Enums\VersionNumberType;
+use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\FortifyHelper;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
+use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 
 class CreateVersion extends CliCommand
 {
@@ -155,6 +157,44 @@ class CreateVersion extends CliCommand
       throw new \Exception(
         "The build ID you specified does not exist." . $reattempt
       );
+    }
+    else
+    {
+      if($version->repoId < 1)
+      {
+        $buildProject = new BuildsProjects(
+          [$buildRun->buildId, $version->projectId]
+        );
+        if($buildProject->exists())
+        {
+          $version->repoId = new $buildProject->buildSourceId;
+        }
+      }
+
+      if($version->toCommitHash === null)
+      {
+        $version->toCommitHash = $buildRun->commitHash;
+      }
+
+      if($version->fromCommitHash === null)
+      {
+        //Locate previous approved version for commit hash
+        $lastVersion = Version::collection(
+          [
+          "projectId"    => $version->projectId,
+          "versionState" => VersionState::APPROVED,
+          ]
+        )->setLimit(0, 1)
+        ->setOrderByQuery(
+          "major DESC, minor DESC, build DESC, revision DESC, created_at DESC"
+        );
+        if($lastVersion->hasMappers())
+        {
+          $version->fromCommitHash = $lastVersion->first()->toCommitHash;
+        }
+      }
+
+      $version->saveChanges();
     }
 
     if($buildRun->projectId != $version->projectId)

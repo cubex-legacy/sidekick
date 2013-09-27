@@ -24,7 +24,7 @@ class DefaultController extends DiffuseController
 {
   public function renderIndex()
   {
-    $state    = $this->_request->getVariables("stateSelect");
+    $state    = $this->_request->getVariables("stateSelect", "pending");
     $platform = $this->_request->getVariables("allPlatforms");
     return $this->createView(
       new HomePage($state, ($platform != null) ? true : false)
@@ -39,7 +39,7 @@ class DefaultController extends DiffuseController
    */
   public function ajaxIndex()
   {
-    $requestedState = $this->_request->postVariables("state");
+    $requestedState = $this->_request->postVariables("state", "pending");
     $allPlatforms   = ($this->_request->postVariables(
       "allplatforms"
     ) == "true") ? true : false;

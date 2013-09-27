@@ -144,8 +144,9 @@ class VersionPlatformController extends VersionsController
     {
       $platformState->state = VersionState::REJECTED;
     }
-    else if(!(in_array(false, $requires) ||
+    else if((!(in_array(false, $requires) ||
     (empty($requires) && in_array(false, $optional)))
+    && $approvers > 0)
     )
     {
       //Any requirements fail, or any optionals require if no required pass

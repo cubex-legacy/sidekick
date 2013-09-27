@@ -11,15 +11,18 @@
 <form class="form-inline well">
   <label for="stateSelect">Show versions that are:</label>
   <select id="stateSelect" name="stateSelect">
-    <?php foreach($this->getStates() as $sKey=>$sValue): ?>
+    <?php foreach($this->getStates() as $sKey => $sValue): ?>
       <option value="<?= $sValue ?>"><?= $sValue ?></option>
     <?php endforeach; ?>
   </select>
-  <label class="checkbox"><input type="checkbox" id="allPlatforms" name="allPlatforms" /> On all platforms</label>
-  <button type="submit" id="updateButton" class="btn btn-primary">Update</button>
+  <label class="checkbox"><input type="checkbox" id="allPlatforms"
+                                 name="allPlatforms"/> On all platforms</label>
+  <button type="submit" id="updateButton" class="btn btn-primary">Update
+  </button>
 </form>
 <p><strong>The following versions match your criteria:</strong></p>
-<table class="table table-striped table-bordered table-hover table-condensed" id="versionTable">
+<table class="table table-striped table-bordered table-hover table-condensed"
+       id="versionTable">
   <thead>
   <tr>
     <th>Project</th>
@@ -31,17 +34,19 @@
   </thead>
   <tbody>
   <?php foreach($this->getMatchingVersions() as $version): ?>
-  <tr>
-    <td><?= $version->project ?></td>
-    <td><a href="/diffuse/<?= $version->projectid . "/" . $version->versionid ?>"><?= $version->version ?></a></td>
-    <td><?= $version->type ?></td>
-    <td>
-      <?php foreach($version->states as $platform=>$state): ?>
-        <?= "$platform: $state<br />"; ?>
-      <?php endforeach; ?>
-    </td>
-    <td><?= $version->updated ?></td>
-  </tr>
+    <tr>
+      <td><?= $version->project ?></td>
+      <td><a
+        href="/diffuse/projects/<?= $version->projectid . "/v/" . $version->versionid ?>"><?= $version->version ?></a>
+      </td>
+      <td><?= $version->type ?></td>
+      <td>
+        <?php foreach($version->states as $platform => $state): ?>
+          <?= "$platform: $state<br />"; ?>
+        <?php endforeach; ?>
+      </td>
+      <td><?= $version->updated ?></td>
+    </tr>
   <?php endforeach; ?>
   </tbody>
 </table>

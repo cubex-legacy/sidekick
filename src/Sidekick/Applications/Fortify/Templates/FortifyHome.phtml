@@ -26,7 +26,7 @@
       </td>
       <td><?= substr($b->commit_hash, 0, 8) ?></td>
       <td><?= $this->build($b->build_id)->name; ?></td>
-      <td><?= date('d M Y', strtotime($b->start_time)) ?></td>
+      <td><?= date('d M Y @ H:i:s', strtotime($b->start_time)) ?></td>
       <td><?= $this->getDuration($b->end_time, $b->start_time) ?></td>
       <td><?= ucfirst($b->result) ?></td>
     </tr>

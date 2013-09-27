@@ -36,6 +36,20 @@
     <div class="clearfix"></div>
   </div>
 </div>
+<ul class="inline text-center">
+  <li>Repo: <a href="/repository/commits/<?=
+    $this->getVersion()->repoId; ?>"><?=
+      $this->getVersion()->repo()->name; ?></a></li>
+  <li>Source Build: <a
+    href="/fortify/<?= $this->getVersion()->projectId; ?>/b<?=
+    $this->getVersion()->fortifyBuild()->buildId; ?>/a<?=
+    $this->getVersion()->buildId; ?>">#<?= $this->getVersion()->buildId; ?>
+    </a></li>
+  <li>Commit Range:
+    <?= substr($this->getVersion()->fromCommitHash, 0, 6); ?> -
+    <?= substr($this->getVersion()->toCommitHash, 0, 6); ?>
+  </li>
+</ul>
 
 <h4>
   Change Log

@@ -30,13 +30,20 @@ class VersionNav extends ViewModel
   public function render()
   {
     $baseUri = '/diffuse/projects/';
-    $baseUri .= $this->_version->projectId . '/v/' . $this->_version->id();
+    $baseUri .= $this->_version->projectId;
 
     $nav = new HtmlElement('div', ['class' => 'navbar-inner']);
     $nav->nestElement(
       'a',
       ['class' => 'brand', 'href' => $baseUri],
-      ($this->_version->project()->name . ' ' . $this->_version->format())
+      ($this->_version->project()->name)
+    );
+
+    $baseUri .= '/v/' . $this->_version->id();
+    $nav->nestElement(
+      'a',
+      ['class' => 'brand', 'href' => $baseUri],
+      ($this->_version->format())
     );
 
     $navItems = new HtmlElement('ul', ['class' => 'nav']);

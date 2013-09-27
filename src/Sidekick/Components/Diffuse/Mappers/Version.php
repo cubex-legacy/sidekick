@@ -8,7 +8,9 @@ namespace Sidekick\Components\Diffuse\Mappers;
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Enums\VersionType;
+use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Repository\Mappers\Source;
 
 /**
  * Class Version
@@ -93,6 +95,22 @@ class Version extends RecordMapper
   public function project()
   {
     return $this->belongsTo(new Project());
+  }
+
+  /**
+   * @return Source
+   */
+  public function repo()
+  {
+    return $this->belongsTo(new Source(), "repo_id");
+  }
+
+  /**
+   * @return BuildRun
+   */
+  public function fortifyBuild()
+  {
+    return $this->belongsTo(new BuildRun(), "id", "build_id");
   }
 
   public function platformStates()

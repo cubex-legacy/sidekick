@@ -41,8 +41,8 @@
     $this->getVersion()->repoId; ?>"><?=
       $this->getVersion()->repo()->name; ?></a></li>
   <li>Source Build: <a
-    href="/fortify/<?= $this->getVersion()->projectId; ?>/b<?=
-    $this->getVersion()->fortifyBuild()->buildId; ?>/a<?=
+    href="/fortify/<?= $this->getVersion()->projectId; ?>/<?=
+    $this->getVersion()->fortifyBuild()->buildId; ?>/<?=
     $this->getVersion()->buildId; ?>">#<?= $this->getVersion()->buildId; ?>
     </a></li>
   <li>Commit Range:

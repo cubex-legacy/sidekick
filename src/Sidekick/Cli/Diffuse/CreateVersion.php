@@ -167,7 +167,7 @@ class CreateVersion extends CliCommand
         );
         if($buildProject->exists())
         {
-          $version->repoId = new $buildProject->buildSourceId;
+          $version->repoId = $buildProject->buildSourceId;
         }
       }
 

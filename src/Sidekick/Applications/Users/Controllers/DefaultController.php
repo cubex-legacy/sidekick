@@ -57,9 +57,17 @@ class DefaultController extends UsersController
 
   public function postUpdate()
   {
-    $user = new User();
+    $user             = new User();
+    $existingPassword = $user->password;
     $user->hydrate($this->request()->postVariables());
-    $user->password = password_hash($user->password, PASSWORD_DEFAULT);
+    if($this->postVariables("password") !== '')
+    {
+      $user->password = password_hash($user->password, PASSWORD_DEFAULT);
+    }
+    else
+    {
+      $user->password = $existingPassword;
+    }
     $user->saveChanges();
 
     $msg       = new \stdClass();

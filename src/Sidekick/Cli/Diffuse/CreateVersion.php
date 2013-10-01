@@ -203,17 +203,22 @@ class CreateVersion extends CliCommand
       {
         $commits = Commit::collectionBetween(
           $version->fromCommitHash,
-          $version->toCommitHash
+          $version->toCommitHash,
+          Commit::INCLUDE_LATEST
         );
+
         if($commits->hasMappers())
         {
           $changes = [];
           foreach($commits as $commit)
           {
-            $changes[] = $commit->subject . "\n" . $commit->message;
+            $changes[] = $commit->subject .
+            empty($commit->message) ? "" : "\n$commit->message";
           }
-          //Drop the commit from the last version
-          array_pop($changes);
+
+          //Switch to date ordered
+          $changes = array_reverse($changes);
+
           $version->changeLog = implode("\n", $changes);
         }
       }

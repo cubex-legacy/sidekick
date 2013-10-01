@@ -24,13 +24,20 @@ class Commit extends RecordMapper
   public $author;
   public $committedAt;
 
+  const INCLUDE_BOTH   = 'both';
+  const INCLUDE_OLDEST = 'oldest';
+  const INCLUDE_LATEST = 'latest';
+
   /**
-   * @param      $commitOne
-   * @param null $commitTwo
+   * @param        $commitOne
+   * @param null   $commitTwo
+   * @param string $inclusion
    *
    * @return \Cubex\Mapper\Database\RecordCollection|Commit[]
    */
-  public static function collectionBetween($commitOne, $commitTwo = null)
+  public static function collectionBetween(
+    $commitOne, $commitTwo = null, $inclusion = self::INCLUDE_BOTH
+  )
   {
     $findCommits = [$commitOne];
     if($commitTwo !== null)
@@ -48,10 +55,32 @@ class Commit extends RecordMapper
     switch($commitIds->count())
     {
       case 2:
-        $range->whereBetween("id", $commitIds->loadedIds());
+        $ids = $commitIds->loadedIds();
+        sort($ids);
+        switch($inclusion)
+        {
+          case self::INCLUDE_BOTH:
+            $range->whereBetween("id", $commitIds->loadedIds());
+            break;
+          case self::INCLUDE_LATEST:
+            $range->loadWhereAppend("%C <= %s", "id", last($ids));
+            $range->loadWhereAppend("%C > %s", "id", head($ids));
+            break;
+          case self::INCLUDE_OLDEST:
+            $range->loadWhereAppend("%C < %s", "id", last($ids));
+            $range->loadWhereAppend("%C >= %s", "id", head($ids));
+            break;
+        }
         break;
       case 1:
-        $range->whereLessThan("id", $commitIds->loadedIds()[0]);
+        if($inclusion === self::INCLUDE_LATEST)
+        {
+          $range->loadWhereAppend("%C <= %s", "id", $commitIds->loadedIds()[0]);
+        }
+        else
+        {
+          $range->whereLessThan("id", $commitIds->loadedIds()[0]);
+        }
         break;
     }
 

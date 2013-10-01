@@ -25,7 +25,8 @@ class VersionDetailController extends VersionsController
       $view->setCommits(
         Commit::collectionBetween(
           $this->_version->fromCommitHash,
-          $this->_version->toCommitHash
+          $this->_version->toCommitHash,
+          Commit::INCLUDE_LATEST
         )
       );
     }

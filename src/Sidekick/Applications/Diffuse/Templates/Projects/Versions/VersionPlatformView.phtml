@@ -39,7 +39,7 @@
       <a class="pull-left" href="#">
         <img class="media-object"
              src="http://www.gravatar.com/avatar/<?php echo md5(
-               strtolower('brooke@bajb.net')
+               strtolower($deployment->user()->email)
              ); ?>?s=50">
       </a>
 

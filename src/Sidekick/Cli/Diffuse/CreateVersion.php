@@ -16,6 +16,7 @@ use Sidekick\Components\Fortify\FortifyHelper;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Fortify\Mappers\BuildsProjects;
+use Sidekick\Components\Repository\Mappers\Commit;
 
 class CreateVersion extends CliCommand
 {
@@ -191,6 +192,29 @@ class CreateVersion extends CliCommand
         if($lastVersion->hasMappers())
         {
           $version->fromCommitHash = $lastVersion->first()->toCommitHash;
+        }
+      }
+
+      if(
+      $version->changeLog === null &&
+      $version->fromCommitHash !== null &&
+      $version->toCommitHash !== null
+      )
+      {
+        $commits = Commit::collectionBetween(
+          $version->fromCommitHash,
+          $version->toCommitHash
+        );
+        if($commits->hasMappers())
+        {
+          $changes = [];
+          foreach($commits as $commit)
+          {
+            $changes[] = $commit->subject . "\n" . $commit->message;
+          }
+          //Drop the commit from the last version
+          array_pop($changes);
+          $version->changeLog = implode("\n", $changes);
         }
       }
 

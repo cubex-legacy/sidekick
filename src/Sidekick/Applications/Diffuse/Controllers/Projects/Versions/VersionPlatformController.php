@@ -260,6 +260,7 @@ class VersionPlatformController extends VersionsController
     $deployRequest             = new \stdClass;
     $deployRequest->platformId = $this->getInt("platformId");
     $deployRequest->versionId  = $this->getInt("versionId");
+    $deployRequest->userId     = \Auth::user()->getId();
     \Queue::push(new StdQueue('DeployRequest'), $deployRequest);
 
     //Change pending versions to review when first deployment made

@@ -17,6 +17,7 @@ use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Users\Mappers\User;
 use Sidekick\Deployment\IDeploymentService;
 
 class Deploy extends CliCommand
@@ -25,6 +26,11 @@ class Deploy extends CliCommand
    * @valuerequired
    */
   public $versionId;
+
+  /**
+   * @valuerequired
+   */
+  public $userId;
 
   public $verbose;
 
@@ -55,12 +61,19 @@ class Deploy extends CliCommand
       throw new \Exception("The project specified does not exist");
     }
 
+    $user = new User($this->userId);
+    if(!$user->exists())
+    {
+      throw new \Exception("The user specified does not exist");
+    }
+
     $this->_createVersionDataFile($version);
 
     $deployment             = new Deployment();
     $deployment->platformId = $platform->id();
     $deployment->versionId  = $version->id();
     $deployment->projectId  = $project->id();
+    $deployment->userId     = $user->id();
     $deployment->saveChanges(); //Initiate deployment for the ID
 
     $hosts = HostPlatform::collection(

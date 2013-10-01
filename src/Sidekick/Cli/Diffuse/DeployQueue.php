@@ -71,6 +71,12 @@ class DeployQueue extends CliCommand
       $rawArgs[] = '--verbose';
     }
 
+    if(isset($data->userId) && $data->userId > 0)
+    {
+      $rawArgs[] = '--userId';
+      $rawArgs[] = $data->userId;
+    }
+
     Log::debug("Starting Deployment");
 
     $command = 'php "' . WEB_ROOT . DS . 'cubex" ' . implode(' ', $rawArgs);

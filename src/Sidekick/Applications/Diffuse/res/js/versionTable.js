@@ -25,7 +25,7 @@ function updateTable(data) {
     if(!data.hasOwnProperty(version)) continue;
     $tr=$("<tr></tr>");
     $tr.append("<td>" + data[version]["project"] + "</td>");
-    $tr.append("<td><a href='/diffuse/" + data[version]["projectid"] + "/" + version + "'>" + data[version]["version"] + "</a></td>");
+    $tr.append("<td><a href='/diffuse/projects/" + data[version]["projectid"] + "/v/" + version + "'>" + data[version]["version"] + "</a></td>");
     $tr.append("<td>" + data[version]["type"] + "</td>");
     $tr.append("<td>" + statesList(data[version]["states"]) + "</td>");
     $tr.append("<td>" + data[version]["updated"] + "</td>");

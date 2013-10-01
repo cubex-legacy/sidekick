@@ -17,6 +17,7 @@ class PlatformVersionState extends RecordMapper
   protected $_idType = self::ID_COMPOSITE;
   public $platformId;
   public $versionId;
+  public $deploymentCount;
   /**
    * @enumclass \Sidekick\Components\Diffuse\Enums\VersionState
    */

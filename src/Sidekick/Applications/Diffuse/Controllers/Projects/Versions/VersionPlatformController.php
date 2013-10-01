@@ -146,7 +146,7 @@ class VersionPlatformController extends VersionsController
     }
     else if((!(in_array(false, $requires) ||
     (empty($requires) && in_array(false, $optional)))
-    && $approvers > 0)
+    && $platformState->deploymentCount > 0)
     )
     {
       //Any requirements fail, or any optionals require if no required pass

@@ -14,6 +14,7 @@ use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\HostPlatform;
 use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Deployment\IDeploymentService;
@@ -129,6 +130,13 @@ class Deploy extends CliCommand
         throw new \Exception("The class '$deployService' does not exist");
       }
     }
+
+    $stateId           = [$platform->id(), $version->id()];
+    $state             = new PlatformVersionState($stateId);
+    $state->platformId = $platform->id();
+    $state->versionId  = $version->id();
+    $state->deploymentCount++;
+    $state->saveChanges();
   }
 
   protected function _createVersionDataFile(Version $v)

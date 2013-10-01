@@ -5,8 +5,10 @@
 
 namespace Sidekick\Applications\Diffuse\Controllers\Projects;
 
+use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use Sidekick\Applications\Diffuse\Views\Projects\OverviewView;
+use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -27,8 +29,12 @@ class OverviewController extends DiffuseController
     {
       $versions = Version::collection(['project_id' => $this->_projectId])
       ->setOrderBy("id", "DESC")->setLimit(0, 50)->preFetch("platformStates");
-      return new OverviewView($project, $versions, Platform::orderedCollection(
-      ));
+      return new RenderGroup(
+        $this->createView(new ProjectNav($this->baseUri(), $project)),
+        $this->createView(
+          new OverviewView($project, $versions, Platform::orderedCollection())
+        )
+      );
     }
     else
     {

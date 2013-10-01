@@ -20,6 +20,7 @@ use
   Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentDependencyModal;
 use
   Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStagesView;
+use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -33,7 +34,12 @@ class DeploymentController extends DiffuseController
     $stages    = DeploymentStage::collection(['project_id' => $projectId]);
     $platforms = Platform::orderedCollection();
 
-    return new DeploymentConfigurationView($project, $platforms, $stages);
+    return new RenderGroup(
+      $this->createView(new ProjectNav($this->request()->path(3), $project)),
+      $this->createView(
+        new DeploymentConfigurationView($project, $platforms, $stages)
+      )
+    );
   }
 
   public function renderNew()

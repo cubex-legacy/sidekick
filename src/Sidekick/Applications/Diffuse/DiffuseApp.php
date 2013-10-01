@@ -20,6 +20,7 @@ class DiffuseApp extends BaseApp
       '/projects/:projectId@num' => [
         '/configuration'       => [
           '/approval/(.*)' => 'Projects\Configuration\ApprovalController',
+          '/platform/(.*)' => 'Projects\Configuration\PlatformConfigController',
           '/deployment'    => [
             '/stages/(.*)' => 'Projects\Configuration\DeploymentController',
             '/hosts/(.*)' => 'Projects\Configuration\DeploymentHostsController',

@@ -8,9 +8,11 @@ namespace Sidekick\Applications\Diffuse\Controllers\Projects\Configuration;
 use Cubex\Data\Transportable\TransportMessage;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
+use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use
 Sidekick\Applications\Diffuse\Views\Projects\Configuration\ApprovalConfigurationView;
+use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -27,7 +29,12 @@ class ApprovalController extends DiffuseController
       ['project_id' => $project->id()]
     );
     $users     = ProjectUser::collection(['project_id' => $project->id()]);
-    return new ApprovalConfigurationView($project, $approvals, $platforms, $users);
+    return new RenderGroup(
+      $this->createView(new ProjectNav($this->request()->path(3), $project)),
+      $this->createView(
+        new ApprovalConfigurationView($project, $approvals, $platforms, $users)
+      )
+    );
   }
 
   public function postIndex()

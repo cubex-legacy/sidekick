@@ -1,0 +1,25 @@
+<?php
+/**
+ * @author: brooke.bryan
+ * Application: X
+ * @var $this \Sidekick\Applications\Diffuse\Views\Projects\Configuration\PlatformConfigurationView
+ */
+?>
+<p>Please configure each platform</p>
+
+<?= $this->form()->open(); ?>
+<?= $this->form()->formNameInput(); ?>
+<?= $this->form()->token(); ?>
+
+<?php foreach($this->platforms() as $platform): ?>
+  <fieldset>
+    <legend><?= ucwords($platform->name); ?></legend>
+    <br/>
+    <?php foreach($this->configurables() as $itm): ?>
+      <?= $this->form()->getElement($platform->id() . '-' . $itm); ?>
+    <?php endforeach; ?>
+  </fieldset>
+<?php endforeach; ?>
+<input type="submit" value="Update Platform Configurations"
+       class="btn btn-primary pull-right"/>
+<?= $this->form()->close(); ?>

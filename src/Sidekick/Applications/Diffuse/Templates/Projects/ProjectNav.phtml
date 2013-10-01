@@ -1,0 +1,30 @@
+<?php
+/**
+ * @author: brooke.bryan
+ * Application:
+ * @var $this \Sidekick\Applications\Diffuse\Views\Projects\ProjectNav
+ */
+?>
+<div class="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="brand"><?= $this->project()->name; ?> Versions</a>
+    <ul class="nav">
+      <li>
+        <a href="<?= $this->getBaseUri(); ?>/configuration/approval">
+          Approval Configuration</a>
+      </li>
+      <li>
+        <a href="<?= $this->getBaseUri(); ?>/configuration/platform">
+          Platform Configuration</a>
+      </li>
+      <li>
+        <a href="<?= $this->getBaseUri(); ?>/configuration/deployment/stages">
+          Deployment Stages</a>
+      </li>
+      <li>
+        <a href="<?= $this->getBaseUri(); ?>/configuration/deployment/hosts">
+          Deployment Hosts</a>
+      </li>
+    </ul>
+  </div>
+</div>

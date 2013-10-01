@@ -22,6 +22,7 @@ use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\PlatformProjectConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 
@@ -54,6 +55,10 @@ class VersionPlatformController extends VersionsController
       ['project_id' => $this->_version->projectId]
     );
 
+    $platConfig = new PlatformProjectConfig(
+      [$platformId, $this->_version->projectId]
+    );
+
     $platformState = new PlatformVersionState(
       [$platformId, $this->_version->id()]
     );
@@ -77,7 +82,7 @@ class VersionPlatformController extends VersionsController
     }
 
     $platformView = new VersionPlatformView(
-      $platform, $actions, $deployments, $approvals, $platformState
+      $platform, $actions, $deployments, $approvals, $platformState, $platConfig
     );
     $platformView->setProjectUsers($users);
 

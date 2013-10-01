@@ -27,10 +27,14 @@
        href="<?= $this->baseUri(); ?>/deploy">
       Deploy to <?= ucwords($this->_platform->name); ?>
     </a>
+    <a class="btn btn-primary pull-right" style="margin-right:10px;"
+       href="<?= $this->getPlatformConfig()->testUrl; ?>"
+       onclick="window.open(this.href); return false;">
+      Launch Test Url
+    </a>
     <h2>Deployments</h2>
 
     <?php foreach($deployments as $deployment): ?>
-
     <div class="media">
       <a class="pull-left" href="#">
         <img class="media-object"
@@ -42,10 +46,20 @@
       <div class="media-body action-box">
         <h4 class="media-deading">
           Deployment
-          <small><a href="<?=$this->request()->path(3); ?>/d/<?= $deployment->id(); ?>">#<?= $deployment->id(); ?></a></small>
+          <small><a
+            href="<?= $this->request()->path(3); ?>/d/<?=
+            $deployment->id(); ?>">#<?= $deployment->id(); ?></a></small>
           <small class="pull-right">
-            <span class="text-success">PASSED</span> -
-            <?= date("d M Y H:i", strtotime($deployment->updatedAt)) ?>
+            <?php if($deployment->completed): ?>
+              <?php if($deployment->passed): ?>
+                <span class="text-success">PASSED</span>
+              <?php else: ?>
+                <span class="text-error">FAILED</span>
+              <?php endif ?>
+            <?php else: ?>
+              <span class="text-info">PENDING</span>
+            <?php endif ?>
+            - <?= date("d M Y H:i", strtotime($deployment->updatedAt)) ?>
           </small>
         </h4>
         <p><?= $deployment->comment ? : 'No Comment'; ?></p>

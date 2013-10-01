@@ -18,6 +18,7 @@ use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\PlatformProjectConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 use Sidekick\Components\Users\Mappers\User;
@@ -46,18 +47,23 @@ class VersionPlatformView extends TemplatedViewModel
    * @var DiffuseActionForm
    */
   protected $_form;
+  /**
+   * @var PlatformProjectConfig
+   */
+  protected $_platformConfig;
 
   public function __construct(
     Platform $platform, $actions, $deployments, $approvals,
-    PlatformVersionState $platformState
+    PlatformVersionState $platformState, PlatformProjectConfig $platformConfig
   )
   {
-    $this->_platformId    = $platform->id();
-    $this->_platform      = $platform;
-    $this->_platformState = $platformState;
-    $this->_actions       = $actions;
-    $this->_deployments   = $deployments;
-    $this->_approvals     = $approvals;
+    $this->_platformId     = $platform->id();
+    $this->_platform       = $platform;
+    $this->_platformState  = $platformState;
+    $this->_actions        = $actions;
+    $this->_deployments    = $deployments;
+    $this->_approvals      = $approvals;
+    $this->_platformConfig = $platformConfig;
   }
 
   public function setProjectUsers($users)
@@ -167,5 +173,10 @@ class VersionPlatformView extends TemplatedViewModel
   {
     $this->_requiredPlatforms = $requiredPlatforms;
     return $this;
+  }
+
+  public function getPlatformConfig()
+  {
+    return $this->_platformConfig;
   }
 }

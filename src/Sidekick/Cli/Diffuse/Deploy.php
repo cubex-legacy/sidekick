@@ -61,7 +61,7 @@ class Deploy extends CliCommand
     $deployment->platformId = $platform->id();
     $deployment->versionId  = $version->id();
     $deployment->projectId  = $project->id();
-    $deployment->saveChanges();
+    $deployment->saveChanges(); //Initiate deployment for the ID
 
     $hosts = HostPlatform::collection(
       [
@@ -73,6 +73,8 @@ class Deploy extends CliCommand
 
     if(!$hosts)
     {
+      $deployment->completed = 1;
+      $deployment->saveChanges();
       throw new \Exception("No Hosts have been assigned to this platform");
     }
 
@@ -87,6 +89,8 @@ class Deploy extends CliCommand
     {
       if(!$passStage)
       {
+        $deployment->completed = 1;
+        $deployment->saveChanges();
         throw new \Exception("Unable to proceed, as previous stage failed.");
       }
       /**
@@ -127,6 +131,8 @@ class Deploy extends CliCommand
       }
       else
       {
+        $deployment->completed = 1;
+        $deployment->saveChanges();
         throw new \Exception("The class '$deployService' does not exist");
       }
     }
@@ -137,6 +143,10 @@ class Deploy extends CliCommand
     $state->versionId  = $version->id();
     $state->deploymentCount++;
     $state->saveChanges();
+
+    $deployment->passed    = 1;
+    $deployment->completed = 1;
+    $deployment->saveChanges();
   }
 
   protected function _createVersionDataFile(Version $v)

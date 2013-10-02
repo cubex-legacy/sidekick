@@ -35,7 +35,7 @@ class BuildsPage extends ViewModel
       $state = ($build->id() == $this->_buildType) ? 'active' : '';
       $tabItems->addElement(
         $state,
-        '/fortify/' . $this->_projectId . '/' . $build->id(),
+      '/fortify/' . $this->_projectId . '/' . $build->id(),
         $build->name
       );
     }
@@ -107,7 +107,7 @@ class BuildsPage extends ViewModel
   public function render()
   {
     $baseUri = $this->baseUri() . '/' . $this->_projectId .
-      '/' . $this->_buildType;
+    '/' . $this->_buildType;
 
     $alert = '';
     if(Session::getFlash('msg'))
@@ -124,17 +124,17 @@ class BuildsPage extends ViewModel
       $this->_buttonGroup($baseUri),
       $this->_tabs(),
       $alert,
-      $this->_filters($baseUri),
-      '<h1>Build History</h1>',
-      new BuildRunsList($this->_buildRuns),
       new HtmlElement(
         'a',
         [
         'href'  => $baseUri . '/build',
-        'class' => 'btn btn-primary btn-large pull-right'
+        'class' => 'btn btn-success pull-right'
         ],
         'Run Build'
-      )
+      ),
+      $this->_filters($baseUri),
+      '<h1>Build History</h1>',
+      new BuildRunsList($this->_buildRuns)
     );
   }
 }

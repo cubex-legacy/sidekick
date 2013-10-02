@@ -213,7 +213,7 @@ class CreateVersion extends CliCommand
           foreach($commits as $commit)
           {
             $changes[] = $commit->subject .
-            empty($commit->message) ? "" : "\n$commit->message";
+            (empty($commit->message) ? "" : "\n$commit->message");
           }
 
           //Switch to date ordered

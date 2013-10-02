@@ -28,9 +28,14 @@
       Deploy to <?= ucwords($this->_platform->name); ?>
     </a>
     <a class="btn btn-primary pull-right" style="margin-right:10px;"
-       href="<?= $this->getPlatformConfig()->testUrl; ?>"
+       href="<?= $this->testUrl($this->_platform->name); ?>"
        onclick="window.open(this.href); return false;">
-      Launch Test Url
+      Launch Test (<?= $this->_platform->name; ?>)
+    </a>
+    <a class="btn btn-primary pull-right" style="margin-right:10px;"
+       href="<?= $this->testUrl($this->_version->format()); ?>"
+       onclick="window.open(this.href); return false;">
+      Launch Test (<?= $this->_version->format(); ?>)
     </a>
     <h2>Deployments</h2>
 

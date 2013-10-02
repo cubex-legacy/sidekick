@@ -85,6 +85,7 @@ class VersionPlatformController extends VersionsController
       $platform, $actions, $deployments, $approvals, $platformState, $platConfig
     );
     $platformView->setProjectUsers($users);
+    $platformView->setVersion($this->_version);
 
     if($reqPlatforms)
     {

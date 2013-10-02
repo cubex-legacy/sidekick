@@ -20,12 +20,17 @@ use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformProjectConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
+use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 use Sidekick\Components\Users\Mappers\User;
 
 class VersionPlatformView extends TemplatedViewModel
 {
   protected $_platformId;
+  /**
+   * @var Version
+   */
+  protected $_version;
   protected $_platform;
   /**
    * @var Action[]|RecordCollection
@@ -64,6 +69,12 @@ class VersionPlatformView extends TemplatedViewModel
     $this->_deployments    = $deployments;
     $this->_approvals      = $approvals;
     $this->_platformConfig = $platformConfig;
+  }
+
+  public function setVersion(Version $v)
+  {
+    $this->_version = $v;
+    return $this;
   }
 
   public function setProjectUsers($users)
@@ -178,5 +189,12 @@ class VersionPlatformView extends TemplatedViewModel
   public function getPlatformConfig()
   {
     return $this->_platformConfig;
+  }
+
+  public function testUrl($version)
+  {
+    $url = $this->_platformConfig->testUrl;
+    $url = str_replace('#VERSION#', $version, $url);
+    return $url;
   }
 }

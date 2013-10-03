@@ -31,15 +31,14 @@ class RepositoryIndex extends TemplatedViewModel
 
   public function diffusionUrlCallsign(Source $repo)
   {
-    $phabricator = $repo->diffusionBaseUri;
-    if(empty($phabricator))
+    if(empty($repo->diffusionBaseUri))
     {
       return null;
     }
     else
     {
-      list($phabUri, $callsign) = explode('/r', $phabricator);
-      return ["$phabUri/diffusion/$callsign/", $callsign];
+      $callsign = end(explode('/', $repo->diffusionBaseUri));
+      return [$repo->diffusionBaseUri, $callsign];
     }
   }
 }

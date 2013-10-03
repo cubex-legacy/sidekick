@@ -37,7 +37,7 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('configurator', new ConfiguratorApp());
     $this->addApplication('fortify', new FortifyApp());
     $this->addApplication('diffuse', new DiffuseApp());
-    $this->addApplication('dispatcher', new DispatcherApp());
+    //$this->addApplication('dispatcher', new DispatcherApp());
     $this->addApplication('scripture', new ScriptureApp());
     $this->addApplication('docs', new DocsApp());
     $this->addApplication('users', new UsersApp());

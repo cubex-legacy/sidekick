@@ -33,7 +33,11 @@ class Header extends ViewModel
     $apps = $this->_project->getApplications();
     foreach($apps as $appPath => $app)
     {
-      $group = $app->getNavGroup();
+      $group = null;
+      if(method_exists($app, "getNavGroup"))
+      {
+        $group = $app->getNavGroup();
+      }
       if($group !== null)
       {
         $structure[$group][$appPath] = $app;
@@ -58,6 +62,13 @@ class Header extends ViewModel
     );
 
     $path = $this->request()->path();
+
+    ksort($structure);
+
+    foreach($structure as $group => $apps)
+    {
+      ksort($structure[$group]);
+    }
 
     foreach($structure as $group => $apps)
     {

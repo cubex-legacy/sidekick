@@ -45,7 +45,7 @@ class DiffuseApp extends BaseApp
 
   public function getNavGroup()
   {
-    return "Deployment";
+    return "Development";
   }
 
   public function getBundles()

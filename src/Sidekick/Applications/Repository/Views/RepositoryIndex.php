@@ -37,7 +37,8 @@ class RepositoryIndex extends TemplatedViewModel
     }
     else
     {
-      $callsign = end(explode('/', $repo->diffusionBaseUri));
+      $uriParts = explode('/', $repo->diffusionBaseUri);
+      $callsign = end($uriParts);
       return [$repo->diffusionBaseUri, $callsign];
     }
   }

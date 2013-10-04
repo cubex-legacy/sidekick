@@ -9,7 +9,7 @@ namespace Sidekick\Applications\Diffuse\Forms;
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
-use Sidekick\Components\Sidekick\Enums\Consistency;
+use Sidekick\Components\Enums\Consistency;
 use Sidekick\Components\Users\Enums\UserRole;
 
 class ApprovalConfigurationForm extends Form

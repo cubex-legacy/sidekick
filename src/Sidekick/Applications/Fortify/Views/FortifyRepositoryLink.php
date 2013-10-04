@@ -8,6 +8,8 @@ namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\Form\Form;
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Fortify\Mappers\Build;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class FortifyRepositoryLink extends TemplatedViewModel
 {

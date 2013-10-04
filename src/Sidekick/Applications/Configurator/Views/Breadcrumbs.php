@@ -23,7 +23,6 @@ class Breadcrumbs extends ViewModel
   public function render()
   {
     /**
-     * @var structure
      * Purely used to know what point in the array we are in
      */
     $structure = $this->_structure;

@@ -17,7 +17,7 @@ use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
-use Sidekick\Components\Sidekick\Enums\Consistency;
+use Sidekick\Components\Enums\Consistency;
 
 class ApprovalController extends DiffuseController
 {

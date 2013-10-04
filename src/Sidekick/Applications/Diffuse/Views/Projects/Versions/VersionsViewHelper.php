@@ -6,7 +6,7 @@
 namespace Sidekick\Applications\Diffuse\Views\Projects\Versions;
 
 use Cubex\Helpers\Strings;
-use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Enums\ApprovalState;
 
 class VersionsViewHelper
 {
@@ -17,13 +17,13 @@ class VersionsViewHelper
     $text = Strings::humanize($versionState);
     switch($versionState)
     {
-      case VersionState::APPROVED:
+      case ApprovalState::APPROVED:
         $class = 'success';
         break;
-      case VersionState::REJECTED:
+      case ApprovalState::REJECTED:
         $class = 'error';
         break;
-      case VersionState::REVIEW:
+      case ApprovalState::REVIEW:
         $class = 'warning';
         $text  = 'In Review';
         break;

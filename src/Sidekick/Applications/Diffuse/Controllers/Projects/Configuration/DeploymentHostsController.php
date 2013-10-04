@@ -5,26 +5,14 @@
 
 namespace Sidekick\Applications\Diffuse\Controllers\Projects\Configuration;
 
-use Cubex\Core\Http\Response;
 use Cubex\Data\Transportable\TransportMessage;
 use Cubex\Facade\Redirect;
-use Cubex\Routing\StdRoute;
 use Cubex\Routing\Templates\ResourceTemplate;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use
-Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationOptionsView;
-use
-Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationView;
-use
-Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentDependencyModal;
-use
 Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentHostsView;
-use
-Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStagesView;
 use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\Host;
 use Sidekick\Components\Diffuse\Mappers\HostPlatform;
 use Sidekick\Components\Diffuse\Mappers\Platform;

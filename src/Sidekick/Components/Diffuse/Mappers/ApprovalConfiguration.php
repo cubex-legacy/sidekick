@@ -6,7 +6,7 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
-use Sidekick\Components\Sidekick\Enums\Consistency;
+use Sidekick\Components\Enums\Consistency;
 use Sidekick\Components\Users\Enums\UserRole;
 
 class ApprovalConfiguration extends RecordMapper
@@ -19,7 +19,7 @@ class ApprovalConfiguration extends RecordMapper
    */
   public $role;
   /**
-   * @enumclass \Sidekick\Components\Sidekick\Enums\Consistency
+   * @enumclass \Sidekick\Components\Enums\Consistency
    */
   public $consistencyLevel;
   public $required;

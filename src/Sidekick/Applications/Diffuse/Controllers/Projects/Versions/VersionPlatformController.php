@@ -12,11 +12,10 @@ use Cubex\Form\Form;
 use Cubex\Helpers\Strings;
 use Cubex\Mapper\Database\RecordCollection;
 use Cubex\Queue\StdQueue;
-use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Forms\DiffuseActionForm;
 use Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView;
-use Sidekick\Components\Diffuse\Enums\ActionType;
-use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Enums\ActionType;
+use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Components\Diffuse\Helpers\VersionApproval;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
@@ -66,7 +65,7 @@ class VersionPlatformController extends VersionsController
     $reqPlatforms = $platform->requiredPlatforms;
     foreach($this->_platformStates as $state)
     {
-      if($state->state === VersionState::APPROVED)
+      if($state->state === ApprovalState::APPROVED)
       {
         $key = array_search($state->platformId, $platform->requiredPlatforms);
         if($key !== false)
@@ -148,7 +147,7 @@ class VersionPlatformController extends VersionsController
 
     if($rejected)
     {
-      $platformState->state = VersionState::REJECTED;
+      $platformState->state = ApprovalState::REJECTED;
     }
     else if((!(in_array(false, $requires) ||
     (empty($requires) && in_array(false, $optional)))
@@ -156,15 +155,15 @@ class VersionPlatformController extends VersionsController
     )
     {
       //Any requirements fail, or any optionals require if no required pass
-      $platformState->state = VersionState::APPROVED;
+      $platformState->state = ApprovalState::APPROVED;
     }
     else if($approvers === 0)
     {
-      $platformState->state = VersionState::PENDING;
+      $platformState->state = ApprovalState::PENDING;
     }
     else
     {
-      $platformState->state = VersionState::REVIEW;
+      $platformState->state = ApprovalState::REVIEW;
     }
 
     $platformState->saveChanges();
@@ -172,12 +171,12 @@ class VersionPlatformController extends VersionsController
     $states   = $this->_platformStates->getKeyPair("platformId", "state");
     $complete = array_fill_keys(
       $this->_platforms->loadedIds(),
-      VersionState::APPROVED
+      ApprovalState::APPROVED
     );
     $diff     = array_diff_assoc($complete, $states);
     if(empty($diff))
     {
-      $this->_version->versionState = VersionState::APPROVED;
+      $this->_version->versionState = ApprovalState::APPROVED;
       $this->_version->saveChanges();
     }
   }
@@ -209,9 +208,9 @@ class VersionPlatformController extends VersionsController
       {
         case ActionType::REJECT;
           //If rejected, close version
-          if($this->_version->versionState !== VersionState::APPROVED)
+          if($this->_version->versionState !== ApprovalState::APPROVED)
           {
-            $this->_version->versionState = VersionState::REJECTED;
+            $this->_version->versionState = ApprovalState::REJECTED;
             $this->_version->saveChanges();
           }
           else
@@ -235,7 +234,7 @@ class VersionPlatformController extends VersionsController
       //Only allow comments on non "complete" versions
       if(!in_array(
         $platformState ? $platformState->state : $this->_version->versionState,
-        [VersionState::PENDING, VersionState::REVIEW, VersionState::UNKNOWN]
+        [ApprovalState::PENDING, ApprovalState::REVIEW, ApprovalState::UNKNOWN]
       )
       )
       {
@@ -265,9 +264,9 @@ class VersionPlatformController extends VersionsController
     \Queue::push(new StdQueue('DeployRequest'), $deployRequest);
 
     //Change pending versions to review when first deployment made
-    if($this->_version->versionState === VersionState::PENDING)
+    if($this->_version->versionState === ApprovalState::PENDING)
     {
-      $this->_version->versionState = VersionState::REVIEW;
+      $this->_version->versionState = ApprovalState::REVIEW;
       $this->_version->saveChanges();
     }
 

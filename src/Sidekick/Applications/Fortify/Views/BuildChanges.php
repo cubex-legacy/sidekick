@@ -7,6 +7,7 @@
 namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Repository\Mappers\Commit;
 use Sidekick\Components\Repository\Mappers\Source;
 
 class BuildChanges extends TemplatedViewModel

@@ -10,7 +10,7 @@
 namespace Sidekick\Applications\Diffuse\Views;
 
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
@@ -32,7 +32,7 @@ class HomePage extends TemplatedViewModel
 
   public function getStates()
   {
-    return (new VersionState)->getConstList();
+    return (new ApprovalState)->getConstList();
   }
 
   /*

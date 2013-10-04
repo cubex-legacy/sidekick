@@ -8,7 +8,7 @@ namespace Sidekick\Cli\Diffuse;
 use Cubex\Cli\CliCommand;
 use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Enums\VersionNumberType;
-use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\Version;
@@ -183,7 +183,7 @@ class CreateVersion extends CliCommand
         $lastVersion = Version::collection(
           [
           "projectId"    => $version->projectId,
-          "versionState" => VersionState::APPROVED,
+          "versionState" => ApprovalState::APPROVED,
           ]
         )->setLimit(0, 1)
         ->setOrderByQuery(

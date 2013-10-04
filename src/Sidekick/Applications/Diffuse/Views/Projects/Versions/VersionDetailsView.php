@@ -7,7 +7,7 @@ namespace Sidekick\Applications\Diffuse\Views\Projects\Versions;
 
 use Cubex\Mapper\Database\RecordCollection;
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
@@ -66,11 +66,11 @@ class VersionDetailsView extends TemplatedViewModel
   {
     switch($this->getPlatformState($platformId)->state)
     {
-      case VersionState::APPROVED:
+      case ApprovalState::APPROVED:
         return 'success';
-      case VersionState::REJECTED:
+      case ApprovalState::REJECTED:
         return 'error';
-      case VersionState::REVIEW:
+      case ApprovalState::REVIEW:
         return 'warning';
       default:
         return 'pending';
@@ -90,13 +90,13 @@ class VersionDetailsView extends TemplatedViewModel
       $progress = 'none';
       switch($state->state)
       {
-        case VersionState::APPROVED;
+        case ApprovalState::APPROVED;
           $progress = 'success';
           break;
-        case VersionState::REJECTED;
+        case ApprovalState::REJECTED;
           $progress = 'danger';
           break;
-        case VersionState::REVIEW;
+        case ApprovalState::REVIEW;
           $progress = 'warning';
           break;
       }

@@ -10,7 +10,7 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
-use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Enums\ApprovalState;
 
 class PlatformVersionState extends RecordMapper
 {
@@ -19,7 +19,7 @@ class PlatformVersionState extends RecordMapper
   public $versionId;
   public $deploymentCount;
   /**
-   * @enumclass \Sidekick\Components\Diffuse\Enums\VersionState
+   * @enumclass \Sidekick\Components\Enums\ApprovalState
    */
   public $state;
 
@@ -33,6 +33,6 @@ class PlatformVersionState extends RecordMapper
 
   public function states()
   {
-    return new VersionState();
+    return new ApprovalState();
   }
 }

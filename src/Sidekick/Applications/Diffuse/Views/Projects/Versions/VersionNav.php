@@ -9,7 +9,6 @@ use Cubex\Helpers\Strings;
 use Cubex\View\HtmlElement;
 use Cubex\View\Impart;
 use Cubex\View\ViewModel;
-use Sidekick\Components\Diffuse\Enums\VersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 
 class VersionNav extends ViewModel

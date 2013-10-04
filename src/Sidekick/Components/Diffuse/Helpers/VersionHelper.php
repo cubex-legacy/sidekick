@@ -7,7 +7,7 @@ namespace Sidekick\Components\Diffuse\Helpers;
 
 use Cubex\Foundation\Config\Config;
 use Cubex\Foundation\Container;
-use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Diffuse\Mappers\Version;
 
@@ -17,7 +17,7 @@ class VersionHelper
   {
     return Version::collection()
            ->whereEq("project_id", $projectId)
-           ->whereNeq("version_state", VersionState::REJECTED)
+           ->whereNeq("version_state", ApprovalState::REJECTED)
            ->setOrderBy('id', 'DESC')
            ->setLimit(0, $batchSize)->get();
   }
@@ -57,25 +57,25 @@ class VersionHelper
          * @var $version Version
          */
         //Do not increment ontop of failed builds, only successful releases
-        switch(VersionState::fromValue($version->versionState))
+        switch(ApprovalState::fromValue($version->versionState))
         {
-          case VersionState::APPROVED:
+          case ApprovalState::APPROVED:
             return [
               $version->major + $majorIncr,
               $version->minor + $minorIncr,
               $version->build + $buildIncr,
               $version->revision + $revisionIncr
             ];
-          case VersionState::REJECTED:
+          case ApprovalState::REJECTED:
 
             break;
-          case VersionState::PENDING:
+          case ApprovalState::PENDING:
             $exceptionStatus = 'pending';
             break;
-          case VersionState::REVIEW:
+          case ApprovalState::REVIEW:
             $exceptionStatus = 'in review';
             break;
-          case VersionState::UNKNOWN:
+          case ApprovalState::UNKNOWN:
             $exceptionStatus = 'in limbo';
             break;
         }

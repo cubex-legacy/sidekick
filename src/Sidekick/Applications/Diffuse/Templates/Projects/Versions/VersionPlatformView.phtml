@@ -116,7 +116,7 @@
       <div class="media-body action-box <?php echo $action->actionType; ?>">
         <h4 class="media-deading">
           <?=
-          $action->actionType !== \Sidekick\Components\Diffuse\Enums\ActionType::APPROVE ? ucwords(
+          $action->actionType !== \Sidekick\Components\Enums\ActionType::APPROVE ? ucwords(
             $action->actionType
           ) : 'Approv'; ?>ed by
           <?= $action->user()->displayName ?>

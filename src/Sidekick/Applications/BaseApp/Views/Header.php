@@ -9,6 +9,7 @@
 
 namespace Sidekick\Applications\BaseApp\Views;
 
+use Cubex\Core\Application\Application;
 use Cubex\Facade\Auth;
 use Cubex\View\Impart;
 use Cubex\View\Partial;
@@ -76,14 +77,17 @@ class Header extends ViewModel
       {
         foreach($apps as $appPath => $app)
         {
-          //active if path starts with appPath
-          $state = $this->_getSubNavState($path, $appPath);
-          $subNavItems->addElement(
-            $state,
-            ('/' . $appPath),
-            $app->description(),
-            $app->name()
-          );
+          if($app instanceof Application)
+          {
+            //active if path starts with appPath
+            $state = $this->_getSubNavState($path, $appPath);
+            $subNavItems->addElement(
+              $state,
+              ('/' . $appPath),
+              $app->description(),
+              $app->name()
+            );
+          }
         }
 
         $state = $this->_getMainNavState($path, $structure[$group]);

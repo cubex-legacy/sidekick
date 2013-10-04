@@ -11,7 +11,6 @@ use Cubex\Form\OptionBuilder;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Projects\Forms\ProjectForm;
-use Sidekick\Applications\Projects\Views\ProjectsForm;
 use Sidekick\Applications\Projects\Views\ProjectsIndex;
 use Sidekick\Applications\Projects\Views\ProjectsSidebar;
 use Sidekick\Applications\Projects\Views\ProjectUsersList;

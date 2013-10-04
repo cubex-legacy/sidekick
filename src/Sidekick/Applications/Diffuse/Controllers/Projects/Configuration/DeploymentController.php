@@ -13,13 +13,11 @@ use Cubex\Routing\Templates\ResourceTemplate;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use
-  Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationOptionsView;
+Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationOptionsView;
 use
-  Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationView;
+Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationView;
 use
-  Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentDependencyModal;
-use
-  Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStagesView;
+Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStagesView;
 use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\Platform;
@@ -97,11 +95,11 @@ class DeploymentController extends DiffuseController
       //get max order and plus one it
       $projectId    = $this->getInt('projectId');
       $lastStage    = DeploymentStage::collection(
-                        [
-                        'project_id'  => $projectId,
-                        'platform_id' => $postData['platformId']
-                        ]
-                      )->setOrderBy('order', 'DESC')->first();
+        [
+        'project_id'  => $projectId,
+        'platform_id' => $postData['platformId']
+        ]
+      )->setOrderBy('order', 'DESC')->first();
       $stage->order = $lastStage->order + 1;
     }
 
@@ -151,11 +149,11 @@ class DeploymentController extends DiffuseController
     $oldOrder = $stage->order;
 
     $lastOrder = DeploymentStage::collection(
-                   ['project_id' => $projectId, 'platform_id' => $platformId]
-                 )->count();
+      ['project_id' => $projectId, 'platform_id' => $platformId]
+    )->count();
 
     if($oldOrder == 1 && $direction == 'up'
-      || $oldOrder == $lastOrder && $direction == 'down'
+    || $oldOrder == $lastOrder && $direction == 'down'
     )
     {
       // Invalid Order Action
@@ -163,7 +161,7 @@ class DeploymentController extends DiffuseController
     }
     else
     {
-      $oldOrder = (int)$oldOrder;
+      $oldOrder  = (int)$oldOrder;
       $swapOrder = null;
       switch($direction)
       {
@@ -179,12 +177,12 @@ class DeploymentController extends DiffuseController
       if($swapOrder !== null)
       {
         $swapStage = DeploymentStage::collection()->loadWhere(
-                       [
-                       'project_id'  => $projectId,
-                       'platform_id' => $platformId,
-                       'order'       => $swapOrder
-                       ]
-                     )->first();
+          [
+          'project_id'  => $projectId,
+          'platform_id' => $platformId,
+          'order'       => $swapOrder
+          ]
+        )->first();
         if($swapStage !== null)
         {
           $swapStage->order = $oldOrder;

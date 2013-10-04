@@ -29,9 +29,9 @@ class PhpMdError
   }
 
   /**
-   * @param mixed $mesage
+   * @param $message
    *
-   * @return PhpMdError
+   * @return $this
    */
   public function setMesage($message)
   {

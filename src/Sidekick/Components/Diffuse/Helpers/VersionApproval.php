@@ -6,11 +6,11 @@
 namespace Sidekick\Components\Diffuse\Helpers;
 
 use Cubex\Mapper\Database\RecordCollection;
-use Sidekick\Components\Diffuse\Enums\ActionType;
+use Sidekick\Components\Enums\ActionType;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
-use Sidekick\Components\Sidekick\Enums\Consistency;
+use Sidekick\Components\Enums\Consistency;
 
 class VersionApproval
 {

@@ -6,10 +6,10 @@
 
 namespace Sidekick\Components\Diffuse\Helpers;
 
-use Sidekick\Components\Diffuse\Enums\ActionType;
+use Sidekick\Components\Enums\ActionType;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
-use Sidekick\Components\Sidekick\Enums\Consistency;
+use Sidekick\Components\Enums\Consistency;
 
 class ApprovalConfigurationHelper
 {

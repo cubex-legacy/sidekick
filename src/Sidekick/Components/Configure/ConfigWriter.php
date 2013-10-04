@@ -5,10 +5,6 @@
 
 namespace Sidekick\Components\Configure;
 
-use Cubex\Cli\Shell;
-use Sidekick\Components\Configure\Mappers\Environment;
-use Sidekick\Components\Configure\Mappers\ProjectConfig;
-
 class ConfigWriter
 {
   public function buildIni($inputArray, $hasSections = false)
@@ -23,7 +19,7 @@ class ConfigWriter
     {
       if($key !== null)
       {
-        $content .= "[" . $key . "]". PHP_EOL;
+        $content .= "[" . $key . "]" . PHP_EOL;
       }
       foreach($elem as $keyTwo => $elemTwo)
       {
@@ -47,7 +43,10 @@ class ConfigWriter
         {
           $content .= $keyTwo . " = " . PHP_EOL;
         }
-        else $content .= $keyTwo . " = $elemTwo " . PHP_EOL;
+        else
+        {
+          $content .= $keyTwo . " = $elemTwo " . PHP_EOL;
+        }
       }
       $content .= PHP_EOL;
     }

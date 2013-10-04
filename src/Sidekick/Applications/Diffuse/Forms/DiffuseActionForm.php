@@ -9,7 +9,7 @@ use Cubex\Data\Validator\Validator;
 use Cubex\Form\Form;
 use Cubex\Form\FormElement;
 use Cubex\Form\OptionBuilder;
-use Sidekick\Components\Diffuse\Enums\ActionType;
+use Sidekick\Components\Enums\ActionType;
 
 class DiffuseActionForm extends Form
 {

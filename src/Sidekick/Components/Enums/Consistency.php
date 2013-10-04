@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Components\Sidekick\Enums;
+namespace Sidekick\Components\Enums;
 
 use Cubex\Type\Enum;
 

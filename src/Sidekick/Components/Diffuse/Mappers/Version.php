@@ -6,7 +6,7 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
-use Sidekick\Components\Diffuse\Enums\VersionState;
+use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -62,9 +62,9 @@ class Version extends RecordMapper
   public $changeLog;
 
   /**
-   * @enumclass \Sidekick\Components\Diffuse\Enums\VersionState
+   * @enumclass \Sidekick\Components\Enums\ApprovalState
    */
-  public $versionState = VersionState::UNKNOWN;
+  public $versionState = ApprovalState::UNKNOWN;
 
   public function format()
   {

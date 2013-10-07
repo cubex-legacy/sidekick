@@ -23,13 +23,8 @@ class CommitFiles extends TemplatedViewModel
     $this->_runId    = $runId;
   }
 
-  public function getFullPath($filePath)
+  public function getRunId()
   {
-    $base = Container::config()->get('_cubex_')->getStr('project_base') . '../';
-    if(!starts_with($filePath, $base))
-    {
-      return $base . 'builds/' . $this->_runId . '/sourcecode/' . $filePath;
-    }
-    return $filePath;
+    return $this->_runId;
   }
 }

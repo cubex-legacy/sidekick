@@ -12,14 +12,14 @@ use Sidekick\Applications\Fortify\Reports\PhpCs\PhpCsFile;
 
 class PhpCsReport extends TemplatedViewModel
 {
-  private $_buildId;
+  private $_runId;
   private $_file;
   private $_filter;
   private $_parsedData;
   public $basePath;
   public $reportFileFound = true;
 
-  public function __construct($file, $filter, $basePath, $buildId)
+  public function __construct($file, $filter, $basePath, $runId)
   {
     if($filter !== null)
     {
@@ -33,7 +33,7 @@ class PhpCsReport extends TemplatedViewModel
     $this->_filter  = $filter;
     $this->basePath = $basePath;
     $this->_setParsedData();
-    $this->_buildId = $buildId;
+    $this->_runId = $runId;
 
     $this->requireJs(
       'https://google-code-prettify.googlecode.com/svn/'
@@ -41,9 +41,9 @@ class PhpCsReport extends TemplatedViewModel
     );
   }
 
-  public function getBuildId()
+  public function getRunId()
   {
-    return $this->_buildId;
+    return $this->_runId;
   }
 
   /**

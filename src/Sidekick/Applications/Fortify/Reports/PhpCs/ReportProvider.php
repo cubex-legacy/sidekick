@@ -17,7 +17,7 @@ class ReportProvider extends FortifyReport
       $this->getReportFile(),
       $this->filter,
       $this->basePath,
-      $this->buildId
+      $this->runId
     );
   }
 

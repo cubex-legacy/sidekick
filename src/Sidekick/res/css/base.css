@@ -34,3 +34,7 @@
 .action-box.approve {
   border-color: #18820A;
 }
+
+.action-box.info {
+  border-color: #4BB1CF;
+}

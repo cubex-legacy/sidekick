@@ -14,6 +14,7 @@ use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
 use Sidekick\Applications\Docs\DocsApp;
+use Sidekick\Applications\Evento\EventoApp;
 use Sidekick\Applications\Fortify\FortifyApp;
 use Sidekick\Applications\Login\LoginApp;
 use Sidekick\Applications\Overview\OverviewApp;
@@ -41,6 +42,7 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('scripture', new ScriptureApp());
     $this->addApplication('docs', new DocsApp());
     $this->addApplication('users', new UsersApp());
+    $this->addApplication('events', new EventoApp());
   }
 
   public function getBundles()

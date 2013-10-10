@@ -1,0 +1,71 @@
+<?php
+/**
+ * @author: brooke.bryan
+ * Application: Evento
+ * @var $this \Sidekick\Applications\Evento\Views\EventView
+ */
+?>
+<div class="row-fluid">
+  <div class="span7">
+    <h2>Something Bad Happened</h2>
+    <h5>Start: <?= date("d M Y @ H:i:s", time() - 1287) ?></h5>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam
+       assumenda, debitis, dicta distinctio ea earum eius eos excepturi facilis
+       laboriosam nemo optio quaerat quisquam soluta temporibus ut vel voluptas
+       voluptatem!</p>
+  </div>
+
+  <div class="span3">
+    <h5>Event Type: <span>Marketing Promo Email</span></h5>
+    <h5>Closed: <?= date("d M Y @ H:i:s") ?></h5>
+
+    <div class="alert alert-success text-center" style="font-size: 20px">
+      <strong>Duration</strong><br/>
+      <span style="font-size: 30px">00:21:27</span>
+    </div>
+  </div>
+
+  <div class="span2">
+    <? echo new \Sidekick\Applications\Evento\Widgets\SeverityWidget(rand(
+      1,
+      5
+    )); ?>
+  </div>
+</div>
+
+
+<div class="media">
+  <a class="pull-left" href="#">
+    <?= \Sidekick\Widgets\Gravatar\Gravatar::create('brooke@bajb.net'); ?>
+  </a>
+
+  <div class="media-body action-box">
+    <h4 class="media-deading">Keep People Updated!</h4>
+    <textarea rows="3" style="width:98.5%;">Lorem ipsum dolor sit amet, consectetur
+                                     adipisicing elit. Amet consequuntur cum id
+                                     labore maiores nemo placeat quasi
+                                     repellendus sed vero. Architecto cumque,
+                                     magni maxime natus odit perspiciatis
+                                     quaerat sunt velit.</textarea>
+    <input type="submit" value="Send Update"
+           class="btn btn-primary pull-right"/>
+  </div>
+</div>
+
+
+<div class="media">
+  <a class="pull-left" href="#">
+    <?= \Sidekick\Widgets\Gravatar\Gravatar::create('brooke@bajb.net'); ?>
+  </a>
+
+  <div class="media-body action-box">
+    <h4 class="media-deading">
+      Brooke Bryan
+      <small class="pull-right">
+        <?= date("d M Y H:i") ?>
+      </small>
+    </h4>
+    <p>Here is my info</p>
+  </div>
+</div>

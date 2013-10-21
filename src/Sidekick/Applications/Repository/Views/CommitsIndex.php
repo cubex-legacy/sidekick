@@ -10,6 +10,7 @@
 namespace Sidekick\Applications\Repository\Views;
 
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Repository\Helpers\DiffusionHelper;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Sidekick\Components\Repository\Mappers\Source;
 
@@ -38,5 +39,27 @@ class CommitsIndex extends TemplatedViewModel
   public function getRepo()
   {
     return $this->_repo;
+  }
+
+  public function getDiffusionCommitUrl()
+  {
+    $diffusion = DiffusionHelper::diffusionUrlCallsign(
+      $this->getRepo()
+    );
+
+    if($diffusion !== null)
+    {
+      $diffusionBaseUri = trim($diffusion[0], '/');
+      $callSign         = $diffusion[1];
+
+      $commitUri = str_replace(
+        "diffusion/$callSign",
+        "r{$callSign}",
+        $diffusionBaseUri
+      );
+      return $commitUri;
+    }
+
+    return null;
   }
 }

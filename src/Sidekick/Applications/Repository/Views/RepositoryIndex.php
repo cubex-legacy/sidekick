@@ -10,6 +10,7 @@
 namespace Sidekick\Applications\Repository\Views;
 
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Repository\Helpers\DiffusionHelper;
 use Sidekick\Components\Repository\Mappers\Source;
 
 class RepositoryIndex extends TemplatedViewModel
@@ -31,15 +32,6 @@ class RepositoryIndex extends TemplatedViewModel
 
   public function diffusionUrlCallsign(Source $repo)
   {
-    if(empty($repo->diffusionBaseUri))
-    {
-      return null;
-    }
-    else
-    {
-      $uriParts = explode('/', $repo->diffusionBaseUri);
-      $callsign = end($uriParts);
-      return [$repo->diffusionBaseUri, $callsign];
-    }
+    return DiffusionHelper::diffusionUrlCallsign($repo);
   }
 }

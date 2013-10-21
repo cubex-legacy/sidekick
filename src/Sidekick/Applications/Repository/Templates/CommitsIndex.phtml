@@ -27,7 +27,8 @@
         $diffusionBase = $this->getRepo()->diffusionBaseUri;
         if(!empty($diffusionBase))
         {
-          echo ' href="' . $diffusionBase . $commit->commitHash . '"';
+          echo ' href="' . $this->getDiffusionCommitUrl(
+            ) . $commit->commitHash . '"';
           echo ' onclick="window.open(this.href); return false"';
         }
         else

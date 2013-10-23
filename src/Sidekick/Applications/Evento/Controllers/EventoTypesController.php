@@ -9,7 +9,7 @@ use Cubex\Routing\Templates\ResourceTemplate;
 use Sidekick\Applications\Evento\Views\EventoSidebar;
 use Sidekick\Applications\Evento\Views\EventoTypeForm;
 use Sidekick\Applications\Evento\Views\EventoTypesIndex;
-use Sidekick\Applications\Evento\Views\EventView;
+use Sidekick\Applications\Evento\Views\EventoView;
 use Sidekick\Components\Evento\Mappers\Event;
 use Sidekick\Components\Evento\Mappers\EventType;
 
@@ -36,7 +36,7 @@ class EventoTypesController extends EventoController
   {
     $eventId = $this->getInt('id');
     $event   = new Event($eventId);
-    return new EventView($event);
+    return new EventoView($event);
   }
 
   public function renderCreate()

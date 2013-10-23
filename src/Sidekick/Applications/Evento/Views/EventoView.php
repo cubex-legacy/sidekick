@@ -11,7 +11,7 @@ use Cubex\Helpers\DateTimeHelper;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Evento\Enums\Resolution;
 
-class EventView extends TemplatedViewModel
+class EventoView extends TemplatedViewModel
 {
   protected $_event;
   protected $_updates;

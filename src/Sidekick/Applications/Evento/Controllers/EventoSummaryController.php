@@ -9,7 +9,7 @@ use Cubex\Routing\Templates\ResourceTemplate;
 use Sidekick\Applications\Evento\Views\EventoForm;
 use Sidekick\Applications\Evento\Views\EventoIndex;
 use Sidekick\Applications\Evento\Views\EventoSidebar;
-use Sidekick\Applications\Evento\Views\EventView;
+use Sidekick\Applications\Evento\Views\EventoView;
 use Sidekick\Components\Evento\Enums\Resolution;
 use Sidekick\Components\Evento\Mappers\Event;
 use Sidekick\Components\Evento\Mappers\EventUpdate;
@@ -43,7 +43,7 @@ class EventoSummaryController extends EventoController
 
     $updates = EventUpdate::collection(['event_id' => $eventId]);
 
-    return new EventView($event, $updates);
+    return new EventoView($event, $updates);
   }
 
   public function renderCreate()

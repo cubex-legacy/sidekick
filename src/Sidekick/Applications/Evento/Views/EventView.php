@@ -41,7 +41,7 @@ class EventView extends TemplatedViewModel
     }
 
     $diff = $end - $start;
-    return date('H:i:s', $diff - 3600);
+    return DateTimeHelper::secondsToTime($diff);
   }
 
   /**

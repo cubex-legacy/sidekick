@@ -7,8 +7,10 @@ namespace Sidekick\Applications\BaseApp\Controllers;
 
 use Cubex\Core\Controllers\WebpageController;
 use Cubex\Facade\Redirect;
+use Cubex\Facade\Session;
 use Sidekick\Applications\BaseApp\Views\Header;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class BaseControl extends WebpageController
 {
@@ -19,6 +21,16 @@ class BaseControl extends WebpageController
     if(!\Auth::loggedIn())
     {
       Redirect::to('/')->now();
+    }
+
+    if(\Auth::user()->getDetail('user_role') == UserRole::USER)
+    {
+      //users with user role are only allowed to use the Events application
+      Session::set('limitedUse', true);
+      if($this->application()->name() != 'Eventos')
+      {
+        Redirect::to('/events')->now();
+      }
     }
     return true;
   }

@@ -11,6 +11,7 @@ namespace Sidekick\Applications\BaseApp\Views;
 
 use Cubex\Core\Application\Application;
 use Cubex\Facade\Auth;
+use Cubex\Facade\Session;
 use Cubex\View\Impart;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
@@ -29,11 +30,17 @@ class Header extends ViewModel
 
   public function render()
   {
-    $structure = [];
+    $limitedUse = Session::get('limitedUse');
+    $structure  = [];
 
     $apps = $this->_project->getApplications();
     foreach($apps as $appPath => $app)
     {
+      if($limitedUse === true && $app->name() != 'Eventos')
+      {
+        continue;
+      }
+
       $group = null;
       if(method_exists($app, "getNavGroup"))
       {
@@ -97,8 +104,8 @@ class Header extends ViewModel
           'dropdown-toggle',
           ('/' . $appPath),
           '',
-        $group . ' <b class="caret"></b>',
-        '<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>'
+          $group . ' <b class="caret"></b>',
+          '<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>'
         );
 
         $subNavItems->clearElements();
@@ -111,7 +118,7 @@ class Header extends ViewModel
           $state,
           '',
           '',
-        '/' . $appPath,
+          '/' . $appPath,
           $apps[$appPath]->description(),
           $group,
           ''

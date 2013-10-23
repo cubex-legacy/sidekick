@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Docs;
 
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Docs\Controllers\DefaultController;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class DocsApp extends BaseApp
 {
@@ -29,5 +30,14 @@ class DocsApp extends BaseApp
   public function getNavGroup()
   {
     return "Documentation";
+  }
+
+  public function userPermitted($userRole)
+  {
+    if($userRole == UserRole::USER)
+    {
+      return false;
+    }
+    return true;
   }
 }

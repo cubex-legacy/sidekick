@@ -37,4 +37,9 @@ class BaseApp extends Application
   {
     return new SidekickTheme();
   }
+
+  public function userPermitted($userRole)
+  {
+    return false;
+  }
 }

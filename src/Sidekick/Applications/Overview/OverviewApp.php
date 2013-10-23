@@ -31,4 +31,9 @@ class OverviewApp extends BaseApp
   {
     return "Sidekick Overview";
   }
+
+  public function userPermitted($userRole)
+  {
+    return true;
+  }
 }

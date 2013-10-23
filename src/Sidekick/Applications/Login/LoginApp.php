@@ -32,4 +32,9 @@ class LoginApp extends Application
   {
     return new SidekickTheme();
   }
+
+  public function userPermitted($userRole)
+  {
+    return true;
+  }
 }

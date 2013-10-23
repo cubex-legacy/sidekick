@@ -30,13 +30,15 @@ class Header extends ViewModel
 
   public function render()
   {
-    $limitedUse = Session::get('limitedUse');
     $structure  = [];
 
+    /**
+     * @var $apps \Sidekick\Applications\BaseApp\BaseApp[]
+     */
     $apps = $this->_project->getApplications();
     foreach($apps as $appPath => $app)
     {
-      if($limitedUse === true && $app->name() != 'Eventos')
+      if(!$app->userPermitted(Auth::user()->getDetail('user_role')))
       {
         continue;
       }

@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Phuse;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Phuse\Controllers\ComposedController;
 use Sidekick\Applications\Phuse\Controllers\DefaultController;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class PhuseApp extends BaseApp
 {
@@ -43,5 +44,14 @@ class PhuseApp extends BaseApp
   public function description()
   {
     return "Package Manager";
+  }
+
+  public function userPermitted($userRole)
+  {
+    if($userRole == UserRole::USER)
+    {
+      return false;
+    }
+    return true;
   }
 }

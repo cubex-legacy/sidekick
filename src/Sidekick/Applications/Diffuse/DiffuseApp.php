@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Diffuse;
 use Bundl\Debugger\DebuggerBundle;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Diffuse\Controllers\DefaultController;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class DiffuseApp extends BaseApp
 {
@@ -63,5 +64,14 @@ class DiffuseApp extends BaseApp
   public function description()
   {
     return "Code Distribution";
+  }
+
+  public function userPermitted($userRole)
+  {
+    if($userRole == UserRole::USER)
+    {
+      return false;
+    }
+    return true;
   }
 }

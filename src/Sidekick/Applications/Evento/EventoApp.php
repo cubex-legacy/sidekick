@@ -35,4 +35,9 @@ class EventoApp extends BaseApp
   {
     return new EventoSummaryController();
   }
+
+  public function userPermitted($userRole)
+  {
+    return true;
+  }
 }

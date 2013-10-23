@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Repository;
 use Bundl\Debugger\DebuggerBundle;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Repository\Controllers\DefaultController;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class RepositoryApp extends BaseApp
 {
@@ -42,5 +43,14 @@ class RepositoryApp extends BaseApp
       '/commits'      => 'CommitsController',
       '/commits/(.*)' => 'CommitsController'
     ];
+  }
+
+  public function userPermitted($userRole)
+  {
+    if($userRole == UserRole::USER)
+    {
+      return false;
+    }
+    return true;
   }
 }

@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Scripture;
 use Bundl\Debugger\DebuggerBundle;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Scripture\Controllers\ScriptureController;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class ScriptureApp extends BaseApp
 {
@@ -50,5 +51,14 @@ class ScriptureApp extends BaseApp
     return [
       '' => 'ScriptureController',
     ];
+  }
+
+  public function userPermitted($userRole)
+  {
+    if($userRole == UserRole::USER)
+    {
+      return false;
+    }
+    return true;
   }
 }

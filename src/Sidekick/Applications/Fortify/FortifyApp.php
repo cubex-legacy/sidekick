@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Fortify;
 use Bundl\Debugger\DebuggerBundle;
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Fortify\Controllers\FortifyController;
+use Sidekick\Components\Users\Enums\UserRole;
 
 class FortifyApp extends BaseApp
 {
@@ -46,5 +47,14 @@ class FortifyApp extends BaseApp
       'buildCommands/(.*)' => 'FortifyBuildCommandsController',
       'repository/(.*)'    => 'FortifyRepositoryController'
     ];
+  }
+
+  public function userPermitted($userRole)
+  {
+    if($userRole == UserRole::USER)
+    {
+      return false;
+    }
+    return true;
   }
 }

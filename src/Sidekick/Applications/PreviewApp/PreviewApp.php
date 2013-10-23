@@ -14,4 +14,9 @@ class PreviewApp extends Application
   {
     return new PreviewController();
   }
+
+  public function userPermitted($userRole)
+  {
+    return true;
+  }
 }

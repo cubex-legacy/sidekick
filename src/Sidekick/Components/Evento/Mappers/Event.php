@@ -24,5 +24,14 @@ class Event extends RecordMapper
    * @enumclass \Sidekick\Components\Evento\Enums\Severity
    */
   public $severity = Severity::LOW;
+  /**
+   * @datatype int
+   */
   public $owner;
+
+  public function eventType()
+  {
+    return new EventType($this->id());
+  }
+
 }

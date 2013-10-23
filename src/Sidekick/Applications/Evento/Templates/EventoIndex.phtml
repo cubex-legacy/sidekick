@@ -1,0 +1,40 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 27/06/13 18:04
+ *
+ * @var $this \Sidekick\Applications\Evento\Views\EventoIndex
+ */
+?>
+<h1>Open Events</h1>
+<a href="<?= $this->baseUri() . '/new'; ?>"
+   class="btn btn-success pull-right"
+   style="margin-top:-20px;">
+  <i class="icon-plus icon-white"></i>
+  Create Event</a>
+<a href="<?= $this->baseUri() . '/subscribe'; ?>"
+   class="btn btn-warning pull-right"
+   style="margin-top:-20px; margin-right:5px;">
+  Subscribe to Events</a>
+<div class="clearfix"></div>
+<div style="margin-top:10px;"></div>
+<?php if(count($this->openEvents())): ?>
+<table class="table table-bordered">
+  <?php foreach($this->openEvents() as $event): ?>
+    <tr>
+      <td>
+        <a href="<?= $this->baseUri(); ?>/<?= $event->id() ?>">
+        <strong style="font-size:18px;"><?= $event->name ?></strong>
+        </a>
+        </br>
+        <?= $event->description ?>
+      </td>
+      <td width="150">
+        <?= date('d/m/Y H:iA', strtotime($event->openedAt)) ?>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+</table>
+<?php else: ?>
+<h3>There no open Events at the moment</h3>
+<?php endif; ?>

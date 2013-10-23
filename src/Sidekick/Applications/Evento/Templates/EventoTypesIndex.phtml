@@ -1,0 +1,28 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 27/06/13 18:04
+ *
+ * @var $this \Sidekick\Applications\Evento\Views\EventoTypesIndex
+ */
+?>
+<h1>Events Types</h1>
+<a href="<?= $this->baseUri() . '/new'; ?>"
+   class="btn btn-success pull-right"
+   style="margin-top:-20px;">
+  <i class="icon-plus icon-white"></i>
+  Create Event Type</a>
+<div class="clearfix"></div>
+<div style="margin-top:10px;"></div>
+<table class="table">
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+  </tr>
+  <?php foreach($this->eventTypes() as $type): ?>
+    <tr>
+      <td><?= $type->name ?></td>
+      <td ><?= $type->description ?></td>
+    </tr>
+  <?php endforeach; ?>
+</table>

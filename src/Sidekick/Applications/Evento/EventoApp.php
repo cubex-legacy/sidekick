@@ -40,4 +40,13 @@ class EventoApp extends BaseApp
   {
     return true;
   }
+
+  public function getRoutes()
+  {
+    return [
+      '/'               => 'EventoSummaryController',
+      '/types/(.*)'     => 'EventoTypesController',
+      '/subscribe/(.*)' => 'EventoSubscribeController',
+    ];
+  }
 }

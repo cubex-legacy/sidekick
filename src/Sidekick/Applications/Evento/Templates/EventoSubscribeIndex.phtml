@@ -1,0 +1,51 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 27/06/13 18:04
+ *
+ * @var $this \Sidekick\Applications\Evento\Views\EventoSubscribeIndex
+ */
+?>
+<h1>Subscribe to Events</h1>
+<div class="clearfix"></div>
+<div style="margin-top:10px;"></div>
+<table class="table">
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Severity</th>
+    <th></th>
+  </tr>
+  <?php foreach($this->eventTypes() as $type): ?>
+    <tr>
+      <td><?= $type->name ?></td>
+      <td><?= $type->description ?></td>
+      <td>
+        <select id="severity<?= $type->id() ?>" class="severity"
+                data-eventTypeId="<?= $type->id() ?>">
+          <?php foreach($this->getSeverityList() as $name => $value): ?>
+            <option value="<?= $value ?>" <?= $this->selected(
+              $type->id(),
+              $value
+            ); ?>>
+              <?= $name ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      </td>
+      <th width="140">
+        <?php if(in_array($type->id(), $this->eventSubscriptionIds())): ?>
+          <a href="<?= $this->baseUri(); ?>/<?= $type->id() ?>/unsubscribe"
+             class="btn btn-danger btn-block">
+            <i class="icon-minus icon-white"></i>
+            UnSubscribe</a>
+        <?php else: ?>
+          <a href="<?= $this->baseUri(); ?>/<?= $type->id() ?>"
+             class="btn btn-success btn-block">
+            <i class="icon-plus icon-white"></i>
+            Subscribe</a>
+        <?php endif; ?>
+      </th>
+    </tr>
+  <?php endforeach; ?>
+</table>

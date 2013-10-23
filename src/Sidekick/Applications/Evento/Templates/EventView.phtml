@@ -1,71 +1,74 @@
 <?php
 /**
  * @author: brooke.bryan
- * Application: Evento
+ *        Application: Evento
  * @var $this \Sidekick\Applications\Evento\Views\EventView
  */
+
+use Sidekick\Applications\Evento\Widgets\SeverityWidget;
+use Sidekick\Widgets\Gravatar\Gravatar;
 ?>
 <div class="row-fluid">
   <div class="span7">
-    <h2>Something Bad Happened</h2>
-    <h5>Start: <?= date("d M Y @ H:i:s", time() - 1287) ?></h5>
+    <h2><?= $this->event()->name ?></h2>
+    <h5>
+      Start: <?= date("d M Y @ H:i:s", strtotime($this->event()->openedAt)) ?>
+    </h5>
 
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam
-       assumenda, debitis, dicta distinctio ea earum eius eos excepturi facilis
-       laboriosam nemo optio quaerat quisquam soluta temporibus ut vel voluptas
-       voluptatem!</p>
+    <p><?= $this->event()->description; ?></p>
   </div>
 
   <div class="span3">
-    <h5>Event Type: <span>Marketing Promo Email</span></h5>
-    <h5>Closed: <?= date("d M Y @ H:i:s") ?></h5>
+    <h5>Event Type: <span><?= $this->event()->eventType()->name ?></span></h5>
+
+    <h5>Closed:
+      <?php if($this->event()->closedAt != null): ?>
+      <?= date("d M Y @ H:i:s", strtotime($this->event()->closedAt)) ?>
+      <?php else: ?>
+        --
+      <?php endif; ?>
+    </h5>
 
     <div class="alert alert-success text-center" style="font-size: 20px">
       <strong>Duration</strong><br/>
-      <span style="font-size: 30px">00:21:27</span>
+      <span style="font-size: 30px"><?= $this->getEventDuration() ?></span>
     </div>
   </div>
 
   <div class="span2">
-    <? echo new \Sidekick\Applications\Evento\Widgets\SeverityWidget(rand(
-      1,
-      5
-    )); ?>
+    <? echo new SeverityWidget($this->event()->severity); ?>
   </div>
 </div>
 
-
 <div class="media">
   <a class="pull-left" href="#">
-    <?= \Sidekick\Widgets\Gravatar\Gravatar::create('brooke@bajb.net'); ?>
+    <?= Gravatar::create(Auth::user()->getDetail('email')); ?>
   </a>
 
   <div class="media-body action-box">
     <h4 class="media-deading">Keep People Updated!</h4>
-    <textarea rows="3" style="width:98.5%;">Lorem ipsum dolor sit amet, consectetur
-                                     adipisicing elit. Amet consequuntur cum id
-                                     labore maiores nemo placeat quasi
-                                     repellendus sed vero. Architecto cumque,
-                                     magni maxime natus odit perspiciatis
-                                     quaerat sunt velit.</textarea>
-    <input type="submit" value="Send Update"
-           class="btn btn-primary pull-right"/>
+    <?= $this->form()->open() ?>
+    Resolution: <?= $this->form()->getElement('resolution') ?>
+    <?= $this->form()->getElement('description') ?>
+    <?= $this->form()->getElement('submit'); ?>
+    <?= $this->form()->close() ?>
   </div>
 </div>
 
-
+<?php foreach($this->getUpdates() as $update): ?>
 <div class="media">
   <a class="pull-left" href="#">
-    <?= \Sidekick\Widgets\Gravatar\Gravatar::create('brooke@bajb.net'); ?>
+    <?= Gravatar::create($update->user()->email); ?>
   </a>
 
   <div class="media-body action-box">
     <h4 class="media-deading">
-      Brooke Bryan
+      <?= $update->user()->displayName ?>
       <small class="pull-right">
-        <?= date("d M Y H:i") ?>
+        <?= date("d M Y H:i", strtotime($update->createdAt)) ?>
       </small>
     </h4>
-    <p>Here is my info</p>
+    <p><?= $update->description ?></p>
   </div>
 </div>
+<?php endforeach; ?>

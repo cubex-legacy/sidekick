@@ -36,7 +36,7 @@ class AddBuildCommandsForm extends TemplatedViewModel
       $this->_form->addSelectElement('commandId', $this->_unAssignedCommits);
 
       $this->_form->addCheckboxElements(
-        'dependencies[]',
+        'dependencies',
         '',
         $this->_allCommands
       )

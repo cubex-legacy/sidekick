@@ -29,11 +29,11 @@ class PlatformController extends DiffuseController
     $form = new Form('createPlatform', '');
     $form->addTextElement('name');
     $form->addTextareaElement('description');
-    $form->addCheckboxElements('requiredBuilds[]', '', $build);
-    $form->addCheckboxElements('requiredPlatforms[]', '', $platforms);
+    $form->addCheckboxElements('requiredBuilds', '', $build);
+    $form->addCheckboxElements('requiredPlatforms', '', $platforms);
     $form->addSubmitElement('Create');
-    $form->getElement('requiredBuilds[]')->setLabel('Required Builds');
-    $form->getElement('requiredPlatforms[]')->setLabel('Required Platforms');
+    $form->getElement('requiredBuilds')->setLabel('Required Builds');
+    $form->getElement('requiredPlatforms')->setLabel('Required Platforms');
 
     return new RenderGroup(
       '<h1>Create Platform</h1>',
@@ -77,15 +77,15 @@ class PlatformController extends DiffuseController
     $form->addHiddenElement('id', $platform->id());
     $form->addTextElement('name', $platform->name);
     $form->addTextareaElement('description', $platform->description);
-    $form->addCheckboxElements('requiredBuilds[]', $selectedBuild, $build);
+    $form->addCheckboxElements('requiredBuilds', $selectedBuild, $build);
     $form->addCheckboxElements(
-      'requiredPlatforms[]',
+      'requiredPlatforms',
       $platform->requiredPlatforms,
       $platforms
     );
     $form->addSubmitElement('Update');
-    $form->getElement('requiredBuilds[]')->setLabel('Required Builds');
-    $form->getElement('requiredPlatforms[]')->setLabel('Required Platforms');
+    $form->getElement('requiredBuilds')->setLabel('Required Builds');
+    $form->getElement('requiredPlatforms')->setLabel('Required Platforms');
     return new RenderGroup(
       '<h1>Edit Platform</h1>',
       $form

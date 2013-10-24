@@ -156,7 +156,7 @@ class DefaultController extends ProjectsController
     $form->addSelectElement('userId', $users);
     $form->addHiddenElement('projectId', $projectId);
     $form->addCheckboxElements(
-      'roles[]',
+      'roles',
       null,
       (new OptionBuilder(new UserRole))->getOptions()
     );

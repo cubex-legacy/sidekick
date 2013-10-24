@@ -9,7 +9,6 @@ use Cubex\Routing\Templates\ResourceTemplate;
 use Sidekick\Applications\Evento\Views\EventoSidebar;
 use Sidekick\Applications\Evento\Views\EventoTypeForm;
 use Sidekick\Applications\Evento\Views\EventoTypesIndex;
-use Sidekick\Applications\Evento\Views\EventoView;
 use Sidekick\Components\Evento\Mappers\Event;
 use Sidekick\Components\Evento\Mappers\EventType;
 
@@ -32,11 +31,26 @@ class EventoTypesController extends EventoController
     return new EventoTypeForm(new EventType());
   }
 
-  public function renderShow()
+  public function renderEdit()
   {
-    $eventId = $this->getInt('id');
-    $event   = new Event($eventId);
-    return new EventoView($event);
+    $eventTypeId = $this->getInt('id');
+    return new EventoTypeForm(new EventType($eventTypeId));
+  }
+
+  public function renderUpdate()
+  {
+    $postData = $this->request()->postVariables();
+
+    $eventType = new EventType($postData['id']);
+    $eventType->hydrate($postData);
+    $eventType->saveChanges();
+
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Event Type was successfully updated';
+
+    \Redirect::to($this->baseUri())->with('msg', $msg)->now();
+    \Redirect::to($this->baseUri())->now();
   }
 
   public function renderCreate()
@@ -47,7 +61,36 @@ class EventoTypesController extends EventoController
     $eventType->hydrate($postData);
     $eventType->saveChanges();
 
-    \Redirect::to($this->baseUri())->now();
+    $msg       = new \stdClass();
+    $msg->type = 'success';
+    $msg->text = 'Event Type was successfully created';
+
+    \Redirect::to($this->baseUri())->with('msg', $msg)->now();
+  }
+
+  public function renderDestroy()
+  {
+    $eventTypeId = $this->getInt('id');
+
+    $events = Event::collection(['eventTypeId' => $eventTypeId]);
+    if(!$events->hasMappers())
+    {
+      $eventType = new EventType($eventTypeId);
+      $eventType->delete();
+
+      $msg       = new \stdClass();
+      $msg->type = 'success';
+      $msg->text = 'Event Type was successfully deleted';
+    }
+    else
+    {
+      $msg       = new \stdClass();
+      $msg->type = 'error';
+      $msg->text = 'Event Type could not be deleted,' .
+        ' because events of this type already exists';
+    }
+
+    \Redirect::to($this->baseUri())->with('msg', $msg)->now();
   }
 
   public function getRoutes()

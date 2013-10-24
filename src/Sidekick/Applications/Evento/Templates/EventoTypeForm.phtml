@@ -3,12 +3,13 @@
  * Author: oke.ugwu
  * Date: 23/10/13 11:50
  *
- * @var $this \Sidekick\Applications\Evento\Views\EventoForm
+ * @var $this \Sidekick\Applications\Evento\Views\EventoTypeForm
  */
 ?>
-<h1>New Event</h1>
+<h1><?= $this->title() ?></h1>
 <?= $this->form()->open(); ?>
 <?= $this->form()->csrfCheck(); ?>
+<?= $this->form()->getElement('id'); ?>
 <table>
   <tr>
     <td>Name:</td>

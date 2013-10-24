@@ -18,10 +18,21 @@ class EventoTypeForm extends TemplatedViewModel
    */
   protected $_eventType;
   protected $_form;
+  protected $_title;
 
   public function __construct($eventType)
   {
     $this->_eventType = $eventType;
+    $this->_title     = "New Event Type";
+    if($this->_eventType->exists())
+    {
+      $this->_title = "Edit Event Type";
+    }
+  }
+
+  public function title()
+  {
+    return $this->_title;
   }
 
   public function form()
@@ -55,7 +66,8 @@ class EventoTypeForm extends TemplatedViewModel
         'class',
         'input-xxlarge'
       );
-      $this->_form->addSubmitElement('submit');
+      $btnText = ($this->_eventType->exists()) ? "Update" : "Create";
+      $this->_form->addSubmitElement($btnText, 'submit');
       $this->_form->getElement('submit')->addAttribute(
         'class',
         'btn btn-primary'

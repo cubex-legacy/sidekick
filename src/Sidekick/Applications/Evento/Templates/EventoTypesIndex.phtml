@@ -14,15 +14,27 @@
   Create Event Type</a>
 <div class="clearfix"></div>
 <div style="margin-top:10px;"></div>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
+    <?= Session::getFlash('msg')->text; ?>
+  </div>
+<?php endif; ?>
 <table class="table">
   <tr>
     <th>Name</th>
     <th>Description</th>
+    <th></th>
   </tr>
   <?php foreach($this->eventTypes() as $type): ?>
     <tr>
       <td><?= $type->name ?></td>
-      <td ><?= $type->description ?></td>
+      <td><?= $type->description ?></td>
+      <td>
+        <a href="<?= $this->baseUri() ?>/<?= $type->id(); ?>/edit"
+           title="Edit"><i class="icon-edit"></i></a>
+        <a href="<?= $this->baseUri() ?>/<?= $type->id(); ?>/delete"
+           title="Delete"><i class="icon-trash"></i></a>
+      </td>
     </tr>
   <?php endforeach; ?>
 </table>

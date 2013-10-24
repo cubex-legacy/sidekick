@@ -48,7 +48,10 @@ class EventoSummaryController extends EventoController
     $eventId = $this->getInt('id');
     $event   = new Event($eventId);
 
-    $updates = EventUpdate::collection(['event_id' => $eventId]);
+    $updates = EventUpdate::collection(['event_id' => $eventId])->setOrderBy(
+      'created_at',
+      'ASC'
+    );
 
     return new EventoView($event, $updates);
   }
@@ -66,18 +69,27 @@ class EventoSummaryController extends EventoController
     \Redirect::to($this->baseUri())->now();
   }
 
-  public function renderUpdate()
+  public function ajaxUpdate()
+  {
+    $postData = $this->request()->postVariables();
+    $event    = new Event($postData['id']);
+    $event->hydrate($postData);
+    $event->saveChanges();
+    exit(1);
+  }
+
+  public function renderUpdates()
   {
     $eventUpdate              = new EventUpdate();
     $eventUpdate->eventId     = $this->getInt('id');
     $eventUpdate->userId      = \Auth::user()->getId();
-    $eventUpdate->resolution = $this->request()->postVariables('resolution');
+    $eventUpdate->resolution  = $this->request()->postVariables('resolution');
     $eventUpdate->description = $this->request()->postVariables('description');
     $eventUpdate->saveChanges();
 
     if($eventUpdate->resolution == Resolution::CLOSED)
     {
-      $event = new Event($eventUpdate->eventId);
+      $event           = new Event($eventUpdate->eventId);
       $event->closedAt = date('Y-m-d H:i:s');
       $event->saveChanges();
     }
@@ -89,6 +101,7 @@ class EventoSummaryController extends EventoController
   {
     $routes = ResourceTemplate::getRoutes();
     array_unshift($routes, new StdRoute('/open', 'openEvents'));
+    array_unshift($routes, new StdRoute('/updates/:id', 'updates'));
     return $routes;
   }
 }

@@ -21,6 +21,7 @@ class EventoView extends TemplatedViewModel
   {
     $this->_event   = $event;
     $this->_updates = $updates;
+    $this->requireJs('eventUI');
   }
 
   /**
@@ -30,6 +31,16 @@ class EventoView extends TemplatedViewModel
   {
     return $this->_event;
   }
+
+  public function eventIsClosed()
+  {
+    if($this->_event->closedAt == null)
+    {
+      return false;
+    }
+    return true;
+  }
+
 
   public function getEventDuration()
   {
@@ -58,7 +69,7 @@ class EventoView extends TemplatedViewModel
     {
       $this->_form = new Form(
         "eventoUpdateForm",
-        $this->baseUri() . '/' . $this->event()->id()
+        $this->baseUri() . '/updates/' . $this->event()->id()
       );
 
       $this->_form->setDefaultElementTemplate('{{input}}');

@@ -7,23 +7,34 @@
 
 use Sidekick\Applications\Evento\Widgets\SeverityWidget;
 use Sidekick\Widgets\Gravatar\Gravatar;
+
 ?>
 <div class="row-fluid">
   <div class="span7">
-    <h2><?= $this->event()->name ?></h2>
+    <h2 contenteditable="<?= ($this->eventIsClosed()) ? "false" : "true" ?>"
+        id="event-name" class="event-data"
+        data-eventId="<?= $this->event()->id() ?>">
+      <?= $this->event()->name ?>
+      <i class="icon-pencil icon-black" id="icon-edit-name"></i>
+    </h2>
     <h5>
       Start: <?= date("d M Y @ H:i:s", strtotime($this->event()->openedAt)) ?>
     </h5>
 
-    <p><?= $this->event()->description; ?></p>
+    <p contenteditable="<?= ($this->eventIsClosed()) ? "false" : "true" ?>"
+       id="event-description" class="event-data"
+       data-eventId="<?= $this->event()->id() ?>">
+      <?= $this->event()->description; ?>
+      <i class="icon-pencil icon-black" id="icon-edit-description"></i>
+    </p>
   </div>
 
   <div class="span3">
     <h5>Event Type: <span><?= $this->event()->eventType()->name ?></span></h5>
 
     <h5>Closed:
-      <?php if($this->event()->closedAt != null): ?>
-      <?= date("d M Y @ H:i:s", strtotime($this->event()->closedAt)) ?>
+      <?php if($this->eventIsClosed()): ?>
+        <?= date("d M Y @ H:i:s", strtotime($this->event()->closedAt)) ?>
       <?php else: ?>
         --
       <?php endif; ?>
@@ -56,19 +67,19 @@ use Sidekick\Widgets\Gravatar\Gravatar;
 </div>
 
 <?php foreach($this->getUpdates() as $update): ?>
-<div class="media">
-  <a class="pull-left" href="#">
-    <?= Gravatar::create($update->user()->email); ?>
-  </a>
+  <div class="media">
+    <a class="pull-left" href="#">
+      <?= Gravatar::create($update->user()->email); ?>
+    </a>
 
-  <div class="media-body action-box">
-    <h4 class="media-deading">
-      <?= $update->user()->displayName ?>
-      <small class="pull-right">
-        <?= date("d M Y H:i", strtotime($update->createdAt)) ?>
-      </small>
-    </h4>
-    <p><?= $update->description ?></p>
+    <div class="media-body action-box">
+      <h4 class="media-deading">
+        <?= $update->user()->displayName ?>
+        <small class="pull-right">
+          <?= date("d M Y H:i", strtotime($update->createdAt)) ?>
+        </small>
+      </h4>
+      <p><?= $update->description ?></p>
+    </div>
   </div>
-</div>
 <?php endforeach; ?>

@@ -11,6 +11,9 @@ use Sidekick\Components\Enums\Severity;
 class Event extends RecordMapper
 {
   public $name;
+  /**
+   * @datatype text
+   */
   public $description;
 
   public $openedAt;

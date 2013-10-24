@@ -10,18 +10,25 @@ use Cubex\View\TemplatedViewModel;
 
 class EventoIndex extends TemplatedViewModel
 {
-  protected $_openEvents;
+  protected $_events;
+  protected $_title;
 
-  public function __construct($openEvents)
+  public function __construct($title, $openEvents)
   {
-    $this->_openEvents = $openEvents;
+    $this->_title  = $title;
+    $this->_events = $openEvents;
+  }
+
+  public function title()
+  {
+    return $this->_title;
   }
 
   /**
    * @return \Sidekick\Components\Evento\Mappers\Event[]
    */
-  public function openEvents()
+  public function events()
   {
-    return $this->_openEvents;
+    return $this->_events;
   }
 }

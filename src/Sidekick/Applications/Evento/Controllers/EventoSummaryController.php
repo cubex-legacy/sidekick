@@ -5,6 +5,7 @@
 
 namespace Sidekick\Applications\Evento\Controllers;
 
+use Cubex\Routing\StdRoute;
 use Cubex\Routing\Templates\ResourceTemplate;
 use Sidekick\Applications\Evento\Views\EventoForm;
 use Sidekick\Applications\Evento\Views\EventoIndex;
@@ -24,11 +25,17 @@ class EventoSummaryController extends EventoController
 
   public function renderIndex()
   {
+    $events = Event::collection();
+    return new EventoIndex("All Events", $events);
+  }
+
+  public function renderOpenEvents()
+  {
     $openEvents = Event::collection()->whereEq('closedAt', null)->setOrderBy(
       'openedAt',
       'DESC'
     );
-    return new EventoIndex($openEvents);
+    return new EventoIndex("Open Events", $openEvents);
   }
 
   public function renderNew()
@@ -81,6 +88,7 @@ class EventoSummaryController extends EventoController
   public function getRoutes()
   {
     $routes = ResourceTemplate::getRoutes();
+    array_unshift($routes, new StdRoute('/open', 'openEvents'));
     return $routes;
   }
 }

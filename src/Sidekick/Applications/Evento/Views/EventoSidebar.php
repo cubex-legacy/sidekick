@@ -16,7 +16,8 @@ class EventoSidebar extends ViewModel
   {
     $path      = $this->request()->path();
     $menuItems = [
-      'Open Events'         => '/events',
+      'All Events'          => '/events',
+      'Open Events'         => '/events/open',
       'Event Types'         => '/events/types',
       'Subscribe to Events' => '/events/subscribe',
     ];

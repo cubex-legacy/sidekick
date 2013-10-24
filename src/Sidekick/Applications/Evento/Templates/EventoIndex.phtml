@@ -6,7 +6,7 @@
  * @var $this \Sidekick\Applications\Evento\Views\EventoIndex
  */
 ?>
-<h1>Open Events</h1>
+<h1><?= $this->title() ?></h1>
 <a href="<?= $this->baseUri() . '/new'; ?>"
    class="btn btn-success pull-right"
    style="margin-top:-20px;">
@@ -18,23 +18,39 @@
   Subscribe to Events</a>
 <div class="clearfix"></div>
 <div style="margin-top:10px;"></div>
-<?php if(count($this->openEvents())): ?>
-<table class="table table-bordered">
-  <?php foreach($this->openEvents() as $event): ?>
-    <tr>
-      <td>
-        <a href="<?= $this->baseUri(); ?>/<?= $event->id() ?>">
-        <strong style="font-size:18px;"><?= $event->name ?></strong>
-        </a>
-        </br>
-        <?= $event->description ?>
-      </td>
-      <td width="150">
-        <?= date('d/m/Y H:iA', strtotime($event->openedAt)) ?>
-      </td>
-    </tr>
-  <?php endforeach; ?>
-</table>
+<?php if(count($this->events())): ?>
+  <table class="table table-bordered">
+    <?php foreach($this->events() as $event): ?>
+      <tr>
+        <td>
+          <a href="<?= $this->baseUri(); ?>/<?= $event->id() ?>">
+            <strong style="font-size:18px;"><?= $event->name ?>
+              <?php if($event->closedAt == null): ?>
+                [OPEN]
+              <?php else: ?>
+                [CLOSED]
+              <?php endif; ?>
+            </strong>
+
+          </a>
+          </br>
+          <?= $event->description ?>
+          </br>
+          <strong>Started:</strong> <?= date(
+            'd/m/Y H:iA',
+            strtotime($event->openedAt)
+          ) ?>
+          <br/>
+          <?php if($event->closedAt == null): ?>
+            <strong>Closed:</strong> <?= date(
+              'd/m/Y H:iA',
+              strtotime($event->closedAt)
+            ) ?>
+          <?php endif; ?>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+  </table>
 <?php else: ?>
-<h3>There no open Events at the moment</h3>
+  <h3>There no open Events at the moment</h3>
 <?php endif; ?>

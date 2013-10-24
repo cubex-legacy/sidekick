@@ -1,0 +1,53 @@
+<?php
+/**
+ * Description
+ *
+ * @author Sam Waters <sam.waters@justdevelop.it>
+ */
+?>
+<h1>My Notifications</h1>
+<a href="/notify/hooks/add" class="btn btn-primary pull-right">Add Notification Request</a>
+<table class="table table-condensed table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Event Key</th>
+      <th>Notification Type(s)</th>
+      <th>Users</th>
+      <th>Groups</th>
+    </tr>
+  </thead>
+  <tbody>
+  <?php foreach($this->getAllHooks() as $hook): ?>
+    <tr>
+      <td><?= $hook->eventKey ?></td>
+      <td>
+        <?php if($hook->notifyType != null): ?>
+          <ul>
+            <?php foreach($hook->notifyType as $type): ?>
+              <li><?= $this->getNotifyType($type) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        <?php endif; ?>
+      </td>
+      <td>
+        <?php if($hook->notifyUsers != null): ?>
+          <ul>
+            <?php foreach($hook->notifyUsers as $user): ?>
+              <li><?= $this->getUserById($user) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        <?php endif; ?>
+      </td>
+      <td>
+        <?php if($hook->notifyGroups != null): ?>
+          <ul>
+            <?php foreach($hook->notifyGroups as $group): ?>
+              <li><?= $this->getGroupById($group) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        <?php endif; ?>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+  </tbody>
+</table>

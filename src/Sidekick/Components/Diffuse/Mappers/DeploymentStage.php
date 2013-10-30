@@ -14,6 +14,9 @@ class DeploymentStage extends RecordMapper
   public $platformId;
   public $serviceClass;
   public $requireAllHostsPass;
+  /**
+   * @datatype text
+   */
   public $configuration = [];
   /**
    * @datatype int

@@ -79,7 +79,19 @@ class Server extends CliCommand
 
   public function storeLoadAverage()
   {
-    $server = WatchTowerComponent::getServerByIpv4($this->ip);
+    if(!empty($this->ip))
+    {
+      $server = WatchTowerComponent::getServerByIpv4($this->ip);
+    }
+    else if(!empty($this->hostname))
+    {
+      $server = WatchTowerComponent::getServerByHostname($this->hostname);
+    }
+    else
+    {
+      throw new \Exception("Unable to locate server", 404);
+    }
+
     if($server instanceof ILinuxServer)
     {
       $server->storeCurrentLoadAverage($this->loadAverage);

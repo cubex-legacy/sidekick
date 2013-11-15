@@ -69,6 +69,29 @@ class LinuxServer implements ILinuxServer
     $this->_serverMapper->saveChanges();
   }
 
+  /**
+   * Store running processes for a specific process name
+   *
+   * @param $process
+   * @param $count
+   *
+   * @return mixed
+   */
+  public function storeProcessCount($process, $count)
+  {
+    $this->_checkMapper();
+    //Store historical data
+    ServerStatistic::cf()->insert(
+      "process-{$process}-{$this->_serverId}-" . date("Y-m-d"),
+      [strtotime(date("Y-m-d H:i:00")) => $count]
+    );
+
+    //Store current version for reading
+    $this->_serverMapper->setData("process:$process:count", $count);
+    $this->_serverMapper->saveChanges();
+  }
+
+
   public function getHostname()
   {
     $this->_checkMapper();

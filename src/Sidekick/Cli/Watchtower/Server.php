@@ -25,18 +25,21 @@ class Server extends CliCommand
    * @valuerequired
    */
   public $loadAverage;
+  /**
+   * @valuerequired
+   */
+  public $process;
+  /**
+   * @valuerequired
+   */
+  public $processCount;
 
   /**
    * @return int
    */
   public function execute()
   {
-    $server = new Srv();
-    $server->setId(Cubid::generateCubid($server));
-    $server->hostname = "localhost";
-    $server->ipv4     = "127.0.0.1";
-    $server->saveChanges();
-    echo "Created localhost server with id " . $server->id() . "\n";
+    return $this->_help();
   }
 
   public function createServer()
@@ -77,24 +80,46 @@ class Server extends CliCommand
     var_dump_json($server);
   }
 
-  public function storeLoadAverage()
+  protected function _getServer()
   {
     if(!empty($this->ip))
     {
-      $server = WatchTowerComponent::getServerByIpv4($this->ip);
+      return WatchTowerComponent::getServerByIpv4($this->ip);
     }
     else if(!empty($this->hostname))
     {
-      $server = WatchTowerComponent::getServerByHostname($this->hostname);
+      return WatchTowerComponent::getServerByHostname($this->hostname);
     }
     else
     {
       throw new \Exception("Unable to locate server", 404);
     }
+  }
+
+  public function storeLoadAverage()
+  {
+    $server = $this->_getServer();
 
     if($server instanceof ILinuxServer)
     {
       $server->storeCurrentLoadAverage($this->loadAverage);
+    }
+  }
+
+  public function storeProcessCount()
+  {
+    if(empty($this->process))
+    {
+      throw new \Exception(
+        "You must specify the process you are storing a count for"
+      );
+    }
+
+    $server = $this->_getServer();
+
+    if($server instanceof ILinuxServer)
+    {
+      $server->storeProcessCount($this->process, (int)$this->processCount);
     }
   }
 }

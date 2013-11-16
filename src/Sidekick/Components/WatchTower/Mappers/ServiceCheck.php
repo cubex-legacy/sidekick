@@ -11,8 +11,11 @@ class ServiceCheck extends RecordMapper
 {
   public $name;
   public $description;
-  public $groupId;
+
+  public $serviceGroupId;
+
   public $checkInterval = 1;
+
   public $command;
   public $arguments;
 }

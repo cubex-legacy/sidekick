@@ -12,19 +12,28 @@ use Cubex\Mapper\Database\RecordMapper;
  */
 class CheckStatus extends RecordMapper
 {
+  protected $_idType = self::ID_COMPOSITE;
+
   public $checkId;
   public $serverId;
 
-  public $firstOk; //First OK since !OK to track uptime
   public $lastTimeOk;
   public $lastTimeWarning;
   public $lastTimeCritical;
   public $lastTimeUnknown;
-  public $output;
-  public $performanceData;
-  public $currentState;
-  public $lastCheck;
-  public $nextCheck;
   public $lastStateChange;
+
+  public $statusInformation;
+  public $performanceData;
+
+  public $currentState;
   public $checkExecutionTime;
+
+  public $lastCheckTime;
+  public $nextCheckTime;
+
+  protected function _configure()
+  {
+    $this->_addCompositeAttribute("id", ["checkId", "serverId"]);
+  }
 }

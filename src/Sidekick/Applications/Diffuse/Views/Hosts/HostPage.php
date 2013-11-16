@@ -12,7 +12,7 @@ use Cubex\View\TemplatedViewModel;
 class HostPage extends TemplatedViewModel
 {
   /**
-   * @var $host \Sidekick\Components\Diffuse\Mappers\Host
+   * @var $host \Sidekick\Components\Servers\Mappers\Server
    */
   public $host;
   /**

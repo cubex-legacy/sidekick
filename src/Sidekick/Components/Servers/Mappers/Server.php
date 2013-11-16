@@ -3,21 +3,25 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Components\Diffuse\Mappers;
+namespace Sidekick\Components\Servers\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
-use Sidekick\Components\Diffuse\Enums\ConnectType;
+use Sidekick\Components\Servers\Enums\ConnectType;
 
-class Host extends RecordMapper
+class Server extends RecordMapper
 {
   public $name;
+  /**
+   * @unique
+   */
   public $hostname;
-  public $username = 'root';
   public $ipv4;
   public $ipv6;
+  public $sshUser = 'root';
   public $sshPort = 22;
+
   /**
-   * @enumclass \Sidekick\Components\Diffuse\Enums\ConnectType
+   * @enumclass ConnectType
    */
   public $preferConnection = ConnectType::IPV4;
 

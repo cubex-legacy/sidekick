@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Servers\Mappers\Server;
 
 class DeploymentStageHost extends RecordMapper
 {
@@ -13,7 +14,7 @@ class DeploymentStageHost extends RecordMapper
 
   public $deploymentId;
   public $deploymentStageId;
-  public $hostId;
+  public $serverId;
 
   /**
    * @datatype tinyint
@@ -28,7 +29,7 @@ class DeploymentStageHost extends RecordMapper
   {
     $this->_addCompositeAttribute(
       "id",
-      ["deploymentId", "deploymentStageId", "hostId"]
+      ["deploymentId", "deploymentStageId", "serverId"]
     );
   }
 
@@ -46,10 +47,10 @@ class DeploymentStageHost extends RecordMapper
   }
 
   /**
-   * @return Host
+   * @return Server
    */
-  public function host()
+  public function server()
   {
-    return $this->belongsTo(new Host());
+    return $this->belongsTo(new Server());
   }
 }

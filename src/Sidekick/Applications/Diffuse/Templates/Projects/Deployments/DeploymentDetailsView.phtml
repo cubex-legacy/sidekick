@@ -42,8 +42,8 @@ use Sidekick\Components\Diffuse\Helpers\DeploymentHelper;
         <tr>
           <td><?= date('H:i:s', strtotime($d->createdAt)) ?></td>
           <td>
-            <?= $d->host()->name ?>
-            <span class="muted">(<?= $d->host()->ipv4 ?>)</span>
+            <?= $d->server()->name ?>
+            <span class="muted">(<?= $d->server()->ipv4 ?>)</span>
           </td>
           <td class="text-<?= $d->passed ? 'success' : 'error' ?>">
             <?= $d->passed ? 'Passed' : 'Failed' ?>

@@ -13,10 +13,10 @@ use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use
 Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentHostsView;
 use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
-use Sidekick\Components\Diffuse\Mappers\Host;
 use Sidekick\Components\Diffuse\Mappers\HostPlatform;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Servers\Mappers\Server;
 
 class DeploymentHostsController extends DiffuseController
 {
@@ -24,7 +24,7 @@ class DeploymentHostsController extends DiffuseController
   {
     $projectId = $this->getInt("projectId");
     $project   = new Project($projectId);
-    $hosts     = Host::collection();
+    $hosts     = Server::collection();
     $platforms = Platform::orderedCollection();
 
     return new RenderGroup(

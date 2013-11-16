@@ -5,14 +5,12 @@
 
 namespace Sidekick\Components\Diffuse\Mappers;
 
-use Cubex\Mapper\Database\PivotMapper;
 use Cubex\Mapper\Database\RecordMapper;
-use Sidekick\Components\Projects\Mappers\Project;
 
 class HostPlatform extends RecordMapper
 {
   protected $_idType = self::ID_COMPOSITE;
-  public $hostId;
+  public $serverId;
   public $platformId;
   public $projectId;
 
@@ -20,7 +18,7 @@ class HostPlatform extends RecordMapper
   {
     $this->_addCompositeAttribute(
       "id",
-      ["platform_id", "project_id", "host_id"]
+      ["platform_id", "project_id", "server_id"]
     );
   }
 

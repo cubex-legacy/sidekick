@@ -28,7 +28,7 @@ class CommanderService extends BaseDeploymentService
 
     foreach($this->_hosts as $stageHost)
     {
-      $host = $stageHost->host();
+      $host = $stageHost->server();
       \Log::info("Running command on " . $host->name);
 
       $cmd = str_replace(

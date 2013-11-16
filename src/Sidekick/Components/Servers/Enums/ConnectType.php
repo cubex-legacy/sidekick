@@ -2,8 +2,7 @@
 /**
  * @author  brooke.bryan
  */
-
-namespace Sidekick\Components\Diffuse\Enums;
+namespace Sidekick\Components\Servers\Enums;
 
 use Cubex\Type\Enum;
 

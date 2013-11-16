@@ -44,7 +44,7 @@ class RsyncService extends BaseDeploymentService
 
     foreach($this->_hosts as $stageHost)
     {
-      $host = $stageHost->host();
+      $host = $stageHost->server();
       if($host->sshPort < 1)
       {
         $host->sshPort = 22;

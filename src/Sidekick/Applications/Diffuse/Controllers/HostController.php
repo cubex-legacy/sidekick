@@ -9,17 +9,14 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
-use Sidekick\Applications\Diffuse\Views\HostPage;
 use Sidekick\Applications\Diffuse\Views\Hosts\HostsIndex;
-use Sidekick\Components\Diffuse\Mappers\Host;
-use Sidekick\Components\Diffuse\Mappers\HostPlatform;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Servers\Mappers\Server;
 
 class HostController extends DiffuseController
 {
   public function renderIndex()
   {
-    $hosts = Host::collection()->loadAll();
+    $hosts = Server::collection()->loadAll();
     return $this->createView(new HostsIndex($hosts));
   }
 
@@ -41,7 +38,7 @@ class HostController extends DiffuseController
 
   public function postCreate()
   {
-    $host = new Host();
+    $host = new Server();
     $host->hydrate($this->request()->postVariables());
     $host->saveChanges();
 
@@ -57,7 +54,7 @@ class HostController extends DiffuseController
   public function renderEdit()
   {
     $platformId = $this->getInt('hostId');
-    $host       = new Host($platformId);
+    $host       = new Server($platformId);
 
     $form = new Form('editPlatform', '');
     $form->addHiddenElement('id', $host->id());
@@ -65,7 +62,7 @@ class HostController extends DiffuseController
     $form->addTextElement('hostname', $host->hostname);
     $form->addTextElement('ipv4', $host->ipv4);
     $form->addTextElement('ipv6', $host->ipv6);
-    $form->addTextElement('username', $host->username);
+    $form->addTextElement('sshUser', $host->sshUser);
     $form->addNumberElement('sshPort', $host->sshPort);
     $form->addSubmitElement('Update');
 
@@ -77,7 +74,7 @@ class HostController extends DiffuseController
 
   public function postEdit()
   {
-    $host = new Host();
+    $host = new Server();
     $host->hydrate($this->request()->postVariables());
     $host->saveChanges();
 
@@ -93,7 +90,7 @@ class HostController extends DiffuseController
   public function renderDelete()
   {
     $hostId = $this->getInt('hostId');
-    $host   = new Host($hostId);
+    $host   = new Server($hostId);
     $host->delete();
 
     $msg       = new \stdClass();

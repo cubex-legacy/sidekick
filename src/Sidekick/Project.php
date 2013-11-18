@@ -54,7 +54,10 @@ class Project extends \Cubex\Core\Project\Project
 
   public function getApplication(Request $req)
   {
-    if($_SERVER['HTTP_X_PURPOSE'] == 'preview' || $req->path() == '/preview')
+    if((isset($_SERVER['HTTP_X_PURPOSE'])
+    && $_SERVER['HTTP_X_PURPOSE'] == 'preview')
+    || $req->path() == '/preview'
+    )
     {
       return new PreviewApp();
     }

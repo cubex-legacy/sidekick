@@ -367,7 +367,7 @@ class FortifyController extends BaseControl
         $view->addCommand(
           new Command($c),
           $commandRun,
-          in_array($commandRun['exit_code'], $command->successExitCodes),
+          in_array(idx($commandRun, 'exit_code'), $command->successExitCodes),
           $commandOutput
         );
       }

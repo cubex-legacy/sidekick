@@ -180,6 +180,7 @@ class Update extends CliCommand
       {
         continue;
       }
+      $commit = array_pad($commit, 5, '');
       list($commitHash, $author, $date, $subject, $message) = $commit;
 
       $commitCount++;

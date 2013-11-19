@@ -84,7 +84,7 @@ class Deploy extends CliCommand
     )
     ->preFetch("server");
 
-    if(!$hosts)
+    if(!$hosts->hasMappers())
     {
       $deployment->completed = 1;
       $deployment->saveChanges();

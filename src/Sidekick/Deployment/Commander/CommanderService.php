@@ -53,7 +53,7 @@ class CommanderService extends BaseDeploymentService
         '{version_change_log}',
         ],
         [
-        $host->username,
+        $host->sshUser,
         $host->getConnPreference(),
         $host->hostname,
         $host->sshPort,

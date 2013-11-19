@@ -69,7 +69,7 @@ class RsyncService extends BaseDeploymentService
       $cmd .= ' ' . $sourcePath . ' ';
 
       //Remote Path
-      $cmd .= $host->username !== null ? $host->username . '@' : ''; //Username
+      $cmd .= $host->sshUser !== null ? $host->sshUser . '@' : ''; //Username
       $cmd .= $host->getConnPreference() . ':'; //Hostname | IP
       $cmd .= build_path_unix(
         $remoteBase,

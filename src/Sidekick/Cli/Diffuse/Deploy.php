@@ -81,8 +81,7 @@ class Deploy extends CliCommand
       "platform_id" => $platform->id(),
       "project_id"  => $project->id()
       ]
-    )
-    ->preFetch("server");
+    );
 
     if(!$hosts->hasMappers())
     {

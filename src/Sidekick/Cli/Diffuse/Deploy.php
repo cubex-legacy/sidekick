@@ -82,7 +82,7 @@ class Deploy extends CliCommand
       "project_id"  => $project->id()
       ]
     )
-    ->preFetch("host");
+    ->preFetch("server");
 
     if(!$hosts)
     {
@@ -123,7 +123,7 @@ class Deploy extends CliCommand
              * @var $hostPlat \Sidekick\Components\Diffuse\Mappers\HostPlatform
              */
             $stageHost                    = new DeploymentStageHost();
-            $stageHost->hostId            = $hostPlat->hostId;
+            $stageHost->serverId            = $hostPlat->serverId;
             $stageHost->deploymentId      = $deployment->id();
             $stageHost->deploymentStageId = $stage->id();
             $diffuser->addHost($stageHost);

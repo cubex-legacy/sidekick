@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Diffuse\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Servers\Mappers\Server;
 
 class HostPlatform extends RecordMapper
 {
@@ -25,5 +26,10 @@ class HostPlatform extends RecordMapper
   public function getTableName($plural = true)
   {
     return 'diffuse_hosts_platforms';
+  }
+
+  public function server()
+  {
+    return $this->hasMany(new Server());
   }
 }

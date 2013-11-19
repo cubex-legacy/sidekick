@@ -30,11 +30,11 @@ interface IDeploymentService
   public function getHosts();
 
   /**
-   * @param $hostId
+   * @param $serverId
    *
    * @return DeploymentStageHost
    */
-  public function getHost($hostId);
+  public function getHost($serverId);
 
   /**
    * @return void

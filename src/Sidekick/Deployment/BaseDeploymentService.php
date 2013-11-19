@@ -31,7 +31,7 @@ abstract class BaseDeploymentService implements IDeploymentService
    */
   public function addHost(DeploymentStageHost $host)
   {
-    $this->_hosts[$host->hostId] = $host;
+    $this->_hosts[$host->serverId] = $host;
     return $this;
   }
 
@@ -44,13 +44,13 @@ abstract class BaseDeploymentService implements IDeploymentService
   }
 
   /**
-   * @param $hostId
+   * @param $serverId
    *
    * @return DeploymentStageHost
    */
-  public function getHost($hostId)
+  public function getHost($serverId)
   {
-    return isset($this->_hosts[$hostId]) ? $this->_hosts[$hostId] : null;
+    return isset($this->_hosts[$serverId]) ? $this->_hosts[$serverId] : null;
   }
 
   public static function getConfigurationItems()

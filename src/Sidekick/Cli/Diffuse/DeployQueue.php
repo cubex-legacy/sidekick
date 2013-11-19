@@ -56,14 +56,10 @@ class DeployQueue extends CliCommand
     $rawArgs = [
       '--cubex-env=' . CUBEX_ENV,
       'Diffuse.Deploy',
-      '--versionId',
-      $versionId,
-      '--platformId',
-      $platformId,
-      '--echo-level',
-      $this->_logger->getEchoLevel(),
-      '--log-level',
-      $this->_logger->getLogLevel(),
+      '--versionId=' . $versionId,
+      '--platformId=' . $platformId,
+      '--echo-level=' . $this->_logger->getEchoLevel(),
+      '--log-level=' . $this->_logger->getLogLevel(),
     ];
 
     if($this->verbose)
@@ -73,8 +69,7 @@ class DeployQueue extends CliCommand
 
     if(isset($data->userId) && $data->userId > 0)
     {
-      $rawArgs[] = '--userId';
-      $rawArgs[] = $data->userId;
+      $rawArgs[] = '--userId=' . $data->userId;
     }
 
     Log::debug("Starting Deployment");

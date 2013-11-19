@@ -39,7 +39,7 @@ class HostPage extends TemplatedViewModel
       $this->_form = new Form('hostPlatform', '/diffuse/hosts/add-platform');
       $this->_form->addAttribute('class', 'form-inline');
       $this->_form->setDefaultElementTemplate('{{input}}');
-      $this->_form->addHiddenElement('hostId', $this->host->id());
+      $this->_form->addHiddenElement('serverId', $this->host->id());
       $this->_form->addSelectElement(
         'platformId',
         $this->platforms->getKeyPair('id', 'name')

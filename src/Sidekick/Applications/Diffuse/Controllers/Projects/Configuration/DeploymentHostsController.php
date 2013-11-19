@@ -51,12 +51,12 @@ class DeploymentHostsController extends DiffuseController
     foreach($deploymentHosts as $platformId => $hosts)
     {
       $hosts = array_keys($hosts);
-      foreach($hosts as $hostId)
+      foreach($hosts as $serverId)
       {
         $hp             = new HostPlatform();
         $hp->platformId = $platformId;
         $hp->projectId  = $projectId;
-        $hp->hostId     = $hostId;
+        $hp->serverId   = $serverId;
         $hp->saveChanges();
       }
     }

@@ -23,7 +23,7 @@
     <?= $this->form()->open(); ?>
     <?= $this->form()->token(); ?>
     <?= $this->form()->formNameInput(); ?>
-    <?= $this->form()->getElement('hostId'); ?>
+    <?= $this->form()->getElement('serverId'); ?>
     <?= $this->form()->getElement('platformId') ?>
     <?= $this->form()->getElement('submit') ?>
     <?= $this->form()->close() ?>
@@ -40,7 +40,7 @@
           <td><?= $platform->platform()->name ?></td>
           <td>
             <a href="<?= $this->baseUri(
-            ) . '/delete-platform/' . $platform->hostId . '/' . $platform->platformId; ?>"
+            ) . '/delete-platform/' . $platform->serverId . '/' . $platform->platformId; ?>"
                title="Delete"><i class="icon-trash"></i></a>
           </td>
         </tr>

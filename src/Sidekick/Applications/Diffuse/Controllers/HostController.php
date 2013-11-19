@@ -53,7 +53,7 @@ class HostController extends DiffuseController
 
   public function renderEdit()
   {
-    $platformId = $this->getInt('hostId');
+    $platformId = $this->getInt('serverId');
     $host       = new Server($platformId);
 
     $form = new Form('editPlatform', '');
@@ -89,8 +89,8 @@ class HostController extends DiffuseController
 
   public function renderDelete()
   {
-    $hostId = $this->getInt('hostId');
-    $host   = new Server($hostId);
+    $serverId = $this->getInt('serverId');
+    $host   = new Server($serverId);
     $host->delete();
 
     $msg       = new \stdClass();
@@ -106,8 +106,8 @@ class HostController extends DiffuseController
   {
     return [
       '/create'         => 'create',
-      '/:hostId/edit'   => 'edit',
-      '/:hostId/delete' => 'delete'
+      '/:serverId/edit'   => 'edit',
+      '/:serverId/delete' => 'delete'
     ];
   }
 }

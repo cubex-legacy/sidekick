@@ -40,6 +40,10 @@ class ApprovalConfigurationView extends TemplatedViewModel
     {
       foreach($user->roles as $role)
       {
+        if(!isset($roles[$role]))
+        {
+          $roles[$role] = 0;
+        }
         $roles[$role]++;
       }
     }

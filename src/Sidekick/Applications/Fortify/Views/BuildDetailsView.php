@@ -34,9 +34,9 @@ class BuildDetailsView extends TemplatedViewModel
       $obj                  = new \stdClass();
       $obj->command         = $command;
       $obj->passed          = $passed;
-      $obj->exitCode        = $commandRun['exit_code'];
-      $obj->startTime       = $commandRun['start_time'];
-      $obj->endTime         = $commandRun['end_time'];
+      $obj->exitCode        = idx($commandRun, 'exit_code');
+      $obj->startTime       = idx($commandRun, 'start_time');
+      $obj->endTime         = idx($commandRun, 'end_time');
       $this->_commandsRun[] = $obj;
     }
 

@@ -6,8 +6,8 @@
 
 namespace Sidekick\Applications\Api\Controllers\Rosetta;
 
-use Cubex\I18n\Translator\GoogleTranslator;
 use Sidekick\Applications\Api\Controllers\ApiController;
+use Sidekick\Components\Rosetta\Helpers\TranslatorHelper;
 use Sidekick\Components\Rosetta\Mappers\PendingTranslation;
 use Sidekick\Components\Rosetta\Mappers\Translation;
 
@@ -29,7 +29,7 @@ class Translate extends ApiController
         throw new \Exception("No Text to Translate", 400);
       }
 
-      $projectId = empty($params['projectId'])? 0 : $params['projectId'];
+      $projectId = empty($params['projectId']) ? 0 : $params['projectId'];
 
       $key           = md5($params['text']) . strlen($params['text']);
       $sourceLang    = $params['source'];
@@ -40,17 +40,25 @@ class Translate extends ApiController
 
       if(!count($data))
       {
-        $this->_saveTranslation($key, $params['text'], $sourceLang, $projectId);
+        TranslatorHelper::saveTranslation(
+          $key,
+          $params['text'],
+          $sourceLang,
+          $projectId
+        );
 
-        //get translated text from google
-        $gt             = new GoogleTranslator();
-        $translatedText = $gt->translate(
+        $translatedText = TranslatorHelper::translate(
           $params['text'],
           $sourceLang,
           $targetLang
         );
 
-        $this->_saveTranslation($key, $translatedText, $targetLang, $projectId);
+        TranslatorHelper::saveTranslation(
+          $key,
+          $translatedText,
+          $targetLang,
+          $projectId
+        );
       }
       else
       {
@@ -65,7 +73,15 @@ class Translate extends ApiController
         $pendingTranslation->saveChanges();
       }
 
-      return ['text' => $translatedText];
+      return [
+        'error'  => [
+          'code'    => 200,
+          'message' => 'Text translated successfully'
+        ],
+        'result' => [
+          'text' => $translatedText
+        ]
+      ];
     }
     else
     {
@@ -73,30 +89,6 @@ class Translate extends ApiController
         "Incomplete Parameters. Make sure you provide a " .
         "text, source and target language",
         400
-      );
-    }
-  }
-
-  private function _saveTranslation($key, $text, $lang, $projectId)
-  {
-    $translationCf = Translation::cf();
-    $columnValue   = json_encode(
-      [
-      'translated' => $text,
-      'approved'   => false,
-      'approver'   => null
-      ]
-    );
-    $translationCf->insert(
-      $key,
-      ["lang:$lang" => $columnValue]
-    );
-
-    if($projectId)
-    {
-      $translationCf->insert(
-        $key,
-        ["used_by:$projectId" => time()]
       );
     }
   }

@@ -100,7 +100,7 @@ class DeploymentController extends DiffuseController
         'platform_id' => $postData['platformId']
         ]
       )->setOrderBy('order', 'DESC')->first();
-      $stage->order = $lastStage->order + 1;
+      $stage->order = idp($lastStage, "order", 0) + 1;
     }
 
     $stage->platformId          = $postData["platformId"];

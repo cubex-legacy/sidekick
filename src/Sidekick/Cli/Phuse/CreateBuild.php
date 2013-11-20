@@ -69,23 +69,23 @@ class CreateBuild extends CliCommand
       ['name' => $composer->name]
     );
     $package->projectId   = $this->projectId;
-    $package->name        = $composer->name;
-    $package->description = $composer->description;
-    $package->vendor      = explode('/', $composer->name)[0];
-    $package->library     = explode('/', $composer->name)[1];
-    $package->version     = $composer->version;
-    $package->license     = $composer->license;
-    $package->authors     = $composer->authors;
-    $package->require     = $composer->require;
+    $package->name        = idp($composer, "name");
+    $package->description = idp($composer, "description");
+    $package->vendor      = explode('/', $package->name)[0];
+    $package->library     = explode('/', $package->name)[1];
+    $package->version     = idp($composer, "version");
+    $package->license     = idp($composer, "license");
+    $package->authors     = idp($composer, "authors");
+    $package->require     = idp($composer, "require");
     $package->rawComposer = $composer;
     $package->saveChanges();
 
     $release              = new Release([$package->id(), $this->version]);
     $release->zipLocation = $zipLoc;
-    $release->name        = $composer->name;
-    $release->description = $composer->description;
-    $release->license     = $composer->license;
-    $release->authors     = $composer->authors;
+    $release->name        = idp($composer, "name");
+    $release->description = idp($composer, "description");
+    $release->license     = idp($composer, "license");
+    $release->authors     = idp($composer, "authors");
     $release->vendor      = $package->vendor;
     $release->library     = $package->library;
     $release->require     = $package->require;

@@ -1,0 +1,79 @@
+<?php
+/**
+ * @author oke.ugwu
+ * @var $this \Sidekick\Applications\Rosetta\Views\RosettaIndex
+ */
+?>
+
+<h1>Welcome to Rosetta</h1>
+<p>Rosetta is the translations manager.</p>
+
+<!--<div class="well">
+  <h2>Search</h2>
+
+  <p>Start searching by typing the string of characters or the lookup ID.</p>
+
+  <form method="get" action="rosetta/search">
+    <input class="input-xxlarge rosetta-search" type="text"
+           placeholder="Start typing some text..." name="term"/>
+    <button class="btn btn-success search-btn">Search</button>
+  </form>
+</div>-->
+
+
+<form method="get" action="<?= $this->baseUri() ?>" class="pull-right">
+  <label for="">Select Language: </label>
+  <select name="lang" id="" onchange="form.submit();">
+    <option value="">--SELECT--</option>
+    <?php foreach($this->getAllLanguages() as $code => $language): ?>
+      <option value="<?= $code ?>" <?=
+      ($code == $this->getLanguage(
+        )) ? 'selected="selected"' : '' ?>><?= $language ?></option>
+    <?php endforeach; ?>
+  </select>
+</form>
+<h2 class="pull-left-">Pending Translations Requiring Approval</h2>
+<div class="clearfix"></div>
+<button class="btn btn-success">Approve Selected</button>
+<div style="margin-top:5px;"></div>
+<table class="table table-bordered">
+  <tr>
+    <th><input type="checkbox"/></th>
+    <?php foreach($this->getSelectedLanguages() as $language): ?>
+      <th><?= $language ?></th>
+    <?php endforeach; ?>
+    <th>Approve</th>
+    <th></th>
+  </tr>
+  <?php foreach($this->getPendingTranslations() as $rowKey => $pending): ?>
+    <tr>
+      <td><input type="checkbox"/></td>
+      <?php $i = 0; ?>
+      <?php foreach($pending as $lang => $textData): ?>
+        <td <?= ($i == 1) ? 'contenteditable="true"' : '' ?>
+          class="foreign-text" data-rowkey="<?= $rowKey ?>"
+          data-lang="<?= $this->getLanguage() ?>">
+          <?= $textData->translated ?>
+        </td>
+        <?php $i++; ?>
+      <?php endforeach; ?>
+      <td>
+        <a href="<?=
+        $this->baseUri() ?>/approve/<?= $rowKey ?>/<?= $this->getLanguage() ?>"
+           class="btn btn-success">
+          <i class="icon-ok icon-white"></i>
+        </a>
+      </td>
+      <td>
+        <a href="<?=
+        $this->baseUri() . '/delete/' . $rowKey . '/' . $this->getLanguage(
+        ); ?>"
+           title="Delete" class="btn"><i class="icon-trash"></i></a>
+        <a href="<?=
+        $this->baseUri() . '/retranslate/' . $rowKey . '/' . $this->getLanguage(
+        ); ?>"
+           title="Re-Translate" class="btn"><i class="icon-refresh"></i></a>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+</table>

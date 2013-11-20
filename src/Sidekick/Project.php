@@ -23,6 +23,7 @@ use Sidekick\Applications\Phuse\PhuseApp;
 use Sidekick\Applications\PreviewApp\PreviewApp;
 use Sidekick\Applications\Projects\ProjectsApp;
 use Sidekick\Applications\Repository\RepositoryApp;
+use Sidekick\Applications\Rosetta\RosettaApp;
 use Sidekick\Applications\Scripture\ScriptureApp;
 use Sidekick\Applications\SourceCode\SourceCodeApp;
 use Sidekick\Applications\Users\UsersApp;
@@ -45,6 +46,7 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('users', new UsersApp());
     $this->addApplication('events', new EventoApp());
     $this->addApplication('notify', new NotifyApp());
+    $this->addApplication('rosetta', new RosettaApp());
   }
 
   public function getBundles()

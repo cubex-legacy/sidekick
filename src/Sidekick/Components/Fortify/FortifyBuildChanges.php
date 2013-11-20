@@ -49,7 +49,7 @@ class FortifyBuildChanges
 
     return Commit::collectionBetween(
       $this->_commitHash,
-      $lastCommitHash->commitHash
+      idp($lastCommitHash, "commitHash")
     );
   }
 }

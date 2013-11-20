@@ -16,11 +16,4 @@ class PendingTranslation extends RecordMapper
    */
   public $rowKey;
   public $lang;
-  protected $_idType = self::ID_MANUAL;
-
-  public function getIdKey()
-  {
-    return 'row_key';
-  }
-
 }

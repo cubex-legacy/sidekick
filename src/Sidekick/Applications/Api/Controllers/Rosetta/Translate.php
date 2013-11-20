@@ -16,7 +16,11 @@ class Translate extends ApiController
 
   public function renderTranslate()
   {
-    $params = $this->request()->postVariables();
+    //always expect $_POST but fall back to $_GET
+    $params = $this->request()->postVariables(
+      ['text', 'source', 'target'],
+      $this->request()->getVariables()
+    );
 
     if(isset($params['text'], $params['source'], $params['target']))
     {
@@ -47,15 +51,18 @@ class Translate extends ApiController
         );
 
         $this->_saveTranslation($key, $translatedText, $targetLang, $projectId);
-
-        $pendingTranslation         = new PendingTranslation();
-        $pendingTranslation->rowKey = $key;
-        $pendingTranslation->lang   = $targetLang;
-        $pendingTranslation->saveChanges();
       }
       else
       {
         $translatedText = json_decode(current($data))->translated;
+      }
+
+      if(!count($data) || !json_decode(current($data))->approved)
+      {
+        $pendingTranslation         = new PendingTranslation();
+        $pendingTranslation->rowKey = $key;
+        $pendingTranslation->lang   = $targetLang;
+        $pendingTranslation->saveChanges();
       }
 
       return ['text' => $translatedText];

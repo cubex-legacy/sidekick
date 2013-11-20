@@ -13,6 +13,7 @@ class ApiApp extends BaseApp
   {
     return [
       'fortify/builds/(.*)' => 'Fortify\Builds',
+      'rosetta/(.*)'        => 'Rosetta\Translate',
     ];
   }
 

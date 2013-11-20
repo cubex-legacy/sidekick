@@ -26,11 +26,7 @@ class ApiController extends BaseController
         ]
       ];
 
-      //build response and return key in plain text
-      $response = new Response(json_encode($return));
-      $response->addHeader('Content-Type', 'text/json');
-
-      return $response;
+      return $response->fromJson($return);
     }
   }
 }

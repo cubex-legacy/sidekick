@@ -26,8 +26,8 @@ class BuildLogView extends TemplatedViewModel
       $obj                = new \stdClass();
       $obj->command       = $command;
       $obj->passed        = $passed;
-      $obj->exitCode      = $commandRun['exit_code'];
-      $obj->startTime     = $commandRun['start_time'];
+      $obj->exitCode      = idx($commandRun, 'exit_code');
+      $obj->startTime     = idx($commandRun, 'start_time');
       $obj->commandOutput = $commandOutput;
       $obj->argsLine      = '';
       if(is_array($command->args))

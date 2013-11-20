@@ -359,7 +359,7 @@ class FortifyController extends BaseControl
         $commandOutput = BuildLog::cf()->getSlice(
           "$runId-$c",
           'output:0',
-          '',
+          'output:z',
           false,
           1000
         );

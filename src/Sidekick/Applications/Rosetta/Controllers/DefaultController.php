@@ -47,10 +47,15 @@ class DefaultController extends BaseControl
     $pendingTranslation->setLimit(0, 1);
     $mostPopular = $pendingTranslation->first();
 
-    $lang                = $this->request()->getVariables(
-      'lang',
-      $mostPopular->lang
-    );
+    $lang = $this->request()->getVariables('lang', '');
+    if($mostPopular)
+    {
+      $lang = $this->request()->getVariables(
+        'lang',
+        $mostPopular->lang
+      );
+    }
+
     $pendingTranslations = PendingTranslation::collection(
       ['lang' => $lang]
     );
@@ -142,7 +147,6 @@ class DefaultController extends BaseControl
     {
       $pendingTranslation->delete();
     }
-
   }
 
   private function _deleteTranslation($rowKey, $lang)

@@ -55,10 +55,12 @@ class LanguageCodes
    * @param string $code
    *
    * @return string
+   *
    */
   public static function getLanguageFromCode($code)
   {
-    return self::$_languageCodes[$code];
+    return isset(self::$_languageCodes[$code]) ?
+      self::$_languageCodes[$code] : 'Unknown';
   }
 
   public static function getAllLanguages()

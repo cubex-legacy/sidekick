@@ -1,0 +1,61 @@
+<?php
+/**
+ * @author oke.ugwu
+ * @var $this \Sidekick\Applications\Rosetta\Views\Translations
+ */
+
+use \Sidekick\Components\Rosetta\Helpers\LanguageCodes;
+?>
+<h1>Pending Translations Requiring Approval</h1>
+<blockquote>
+  <h4>English Version: "<?= $this->getEnglish()->translated ?>"</h4>
+</blockquote>
+<div class="clearfix"></div>
+<button class="btn btn-success approve-selected" disabled="disabled">
+  Approve Selected
+</button>
+<a href="<?=
+$this->baseUri(
+) . '/delete/' . $this->getRowkey(); ?>"
+   title="Delete" class="btn btn-danger">
+  <i class="icon-trash"></i> Delete All</a>
+<div style="margin-top:5px;"></div>
+<table class="table table-bordered table-hover">
+  <tr>
+    <th><input type="checkbox" class="select-all"/></th>
+    <th>Translation</th>
+    <th>Language</th>
+    <th>Approve</th>
+    <th></th>
+  </tr>
+  <?php foreach($this->getTranslations() as $pending): ?>
+    <?php if($pending->lang == 'en') continue; ?>
+    <tr>
+      <td><input type="checkbox" class="text-selecter"
+                 data-rowkey="<?= $this->getRowkey() ?>"
+                 data-lang="<?= $pending->lang ?>"/></td>
+      <td contenteditable="true"
+          class="foreign-text" data-rowkey="<?= $this->getRowkey() ?>"
+          data-lang="<?= $pending->lang ?>">
+        <?= $pending->translated ?>
+      </td>
+      <td>
+        <?= LanguageCodes::getLanguageFromCode($pending->lang) ?>
+      </td>
+      <td>
+        <a href="<?=
+        $this->baseUri(
+        ) ?>/approve/<?= $this->getRowkey() ?>/<?= $pending->lang ?>"
+           class="btn btn-success">
+          <i class="icon-ok icon-white"></i>
+        </a>
+      </td>
+      <td>
+        <a href="<?=
+        $this->baseUri(
+        ) . '/retranslate/' . $this->getRowkey() . '/' . $pending->lang; ?>"
+           title="Re-Translate" class="btn"><i class="icon-refresh"></i></a>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+</table>

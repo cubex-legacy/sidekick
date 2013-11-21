@@ -8,8 +8,10 @@ namespace Sidekick\Applications\Rosetta\Controllers;
 use Cubex\Facade\Auth;
 use Cubex\Facade\Redirect;
 use Cubex\Core\Http\Response;
+use Cubex\View\Templates\Errors\Error404;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\Rosetta\Views\RosettaIndex;
+use Sidekick\Applications\Rosetta\Views\Translations;
 use Sidekick\Components\Rosetta\Helpers\TranslatorHelper;
 use Sidekick\Components\Rosetta\Mappers\PendingTranslation;
 use Sidekick\Components\Rosetta\Mappers\Translation;
@@ -27,8 +29,32 @@ class DefaultController extends BaseControl
   public function renderIndex()
   {
     $this->requireJs('editing');
-    $lang = $this->request()->getVariables('lang', 'de');
-    return new RosettaIndex($lang);
+
+    //determine which language to pre select. This is based on the language
+    //with the most translation entries
+    /**
+     * SELECT lang
+     * FROM PendingTranslations
+     * GROUP BY lang
+     * ORDER BY COUNT(*) DESC
+     * LIMIT 1
+     */
+
+    $pendingTranslation = PendingTranslation::collection();
+    $pendingTranslation->setColumns(['lang']);
+    $pendingTranslation->setGroupBy('lang');
+    $pendingTranslation->setOrderBy('COUNT(*)', 'DESC');
+    $pendingTranslation->setLimit(0, 1);
+    $mostPopular = $pendingTranslation->first();
+
+    $lang                = $this->request()->getVariables(
+      'lang',
+      $mostPopular->lang
+    );
+    $pendingTranslations = PendingTranslation::collection(
+      ['lang' => $lang]
+    );
+    return new RosettaIndex($lang, $pendingTranslations);
   }
 
   public function renderApprove()
@@ -36,6 +62,23 @@ class DefaultController extends BaseControl
     $rowKey = $this->getStr('rowKey');
     $lang   = $this->getStr('lang');
 
+    $this->_approve($rowKey, $lang);
+
+    Redirect::to($this->baseUri() . '?lang=' . $lang)->now();
+  }
+
+  public function ajaxApprove()
+  {
+    $rowKey = $this->request()->postVariables('rowKey');
+    $lang   = $this->request()->postVariables('lang');
+
+    $this->_approve($rowKey, $lang);
+
+    return ['approved' => true];
+  }
+
+  private function _approve($rowKey, $lang)
+  {
     //update translation in cassandra
     $translationCf = Translation::cf();
     $data          = $translationCf->get($rowKey, ['lang:' . $lang]);
@@ -55,8 +98,6 @@ class DefaultController extends BaseControl
     //delete from pendingTranslations
     $pendingTranslation = new PendingTranslation([$rowKey, $lang]);
     $pendingTranslation->delete();
-
-    Redirect::to($this->baseUri() . '?lang=' . $lang)->now();
   }
 
   public function renderRetranslate()
@@ -83,9 +124,25 @@ class DefaultController extends BaseControl
   public function renderDelete()
   {
     $rowKey = $this->getStr('rowKey');
-    $lang   = $this->getStr('lang');
-    $this->_deleteTranslation($rowKey, $lang);
-    Redirect::to($this->baseUri() . '?lang=' . $lang)->now();
+    $this->_deleteAllTranslation($rowKey);
+    Redirect::to($this->baseUri())->now();
+  }
+
+  private function _deleteAllTranslation($rowKey)
+  {
+    //update translation in cassandra
+    $translationCf = Translation::cf();
+    $translationCf->remove($rowKey);
+
+    //delete from pendingTranslations
+    $pendingTranslations = PendingTranslation::collection(
+      ['row_key' => $rowKey]
+    );
+    foreach($pendingTranslations as $pendingTranslation)
+    {
+      $pendingTranslation->delete();
+    }
+
   }
 
   private function _deleteTranslation($rowKey, $lang)
@@ -118,9 +175,7 @@ class DefaultController extends BaseControl
       ["lang:$lang" => $columnValue]
     );
 
-    print_r($text);
-
-    exit(1);
+    return ['updated' => true];
   }
 
   public function renderSearch()
@@ -129,13 +184,27 @@ class DefaultController extends BaseControl
     //TODO: implement once elastic search is ready
   }
 
+  public function renderTranslations()
+  {
+    $this->requireJs('editing');
+    $rowKey       = $this->getStr('rowKey');
+    $translations = new Translation($rowKey);
+    if($translations->exists())
+    {
+      return new Translations($rowKey, $translations);
+    }
+    return new Error404();
+  }
+
   public function getRoutes()
   {
     return [
       '/'                          => 'index',
+      '/approve'                   => 'approve',
       '/approve/:rowKey/:lang'     => 'approve',
-      '/delete/:rowKey/:lang'      => 'delete',
       '/retranslate/:rowKey/:lang' => 'retranslate',
+      '/delete/:rowKey'            => 'delete',
+      '/translations/:rowKey'      => 'translations',
       '/search/'                   => 'search',
       '/search/:term/'             => 'search',
       '/edit/'                     => 'edit',

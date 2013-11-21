@@ -34,44 +34,46 @@
 </form>
 <h2 class="pull-left-">Pending Translations Requiring Approval</h2>
 <div class="clearfix"></div>
-<button class="btn btn-success">Approve Selected</button>
+<button class="btn btn-success approve-selected" disabled="disabled">Approve
+                                                                     Selected
+</button>
 <div style="margin-top:5px;"></div>
-<table class="table table-bordered">
+<table class="table table-bordered table-hover">
   <tr>
-    <th><input type="checkbox"/></th>
+    <th><input type="checkbox" class="select-all"/></th>
     <?php foreach($this->getSelectedLanguages() as $language): ?>
       <th><?= $language ?></th>
     <?php endforeach; ?>
     <th>Approve</th>
     <th></th>
   </tr>
-  <?php foreach($this->getPendingTranslations() as $rowKey => $pending): ?>
+  <?php foreach($this->getPendingTranslations() as $pending): ?>
     <tr>
-      <td><input type="checkbox"/></td>
-      <?php $i = 0; ?>
-      <?php foreach($pending as $lang => $textData): ?>
-        <td <?= ($i == 1) ? 'contenteditable="true"' : '' ?>
-          class="foreign-text" data-rowkey="<?= $rowKey ?>"
-          data-lang="<?= $this->getLanguage() ?>">
-          <?= $textData->translated ?>
-        </td>
-        <?php $i++; ?>
-      <?php endforeach; ?>
+      <td><input type="checkbox" class="text-selecter"
+                 data-rowkey="<?= $pending->rowKey ?>"
+                 data-lang="<?= $pending->lang ?>"/></td>
+      <td>
+        <a href="<?= $this->baseUri() ?>/translations/<?= $pending->rowKey ?>">
+          <?= $pending->english ?>
+        </a>
+      </td>
+      <td contenteditable="true"
+          class="foreign-text" data-rowkey="<?= $pending->rowKey ?>"
+          data-lang="<?= $pending->lang ?>">
+        <?= $pending->translation ?>
+      </td>
       <td>
         <a href="<?=
-        $this->baseUri() ?>/approve/<?= $rowKey ?>/<?= $this->getLanguage() ?>"
+        $this->baseUri(
+        ) ?>/approve/<?= $pending->rowKey ?>/<?= $pending->lang ?>"
            class="btn btn-success">
           <i class="icon-ok icon-white"></i>
         </a>
       </td>
       <td>
         <a href="<?=
-        $this->baseUri() . '/delete/' . $rowKey . '/' . $this->getLanguage(
-        ); ?>"
-           title="Delete" class="btn"><i class="icon-trash"></i></a>
-        <a href="<?=
-        $this->baseUri() . '/retranslate/' . $rowKey . '/' . $this->getLanguage(
-        ); ?>"
+        $this->baseUri(
+        ) . '/retranslate/' . $pending->rowKey . '/' . $pending->lang; ?>"
            title="Re-Translate" class="btn"><i class="icon-refresh"></i></a>
       </td>
     </tr>

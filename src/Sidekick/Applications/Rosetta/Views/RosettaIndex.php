@@ -13,10 +13,12 @@ use Sidekick\Components\Rosetta\Mappers\Translation;
 class RosettaIndex extends TemplatedViewModel
 {
   protected $language;
+  protected $_pendingTranslations;
 
-  public function __construct($language)
+  public function __construct($language, $pendingTranslations)
   {
-    $this->_language = $language;
+    $this->_language            = $language;
+    $this->_pendingTranslations = $pendingTranslations;
   }
 
   /**
@@ -24,25 +26,27 @@ class RosettaIndex extends TemplatedViewModel
    */
   public function getPendingTranslations()
   {
-    $result              = [];
-    $pendingTranslations = PendingTranslation::collection(
-      ['lang' => $this->_language]
-    );
-    foreach($pendingTranslations as $pending)
+    $result = [];
+    foreach($this->_pendingTranslations as $pending)
     {
       $translationCf  = Translation::cf();
+      $englishData    = $translationCf->get($pending->rowKey, ['lang:en']);
       $translatedData = $translationCf->get(
         $pending->rowKey,
         ['lang:' . $pending->lang]
       );
-      $englishData    = $translationCf->get($pending->rowKey, ['lang:en']);
 
-      $result[$pending->rowKey]['en']           = json_decode(
-        current($englishData)
-      );
-      $result[$pending->rowKey][$pending->lang] = json_decode(
-        current($translatedData)
-      );
+      if($englishData && $translatedData)
+      {
+        $row = [
+          'rowKey'      => $pending->rowKey,
+          'lang'        => $pending->lang,
+          'english'     => json_decode(current($englishData))->translated,
+          'translation' => json_decode(current($translatedData))->translated
+        ];
+
+        $result[] = (object)$row;
+      }
     }
 
     return $result;

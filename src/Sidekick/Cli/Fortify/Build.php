@@ -170,7 +170,6 @@ class Build extends CliCommand
       $buildRun->endTime  = new \DateTime();
       $buildRun->saveChanges();
 
-      Log::debug("Running command ID $commandId");
       $pass = $this->_runCommand($commandId);
       Log::debug("Command $commandId " . ($pass ? 'passed' : 'failed'));
       if(!$pass)
@@ -213,6 +212,8 @@ class Build extends CliCommand
     $lineSplitter = $this->_lineSplit;
     $this->_testsRun++;
     $command = new Command($commandId);
+
+    Log::info("Running " . $command->name . " ($commandId)");
 
     echo "\n\n$lineSplitter\n";
     echo " Running " . $command->name;

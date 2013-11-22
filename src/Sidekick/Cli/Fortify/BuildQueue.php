@@ -89,18 +89,27 @@ class BuildQueue extends CliCommand
       Log::debug("Executing: $command");
 
       $process = new Process($command);
-      if($this->verbose)
+      $process->setTimeout(600);
+      $process->setIdleTimeout(120);
+      try
       {
-        $process->run(
-          function ($type, $buffer)
-          {
-            echo $buffer;
-          }
-        );
+        if($this->verbose)
+        {
+          $process->run(
+            function ($type, $buffer)
+            {
+              Log::debug($buffer);
+            }
+          );
+        }
+        else
+        {
+          $process->run();
+        }
       }
-      else
+      catch(\Exception $e)
       {
-        $process->run();
+        Log::error($e->getMessage());
       }
 
       Log::debug("Executed Build (Exit Code: " . $process->getExitCode() . ")");

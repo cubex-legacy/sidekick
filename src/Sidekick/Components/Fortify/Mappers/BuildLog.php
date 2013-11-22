@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Fortify\Mappers;
 
 use Cubex\Cassandra\CassandraMapper;
+use Cubex\Log\Log;
 
 class BuildLog extends CassandraMapper
 {
@@ -42,7 +43,7 @@ class BuildLog extends CassandraMapper
 
     if($this->isOutputEnabled())
     {
-      echo $buffer;
+      Log::debug($type . " - " . $buffer);
     }
 
     return $this;

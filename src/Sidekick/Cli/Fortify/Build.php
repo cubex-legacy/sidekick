@@ -12,6 +12,7 @@ use Cubex\Helpers\DependencyArray;
 use Cubex\Helpers\Strings;
 use Cubex\Helpers\System;
 use Cubex\Log\Debug;
+use Cubex\Log\Log;
 use Sidekick\Components\Fortify\Enums\BuildResult;
 use Sidekick\Components\Fortify\Enums\FileSet;
 use Sidekick\Components\Fortify\FortifyBuildChanges;
@@ -109,13 +110,10 @@ class Build extends CliCommand
       pcntl_signal(SIGHUP, array($buildRun, "exited"));
     }
 
-    echo Shell::colourText(
-      "\n" .
-      "Starting Build for: " . $project->name . " (" . $build->name . ")\n" .
-      "Build ID: " . $this->_buildRunId .
-      "\n",
-      Shell::COLOUR_FOREGROUND_LIGHT_BLUE
+    Log::notice(
+      "Starting Build for: " . $project->name . " (" . $build->name . ")"
     );
+    Log::notice("Build ID: " . $this->_buildRunId);
 
     $buildPath = FortifyHelper::buildPath($buildRun->id());
     mkdir($buildPath, 0777, true);
@@ -131,7 +129,6 @@ class Build extends CliCommand
     $this->_branch = $buildSource->branch;
     $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
 
-    echo "Getting Build Repo Hash\n";
     chdir($this->_buildSourceDir);
     $process = new Process("git rev-parse --verify HEAD");
     $process->setTimeout($this->timeout);
@@ -165,7 +162,10 @@ class Build extends CliCommand
       $buildRun->commands = array_merge($buildRun->commands, [$commandId]);
       $buildRun->endTime  = new \DateTime();
       $buildRun->saveChanges();
+
+      Log::debug("Running command ID $commandId");
       $pass = $this->_runCommand($commandId);
+      Log::debug("Command $commandId " . ($pass ? 'passed' : 'failed'));
       if(!$pass)
       {
         break;
@@ -354,8 +354,12 @@ class Build extends CliCommand
           }
 
           $process->setTimeout($this->timeout);
+          Log::debug(
+            "Running (with timeout $this->timeout) $runCommand . ' ' . $file"
+          );
           $process->run([$log, 'writeBuffer']);
           $exitCode = $process->getExitCode();
+          Log::debug("Command finished with exit code $exitCode");
           if($exitCode > $returnExitCode)
           {
             $returnExitCode = $exitCode;
@@ -375,7 +379,9 @@ class Build extends CliCommand
       $process = new Process($runCommand);
       $process->setTimeout($this->timeout);
       echo "\nRunning: " . $runCommand . "\n";
+      Log::debug("Running (with timeout $this->timeout) $runCommand");
       $process->run([$log, 'writeBuffer']);
+      Log::debug("Command finished with exit code " . $process->getExitCode());
       return $process->getExitCode();
     }
   }

@@ -21,17 +21,18 @@
 </div>-->
 
 
-<form method="get" action="<?= $this->baseUri() ?>" class="pull-right">
+<div class="pull-right">
   <label for="">Select Language: </label>
-  <select name="lang" id="" onchange="form.submit();">
+  <select name="lang" id="" onchange="window.location.href='<?= $this->baseUri(
+  ) ?>/'+$(this).val()">
     <option value="">--SELECT--</option>
-    <?php foreach($this->getAllLanguages() as $code => $language): ?>
+    <?php foreach($this->getLanguageOptions() as $code => $language): ?>
       <option value="<?= $code ?>" <?=
       ($code == $this->getLanguage(
         )) ? 'selected="selected"' : '' ?>><?= $language ?></option>
     <?php endforeach; ?>
   </select>
-</form>
+</div>
 <h2 class="pull-left-">Pending Translations Requiring Approval</h2>
 <div class="clearfix"></div>
 <button class="btn btn-success approve-selected" disabled="disabled">Approve
@@ -45,7 +46,6 @@
       <th><?= $language ?></th>
     <?php endforeach; ?>
     <th>Approve</th>
-    <th></th>
   </tr>
   <?php foreach($this->getPendingTranslations() as $pending): ?>
     <tr>
@@ -69,12 +69,6 @@
            class="btn btn-success">
           <i class="icon-ok icon-white"></i>
         </a>
-      </td>
-      <td>
-        <a href="<?=
-        $this->baseUri(
-        ) . '/retranslate/' . $pending->rowKey . '/' . $pending->lang; ?>"
-           title="Re-Translate" class="btn"><i class="icon-refresh"></i></a>
       </td>
     </tr>
   <?php endforeach; ?>

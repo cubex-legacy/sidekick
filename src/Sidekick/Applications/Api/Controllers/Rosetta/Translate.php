@@ -18,7 +18,7 @@ class Translate extends ApiController
   {
     //always expect $_POST but fall back to $_GET
     $params = $this->request()->postVariables(
-      ['text', 'source', 'target'],
+      ['text', 'source', 'target', 'projectId'],
       $this->request()->getVariables()
     );
 
@@ -67,9 +67,10 @@ class Translate extends ApiController
 
       if(!count($data) || !json_decode(current($data))->approved)
       {
-        $pendingTranslation         = new PendingTranslation();
-        $pendingTranslation->rowKey = $key;
-        $pendingTranslation->lang   = $targetLang;
+        $pendingTranslation            = new PendingTranslation();
+        $pendingTranslation->rowKey    = $key;
+        $pendingTranslation->lang      = $targetLang;
+        $pendingTranslation->projectId = $projectId;
         $pendingTranslation->saveChanges();
       }
 

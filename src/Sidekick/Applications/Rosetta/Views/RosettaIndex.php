@@ -14,11 +14,15 @@ class RosettaIndex extends TemplatedViewModel
 {
   protected $language;
   protected $_pendingTranslations;
+  protected $_availableLanguages;
 
-  public function __construct($language, $pendingTranslations)
+  public function __construct(
+    $language, $pendingTranslations, $availableLanguages
+  )
   {
     $this->_language            = $language;
     $this->_pendingTranslations = $pendingTranslations;
+    $this->_availableLanguages  = $availableLanguages;
   }
 
   /**
@@ -60,9 +64,9 @@ class RosettaIndex extends TemplatedViewModel
     ];
   }
 
-  public function getAllLanguages()
+  public function getLanguageOptions()
   {
-    return LanguageCodes::getAllLanguages();
+    return LanguageCodes::getLanguageOptions($this->_availableLanguages);
   }
 
   public function getLanguage()

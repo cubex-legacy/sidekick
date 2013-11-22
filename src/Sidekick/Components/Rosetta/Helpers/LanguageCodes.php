@@ -63,6 +63,11 @@ class LanguageCodes
       self::$_languageCodes[$code] : 'Unknown';
   }
 
+  public static function getLanguageOptions($options)
+  {
+    return array_intersect_key(self::$_languageCodes, array_flip($options));
+  }
+
   public static function getAllLanguages()
   {
     return self::$_languageCodes;

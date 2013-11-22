@@ -16,11 +16,12 @@ class PendingTranslation extends RecordMapper
    */
   public $rowKey;
   public $lang;
+  public $projectId;
 
   protected $_idType = self::ID_COMPOSITE;
 
   protected function _configure()
   {
-    $this->_addCompositeAttribute("id", ["row_key", "lang"]);
+    $this->_addCompositeAttribute("id", ["row_key", "lang", "project_id"]);
   }
 }

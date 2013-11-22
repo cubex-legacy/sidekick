@@ -8,10 +8,12 @@ namespace Sidekick\Applications\Rosetta\Controllers;
 use Cubex\Facade\Auth;
 use Cubex\Facade\Redirect;
 use Cubex\Core\Http\Response;
+use Cubex\View\RenderGroup;
 use Cubex\View\Templates\Errors\Error404;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\Rosetta\Views\RosettaIndex;
 use Sidekick\Applications\Rosetta\Views\Translations;
+use Sidekick\Components\Helpers\Paginator;
 use Sidekick\Components\Rosetta\Helpers\TranslatorHelper;
 use Sidekick\Components\Rosetta\Mappers\PendingTranslation;
 use Sidekick\Components\Rosetta\Mappers\Translation;
@@ -19,6 +21,7 @@ use Sidekick\Components\Rosetta\Mappers\Translation;
 class DefaultController extends BaseControl
 {
   protected $_titlePrefix = 'Rosetta';
+  private $_lang;
 
   public function preRender()
   {
@@ -47,19 +50,47 @@ class DefaultController extends BaseControl
     $pendingTranslation->setLimit(0, 1);
     $mostPopular = $pendingTranslation->first();
 
-    $lang = $this->request()->getVariables('lang', '');
-    if($mostPopular)
+    $this->_lang = $this->getStr('lang', '');
+    if($this->_lang == '' && $mostPopular)
     {
-      $lang = $this->request()->getVariables(
+      $this->_lang = $this->request()->getVariables(
         'lang',
         $mostPopular->lang
       );
     }
 
     $pendingTranslations = PendingTranslation::collection(
-      ['lang' => $lang]
+      ['lang' => $this->_lang]
     );
-    return new RosettaIndex($lang, $pendingTranslations);
+
+    $getLanguages           = clone $pendingTranslations;
+    $availableLanguageCodes = $getLanguages->getUniqueField('lang');
+
+    $page      = $this->getInt('page', 1);
+    $perPage   = 100;
+    $count     = $pendingTranslations->count();
+    $baseUri   = $this->baseUri() . '/' . $this->_lang . '/page/';
+    $paginator = $this->_getPaginator($page, $count, $perPage, $baseUri);
+    $pendingTranslations->setLimit($paginator->getOffset(), $perPage);
+
+    return new RenderGroup(
+      $this->createView(
+        new RosettaIndex(
+          $this->_lang, $pendingTranslations, $availableLanguageCodes
+        )
+      ),
+      $paginator->getPager()
+    );
+  }
+
+  private function _getPaginator($pageNumber, $count, $perPage, $baseUri)
+  {
+    $paginator = new Paginator();
+    $paginator->setNumResults($count);
+    $paginator->setNumResultsPerPage($perPage);
+    $paginator->setPage($pageNumber);
+    $paginator->setUri($baseUri);
+    return $paginator;
   }
 
   public function renderApprove()
@@ -69,7 +100,7 @@ class DefaultController extends BaseControl
 
     $this->_approve($rowKey, $lang);
 
-    Redirect::to($this->baseUri() . '?lang=' . $lang)->now();
+    Redirect::to($this->baseUri() . '/' . $lang)->now();
   }
 
   public function ajaxApprove()
@@ -101,8 +132,13 @@ class DefaultController extends BaseControl
     );
 
     //delete from pendingTranslations
-    $pendingTranslation = new PendingTranslation([$rowKey, $lang]);
-    $pendingTranslation->delete();
+    $pendingTranslations = PendingTranslation::collection(
+      ['row_key' => $rowKey, 'lang' => $lang]
+    );
+    foreach($pendingTranslations as $pendingTranslation)
+    {
+      $pendingTranslation->delete();
+    }
   }
 
   public function renderRetranslate()
@@ -124,6 +160,8 @@ class DefaultController extends BaseControl
       $translatedText,
       $lang
     );
+
+    Redirect::to($this->baseUri() . '/translations/' . $rowKey)->now();
   }
 
   public function renderDelete()
@@ -203,7 +241,8 @@ class DefaultController extends BaseControl
   public function getRoutes()
   {
     return [
-      '/'                          => 'index',
+      '/:lang'                     => 'index',
+      '/:lang/page/:page'          => 'index',
       '/approve'                   => 'approve',
       '/approve/:rowKey/:lang'     => 'approve',
       '/retranslate/:rowKey/:lang' => 'retranslate',

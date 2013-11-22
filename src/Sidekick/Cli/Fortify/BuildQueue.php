@@ -90,7 +90,6 @@ class BuildQueue extends CliCommand
 
       $process = new Process($command);
       $process->setTimeout(600);
-      $process->setIdleTimeout(120);
       try
       {
         if($this->verbose)

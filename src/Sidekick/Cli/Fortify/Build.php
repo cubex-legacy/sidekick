@@ -63,7 +63,7 @@ class Build extends CliCommand
    * Number of seconds before a single process will timeout
    * @valuerequired
    */
-  public $timeout = 120;
+  public $timeout = 300;
 
   protected $_buildRunId;
   protected $_buildResult;
@@ -357,7 +357,16 @@ class Build extends CliCommand
           Log::debug(
             "Running (with timeout $this->timeout) $runCommand . ' ' . $file"
           );
-          $process->run([$log, 'writeBuffer']);
+          try
+          {
+            $process->run([$log, 'writeBuffer']);
+          }
+          catch(\Exception $e)
+          {
+            Log::error(
+              "Command Exception (" . $e->getCode() . ') ' . $e->getMessage()
+            );
+          }
           $exitCode = $process->getExitCode();
           Log::debug("Command finished with exit code $exitCode");
           if($exitCode > $returnExitCode)
@@ -380,7 +389,16 @@ class Build extends CliCommand
       $process->setTimeout($this->timeout);
       echo "\nRunning: " . $runCommand . "\n";
       Log::debug("Running (with timeout $this->timeout) $runCommand");
-      $process->run([$log, 'writeBuffer']);
+      try
+      {
+        $process->run([$log, 'writeBuffer']);
+      }
+      catch(\Exception $e)
+      {
+        Log::error(
+          "Command Exception (" . $e->getCode() . ') ' . $e->getMessage()
+        );
+      }
       Log::debug("Command finished with exit code " . $process->getExitCode());
       return $process->getExitCode();
     }
@@ -539,7 +557,16 @@ class Build extends CliCommand
       $runCommand = "git apply -v " . $patchPath . ' -p' . $patch->leadingSlashes;
       $process    = new Process($runCommand);
       $process->setTimeout($this->timeout);
-      $process->run([$log, 'writeBuffer']);
+      try
+      {
+        $process->run([$log, 'writeBuffer']);
+      }
+      catch(\Exception $e)
+      {
+        Log::error(
+          "Command Exception (" . $e->getCode() . ') ' . $e->getMessage()
+        );
+      }
       $log->exitCode = $process->getExitCode();
       chdir($cwd);
     }

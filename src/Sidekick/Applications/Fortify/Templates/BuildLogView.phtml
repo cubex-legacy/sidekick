@@ -35,7 +35,7 @@
           <?php foreach($outputLine->lines as $line): ?>
             <div class="line <?= $txtClass ?>">
               [<?= $outputLine->lineTime; ?>]
-              &nbsp;&nbsp;<?= $line ?>
+              &nbsp;&nbsp;<?= $this->linkify($line) ?>
             </div>
           <?php endforeach; ?>
         <?php endif; ?>

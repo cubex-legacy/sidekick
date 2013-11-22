@@ -136,7 +136,7 @@ class FortifyController extends BaseControl
     $build      = new Build($buildId);
     $basePath   = $this->request()->path(4);
     $currentTab = $this->request()->offsetPath(4, 1);
-    $view       = new BuildLogView();
+    $view       = new BuildLogView($runId);
     $view       = $this->_addCommandToView($buildRun->commands, $runId, $view);
 
     $this->requireJs('buildLog');

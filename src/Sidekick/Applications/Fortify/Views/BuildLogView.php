@@ -97,10 +97,17 @@ class BuildLogView extends TemplatedViewModel
   public function linkify($line)
   {
     //support only lines containing paths to .mo & .po
-    if(strpos($line, '.mo:') !== false && strpos($line, '.po:') !== false)
+    if(strpos($line, '.mo:') !== false || strpos($line, '.po:') !== false)
     {
+      $lastColon = strrpos($line, ':');
+      $target    = substr($line, 0, $lastColon);
+      list($path, $startLine) = explode(':', $target, 2);
       $link = "/sourcecode/build/" . $this->_buildRunId . '/';
-      $line = '<a href="' . $link . '">' . $line . '</a>';
+      $link .= substr($path, strpos($path, 'src'));
+      $link .= ';' . $startLine;
+
+      $linkedPath = '<a href="' . $link . '">' . $target . '</a>';
+      $line       = str_replace($target, $linkedPath, $line);
     }
     return $line;
   }

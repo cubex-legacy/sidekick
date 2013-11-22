@@ -31,10 +31,10 @@ class SourceCodeView extends ViewModel
     );
 
     $fileName = basename($this->_sourceFile);
+    $title    = 'Source Code: ' . $fileName;
     if(file_exists($this->_sourceFile))
     {
       //go into snippet mode
-      $title            = 'Source Code: ' . $fileName;
       $offset           = 10;
       $snippetThreshold = 200;
       $fileLines        = file($this->_sourceFile);
@@ -57,7 +57,7 @@ class SourceCodeView extends ViewModel
         $lineToHighlight = ($this->_lineNumber > $offset) ?
           $offset : $lineToHighlight;
 
-        $class    = 'prettyprint lang-scm linenums:' . $startLine;
+        $class = 'prettyprint lang-scm linenums:' . $startLine;
       }
       else
       {

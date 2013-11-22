@@ -65,6 +65,12 @@ class Build extends CliCommand
    */
   public $timeout = 300;
 
+  /**
+   * Number of seconds before a single process will timeout (after no output)
+   * @valuerequired
+   */
+  public $idleTimeout = 120;
+
   protected $_buildRunId;
   protected $_buildResult;
   protected $_buildSourceDir;
@@ -132,6 +138,7 @@ class Build extends CliCommand
     chdir($this->_buildSourceDir);
     $process = new Process("git rev-parse --verify HEAD");
     $process->setTimeout($this->timeout);
+    $process->setIdleTimeout($this->idleTimeout);
     $process->run();
     $this->_commitHash = $buildRun->commitHash = trim($process->getOutput());
     chdir($buildPath);
@@ -354,6 +361,7 @@ class Build extends CliCommand
           }
 
           $process->setTimeout($this->timeout);
+          $process->setIdleTimeout($this->idleTimeout);
           Log::debug(
             "Running (with timeout $this->timeout) $runCommand . ' ' . $file"
           );
@@ -387,6 +395,7 @@ class Build extends CliCommand
     {
       $process = new Process($runCommand);
       $process->setTimeout($this->timeout);
+      $process->setIdleTimeout($this->idleTimeout);
       echo "\nRunning: " . $runCommand . "\n";
       Log::debug("Running (with timeout $this->timeout) $runCommand");
       try
@@ -516,6 +525,7 @@ class Build extends CliCommand
 
         $process = new Process($cloneCommand);
         $process->setTimeout($this->timeout);
+        $process->setIdleTimeout($this->idleTimeout);
         $process->run([$log, 'writeBuffer']);
         $log->exitCode = $process->getExitCode();
         break;
@@ -557,6 +567,7 @@ class Build extends CliCommand
       $runCommand = "git apply -v " . $patchPath . ' -p' . $patch->leadingSlashes;
       $process    = new Process($runCommand);
       $process->setTimeout($this->timeout);
+      $process->setIdleTimeout($this->idleTimeout);
       try
       {
         $process->run([$log, 'writeBuffer']);

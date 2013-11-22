@@ -33,22 +33,51 @@ class SourceCodeView extends ViewModel
     $fileName = basename($this->_sourceFile);
     if(file_exists($this->_sourceFile))
     {
-      $sourceText = htmlentities(file_get_contents($this->_sourceFile));
-      $code       = new HtmlElement(
+      //go into snippet mode
+      $title            = 'Source Code: ' . $fileName;
+      $offset           = 10;
+      $snippetThreshold = 200;
+      $fileLines        = file($this->_sourceFile);
+      $lineToHighlight  = $this->_lineNumber - 1;
+      if(count($fileLines) > $snippetThreshold && $this->_lineNumber)
+      {
+        $title .= ' (Snippet Mode)';
+        $startLine = $this->_lineNumber - $offset;
+        $startLine = ($startLine > 0) ? $startLine : 1;
+
+        $endLine = $this->_lineNumber + $offset;
+        $endLine = ($endLine > 0) ? $endLine : $this->_lineNumber;
+
+        $sourceText = '';
+        for($i = $startLine; $i <= $endLine; $i++)
+        {
+          $sourceText .= $fileLines[$i];
+        }
+
+        $lineToHighlight = ($this->_lineNumber > $offset) ?
+          $offset : $lineToHighlight;
+
+        $class    = 'prettyprint lang-scm linenums:' . $startLine;
+      }
+      else
+      {
+        $sourceText = htmlentities(file_get_contents($this->_sourceFile));
+        //taking into account the zero-based index
+        $class = 'prettyprint lang-scm linenums';
+      }
+
+      $code = new HtmlElement(
         'pre',
-        ['class' => 'prettyprint lang-scm linenums'],
+        ['class' => $class],
         $sourceText
       );
-
-      //taking into account the zero-based index
-      $line = $this->_lineNumber - 1;
 
       $this->addCssBlock(
         'ol.linenums {margin: 0 0 10px 50px;}'
       );
 
       $this->requireJs('main');
-      $this->addJsBlock("var lineNumber = $line;");
+      $this->addJsBlock("var lineNumber = $lineToHighlight;");
     }
     else
     {
@@ -57,7 +86,7 @@ class SourceCodeView extends ViewModel
     }
 
     return new RenderGroup(
-      '<h1>Source Code: ' . $fileName . '</h1>',
+      '<h1>' . $title . '</h1>',
       $code
     );
   }

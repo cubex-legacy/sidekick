@@ -99,16 +99,8 @@ class BuildLogView extends TemplatedViewModel
     //support only lines containing paths to .mo & .po
     if(strpos($line, '.mo:') !== false && strpos($line, '.po:') !== false)
     {
-      $lastColon = strrpos($line, ':');
-      $target    = substr($line, 0, $lastColon);
-      list($path, $startLine) = explode(':', $target, 2);
       $link = "/sourcecode/build/" . $this->_buildRunId . '/';
-      $link .= substr($path, strpos($path, 'src'));
-      $link .= ';' . $startLine;
-
-      $linkedPath = '<a href="' . $link . '">' . $target . '</a>';
-
-      $line = str_replace($path, $linkedPath, $line);
+      $line = '<a href="' . $link . '">' . $line . '</a>';
     }
     return $line;
   }

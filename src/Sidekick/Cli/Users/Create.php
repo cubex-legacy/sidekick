@@ -25,7 +25,7 @@ class Create extends CliCommand
   public function execute()
   {
     $user = User::collection(['username' => $this->username])->first();
-    if($user->exists())
+    if($user !== null && $user->exists())
     {
       $updatePassword = UserPrompt::confirm(
         "$this->username already exists. Do you wish to update password?"

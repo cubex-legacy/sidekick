@@ -11,10 +11,11 @@ Assumptions made:
 Firstly, you are going to need a directory for sidekick to live in.  To keep things simple, we are going to create a sidekick directory in the base "/sidekick".
 Following commands will assume the /sidekick base path, however, you could just as easily work within /var/www/ or /home/username/
 
-cd /sidekick
-git clone https://github.com/qbex/sidekick.git sidekick
-cd sidekick
-composer install
+    cd /sidekick
+    git clone https://github.com/qbex/sidekick.git sidekick
+    cd sidekick
+    composer install
+  
 
 You now need to create your production config to define your connections, an example can be found below.  This will need to be placed in conf/production.ini  (production should be changed to match your CUBEX_ENV defined in your web server configuration)
 
@@ -79,37 +80,39 @@ Other setup requirements
 MySQL Setup
 ==
 
-  CREATE DATABASE sidekick
-  CREATE USER 'sidekick'@'localhost' IDENTIFIED BY 'EnterPasswordHere';
-  GRANT ALL PRIVILEGES ON sidekick.* TO 'sidekick'@'localhost';
-  FLUSH PRIVILEGES;
+    CREATE DATABASE sidekick
+    CREATE USER 'sidekick'@'localhost' IDENTIFIED BY 'EnterPasswordHere';
+    GRANT ALL PRIVILEGES ON sidekick.* TO 'sidekick'@'localhost';
+    FLUSH PRIVILEGES;
 
 
 Monit Config
 ==
 
-check process repositoryUpdate
-  with pidfile "/var/run/cubex/Repository.Update:longRun.pid"
-    start program "/bin/bash -c '/sidekick/sidekick/bin/repeat /sidekick/sidekick/bin/cubex --cubex-env=production Repository.Update:longRun -r all -v'" as uid sidekick
-    stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Repository.Update:longRun" as uid sidekick
+    check process repositoryUpdate
+      with pidfile "/var/run/cubex/Repository.Update:longRun.pid"
+        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat /sidekick/sidekick/bin/cubex --cubex-env=production Repository.Update:longRun -r all -v'" as uid sidekick
+        stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Repository.Update:longRun" as uid sidekick
 
-check process buildQueue
-  with pidfile "/var/run/cubex/Fortify.BuildQueue.pid"
-    start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Fortify.BuildQueue'" as uid sidekick
-    stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Fortify.BuildQueue" as uid sidekick
 
-check process deployQueue
-  with pidfile "/var/run/cubex/Diffuse.DeployQueue.pid"
-    start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Diffuse.DeployQueue'" as uid sidekick
-    stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Diffuse.DeployQueue" as uid sidekick
+    check process buildQueue
+      with pidfile "/var/run/cubex/Fortify.BuildQueue.pid"
+        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Fortify.BuildQueue'" as uid sidekick
+        stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Fortify.BuildQueue" as uid sidekick
+
+    check process deployQueue
+      with pidfile "/var/run/cubex/Diffuse.DeployQueue.pid"
+        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Diffuse.DeployQueue'" as uid sidekick
+        stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Diffuse.DeployQueue" as uid sidekick
 
 
 Recommended Tools
 ==
-pear config-set auto_discover 1
-pear install pear.phpqatools.org/phpqatools
+
+    pear config-set auto_discover 1
+    pear install pear.phpqatools.org/phpqatools
 
 
-Import the Cubex Code Standards onto your own system
+Import the Cubex Code Standards
 ==
-git clone https://github.com/qbex/CubexCodeStandards.git /usr/share/php/PHP/CodeSniffer/Standards/CubexCodeStandards
+    git clone https://github.com/qbex/CubexCodeStandards.git /usr/share/php/PHP/CodeSniffer/Standards/CubexCodeStandards

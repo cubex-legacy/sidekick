@@ -26,13 +26,13 @@ class FortifyBuildCommandsController extends FortifyController
     $postData = $this->request()->postVariables();
 
     $buildCommand               = new BuildsCommands();
-    $buildCommand->commandId    = $postData['commandId'];
-    $buildCommand->buildId      = $postData['buildId'];
-    $buildCommand->dependencies = $postData['dependencies'];
+    $buildCommand->commandId    = idx($postData, 'commandId');
+    $buildCommand->buildId      = idx($postData, 'buildId');
+    $buildCommand->dependencies = idx($postData, 'dependencies', []);
     $buildCommand->saveChanges();
 
     //add dependencies to build commands
-    foreach($postData['dependencies'] as $depCommandId)
+    foreach($buildCommand->dependencies as $depCommandId)
     {
       $depBuildCommand            = new BuildsCommands();
       $depBuildCommand->commandId = $depCommandId;

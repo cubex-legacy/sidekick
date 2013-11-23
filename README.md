@@ -15,7 +15,7 @@ Following commands will assume the /sidekick base path, however, you could just 
     git clone https://github.com/qbex/sidekick.git sidekick
     cd sidekick
     composer install
-  
+
 
 You now need to create your production config to define your connections, an example can be found below.  This will need to be placed in conf/production.ini  (production should be changed to match your CUBEX_ENV defined in your web server configuration)
 
@@ -91,19 +91,19 @@ Monit Config
 
     check process repositoryUpdate
       with pidfile "/var/run/cubex/Repository.Update:longRun.pid"
-        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat /sidekick/sidekick/bin/cubex --cubex-env=production Repository.Update:longRun -r all -v'" as uid sidekick
+        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat /sidekick/sidekick/bin/cubex --cubex-env=production Repository.Update:longRun -r all -v --log-level=debug'" as uid sidekick
         stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Repository.Update:longRun" as uid sidekick
-
 
     check process buildQueue
       with pidfile "/var/run/cubex/Fortify.BuildQueue.pid"
-        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Fortify.BuildQueue'" as uid sidekick
-        stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Fortify.BuildQueue" as uid sidekick
+        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat /sidekick/sidekick/bin/cubex --cubex-env=production Fortify.BuildQueue --log-level=debug'" as uid sidekick
+        stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Repository.Update:longRun" as uid sidekick
 
     check process deployQueue
       with pidfile "/var/run/cubex/Diffuse.DeployQueue.pid"
-        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Diffuse.DeployQueue'" as uid sidekick
+        start program "/bin/bash -c '/sidekick/sidekick/bin/repeat  /sidekick/sidekick/bin/cubex --cubex-env=production Diffuse.DeployQueue --log-level=debug'" as uid sidekick
         stop program "/sidekick/sidekick/vendor/bin/kill-cubex-script.sh Diffuse.DeployQueue" as uid sidekick
+
 
 
 Recommended Tools

@@ -57,7 +57,7 @@ class DefaultController extends UsersController
 
   public function postUpdate()
   {
-    $user = new User($this->request()->postVariables("userId", 0));
+    $user = new User($this->request()->postVariables("id", 0));
     if($user->exists())
     {
       $existingPassword = $user->password;

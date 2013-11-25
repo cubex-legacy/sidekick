@@ -57,23 +57,33 @@ class DefaultController extends UsersController
 
   public function postUpdate()
   {
-    $user             = new User();
-    $existingPassword = $user->password;
-    $user->hydrate($this->request()->postVariables());
-    if($this->postVariables("password") !== '')
+    $user = new User($this->request()->postVariables("userId", 0));
+    if($user->exists())
     {
-      $user->password = password_hash($user->password, PASSWORD_DEFAULT);
+      $existingPassword = $user->password;
+      $user->hydrate($this->request()->postVariables());
+      if($this->postVariables("password") !== '')
+      {
+        $user->password = password_hash($user->password, PASSWORD_DEFAULT);
+      }
+      else
+      {
+        $user->password = $existingPassword;
+      }
+      $user->saveChanges();
+
+      $msg       = new \stdClass();
+      $msg->type = 'success';
+      $msg->text = 'User was successfully updated';
+      Redirect::to('/users')->with('msg', $msg)->now();
     }
     else
     {
-      $user->password = $existingPassword;
+      $msg       = new \stdClass();
+      $msg->type = 'error';
+      $msg->text = 'Something went wrong :s';
+      Redirect::to('/users')->with('msg', $msg)->now();
     }
-    $user->saveChanges();
-
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'User was successfully updated';
-    Redirect::to('/users')->with('msg', $msg)->now();
   }
 
   public function renderDelete()

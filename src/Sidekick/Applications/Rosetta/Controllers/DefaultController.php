@@ -78,7 +78,9 @@ class DefaultController extends BaseControl
       ['lang' => $this->_lang, 'project_id' => $projectId]
     );
 
-    $getLanguages           = clone $pendingTranslations;
+    $getLanguages           = PendingTranslation::collection(
+      ['project_id' => $projectId]
+    );
     $availableLanguageCodes = $getLanguages->getUniqueField('lang');
 
     $page      = $this->getInt('page', 1);
@@ -89,14 +91,51 @@ class DefaultController extends BaseControl
     $paginator = $this->_getPaginator($page, $count, $perPage, $baseUri);
     $pendingTranslations->setLimit($paginator->getOffset(), $perPage);
 
+    $pendingTranslationsData = $this->_pendingTranslationsData(
+      $pendingTranslations
+    );
+
     return new RenderGroup(
       $this->createView(
         new RosettaIndex(
-          $projectId, $this->_lang, $pendingTranslations, $availableLanguageCodes
+          $projectId,
+          $this->_lang,
+          $pendingTranslationsData,
+          $availableLanguageCodes
         )
       ),
       $paginator->getPager()
     );
+  }
+
+  private function _pendingTranslationsData($pendingTranslations)
+  {
+    $result = [];
+    foreach($pendingTranslations as $pending)
+    {
+      $translationCf  = Translation::cf();
+      $translation = $translationCf->get(
+        $pending->rowKey,
+        ['lang:' . $pending->lang, 'lang:en']
+      );
+
+      $englishData = idx($translation, 'lang:en');
+      $translatedData = idx($translation, 'lang:' . $pending->lang);
+
+      if($englishData && $translatedData)
+      {
+        $row = [
+          'rowKey'      => $pending->rowKey,
+          'lang'        => $pending->lang,
+          'english'     => json_decode($englishData)->translated,
+          'translation' => json_decode($translatedData)->translated
+        ];
+
+        $result[] = (object)$row;
+      }
+    }
+
+    return $result;
   }
 
   private function _getPaginator($pageNumber, $count, $perPage, $baseUri)

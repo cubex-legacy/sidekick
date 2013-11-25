@@ -23,7 +23,7 @@
 <div class="pull-right">
   <label for="">Select Language: </label>
   <select name="lang" id="" onchange="window.location.href='<?=
-  $this->baseUri() ?>/'+$(this).val()">
+  $this->baseUri() ?>/<?= $this->getProjectId() ?>/'+$(this).val()">
     <option value="">--SELECT--</option>
     <?php foreach($this->getLanguageOptions() as $code => $language): ?>
       <option value="<?= $code ?>" <?=

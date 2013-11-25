@@ -31,30 +31,7 @@ class RosettaIndex extends TemplatedViewModel
    */
   public function getPendingTranslations()
   {
-    $result = [];
-    foreach($this->_pendingTranslations as $pending)
-    {
-      $translationCf  = Translation::cf();
-      $englishData    = $translationCf->get($pending->rowKey, ['lang:en']);
-      $translatedData = $translationCf->get(
-        $pending->rowKey,
-        ['lang:' . $pending->lang]
-      );
-
-      if($englishData && $translatedData)
-      {
-        $row = [
-          'rowKey'      => $pending->rowKey,
-          'lang'        => $pending->lang,
-          'english'     => json_decode(current($englishData))->translated,
-          'translation' => json_decode(current($translatedData))->translated
-        ];
-
-        $result[] = (object)$row;
-      }
-    }
-
-    return $result;
+    return $this->_pendingTranslations;
   }
 
   public function getSelectedLanguages()

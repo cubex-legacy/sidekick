@@ -37,36 +37,33 @@ class SourceCodeView extends ViewModel
       //go into snippet mode
       $offset           = 10;
       $snippetThreshold = 200;
+      $snippetMaxLines  = 20;
       $fileLines        = file($this->_sourceFile);
       $lineToHighlight  = $this->_lineNumber - 1;
       if(count($fileLines) > $snippetThreshold && $this->_lineNumber)
       {
-        $title .= ' (Snippet Mode)';
-        $startLine = $this->_lineNumber - $offset;
-        $startLine = ($startLine > 0) ? $startLine : 1;
-
-        $endLine = $this->_lineNumber + $offset;
-        $endLine = ($endLine > 0) ? $endLine : $this->_lineNumber;
-
-        $sourceText = '';
-        for($i = $startLine; $i <= $endLine; $i++)
-        {
-          $sourceText .= $fileLines[$i];
-        }
-
+        $title          .= ' (Snippet Mode)';
+        $startLine       = $this->_lineNumber - $offset;
+        $startLine       = ($startLine > 0) ? $startLine : 0;
+        $sourceText      = implode(
+          '',
+          array_slice($fileLines, $startLine, $snippetMaxLines)
+        );
         $lineToHighlight = ($this->_lineNumber > $offset) ?
-          $offset : $lineToHighlight;
+          $offset - 1 : $lineToHighlight;
 
-        $class = 'prettyprint lang-scm linenums:' . $startLine;
+        $lineNums = $startLine + 1;
+        $class    = 'prettyprint lang-scm linenums:' . $lineNums;
       }
       else
       {
-        $sourceText = htmlentities(file_get_contents($this->_sourceFile));
+        $sourceText = implode('', $fileLines);
         //taking into account the zero-based index
         $class = 'prettyprint lang-scm linenums';
       }
 
-      $code = new HtmlElement(
+      $sourceText = htmlentities($sourceText);
+      $code       = new HtmlElement(
         'pre',
         ['class' => $class],
         $sourceText

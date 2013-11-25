@@ -101,7 +101,7 @@ class BuildLogView extends TemplatedViewModel
     {
       $lastColon = strrpos($line, ':');
       $target    = substr($line, 0, $lastColon);
-      list($path, $startLine) = explode(':', $target, 2);
+      list($path, $startLine, $column) = explode(':', $target);
       $link = "/sourcecode/build/" . $this->_buildRunId . '/';
       $link .= substr($path, strpos($path, 'src'));
       $link .= ';' . $startLine;

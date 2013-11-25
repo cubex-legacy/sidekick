@@ -5,6 +5,8 @@
 
 namespace Sidekick\Applications\Evento\Controllers;
 
+use Cubex\Facade\Queue;
+use Cubex\Queue\StdQueue;
 use Cubex\Routing\StdRoute;
 use Cubex\Routing\Templates\ResourceTemplate;
 use Sidekick\Applications\Evento\Views\EventoForm;
@@ -13,7 +15,10 @@ use Sidekick\Applications\Evento\Views\EventoSidebar;
 use Sidekick\Applications\Evento\Views\EventoView;
 use Sidekick\Components\Evento\Enums\Resolution;
 use Sidekick\Components\Evento\Mappers\Event;
+use Sidekick\Components\Evento\Mappers\EventSubscription;
 use Sidekick\Components\Evento\Mappers\EventUpdate;
+use Sidekick\Components\Notify\Notify;
+use Sidekick\Components\Notify\NotifyMessage;
 
 class EventoSummaryController extends EventoController
 {
@@ -65,6 +70,22 @@ class EventoSummaryController extends EventoController
     $event->openedAt = date('Y-m-d H:i:s');
     $event->owner    = \Auth::user()->getId();
     $event->saveChanges();
+
+    //get users subscribed to this event type
+    $users = EventSubscription::collection(
+               [
+               'eventTypeId' => $event->eventTypeId,
+               'severity'    => $event->severity
+               ]
+             )->getUniqueField('userId');
+
+    foreach($users as $userId)
+    {
+      $message = new NotifyMessage();
+      $message->setSubject("New Event: " . $event->name);
+      $message->setMessage($event->description);
+      Notify::send($userId, $message, $this->application());
+    }
 
     \Redirect::to($this->baseUri())->now();
   }

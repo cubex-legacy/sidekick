@@ -11,12 +11,14 @@ use Sidekick\Components\Rosetta\Helpers\LanguageCodes;
 
 class Translations extends TemplatedViewModel
 {
+  protected $projectId;
   protected $_rowKey;
   protected $_raw_translations;
   protected $_translations;
 
-  public function __construct($rowKey, $translations)
+  public function __construct($projectId, $rowKey, $translations)
   {
+    $this->_projectId        = $projectId;
     $this->_rowKey           = $rowKey;
     $this->_raw_translations = $translations;
   }
@@ -57,5 +59,10 @@ class Translations extends TemplatedViewModel
   public function getRowkey()
   {
     return $this->_rowKey;
+  }
+
+  public function getProjectId()
+  {
+    return $this->_projectId;
   }
 }

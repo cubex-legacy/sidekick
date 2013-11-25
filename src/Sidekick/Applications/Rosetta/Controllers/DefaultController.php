@@ -11,9 +11,11 @@ use Cubex\Core\Http\Response;
 use Cubex\View\RenderGroup;
 use Cubex\View\Templates\Errors\Error404;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Rosetta\Views\RosettaIndex;
 use Sidekick\Applications\Rosetta\Views\Translations;
 use Sidekick\Components\Helpers\Paginator;
+use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Rosetta\Helpers\TranslatorHelper;
 use Sidekick\Components\Rosetta\Mappers\PendingTranslation;
 use Sidekick\Components\Rosetta\Mappers\Translation;
@@ -27,6 +29,18 @@ class DefaultController extends BaseControl
   {
     parent::preRender();
     $this->requireCss('base');
+  }
+
+  public function getSidebar()
+  {
+    $projects    = Project::collection()->loadAll()->setOrderBy('name');
+    $sidebarMenu = [];
+    foreach($projects as $project)
+    {
+      $sidebarMenu['/rosetta/' . $project->id] = $project->name;
+    }
+
+    return new Sidebar($this->request()->path(2), $sidebarMenu);
   }
 
   public function renderIndex()
@@ -59,8 +73,9 @@ class DefaultController extends BaseControl
       );
     }
 
+    $projectId           = $this->getInt('projectId');
     $pendingTranslations = PendingTranslation::collection(
-      ['lang' => $this->_lang]
+      ['lang' => $this->_lang, 'project_id' => $projectId]
     );
 
     $getLanguages           = clone $pendingTranslations;
@@ -69,14 +84,15 @@ class DefaultController extends BaseControl
     $page      = $this->getInt('page', 1);
     $perPage   = 100;
     $count     = $pendingTranslations->count();
-    $baseUri   = $this->baseUri() . '/' . $this->_lang . '/page/';
+    $baseUri   = $this->baseUri() . '/'
+      . $projectId . '/' . $this->_lang . '/page/';
     $paginator = $this->_getPaginator($page, $count, $perPage, $baseUri);
     $pendingTranslations->setLimit($paginator->getOffset(), $perPage);
 
     return new RenderGroup(
       $this->createView(
         new RosettaIndex(
-          $this->_lang, $pendingTranslations, $availableLanguageCodes
+          $projectId, $this->_lang, $pendingTranslations, $availableLanguageCodes
         )
       ),
       $paginator->getPager()
@@ -95,12 +111,13 @@ class DefaultController extends BaseControl
 
   public function renderApprove()
   {
-    $rowKey = $this->getStr('rowKey');
-    $lang   = $this->getStr('lang');
+    $rowKey    = $this->getStr('rowKey');
+    $lang      = $this->getStr('lang');
+    $projectId = $this->getInt('projectId');
 
     $this->_approve($rowKey, $lang);
 
-    Redirect::to($this->baseUri() . '/' . $lang)->now();
+    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $lang)->now();
   }
 
   public function ajaxApprove()
@@ -143,8 +160,9 @@ class DefaultController extends BaseControl
 
   public function renderRetranslate()
   {
-    $rowKey = $this->getStr('rowKey');
-    $lang   = $this->getStr('lang');
+    $rowKey    = $this->getStr('rowKey');
+    $lang      = $this->getStr('lang');
+    $projectId = $this->getInt('projectId');
 
     //get english data
     $translationCf = Translation::cf();
@@ -161,14 +179,18 @@ class DefaultController extends BaseControl
       $lang
     );
 
-    Redirect::to($this->baseUri() . '/translations/' . $rowKey)->now();
+    Redirect::to(
+      $this->baseUri() . '/' . $projectId . '/translations/' . $rowKey
+    )->now();
   }
 
   public function renderDelete()
   {
-    $rowKey = $this->getStr('rowKey');
+    $rowKey    = $this->getStr('rowKey');
+    $projectId = $this->getInt('projectId');
+
     $this->_deleteAllTranslation($rowKey);
-    Redirect::to($this->baseUri())->now();
+    Redirect::to($this->baseUri() . '/' . $projectId)->now();
   }
 
   private function _deleteAllTranslation($rowKey)
@@ -194,8 +216,13 @@ class DefaultController extends BaseControl
     $translationCf->remove($rowKey, ['lang:' . $lang]);
 
     //delete from pendingTranslations
-    $pendingTranslation = new PendingTranslation([$rowKey, $lang]);
-    $pendingTranslation->delete();
+    $pendingTranslations = PendingTranslation::collection(
+      ['row_key' => $rowKey, 'lang' => $lang]
+    );
+    foreach($pendingTranslations as $pendingTranslation)
+    {
+      $pendingTranslation->delete();
+    }
   }
 
   public function ajaxEdit()
@@ -229,11 +256,13 @@ class DefaultController extends BaseControl
   public function renderTranslations()
   {
     $this->requireJs('editing');
-    $rowKey       = $this->getStr('rowKey');
+    $rowKey    = $this->getStr('rowKey');
+    $projectId = $this->getInt('projectId');
+
     $translations = new Translation($rowKey);
     if($translations->exists())
     {
-      return new Translations($rowKey, $translations);
+      return new Translations($projectId, $rowKey, $translations);
     }
     return new Error404();
   }
@@ -241,16 +270,17 @@ class DefaultController extends BaseControl
   public function getRoutes()
   {
     return [
-      '/:lang'                     => 'index',
-      '/:lang/page/:page'          => 'index',
-      '/approve'                   => 'approve',
-      '/approve/:rowKey/:lang'     => 'approve',
-      '/retranslate/:rowKey/:lang' => 'retranslate',
-      '/delete/:rowKey'            => 'delete',
-      '/translations/:rowKey'      => 'translations',
-      '/search/'                   => 'search',
-      '/search/:term/'             => 'search',
-      '/edit/'                     => 'edit',
+      '/:projectId'                           => 'index',
+      '/:projectId/:lang'                     => 'index',
+      '/:projectId/:lang/page/:page'          => 'index',
+      '/:projectId/approve/:rowKey/:lang'     => 'approve',
+      '/:projectId/retranslate/:rowKey/:lang' => 'retranslate',
+      '/:projectId/delete/:rowKey'            => 'delete',
+      '/approve'                              => 'approve',
+      '/:projectId/translations/:rowKey'      => 'translations',
+      '/search/'                              => 'search',
+      '/search/:term/'                        => 'search',
+      '/edit/'                                => 'edit',
     ];
   }
 }

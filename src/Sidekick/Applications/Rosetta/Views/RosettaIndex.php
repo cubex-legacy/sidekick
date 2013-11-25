@@ -17,9 +17,10 @@ class RosettaIndex extends TemplatedViewModel
   protected $_availableLanguages;
 
   public function __construct(
-    $language, $pendingTranslations, $availableLanguages
+    $projectId, $language, $pendingTranslations, $availableLanguages
   )
   {
+    $this->_projectId           = $projectId;
     $this->_language            = $language;
     $this->_pendingTranslations = $pendingTranslations;
     $this->_availableLanguages  = $availableLanguages;
@@ -72,5 +73,10 @@ class RosettaIndex extends TemplatedViewModel
   public function getLanguage()
   {
     return $this->_language;
+  }
+
+  public function getProjectId()
+  {
+    return $this->_projectId;
   }
 }

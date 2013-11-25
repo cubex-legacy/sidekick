@@ -5,6 +5,7 @@
  */
 
 use \Sidekick\Components\Rosetta\Helpers\LanguageCodes;
+
 ?>
 <h1>Pending Translations Requiring Approval</h1>
 <blockquote>
@@ -14,9 +15,8 @@ use \Sidekick\Components\Rosetta\Helpers\LanguageCodes;
 <button class="btn btn-success approve-selected" disabled="disabled">
   Approve Selected
 </button>
-<a href="<?=
-$this->baseUri(
-) . '/delete/' . $this->getRowkey(); ?>"
+<a href="<?= $this->baseUri() ?>/<?= $this->getProjectId(
+) ?>/delete/<?= $this->getRowkey(); ?>"
    title="Delete" class="btn btn-danger">
   <i class="icon-trash"></i> Delete All</a>
 <div style="margin-top:5px;"></div>
@@ -29,7 +29,10 @@ $this->baseUri(
     <th></th>
   </tr>
   <?php foreach($this->getTranslations() as $pending): ?>
-    <?php if($pending->lang == 'en') continue; ?>
+    <?php if($pending->lang == 'en')
+    {
+      continue;
+    } ?>
     <tr>
       <td><input type="checkbox" class="text-selecter"
                  data-rowkey="<?= $this->getRowkey() ?>"
@@ -44,16 +47,18 @@ $this->baseUri(
       </td>
       <td>
         <a href="<?=
-        $this->baseUri(
-        ) ?>/approve/<?= $this->getRowkey() ?>/<?= $pending->lang ?>"
+        $this->baseUri() ?>/<?=
+        $this->getProjectId() ?>/approve/<?=
+        $this->getRowkey() ?>/<?= $pending->lang ?>"
            class="btn btn-success">
           <i class="icon-ok icon-white"></i>
         </a>
       </td>
       <td>
         <a href="<?=
-        $this->baseUri(
-        ) . '/retranslate/' . $this->getRowkey() . '/' . $pending->lang; ?>"
+        $this->baseUri() ?>/<?=
+        $this->getProjectId() ?>/retranslate/<?=
+        $this->getRowkey() ?>/<?= $pending->lang; ?>"
            title="Re-Translate" class="btn"><i class="icon-refresh"></i></a>
       </td>
     </tr>

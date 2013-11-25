@@ -15,6 +15,7 @@ class SourceCodeView extends ViewModel
 {
   protected $_sourceFile;
   protected $_lineNumber;
+  protected $_totalLines;
 
   public function __construct($sourceFile, $lineNumber)
   {
@@ -35,14 +36,15 @@ class SourceCodeView extends ViewModel
     if(file_exists($this->_sourceFile))
     {
       //go into snippet mode
-      $offset           = 10;
-      $snippetThreshold = 200;
-      $snippetMaxLines  = 20;
-      $fileLines        = file($this->_sourceFile);
-      $lineToHighlight  = $this->_lineNumber - 1;
-      if(count($fileLines) > $snippetThreshold && $this->_lineNumber)
+      $offset            = 10;
+      $snippetThreshold  = 200;
+      $snippetMaxLines   = 20;
+      $fileLines         = file($this->_sourceFile);
+      $lineToHighlight   = $this->_lineNumber - 1;
+      $this->_totalLines = count($fileLines);
+      if($this->_totalLines > $snippetThreshold && $this->_lineNumber)
       {
-        $title          .= ' (Snippet Mode)';
+        $title .= ' (Snippet Mode)';
         $startLine       = $this->_lineNumber - $offset;
         $startLine       = ($startLine > 0) ? $startLine : 0;
         $sourceText      = implode(
@@ -84,7 +86,8 @@ class SourceCodeView extends ViewModel
 
     return new RenderGroup(
       '<h1>' . $title . '</h1>',
-      $code
+      $code,
+      '<p class="pull-right"><small>Total Lines: ' . $this->_totalLines . '</p>'
     );
   }
 }

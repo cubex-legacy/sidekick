@@ -45,12 +45,14 @@ class SourceCodeView extends ViewModel
       if($this->_totalLines > $snippetThreshold && $this->_lineNumber)
       {
         $title .= ' (Snippet Mode)';
-        $startLine       = $this->_lineNumber - $offset;
-        $startLine       = ($startLine > 0) ? $startLine : 0;
-        $sourceText      = implode(
-          '',
-          array_slice($fileLines, $startLine, $snippetMaxLines)
-        );
+        $startLine = $this->_lineNumber - $offset;
+        $startLine = ($startLine > 0) ? $startLine : 0;
+
+        $sourceText = '';
+
+        $lines = array_slice($fileLines, $startLine, $snippetMaxLines);
+        $this->_buildSourceText($lines);
+
         $lineToHighlight = ($this->_lineNumber > $offset) ?
           $offset - 1 : $lineToHighlight;
 
@@ -59,7 +61,7 @@ class SourceCodeView extends ViewModel
       }
       else
       {
-        $sourceText = implode('', $fileLines);
+        $sourceText = $this->_buildSourceText($fileLines);
         //taking into account the zero-based index
         $class = 'prettyprint lang-scm linenums';
       }
@@ -93,5 +95,34 @@ class SourceCodeView extends ViewModel
       $code,
       '<p class="pull-right"><small>Total Lines: ' . $this->_totalLines . '</p>'
     );
+  }
+
+  /**
+   * Safely build source lines of code
+   * When the first 2 lines of the snippet are
+   * blank lines (just a new line), code pretty print does not work well
+   * as it merges it with the next line.
+   * We make it work by changing all such lines to a SPACE.NEW_LINE
+   *
+   * @param array $lines
+   *
+   * @return string
+   */
+  private function _buildSourceText($lines)
+  {
+    $sourceText = '';
+    foreach($lines as $line)
+    {
+      $line = trim($line);
+      if($line == '')
+      {
+        $line = ' ';
+      }
+      $line = $line . PHP_EOL;
+
+      $sourceText .= $line;
+    }
+
+    return $sourceText;
   }
 }

@@ -48,10 +48,8 @@ class SourceCodeView extends ViewModel
         $startLine = $this->_lineNumber - $offset;
         $startLine = ($startLine > 0) ? $startLine : 0;
 
-        $sourceText = '';
-
         $lines = array_slice($fileLines, $startLine, $snippetMaxLines);
-        $this->_buildSourceText($lines);
+        $sourceText = $this->_buildSourceText($lines);
 
         $lineToHighlight = ($this->_lineNumber > $offset) ?
           $offset - 1 : $lineToHighlight;

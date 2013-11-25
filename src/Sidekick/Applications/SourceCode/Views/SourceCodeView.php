@@ -64,9 +64,12 @@ class SourceCodeView extends ViewModel
         $class = 'prettyprint lang-scm linenums';
       }
 
-      $sourceText = htmlentities($sourceText);
+      $sourceText = htmlentities(
+        $sourceText,
+        ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE | ENT_DISALLOWED
+      );
 
-      $code       = new HtmlElement(
+      $code = new HtmlElement(
         'pre',
         ['class' => $class],
         $sourceText

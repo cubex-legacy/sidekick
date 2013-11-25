@@ -24,7 +24,7 @@
     <div id="<?= md5($commandRun->command->command) ?>"
          class="cmdOutput <?= ($commandRun->passed) ? 'hide' : '' ?>">
       <p
-      class="command <?= $txtClass ?>">
+        class="command <?= $txtClass ?>">
         [<?= date('H:i:s', $commandRun->startTime); ?>]
         &nbsp;&nbsp;<?= $commandRun->command->command; ?>
         <?= $commandRun->args ?>
@@ -35,7 +35,11 @@
           <?php foreach($outputLine->lines as $line): ?>
             <div class="line <?= $txtClass ?>">
               [<?= $outputLine->lineTime; ?>]
-              &nbsp;&nbsp;<?= $this->linkify($line) ?>
+              &nbsp;&nbsp;<?= $this->linkify(
+                $line,
+                $commandRun->passed,
+                $commandRun->exitCode
+              ) ?>
             </div>
           <?php endforeach; ?>
         <?php endif; ?>

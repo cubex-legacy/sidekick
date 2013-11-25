@@ -94,7 +94,7 @@ class BuildLogView extends TemplatedViewModel
     return $txtClass;
   }
 
-  public function linkify($line)
+  public function linkify($line, $passed, $exitCode)
   {
     //support only lines containing paths to .mo & .po
     if(strpos($line, '.mo:') !== false || strpos($line, '.po:') !== false)
@@ -106,7 +106,9 @@ class BuildLogView extends TemplatedViewModel
       $link .= substr($path, strpos($path, 'src'));
       $link .= ';' . $startLine;
 
-      $linkedPath = '<a href="' . $link . '">' . $target . '</a>';
+      $textClass  = $this->getTextClass($passed, $exitCode);
+      $linkedPath = '<a href="' . $link . '" target="_blank" class="' .
+        $textClass . '" style="text-decoration:underline;">' . $target . '</a>';
       $line       = str_replace($target, $linkedPath, $line);
     }
     return $line;

@@ -121,8 +121,11 @@ class EventoSummaryController extends EventoController
   public function getRoutes()
   {
     $routes = ResourceTemplate::getRoutes();
-    array_unshift($routes, new StdRoute('/open', 'openEvents'));
-    array_unshift($routes, new StdRoute('/updates/:id', 'updates'));
+    array_unshift(
+      $routes,
+      new StdRoute('/open', 'openEvents'),
+      new StdRoute('/updates/:id', 'updates')
+    );
     return $routes;
   }
 }

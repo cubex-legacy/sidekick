@@ -34,13 +34,8 @@ class EventoView extends TemplatedViewModel
 
   public function eventIsClosed()
   {
-    if($this->_event->closedAt == null)
-    {
-      return false;
-    }
-    return true;
+    return $this->_event->closedAt !== null;
   }
-
 
   public function getEventDuration()
   {

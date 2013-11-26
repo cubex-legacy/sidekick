@@ -12,7 +12,7 @@ class EventoApp extends BaseApp
 {
   public function getNavGroup()
   {
-    return "Events";
+    return "Evento";
   }
 
   public function getBundles()
@@ -23,7 +23,7 @@ class EventoApp extends BaseApp
 
   public function name()
   {
-    return "Eventos";
+    return "Evento";
   }
 
   public function description()

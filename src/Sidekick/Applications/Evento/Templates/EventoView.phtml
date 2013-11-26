@@ -15,7 +15,9 @@ use Sidekick\Widgets\Gravatar\Gravatar;
         id="event-name" class="event-data"
         data-eventId="<?= $this->event()->id() ?>">
       <?= $this->event()->name ?>
+      <?php if(!$this->eventIsClosed()): ?>
       <i class="icon-pencil icon-black" id="icon-edit-name"></i>
+      <?php endif; ?>
     </h2>
     <h5>
       Start: <?= date("d M Y @ H:i:s", strtotime($this->event()->openedAt)) ?>
@@ -25,7 +27,9 @@ use Sidekick\Widgets\Gravatar\Gravatar;
        id="event-description" class="event-data"
        data-eventId="<?= $this->event()->id() ?>">
       <?= $this->event()->description; ?>
+      <?php if(!$this->eventIsClosed()): ?>
       <i class="icon-pencil icon-black" id="icon-edit-description"></i>
+      <?php endif; ?>
     </p>
   </div>
 

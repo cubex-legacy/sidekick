@@ -4,9 +4,7 @@
  *
  * @author Sam Waters <sam.waters@justdevelop.it>
  */
-
 namespace Sidekick\Applications\Notify\Controllers;
-
 
 use Cubex\Facade\Redirect;
 use Cubex\View\RenderGroup;
@@ -31,17 +29,21 @@ class NotifyEventsController extends BaseControl
 
   public function postAdd()
   {
-    $key = $this->_request->postVariables("eventKey");
-    $desc = $this->_request->postVariables("eventDescription");
-    $apps = $this->_request->postVariables("eventApplications");
-    $type = $this->_request->postVariables("eventType");
-    $params = $this->_request->postVariables("parameter");
-    $event = new EventTypes();
-    $event->eventKey = $key;
-    $event->eventDescription = $desc;
+    $key                      = $this->_request->postVariables("eventKey");
+    $desc                     = $this->_request->postVariables(
+      "eventDescription"
+    );
+    $apps                     = $this->_request->postVariables(
+      "eventApplications"
+    );
+    $type                     = $this->_request->postVariables("eventType");
+    $params                   = $this->_request->postVariables("parameter");
+    $event                    = new EventTypes();
+    $event->eventKey          = $key;
+    $event->eventDescription  = $desc;
     $event->eventApplications = $apps;
-    $event->eventType = $type;
-    $event->eventParams = $params;
+    $event->eventType         = $type;
+    $event->eventParams       = $params;
     $event->saveChanges();
     $msg       = new \stdClass();
     $msg->type = 'success';
@@ -54,10 +56,8 @@ class NotifyEventsController extends BaseControl
 
   public function renderEdit()
   {
-    $id = $this->getInt("eventid");
-    $event = EventTypes::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $id    = $this->getInt("eventid");
+    $event = EventTypes::collection()->loadOneWhere(["id" => $id]);
     if($event == null)
     {
       $msg       = new \stdClass();
@@ -74,15 +74,13 @@ class NotifyEventsController extends BaseControl
 
   public function postEdit()
   {
-    $id = $this->_request->postVariables("id");
-    $key = $this->_request->postVariables("eventKey");
-    $desc = $this->_request->postVariables("eventDescription");
-    $apps = $this->_request->postVariables("eventApplications");
-    $type = $this->_request->postVariables("eventType");
+    $id     = $this->_request->postVariables("id");
+    $key    = $this->_request->postVariables("eventKey");
+    $desc   = $this->_request->postVariables("eventDescription");
+    $apps   = $this->_request->postVariables("eventApplications");
+    $type   = $this->_request->postVariables("eventType");
     $params = $this->_request->postVariables("parameter");
-    $event = EventTypes::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $event  = EventTypes::collection()->loadOneWhere(["id" => $id]);
     if($event == null)
     {
       $msg       = new \stdClass();
@@ -93,11 +91,11 @@ class NotifyEventsController extends BaseControl
         $msg
       )->now();
     }
-    $event->eventKey = $key;
-    $event->eventDescription = $desc;
+    $event->eventKey          = $key;
+    $event->eventDescription  = $desc;
     $event->eventApplications = $apps;
-    $event->eventType = $type;
-    $event->eventParams = $params;
+    $event->eventType         = $type;
+    $event->eventParams       = $params;
     $event->saveChanges();
     $msg       = new \stdClass();
     $msg->type = 'success';
@@ -110,10 +108,8 @@ class NotifyEventsController extends BaseControl
 
   public function renderDelete()
   {
-    $id = $this->getInt("eventid");
-    $event = EventTypes::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $id    = $this->getInt("eventid");
+    $event = EventTypes::collection()->loadOneWhere(["id" => $id]);
     if($event == null)
     {
       $msg       = new \stdClass();
@@ -137,9 +133,9 @@ class NotifyEventsController extends BaseControl
   public function getSidebar()
   {
     $sidebarMenu = [
-      "/notify" => "Home",
+      "/notify"        => "Home",
       "/notify/events" => "Manage Event Types",
-      "/notify/hooks" => "My Notifications",
+      "/notify/hooks"  => "My Notifications",
       "/notify/groups" => "Notification Groups"
     ];
     return new RenderGroup(
@@ -150,7 +146,7 @@ class NotifyEventsController extends BaseControl
   public function getRoutes()
   {
     return [
-      '/add' => 'add',
+      '/add'      => 'add',
       '/:eventid' => [
         '/edit'   => 'edit',
         '/delete' => 'delete'

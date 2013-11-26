@@ -27,7 +27,7 @@ class FortifyRepositoryLink extends TemplatedViewModel
     $this->_repoOptions = $repoOptions;
   }
 
-  public function _form()
+  protected function _form()
   {
     if($this->_form === null)
     {

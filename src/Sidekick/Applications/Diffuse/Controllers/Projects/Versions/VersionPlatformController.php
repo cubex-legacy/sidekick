@@ -77,7 +77,7 @@ class VersionPlatformController extends VersionsController
 
     if(empty($reqPlatforms))
     {
-      $this->verifyPlatform($users, $actions, $approvals, $platformState);
+      $this->_verifyPlatform($users, $actions, $approvals, $platformState);
     }
 
     $platformView = new VersionPlatformView(
@@ -115,18 +115,16 @@ class VersionPlatformController extends VersionsController
    *
    * @return array
    */
-  protected function verifyPlatform(
+  protected function _verifyPlatform(
     $projectUsers, $actions, $approvalRules, PlatformVersionState $platformState
   )
   {
     $requires  = $optional = [];
     $rejected  = false;
     $approvers = 0;
-    foreach(VersionApproval::status(
-              $projectUsers,
-              $actions,
-              $approvalRules
-            ) as $state)
+
+    $states = VersionApproval::status($projectUsers, $actions, $approvalRules);
+    foreach($states as $state)
     {
       if($state['require_pass'])
       {
@@ -244,10 +242,12 @@ class VersionPlatformController extends VersionsController
       }
 
       //Show users own roles on form
-      $roles = new ProjectUser([
-                               $this->_version->projectId,
-                               \Auth::user()->getId()
-                               ]);
+      $roles = new ProjectUser(
+        [
+        $this->_version->projectId,
+        \Auth::user()->getId()
+        ]
+      );
       $this->_form->getElement("userRole")->setOptions(
         array_fuse($roles->roles)
       );

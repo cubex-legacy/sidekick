@@ -7,7 +7,6 @@
 
 namespace Sidekick\Applications\Notify\Views;
 
-
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\RenderGroup;
@@ -42,18 +41,67 @@ class HooksAddEdit extends TemplatedViewModel
     if($this->_mode == "Edit")
     {
       $form->addHiddenElement("id", $this->_hookid);
-      $form->addSelectElement("eventKey", (new OptionBuilder(EventTypes::collection()->getKeyPair("eventKey", "eventKey")))->getOptions(), $this->_hook->eventKey);
-      $form->addCheckboxElements("notificationTypes[]", $this->_hook->notifyType, (new OptionBuilder(new NotifyType()))->getOptions());
-      $form->addCheckboxElements("users[]", $this->_hook->notifyUsers, (new OptionBuilder(User::collection()->getKeyPair("id", "display_name")))->getOptions());
-      $form->addCheckboxElements("groups[]", $this->_hook->notifyGroups, (new OptionBuilder(NotifyGroup::collection()->getKeyPair("id", "groupName")))->getOptions());
+      $form->addSelectElement(
+        "eventKey",
+        (new OptionBuilder(EventTypes::collection()->getKeyPair(
+          "eventKey",
+          "eventKey"
+        )))->getOptions(),
+        $this->_hook->eventKey
+      );
+      $form->addCheckboxElements(
+        "notificationTypes[]",
+        $this->_hook->notifyType,
+        (new OptionBuilder(new NotifyType()))->getOptions()
+      );
+      $form->addCheckboxElements(
+        "users[]",
+        $this->_hook->notifyUsers,
+        (new OptionBuilder(User::collection()->getKeyPair(
+          "id",
+          "display_name"
+        )))->getOptions()
+      );
+      $form->addCheckboxElements(
+        "groups[]",
+        $this->_hook->notifyGroups,
+        (new OptionBuilder(NotifyGroup::collection()->getKeyPair(
+          "id",
+          "groupName"
+        )))->getOptions()
+      );
     }
     else
     {
       $form->addHiddenElement("id", "");
-      $form->addSelectElement("eventKey", (new OptionBuilder(EventTypes::collection()->getKeyPair("eventKey", "eventKey")))->getOptions());
-      $form->addCheckboxElements("notificationTypes[]", null, (new OptionBuilder(new NotifyType()))->getOptions());
-      $form->addCheckboxElements("users[]", null, (new OptionBuilder(User::collection()->getKeyPair("id", "display_name")))->getOptions());
-      $form->addCheckboxElements("groups[]", null, (new OptionBuilder(NotifyGroup::collection()->getKeyPair("id", "groupName")))->getOptions());
+      $form->addSelectElement(
+        "eventKey",
+        (new OptionBuilder(EventTypes::collection()->getKeyPair(
+          "eventKey",
+          "eventKey"
+        )))->getOptions()
+      );
+      $form->addCheckboxElements(
+        "notificationTypes[]",
+        null,
+        (new OptionBuilder(new NotifyType()))->getOptions()
+      );
+      $form->addCheckboxElements(
+        "users[]",
+        null,
+        (new OptionBuilder(User::collection()->getKeyPair(
+          "id",
+          "display_name"
+        )))->getOptions()
+      );
+      $form->addCheckboxElements(
+        "groups[]",
+        null,
+        (new OptionBuilder(NotifyGroup::collection()->getKeyPair(
+          "id",
+          "groupName"
+        )))->getOptions()
+      );
     }
     return $form;
   }

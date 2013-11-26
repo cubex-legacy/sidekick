@@ -7,7 +7,6 @@
 
 namespace Sidekick\Applications\Notify\Views;
 
-
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Notify\Mappers\NotifyGroup;
 use Sidekick\Components\Users\Mappers\User;
@@ -21,9 +20,7 @@ class Groups extends TemplatedViewModel
 
   public function getUserFromId($id)
   {
-    $user = User::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $user = User::collection()->loadOneWhere(["id" => $id]);
     return ($user != null) ? $user->username : "";
   }
 }

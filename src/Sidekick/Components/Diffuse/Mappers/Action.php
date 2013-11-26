@@ -27,7 +27,6 @@ class Action extends RecordMapper
    */
   public $comment;
 
-
   /**
    * @return User
    */

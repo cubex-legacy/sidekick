@@ -7,7 +7,6 @@
 
 namespace Sidekick\Applications\Notify\Views;
 
-
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\HtmlElement;
@@ -43,17 +42,35 @@ class EventsAddEdit extends TemplatedViewModel
     {
       $form->addHiddenElement("id", $this->_eventID);
       $form->addTextElement("eventKey", $this->_event->eventKey);
-      $form->addTextareaElement("eventDescription", $this->_event->eventDescription);
-      $form->addCheckboxElements("eventApplications[]", $this->_event->eventApplications, (new OptionBuilder(new NotifyApplications()))->getOptions());
-      $form->addSelectElement("eventType", (new OptionBuilder(new EventType()))->getOptions(), $this->_event->eventType);
+      $form->addTextareaElement(
+        "eventDescription",
+        $this->_event->eventDescription
+      );
+      $form->addCheckboxElements(
+        "eventApplications[]",
+        $this->_event->eventApplications,
+        (new OptionBuilder(new NotifyApplications()))->getOptions()
+      );
+      $form->addSelectElement(
+        "eventType",
+        (new OptionBuilder(new EventType()))->getOptions(),
+        $this->_event->eventType
+      );
     }
     else
     {
       $form->addHiddenElement("id", "");
       $form->addTextElement("eventKey");
       $form->addTextareaElement("eventDescription");
-      $form->addCheckboxElements("eventApplications[]",null,(new OptionBuilder(new NotifyApplications()))->getOptions());
-      $form->addSelectElement("eventType", (new OptionBuilder(new EventType()))->getOptions());
+      $form->addCheckboxElements(
+        "eventApplications[]",
+        null,
+        (new OptionBuilder(new NotifyApplications()))->getOptions()
+      );
+      $form->addSelectElement(
+        "eventType",
+        (new OptionBuilder(new EventType()))->getOptions()
+      );
     }
     return $form;
   }

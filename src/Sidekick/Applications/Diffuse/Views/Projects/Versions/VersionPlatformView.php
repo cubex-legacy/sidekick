@@ -111,11 +111,12 @@ class VersionPlatformView extends TemplatedViewModel
   {
     $boxes = new RenderGroup();
 
-    foreach(VersionApproval::status(
-              $this->_projectUsers,
-              $this->_actions,
-              $this->_approvals
-            ) as $state)
+    $states = VersionApproval::status(
+      $this->_projectUsers,
+      $this->_actions,
+      $this->_approvals
+    );
+    foreach($states as $state)
     {
       $message = '';
 

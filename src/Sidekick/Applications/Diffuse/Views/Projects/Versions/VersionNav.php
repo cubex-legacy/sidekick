@@ -18,7 +18,7 @@ class VersionNav extends ViewModel
   protected $_version;
 
   public function __construct(
-    Version $version, $currentPlatform = 0, array $platforms
+    Version $version, $currentPlatform = 0, array $platforms = []
   )
   {
     $this->_platform  = $currentPlatform;

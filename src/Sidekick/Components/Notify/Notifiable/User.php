@@ -18,13 +18,13 @@ class User implements INotifiable
     $this->_users = [];
     if(!is_array($ids))
     {
-      array_push($this->_users, $this->idToUser($ids));
+      array_push($this->_users, $this->_idToUser($ids));
     }
     else
     {
       foreach($ids as $id)
       {
-        array_push($this->_users, $this->idToUser($id));
+        array_push($this->_users, $this->_idToUser($id));
       }
     }
   }
@@ -43,14 +43,15 @@ class User implements INotifiable
 
   public function getNotifiableUsers()
   {
-
   }
 
-  private function idToUser($id)
+  private function _idToUser($id)
   {
-    $user = \Sidekick\Components\Users\Mappers\User::collection()->loadOneWhere([
+    $user = \Sidekick\Components\Users\Mappers\User::collection()->loadOneWhere(
+      [
       "id" => $id
-    ]);
+      ]
+    );
     return $user;
   }
 }

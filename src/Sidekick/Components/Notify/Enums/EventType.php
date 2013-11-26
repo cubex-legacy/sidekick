@@ -7,7 +7,6 @@
 
 namespace Sidekick\Components\Notify\Enums;
 
-
 use Cubex\Type\Enum;
 
 class EventType extends Enum

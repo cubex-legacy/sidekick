@@ -26,7 +26,8 @@ class SeverityWidget extends Widget
     $margin = 104 - (20 * $this->_severity);
 
     $severityList = array_reverse((new Severity())->getConstList());
-    $key          = new HtmlElement("ul",
+    $key          = new HtmlElement(
+      "ul",
       ['style' => 'list-style-type: none; margin:0;']
     );
     foreach($severityList as $k => $v)
@@ -56,19 +57,24 @@ class SeverityWidget extends Widget
         break;
     }
 
-    return new HtmlElement('div',
+    return new HtmlElement(
+      'div',
       [
       'class' => 'progress ' . $progress,
       'style' => 'height:140px; padding:0 10px 10px;'
-      ], new RenderGroup(
+      ],
+      new RenderGroup(
         new HtmlElement('h4', [], 'Severity'),
-        new HtmlElement('div',
+        new HtmlElement(
+          'div',
           [
           'class' => 'bar',
           'style' => "width: 30px; height:" . $height . "px; " .
           "float:right; margin-top:" . $margin . "px;"
-          ]),
+          ]
+        ),
         $key
-      ));
+      )
+    );
   }
 }

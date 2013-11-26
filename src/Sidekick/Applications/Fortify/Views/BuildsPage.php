@@ -35,7 +35,7 @@ class BuildsPage extends ViewModel
       $state = ($build->id() == $this->_buildType) ? 'active' : '';
       $tabItems->addElement(
         $state,
-      '/fortify/' . $this->_projectId . '/' . $build->id(),
+        ('/fortify/' . $this->_projectId . '/' . $build->id()),
         $build->name
       );
     }

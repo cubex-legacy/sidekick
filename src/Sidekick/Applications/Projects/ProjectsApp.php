@@ -35,13 +35,12 @@ class ProjectsApp extends BaseApp
   public function getBundles()
   {
     return [
-//      new DebuggerBundle()
+      //new DebuggerBundle()
     ];
   }
 
   public function getRoutes()
   {
-
   }
 
   public function userPermitted($userRole)

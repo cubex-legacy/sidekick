@@ -7,7 +7,6 @@
 
 namespace Sidekick\Applications\Notify\Views;
 
-
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Notify\Mappers\EventTypes;
 

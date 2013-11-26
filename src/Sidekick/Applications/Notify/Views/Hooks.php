@@ -7,7 +7,6 @@
 
 namespace Sidekick\Applications\Notify\Views;
 
-
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Notify\Enums\NotifyType;
 use Sidekick\Components\Notify\Mappers\EventHooks;
@@ -24,19 +23,16 @@ class Hooks extends TemplatedViewModel
 
   public function getMyHooks()
   {
-
   }
 
-  public function getUser($username=null)
+  public function getUser($username = null)
   {
     //Default to current user
-    if($username==null)
+    if($username == null)
     {
       $username = \Auth::user()->getUsername();
     }
-    $user = User::collection()->loadOneWhere([
-      "username" => $username
-    ]);
+    $user = User::collection()->loadOneWhere(["username" => $username]);
     return $user;
   }
 
@@ -48,17 +44,13 @@ class Hooks extends TemplatedViewModel
 
   public function getUserById($id)
   {
-    $user = User::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $user = User::collection()->loadOneWhere(["id" => $id]);
     return ($user != null) ? $user->display_name : "";
   }
 
   public function getGroupById($id)
   {
-    $group = NotifyGroup::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $group = NotifyGroup::collection()->loadOneWhere(["id" => $id]);
     return ($group != null) ? $group->groupName : "";
   }
 }

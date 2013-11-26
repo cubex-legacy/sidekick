@@ -47,11 +47,11 @@ class DeploymentConfigurationView extends TemplatedViewModel
   public function platformStages($platformId)
   {
     return DeploymentStage::collection(
-             [
-             'project_id'  => $this->_project->id(),
-             'platform_id' => $platformId
-             ]
-           )->setOrderBy('order');
+      [
+      'project_id'  => $this->_project->id(),
+      'platform_id' => $platformId
+      ]
+    )->setOrderBy('order');
   }
 
   public function getDetails($details)

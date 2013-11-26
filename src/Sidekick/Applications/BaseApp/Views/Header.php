@@ -30,7 +30,7 @@ class Header extends ViewModel
 
   public function render()
   {
-    $structure  = [];
+    $structure = [];
 
     /**
      * @var $apps \Sidekick\Applications\BaseApp\BaseApp[]
@@ -59,9 +59,9 @@ class Header extends ViewModel
     }
 
     $navItems = new Partial(
-      '<li class="%s">
-        <a %s class="%s" href="%s" title="%s">%s</a>%s</li>'
-      , null, false);
+      '<li class="%s"><a %s class="%s" href="%s" title="%s">%s</a>%s</li>',
+      null, false
+    );
 
     $subNavItems = new Partial(
       '<li class="%s">
@@ -106,8 +106,8 @@ class Header extends ViewModel
           'dropdown-toggle',
           ('/' . $appPath),
           '',
-          $group . ' <b class="caret"></b>',
-          '<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>'
+        $group . ' <b class="caret"></b>',
+        '<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>'
         );
 
         $subNavItems->clearElements();
@@ -120,7 +120,7 @@ class Header extends ViewModel
           $state,
           '',
           '',
-          '/' . $appPath,
+        '/' . $appPath,
           $apps[$appPath]->description(),
           $group,
           ''

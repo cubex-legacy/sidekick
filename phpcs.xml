@@ -3,5 +3,6 @@
   <description>Code standards</description>
   <!-- Unit Tests -->
   <exclude-pattern>*/Tests/*</exclude-pattern>
+  <exclude-pattern>*/Sidekick/Components/Scripture/Markdown/SiteMarkdown.php</exclude-pattern>
   <rule ref="CubexCodeStandards"/>
 </ruleset>

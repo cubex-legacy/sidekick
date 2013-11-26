@@ -35,8 +35,9 @@ class FortifyCommandForm extends TemplatedViewModel
     {
       if($this->_command->exists())
       {
-        $this->_form = new Form("fortifyCommandForm", $this->baseUri(
-          ) . '/' . $this->_command->id());
+        $this->_form = new Form(
+          "fortifyCommandForm", $this->baseUri() . '/' . $this->_command->id()
+        );
         $this->_form->addHiddenElement('id', $this->_command->id());
       }
       else
@@ -115,8 +116,8 @@ class FortifyCommandForm extends TemplatedViewModel
     }
 
     $buttonText = 'Add ' . Inflection::singularise(
-        Strings::titleize($elementName)
-      );
+      Strings::titleize($elementName)
+    );
 
     $this->_form->addElement(
       'add_' . $elementName,

@@ -18,8 +18,8 @@ class Group implements INotifiable
 
   public function __construct($ids)
   {
-    $this->_groups=[];
-    $this->_users=[];
+    $this->_groups = [];
+    $this->_users  = [];
     //Add all groups
     if(!is_array($ids))
     {
@@ -51,27 +51,29 @@ class Group implements INotifiable
 
   public function contains($user)
   {
-
   }
 
   public function getNotifiableUsers()
   {
-
   }
 
   private function idToGroup($id)
   {
-    $group = NotifyGroup::collection()->loadOneWhere([
+    $group = NotifyGroup::collection()->loadOneWhere(
+      [
       "id" => $id
-    ]);
+      ]
+    );
     return $group;
   }
 
   private function idToUser($id)
   {
-    $user = User::collection()->loadOneWhere([
+    $user = User::collection()->loadOneWhere(
+      [
       "id" => $id
-    ]);
+      ]
+    );
     return $user;
   }
 }

@@ -7,7 +7,6 @@
 
 namespace Sidekick\Applications\Notify\Views;
 
-
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\RenderGroup;
@@ -39,15 +38,22 @@ class GroupsAddEdit extends TemplatedViewModel
     {
       $form->addHiddenElement("id", $this->_groupid);
       $form->addTextElement("groupName", $this->_group->groupName);
-      $form->addCheckboxElements("groupUsers[]", $this->_group->groupUsers, (new OptionBuilder(User::collection()))->getOptions());
+      $form->addCheckboxElements(
+        "groupUsers[]",
+        $this->_group->groupUsers,
+        (new OptionBuilder(User::collection()))->getOptions()
+      );
     }
     else
     {
       $form->addTextElement("groupName");
-      $form->addCheckboxElements("groupUsers[]", null, (new OptionBuilder(User::collection()))->getOptions());
+      $form->addCheckboxElements(
+        "groupUsers[]",
+        null,
+        (new OptionBuilder(User::collection()))->getOptions()
+      );
     }
     $form->addSubmitElement($this->_mode . " Group");
     return new RenderGroup($form);
   }
-
 }

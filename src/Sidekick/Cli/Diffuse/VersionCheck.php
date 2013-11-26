@@ -41,7 +41,6 @@ class VersionCheck extends CliCommand
    */
   public $type = 'std';
 
-
   /**
    * @return int
    */

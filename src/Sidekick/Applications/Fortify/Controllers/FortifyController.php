@@ -225,7 +225,7 @@ class FortifyController extends BaseControl
       {
         return new ReportErrorPage(
           $command->name,
-        $command->reportNamespace . $e->getMessage(),
+          ($command->reportNamespace . $e->getMessage()),
           $this->request()->path(4)
         );
       }

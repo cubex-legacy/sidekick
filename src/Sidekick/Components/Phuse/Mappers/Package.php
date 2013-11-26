@@ -51,8 +51,8 @@ class Package extends RecordMapper
   public function release()
   {
     return Release::collection(['package_id' => $this->id()])->setOrderBy(
-             'created_at',
-             'DESC'
-           )->first();
+      'created_at',
+      'DESC'
+    )->first();
   }
 }

@@ -258,7 +258,7 @@ class CreateVersion extends CliCommand
     }
     else
     {
-      $copy = $this->copy_directory($buildSource, $sourceDir);
+      $copy = $this->copyDirectory($buildSource, $sourceDir);
       if($copy)
       {
         Log::info("Version creation complete");
@@ -273,7 +273,7 @@ class CreateVersion extends CliCommand
     }
   }
 
-  public function copy_directory($source, $destination)
+  public function copyDirectory($source, $destination)
   {
     if(is_dir($source))
     {
@@ -294,7 +294,7 @@ class CreateVersion extends CliCommand
         $PathDir = $source . '/' . $readdirectory;
         if(is_dir($PathDir))
         {
-          $pass = $this->copy_directory(
+          $pass = $this->copyDirectory(
             $PathDir,
             ($destination . '/' . $readdirectory)
           );

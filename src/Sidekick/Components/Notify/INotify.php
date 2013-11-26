@@ -7,10 +7,11 @@
 
 namespace Sidekick\Components\Notify;
 
-
 interface INotify
 {
   public function getName();
+
   public function setEventData($data);
+
   public function notify();
 }

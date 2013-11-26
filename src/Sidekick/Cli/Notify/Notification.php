@@ -7,7 +7,6 @@
 
 namespace Sidekick\Cli\Notify;
 
-
 use Cubex\Cli\CliCommand;
 use Cubex\Cli\PidFile;
 use Cubex\Log\Log;

@@ -15,7 +15,6 @@ class Project extends RecordMapper
   public $parentId;
   public $description;
 
-
   public static function getProjects($projectId = null)
   {
     $projectCollection = self::collection();

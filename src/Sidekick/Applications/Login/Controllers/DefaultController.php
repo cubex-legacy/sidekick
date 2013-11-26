@@ -54,7 +54,8 @@ class DefaultController extends BaseControl
   {
     return new RenderGroup(
       '<a id="sidekick-logo" class="brand" href="/">',
-      ('<img src="' . $this->imgUrl('/logo.png') . '"/></a>'));
+      ('<img src="' . $this->imgUrl('/logo.png') . '"/></a>')
+    );
   }
 
   public function getSidebar()

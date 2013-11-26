@@ -7,7 +7,6 @@
 
 namespace Sidekick\Components\Notify\Notifiers;
 
-
 use Sidekick\Components\Notify\INotify;
 
 class Email implements INotify
@@ -15,8 +14,8 @@ class Email implements INotify
 
   public function __construct()
   {
-
   }
+
   public function getName()
   {
     return "E-Mail";
@@ -24,8 +23,8 @@ class Email implements INotify
 
   public function setEventData($data)
   {
-
   }
+
   public function notify()
   {
     //Whatever we do to notify

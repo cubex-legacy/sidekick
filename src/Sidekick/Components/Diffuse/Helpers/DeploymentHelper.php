@@ -15,7 +15,7 @@ class DeploymentHelper
   {
     $serviceClassOptions = [];
     $projectBase         = Container::config()->get('_cubex_')
-                           ->getStr('project_base');
+    ->getStr('project_base');
     $deploymentDir       = $projectBase . 'Sidekick' . DS . 'Deployment' . DS;
 
     if(file_exists($deploymentDir))
@@ -52,12 +52,12 @@ class DeploymentHelper
   public static function getRelevantServiceClassOptions($projectId, $platformId)
   {
     $availableServiceClasses = DeploymentStage::collection()
-                               ->load(
-                                   [
-                                   'project_id'  => $projectId,
-                                   'platform_id' => $platformId
-                                   ]
-                                 )->getUniqueField('serviceClass');
+    ->load(
+      [
+      'project_id'  => $projectId,
+      'platform_id' => $platformId
+      ]
+    )->getUniqueField('serviceClass');
 
     $serviceClassOptions = self::getServiceClassOptions();
     foreach($serviceClassOptions as $fullName => $file)

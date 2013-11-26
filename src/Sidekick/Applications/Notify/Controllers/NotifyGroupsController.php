@@ -7,7 +7,6 @@
 
 namespace Sidekick\Applications\Notify\Controllers;
 
-
 use Cubex\Facade\Redirect;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
@@ -26,7 +25,7 @@ class NotifyGroupsController extends BaseControl
 
   public function renderAdd()
   {
-    return $this->createView(new GroupsAddEdit("Add", null,  null));
+    return $this->createView(new GroupsAddEdit("Add", null, null));
   }
 
   public function postAdd()
@@ -45,10 +44,8 @@ class NotifyGroupsController extends BaseControl
 
   public function renderEdit()
   {
-    $id = $this->getInt("groupid");
-    $group = NotifyGroup::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $id    = $this->getInt("groupid");
+    $group = NotifyGroup::collection()->loadOneWhere(["id" => $id]);
     if($group == null)
     {
       $msg       = new \stdClass();
@@ -65,12 +62,10 @@ class NotifyGroupsController extends BaseControl
 
   public function postEdit()
   {
-    $id = $this->_request->postVariables("id");
-    $name = $this->_request->postVariables("groupName");
+    $id    = $this->_request->postVariables("id");
+    $name  = $this->_request->postVariables("groupName");
     $users = $this->_request->postVariables("groupUsers");
-    $group = NotifyGroup::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $group = NotifyGroup::collection()->loadOneWhere(["id" => $id]);
     if($group == null)
     {
       $msg       = new \stdClass();
@@ -82,7 +77,7 @@ class NotifyGroupsController extends BaseControl
       )->now();
       return null;
     }
-    $group->groupName = $name;
+    $group->groupName  = $name;
     $group->groupUsers = $users;
     $group->saveChanges();
     $msg       = new \stdClass();
@@ -97,10 +92,8 @@ class NotifyGroupsController extends BaseControl
 
   public function renderDelete()
   {
-    $id = $this->getInt("groupid");
-    $group = NotifyGroup::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $id    = $this->getInt("groupid");
+    $group = NotifyGroup::collection()->loadOneWhere(["id" => $id]);
     if($group == null)
     {
       $msg       = new \stdClass();
@@ -126,9 +119,9 @@ class NotifyGroupsController extends BaseControl
   public function getSidebar()
   {
     $sidebarMenu = [
-      "/notify" => "Home",
+      "/notify"        => "Home",
       "/notify/events" => "Manage Event Types",
-      "/notify/hooks" => "My Notifications",
+      "/notify/hooks"  => "My Notifications",
       "/notify/groups" => "Notification Groups"
     ];
     return new RenderGroup(
@@ -139,9 +132,9 @@ class NotifyGroupsController extends BaseControl
   public function getRoutes()
   {
     return [
-      '/add'  =>  'add',
-      '/:groupid'  => [
-        '/edit' => 'edit',
+      '/add'      => 'add',
+      '/:groupid' => [
+        '/edit'   => 'edit',
         '/delete' => 'delete'
       ]
     ];

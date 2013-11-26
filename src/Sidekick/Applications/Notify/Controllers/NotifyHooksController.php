@@ -7,7 +7,6 @@
 
 namespace Sidekick\Applications\Notify\Controllers;
 
-
 use Cubex\Facade\Redirect;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
@@ -31,14 +30,14 @@ class NotifyHooksController extends BaseControl
 
   public function postAdd()
   {
-    $key = $this->_request->postVariables("eventKey");
-    $types = $this->_request->postVariables("notificationTypes");
-    $users = $this->_request->postVariables("users");
-    $groups = $this->_request->postVariables("groups");
-    $hook = new EventHooks();
-    $hook->eventKey = $key;
-    $hook->notifyType = $types;
-    $hook->notifyUsers = $users;
+    $key                = $this->_request->postVariables("eventKey");
+    $types              = $this->_request->postVariables("notificationTypes");
+    $users              = $this->_request->postVariables("users");
+    $groups             = $this->_request->postVariables("groups");
+    $hook               = new EventHooks();
+    $hook->eventKey     = $key;
+    $hook->notifyType   = $types;
+    $hook->notifyUsers  = $users;
     $hook->notifyGroups = $groups;
     $hook->saveChanges();
     $msg       = new \stdClass();
@@ -52,10 +51,8 @@ class NotifyHooksController extends BaseControl
 
   public function renderEdit()
   {
-    $id = $this->getInt("hookid");
-    $hook = EventHooks::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $id   = $this->getInt("hookid");
+    $hook = EventHooks::collection()->loadOneWhere(["id" => $id]);
     if($hook == null)
     {
       $msg       = new \stdClass();
@@ -72,14 +69,12 @@ class NotifyHooksController extends BaseControl
 
   public function postEdit()
   {
-    $id = $this->_request->postVariables("id");
-    $key = $this->_request->postVariables("eventKey");
-    $types = $this->_request->postVariables("notificationTypes");
-    $users = $this->_request->postVariables("users");
+    $id     = $this->_request->postVariables("id");
+    $key    = $this->_request->postVariables("eventKey");
+    $types  = $this->_request->postVariables("notificationTypes");
+    $users  = $this->_request->postVariables("users");
     $groups = $this->_request->postVariables("groups");
-    $hook = EventHooks::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $hook   = EventHooks::collection()->loadOneWhere(["id" => $id]);
     if($hook == null)
     {
       $msg       = new \stdClass();
@@ -90,9 +85,9 @@ class NotifyHooksController extends BaseControl
         $msg
       )->now();
     }
-    $hook->eventKey = $key;
-    $hook->notifyType = $types;
-    $hook->notifyUsers = $users;
+    $hook->eventKey     = $key;
+    $hook->notifyType   = $types;
+    $hook->notifyUsers  = $users;
     $hook->notifyGroups = $groups;
     $hook->saveChanges();
     $msg       = new \stdClass();
@@ -107,10 +102,8 @@ class NotifyHooksController extends BaseControl
 
   public function renderDelete()
   {
-    $id = $this->getInt("hookid");
-    $hook = EventHooks::collection()->loadOneWhere([
-      "id" => $id
-    ]);
+    $id   = $this->getInt("hookid");
+    $hook = EventHooks::collection()->loadOneWhere(["id" => $id]);
     if($hook == null)
     {
       $msg       = new \stdClass();
@@ -136,9 +129,9 @@ class NotifyHooksController extends BaseControl
   public function getSidebar()
   {
     $sidebarMenu = [
-      "/notify" => "Home",
+      "/notify"        => "Home",
       "/notify/events" => "Manage Event Types",
-      "/notify/hooks" => "My Notifications",
+      "/notify/hooks"  => "My Notifications",
       "/notify/groups" => "Notification Groups"
     ];
     return new RenderGroup(
@@ -149,9 +142,9 @@ class NotifyHooksController extends BaseControl
   public function getRoutes()
   {
     return [
-      '/add'  => 'add',
+      '/add'     => 'add',
       '/:hookid' => [
-        '/edit' => 'edit',
+        '/edit'   => 'edit',
         '/delete' => 'delete'
       ]
     ];

@@ -69,10 +69,10 @@ class FortifyBuildsController extends FortifyCrudController
     {
       $buildCommandsIds   = $buildCommands->getUniqueField("command_id");
       $unAssignedCommands = Command::collection()->loadWhere(
-                              "%C NOT IN (%Ld)",
-                              "id",
-                              $buildCommandsIds
-                            )->getKeyPair('id', 'name');
+        "%C NOT IN (%Ld)",
+        "id",
+        $buildCommandsIds
+      )->getKeyPair('id', 'name');
     }
     else
     {

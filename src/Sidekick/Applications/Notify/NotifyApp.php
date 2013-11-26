@@ -5,7 +5,6 @@
 
 namespace Sidekick\Applications\Notify;
 
-
 use Sidekick\Applications\BaseApp\BaseApp;
 use Sidekick\Applications\Notify\Controllers\NotifyController;
 

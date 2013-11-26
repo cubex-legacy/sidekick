@@ -38,7 +38,6 @@ class DefaultController extends RepositoryController
     Redirect::to($this->baseUri())->with('msg', $msg)->now();
   }
 
-
   public function renderEditRepo()
   {
     $repoId = $this->getInt('repoId');

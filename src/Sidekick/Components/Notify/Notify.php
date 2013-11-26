@@ -16,11 +16,13 @@ use Sidekick\Components\Notify\Mappers\EventTypes;
 class Notify
 {
 
-  public static function trigger($eventKey, $eventData=[])
+  public static function trigger($eventKey, $eventData = [])
   {
-    $evt = EventTypes::collection()->loadOneWhere([
+    $evt = EventTypes::collection()->loadOneWhere(
+      [
       "eventKey" => $eventKey
-    ]);
+      ]
+    );
     //Valid event type?
     if($evt == null)
     {
@@ -39,16 +41,16 @@ class Notify
     Queue::push(
       $q,
       [
-        "event" => $eventKey,
-        "data" => $eventData,
-        "timestamp" => time()
+      "event" => $eventKey,
+      "data" => $eventData,
+      "timestamp" => time()
       ]
     );
   }
 
-  public static function send($userId, INotifyMessage $message, BaseApp $app = null)
+  public static function send(
+    $userId, INotifyMessage $message, BaseApp $app = null
+  )
   {
-
   }
-
 }

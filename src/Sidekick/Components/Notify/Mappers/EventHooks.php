@@ -7,7 +7,6 @@
 
 namespace Sidekick\Components\Notify\Mappers;
 
-
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Notify\Enums\NotifyType;
 

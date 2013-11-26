@@ -23,13 +23,13 @@ class Group implements INotifiable
     //Add all groups
     if(!is_array($ids))
     {
-      array_push($this->_groups, $this->idToGroup($ids));
+      array_push($this->_groups, $this->_idToGroup($ids));
     }
     else
     {
       foreach($ids as $id)
       {
-        array_push($this->_groups, $this->idToGroup($id));
+        array_push($this->_groups, $this->_idToGroup($id));
       }
     }
     //Get all users from all groups
@@ -37,13 +37,13 @@ class Group implements INotifiable
     {
       if(!is_array($group->groupUsers))
       {
-        array_push($this->_users, $this->idToUser($group->groupUsers));
+        array_push($this->_users, $this->_idToUser($group->groupUsers));
       }
       else
       {
         foreach($group->groupUsers as $user)
         {
-          array_push($this->_users, $this->idToUser($user));
+          array_push($this->_users, $this->_idToUser($user));
         }
       }
     }
@@ -57,7 +57,7 @@ class Group implements INotifiable
   {
   }
 
-  private function idToGroup($id)
+  protected function _idToGroup($id)
   {
     $group = NotifyGroup::collection()->loadOneWhere(
       [
@@ -67,7 +67,7 @@ class Group implements INotifiable
     return $group;
   }
 
-  private function idToUser($id)
+  protected function _idToUser($id)
   {
     $user = User::collection()->loadOneWhere(
       [

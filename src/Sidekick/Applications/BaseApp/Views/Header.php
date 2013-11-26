@@ -106,8 +106,8 @@ class Header extends ViewModel
           'dropdown-toggle',
           ('/' . $appPath),
           '',
-        $group . ' <b class="caret"></b>',
-        '<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>'
+          ($group . ' <b class="caret"></b>'),
+          ('<ul class="dropdown-menu">' . $subNavItems->render() . '</ul>')
         );
 
         $subNavItems->clearElements();
@@ -120,7 +120,7 @@ class Header extends ViewModel
           $state,
           '',
           '',
-        '/' . $appPath,
+          ('/' . $appPath),
           $apps[$appPath]->description(),
           $group,
           ''

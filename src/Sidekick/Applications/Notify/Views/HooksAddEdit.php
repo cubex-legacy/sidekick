@@ -25,9 +25,9 @@ class HooksAddEdit extends TemplatedViewModel
 
   public function __construct($mode, $id, $hook)
   {
-    $this->_mode = $mode;
+    $this->_mode   = $mode;
     $this->_hookid = $id;
-    $this->_hook = $hook;
+    $this->_hook   = $hook;
   }
 
   public function getTitle()
@@ -43,10 +43,11 @@ class HooksAddEdit extends TemplatedViewModel
       $form->addHiddenElement("id", $this->_hookid);
       $form->addSelectElement(
         "eventKey",
-        (new OptionBuilder(EventTypes::collection()->getKeyPair(
-          "eventKey",
-          "eventKey"
-        )))->getOptions(),
+        (
+        new OptionBuilder(
+          EventTypes::collection()->getKeyPair("eventKey", "eventKey")
+        )
+        )->getOptions(),
         $this->_hook->eventKey
       );
       $form->addCheckboxElements(
@@ -57,18 +58,20 @@ class HooksAddEdit extends TemplatedViewModel
       $form->addCheckboxElements(
         "users[]",
         $this->_hook->notifyUsers,
-        (new OptionBuilder(User::collection()->getKeyPair(
-          "id",
-          "display_name"
-        )))->getOptions()
+        (
+        new OptionBuilder(
+          User::collection()->getKeyPair("id", "display_name")
+        )
+        )->getOptions()
       );
       $form->addCheckboxElements(
         "groups[]",
         $this->_hook->notifyGroups,
-        (new OptionBuilder(NotifyGroup::collection()->getKeyPair(
-          "id",
-          "groupName"
-        )))->getOptions()
+        (
+        new OptionBuilder(
+          NotifyGroup::collection()->getKeyPair("id", "groupName")
+        )
+        )->getOptions()
       );
     }
     else
@@ -76,10 +79,11 @@ class HooksAddEdit extends TemplatedViewModel
       $form->addHiddenElement("id", "");
       $form->addSelectElement(
         "eventKey",
-        (new OptionBuilder(EventTypes::collection()->getKeyPair(
-          "eventKey",
-          "eventKey"
-        )))->getOptions()
+        (
+        new OptionBuilder(
+          EventTypes::collection()->getKeyPair("eventKey", "eventKey")
+        )
+        )->getOptions()
       );
       $form->addCheckboxElements(
         "notificationTypes[]",
@@ -89,18 +93,20 @@ class HooksAddEdit extends TemplatedViewModel
       $form->addCheckboxElements(
         "users[]",
         null,
-        (new OptionBuilder(User::collection()->getKeyPair(
-          "id",
-          "display_name"
-        )))->getOptions()
+        (
+        new OptionBuilder(
+          User::collection()->getKeyPair("id", "display_name")
+        )
+        )->getOptions()
       );
       $form->addCheckboxElements(
         "groups[]",
         null,
-        (new OptionBuilder(NotifyGroup::collection()->getKeyPair(
-          "id",
-          "groupName"
-        )))->getOptions()
+        (
+        new OptionBuilder(
+          NotifyGroup::collection()->getKeyPair("id", "groupName")
+        )
+        )->getOptions()
       );
     }
     return $form;

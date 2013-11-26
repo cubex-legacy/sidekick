@@ -34,7 +34,7 @@ class ConfigItemsManager extends TemplatedViewModel
   {
     $form = new Form(
       'addConfigItem',
-    $this->baseUri() . '/adding-config-item'
+      ($this->baseUri() . '/adding-config-item')
     );
     $form->setDefaultElementTemplate("{{input}}");
     $form->addHiddenElement('groupId', $this->configGroup->id());
@@ -56,7 +56,7 @@ class ConfigItemsManager extends TemplatedViewModel
   {
     $form = new Form(
       'updateConfigItems',
-    $this->baseUri() . '/update-config-items'
+      ($this->baseUri() . '/update-config-items')
     );
     $form->setDefaultElementTemplate("{{input}}");
     $form->addHiddenElement('groupId', $this->configGroup->id());
@@ -89,12 +89,12 @@ class ConfigItemsManager extends TemplatedViewModel
     {
       $breadcrumbs->addItem(
         $this->parentProject->name,
-      $this->baseUri() . '/project/' . $this->parentProject->id()
+        ($this->baseUri() . '/project/' . $this->parentProject->id())
       );
     }
     $breadcrumbs->addItem(
       $this->project->name . ' Config Groups',
-    $this->baseUri() . '/config-groups/' . $this->project->id()
+      ($this->baseUri() . '/config-groups/' . $this->project->id())
     );
 
     $breadcrumbs->addItem($this->configGroup->groupName);

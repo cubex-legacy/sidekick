@@ -73,11 +73,11 @@ class EventoSummaryController extends EventoController
 
     //get users subscribed to this event type
     $users = EventSubscription::collection(
-               [
-               'eventTypeId' => $event->eventTypeId,
-               'severity'    => $event->severity
-               ]
-             )->getUniqueField('userId');
+      [
+      'eventTypeId' => $event->eventTypeId,
+      'severity'    => $event->severity
+      ]
+    )->getUniqueField('userId');
 
     foreach($users as $userId)
     {

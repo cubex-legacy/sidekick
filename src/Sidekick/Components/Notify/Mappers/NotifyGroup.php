@@ -14,7 +14,7 @@ class NotifyGroup extends RecordMapper
   public $groupName;
   public $groupUsers;
 
-  public function _configure()
+  protected function _configure()
   {
     $this->_setSerializer("groupUsers");
   }

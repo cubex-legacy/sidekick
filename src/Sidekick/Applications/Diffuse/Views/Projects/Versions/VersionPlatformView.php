@@ -149,10 +149,12 @@ class VersionPlatformView extends TemplatedViewModel
         (Strings::titleize($state['role']) . " Approval: ")
       );
       $approvalBox->nest(
-        new Impart($message ? : implode_list(
-          User::collection()->loadIds($state['approvers'])
-          ->getUniqueField("displayName")
-        ))
+        new Impart(
+          $message ? : implode_list(
+            User::collection()->loadIds($state['approvers'])
+            ->getUniqueField("displayName")
+          )
+        )
       );
       $approvalBox->nestElement("span", ['class' => 'pull-right'], $status);
       $boxes->add($approvalBox);

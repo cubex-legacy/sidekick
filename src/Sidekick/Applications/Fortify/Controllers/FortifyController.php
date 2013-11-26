@@ -215,7 +215,7 @@ class FortifyController extends BaseControl
           {
             return new ReportErrorPage(
               $command->name,
-            $reportProvider->getReportFile() . ' does not exist',
+              ($reportProvider->getReportFile() . ' does not exist'),
               $this->request()->path(4)
             );
           }

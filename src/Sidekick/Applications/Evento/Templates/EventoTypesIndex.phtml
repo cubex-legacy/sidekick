@@ -16,7 +16,7 @@
 <div style="margin-top:10px;"></div>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
-    <?= Session::getFlash('msg')->text; ?>
+    <?= Session::getFlash('msg')->message; ?>
   </div>
 <?php endif; ?>
 <table class="table">

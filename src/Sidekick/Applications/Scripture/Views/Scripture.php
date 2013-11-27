@@ -30,6 +30,10 @@ class Scripture extends ViewModel
 
   public function replacements($content)
   {
+    if($content === null)
+    {
+      return null;
+    }
     return str_replace('{baseuri}', $this->baseUri(), $content);
   }
 

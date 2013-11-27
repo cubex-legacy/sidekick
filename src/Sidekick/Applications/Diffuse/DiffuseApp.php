@@ -6,36 +6,33 @@
 namespace Sidekick\Applications\Diffuse;
 
 use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\SidekickApplication;
+use Sidekick\Applications\BaseApp\ProjectAwareApplication;
 use Sidekick\Applications\Diffuse\Controllers\DefaultController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class DiffuseApp extends SidekickApplication
+class DiffuseApp extends ProjectAwareApplication
 {
   public function getRoutes()
   {
     return [
-      '/'                        => 'DefaultController',
-      '/hosts/(.*)'              => 'HostController',
-      '/platforms/(.*)'          => 'PlatformController',
-      '/projects/:projectId@num' => [
-        '/configuration'       => [
-          '/approval/(.*)' => 'Projects\Configuration\ApprovalController',
-          '/platform/(.*)' => 'Projects\Configuration\PlatformConfigController',
-          '/deployment'    => [
-            '/stages/(.*)' => 'Projects\Configuration\DeploymentController',
-            '/hosts/(.*)' => 'Projects\Configuration\DeploymentHostsController',
-            '(.*)'         => 'Projects\Configuration\DeploymentController',
-          ],
-          ''               => 'Projects\Configuration\DeploymentController',
+      '/hosts/(.*)'          => 'HostController',
+      '/platforms/(.*)'      => 'PlatformController',
+      '/configuration'       => [
+        '/approval/(.*)' => 'Projects\Configuration\ApprovalController',
+        '/platform/(.*)' => 'Projects\Configuration\PlatformConfigController',
+        '/deployment'    => [
+          '/stages/(.*)' => 'Projects\Configuration\DeploymentController',
+          '/hosts/(.*)'  => 'Projects\Configuration\DeploymentHostsController',
+          '(.*)'         => 'Projects\Configuration\DeploymentController',
         ],
-        '/d/:deploymentId@num' => 'Projects\Deployments\DeploymentController',
-        '/v/:versionId@num'    => [
-          '/p/:platformId@num/(.*)' => 'Projects\Versions\VersionPlatformController',
-          '/(.*)'                   => 'Projects\Versions\VersionDetailController',
-        ],
-        '/'                    => 'Projects\OverviewController',
+        ''               => 'Projects\Configuration\DeploymentController',
       ],
+      '/d/:deploymentId@num' => 'Projects\Deployments\DeploymentController',
+      '/v/:versionId@num'    => [
+        '/p/:platformId@num/(.*)' => 'Projects\Versions\VersionPlatformController',
+        '/(.*)'                   => 'Projects\Versions\VersionDetailController',
+      ],
+      '/'                    => 'Projects\OverviewController',
     ];
   }
 

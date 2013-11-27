@@ -5,12 +5,10 @@
 
 namespace Sidekick\Applications\Diffuse\Controllers;
 
-use Cubex\View\RenderGroup;
-use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
-use Sidekick\Components\Projects\Mappers\Project;
 
-class DiffuseController extends BaseControl
+class DiffuseController extends ProjectAwareBaseControl
 {
   protected $_titlePrefix = 'Diffuse';
 
@@ -22,26 +20,13 @@ class DiffuseController extends BaseControl
 
   public function getSidebar()
   {
-    $projects    = Project::collection()->loadAll()->setOrderBy('name');
-    $sidebarMenu = [];
-    foreach($projects as $project)
-    {
-      $sidebarMenu['/diffuse/projects/' . $project->id] = $project->name;
-    }
-
-    $main = new Sidebar(
-      $this->request()->path(2),
+    return new Sidebar(
+      $this->request()->path(3),
       [
-      '/diffuse'           => 'Pending Versions',
-      '/diffuse/platforms' => 'Manage Platforms',
-      '/diffuse/hosts'     => 'Manage Hosts'
+      $this->appBaseUri() . ''           => 'Available Versions',
+      $this->appBaseUri() . '/platforms' => 'Manage Platforms',
+      $this->appBaseUri() . '/hosts'     => 'Manage Hosts'
       ]
-    );
-
-    return new RenderGroup(
-      $main,
-      '<hr>',
-      new Sidebar($this->request()->path(3), $sidebarMenu)
     );
   }
 }

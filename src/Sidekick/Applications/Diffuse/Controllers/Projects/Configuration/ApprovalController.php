@@ -23,7 +23,7 @@ class ApprovalController extends DiffuseController
 {
   public function renderIndex()
   {
-    $project   = new Project($this->getInt("projectId"));
+    $project   = new Project($this->getProjectId());
     $platforms = Platform::orderedCollection();
     $approvals = ApprovalConfiguration::collection(
       ['project_id' => $project->id()]
@@ -47,7 +47,7 @@ class ApprovalController extends DiffuseController
 
         $id = [
           $platform,
-          $this->getInt("projectId"),
+          $this->getProjectId(),
           $role
         ];
 

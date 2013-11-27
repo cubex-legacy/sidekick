@@ -36,8 +36,10 @@
   <?php foreach($this->getMatchingVersions() as $version): ?>
     <tr>
       <td><?= $version->project ?></td>
-      <td><a
-        href="/diffuse/projects/<?= $version->projectid . "/v/" . $version->versionid ?>"><?= $version->version ?></a>
+      <td>
+        <a href="<?= $this->appBaseUri() . "/v/" . $version->versionid ?>">
+          <?= $version->version ?>
+        </a>
       </td>
       <td><?= $version->type ?></td>
       <td>

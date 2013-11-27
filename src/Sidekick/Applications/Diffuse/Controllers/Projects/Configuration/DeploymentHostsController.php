@@ -22,7 +22,7 @@ class DeploymentHostsController extends DiffuseController
 {
   public function renderIndex()
   {
-    $projectId = $this->getInt("projectId");
+    $projectId = $this->getProjectId();
     $project   = new Project($projectId);
     $hosts     = Server::collection();
     $platforms = Platform::orderedCollection();
@@ -37,7 +37,7 @@ class DeploymentHostsController extends DiffuseController
 
   public function postCreate()
   {
-    $projectId = $this->getInt('projectId');
+    $projectId = $this->getProjectId();
 
     //out with the old...
     $oldHostPlatfoms = HostPlatform::collection(['project_id' => $projectId]);

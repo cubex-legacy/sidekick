@@ -27,7 +27,7 @@ class DeploymentController extends DiffuseController
 {
   public function renderIndex()
   {
-    $projectId = $this->getInt("projectId");
+    $projectId = $this->getProjectId();
     $project   = new Project($projectId);
     $stages    = DeploymentStage::collection(['project_id' => $projectId]);
     $platforms = Platform::orderedCollection();
@@ -93,7 +93,7 @@ class DeploymentController extends DiffuseController
     {
       $stage = new DeploymentStage();
       //get max order and plus one it
-      $projectId    = $this->getInt('projectId');
+      $projectId    = $this->getProjectId();
       $lastStage    = DeploymentStage::collection(
         [
         'project_id'  => $projectId,
@@ -104,7 +104,7 @@ class DeploymentController extends DiffuseController
     }
 
     $stage->platformId          = $postData["platformId"];
-    $stage->projectId           = $this->getInt("projectId");
+    $stage->projectId           = $this->getProjectId();
     $stage->serviceClass        = $postData["serviceClass"];
     $stage->requireAllHostsPass = $postData["requireAllHostsPass"];
     $stage->configuration       = $config;
@@ -141,7 +141,7 @@ class DeploymentController extends DiffuseController
   public function renderOrder()
   {
     $stageId    = $this->getInt('id');
-    $projectId  = $this->getInt('projectId');
+    $projectId  = $this->getProjectId();
     $platformId = $this->getInt('platformId');
     $direction  = $this->getStr('direction');
 

@@ -19,7 +19,7 @@ class OverviewController extends DiffuseController
 
   public function preProcess()
   {
-    $this->_projectId = $this->getInt("projectId");
+    $this->_projectId = $this->getProjectId();
   }
 
   public function renderIndex()

@@ -21,7 +21,7 @@ class PlatformConfigController extends DiffuseController
 {
   public function renderIndex()
   {
-    $project   = new Project($this->getInt("projectId"));
+    $project   = new Project($this->getProjectId());
     $platforms = Platform::orderedCollection();
     $configs   = PlatformProjectConfig::collection(
       ['project_id' => $project->id()]
@@ -38,7 +38,7 @@ class PlatformConfigController extends DiffuseController
   {
     if($this->request()->isForm() && Form::csrfCheck())
     {
-      $projectId = $this->getInt("projectId");
+      $projectId = $this->getProjectId();
       $updates   = [];
       foreach($this->postVariables() as $platKey => $value)
       {

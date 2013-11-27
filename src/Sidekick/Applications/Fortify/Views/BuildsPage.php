@@ -54,7 +54,11 @@ class BuildsPage extends ViewModel
       '<a class="btn" href="%s"><i class="icon-wrench"></i> %s</a>'
     );
 
-    $buttons = [$baseUri . '/repository' => 'Repository'];
+    $buttons = [
+      $this->appBaseUri() . '/builds'   => 'Builds',
+      $this->appBaseUri() . '/commands' => 'Commands',
+      $baseUri . '/repository'          => 'Repository',
+    ];
     foreach($buttons as $href => $txt)
     {
       $partial->addElement($href, $txt);

@@ -5,9 +5,9 @@
 
 namespace Sidekick\Applications\Api;
 
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 
-class ApiApp extends BaseApp
+class ApiApp extends SidekickApplication
 {
   public function getRoutes()
   {

@@ -6,11 +6,11 @@
 namespace Sidekick\Applications\Diffuse;
 
 use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Diffuse\Controllers\DefaultController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class DiffuseApp extends BaseApp
+class DiffuseApp extends SidekickApplication
 {
   public function getRoutes()
   {

@@ -10,7 +10,7 @@ namespace Sidekick\Components\Notify;
 use Cubex\Facade\Auth;
 use Cubex\Facade\Queue;
 use Cubex\Queue\StdQueue;
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Components\Notify\Mappers\EventTypes;
 
 class Notify
@@ -49,7 +49,7 @@ class Notify
   }
 
   public static function send(
-    $userId, INotifyMessage $message, BaseApp $app = null
+    $userId, INotifyMessage $message, SidekickApplication $app = null
   )
   {
   }

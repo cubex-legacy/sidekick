@@ -5,10 +5,10 @@
 
 namespace Sidekick\Applications\Rosetta;
 
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Rosetta\Controllers\DefaultController;
 
-class RosettaApp extends BaseApp
+class RosettaApp extends SidekickApplication
 {
   protected $_composer;
 

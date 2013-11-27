@@ -33,7 +33,7 @@ class Header extends ViewModel
     $structure = [];
 
     /**
-     * @var $apps \Sidekick\Applications\BaseApp\BaseApp[]
+     * @var $apps \Sidekick\Applications\BaseApp\SidekickApplication[]
      */
     $apps = $this->_project->getApplications();
     foreach($apps as $appPath => $app)

@@ -5,10 +5,10 @@
 
 namespace Sidekick\Applications\Overview;
 
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Overview\Controllers\OverviewController;
 
-class OverviewApp extends BaseApp
+class OverviewApp extends SidekickApplication
 {
   protected $_composer;
 

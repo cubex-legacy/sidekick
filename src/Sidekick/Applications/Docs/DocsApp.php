@@ -6,11 +6,11 @@
 
 namespace Sidekick\Applications\Docs;
 
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Docs\Controllers\DefaultController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class DocsApp extends BaseApp
+class DocsApp extends SidekickApplication
 {
   public function name()
   {

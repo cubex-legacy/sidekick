@@ -5,10 +5,10 @@
 
 namespace Sidekick\Applications\Dispatcher;
 
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Dispatcher\Controllers\DefaultController;
 
-class DispatcherApp extends BaseApp
+class DispatcherApp extends SidekickApplication
 {
   public function defaultController()
   {

@@ -6,11 +6,11 @@
 namespace Sidekick\Applications\Configurator;
 
 use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Configurator\Controllers\DefaultController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class ConfiguratorApp extends BaseApp
+class ConfiguratorApp extends SidekickApplication
 {
   public function name()
   {

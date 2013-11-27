@@ -5,12 +5,12 @@
 
 namespace Sidekick\Applications\Phuse;
 
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Phuse\Controllers\ComposedController;
 use Sidekick\Applications\Phuse\Controllers\DefaultController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class PhuseApp extends BaseApp
+class PhuseApp extends SidekickApplication
 {
   protected $_composer;
 

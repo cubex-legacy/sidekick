@@ -6,11 +6,11 @@
 namespace Sidekick\Applications\Users;
 
 use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Users\Controllers\DefaultController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class UsersApp extends BaseApp
+class UsersApp extends SidekickApplication
 {
   public function defaultController()
   {

@@ -6,11 +6,11 @@
 namespace Sidekick\Applications\Fortify;
 
 use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Fortify\Controllers\FortifyController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class FortifyApp extends BaseApp
+class FortifyApp extends SidekickApplication
 {
   public function name()
   {

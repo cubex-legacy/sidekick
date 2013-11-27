@@ -30,7 +30,7 @@ class BaseControl extends WebpageController
   }
 
   /**
-   * @return \Sidekick\Applications\BaseApp\BaseApp
+   * @return \Sidekick\Applications\BaseApp\SidekickApplication
    */
   public function application()
   {

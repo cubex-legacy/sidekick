@@ -6,11 +6,11 @@
 namespace Sidekick\Applications\Scripture;
 
 use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Scripture\Controllers\ScriptureController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class ScriptureApp extends BaseApp
+class ScriptureApp extends SidekickApplication
 {
   protected $_composer;
 

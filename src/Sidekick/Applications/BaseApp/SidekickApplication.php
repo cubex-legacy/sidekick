@@ -10,7 +10,7 @@ use Cubex\Core\Application\Application;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Themed\Sidekick\SidekickTheme;
 
-class BaseApp extends Application
+class SidekickApplication extends Application
 {
   public function __construct()
   {

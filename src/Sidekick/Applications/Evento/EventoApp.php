@@ -5,10 +5,10 @@
 
 namespace Sidekick\Applications\Evento;
 
-use Sidekick\Applications\BaseApp\BaseApp;
+use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Evento\Controllers\EventoSummaryController;
 
-class EventoApp extends BaseApp
+class EventoApp extends SidekickApplication
 {
   public function getNavGroup()
   {

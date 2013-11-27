@@ -39,7 +39,7 @@
 <ul class="inline text-center">
   <li>Repo: <a href="/repository/commits/<?=
     $this->getVersion()->repoId; ?>"><?=
-      $this->getVersion()->repo()->name; ?></a></li>
+      idp($this->getVersion()->repo(), "name","Unknown Repo"); ?></a></li>
   <li>Source Build: <a
     href="/fortify/<?= $this->getVersion()->projectId; ?>/<?=
     $this->getVersion()->fortifyBuild()->buildId; ?>/<?=

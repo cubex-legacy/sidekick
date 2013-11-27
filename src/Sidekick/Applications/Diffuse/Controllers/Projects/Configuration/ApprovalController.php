@@ -30,7 +30,7 @@ class ApprovalController extends DiffuseController
     );
     $users     = ProjectUser::collection(['project_id' => $project->id()]);
     return new RenderGroup(
-      $this->createView(new ProjectNav($this->request()->path(3), $project)),
+      $this->createView(new ProjectNav($this->appBaseUri(), $project)),
       $this->createView(
         new ApprovalConfigurationView($project, $approvals, $platforms, $users)
       )

@@ -30,7 +30,7 @@ class OverviewController extends DiffuseController
       $versions = Version::collection(['project_id' => $this->_projectId])
       ->setOrderBy("id", "DESC")->setLimit(0, 50)->preFetch("platformStates");
       return new RenderGroup(
-        $this->createView(new ProjectNav($this->baseUri(), $project)),
+        $this->createView(new ProjectNav($this->appBaseUri(), $project)),
         $this->createView(
           new OverviewView($project, $versions, Platform::orderedCollection())
         )

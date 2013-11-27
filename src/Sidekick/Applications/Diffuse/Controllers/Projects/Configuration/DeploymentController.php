@@ -33,7 +33,7 @@ class DeploymentController extends DiffuseController
     $platforms = Platform::orderedCollection();
 
     return new RenderGroup(
-      $this->createView(new ProjectNav($this->request()->path(3), $project)),
+      $this->createView(new ProjectNav($this->appBaseUri(), $project)),
       $this->createView(
         new DeploymentConfigurationView($project, $platforms, $stages)
       )

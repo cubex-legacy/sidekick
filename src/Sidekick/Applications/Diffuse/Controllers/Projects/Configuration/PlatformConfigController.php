@@ -27,7 +27,7 @@ class PlatformConfigController extends DiffuseController
       ['project_id' => $project->id()]
     );
     return new RenderGroup(
-      $this->createView(new ProjectNav($this->request()->path(3), $project)),
+      $this->createView(new ProjectNav($this->appBaseUri(), $project)),
       $this->createView(
         new PlatformConfigurationView($project, $configs, $platforms)
       )

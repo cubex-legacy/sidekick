@@ -17,6 +17,14 @@ class SidekickApplication extends Application
     $this->_listen(__NAMESPACE__);
   }
 
+  /**
+   * @return \Sidekick\Project
+   */
+  public function project()
+  {
+    return parent::project();
+  }
+
   public function getRoutes()
   {
     return [

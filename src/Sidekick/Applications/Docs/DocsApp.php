@@ -6,11 +6,11 @@
 
 namespace Sidekick\Applications\Docs;
 
-use Sidekick\Applications\BaseApp\SidekickApplication;
+use Sidekick\Applications\BaseApp\ProjectAwareApplication;
 use Sidekick\Applications\Docs\Controllers\DefaultController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class DocsApp extends SidekickApplication
+class DocsApp extends ProjectAwareApplication
 {
   public function name()
   {

@@ -13,28 +13,22 @@ use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
 
-class DefaultController extends BaseControl
+class DefaultController extends ProjectAwareBaseControl
 {
   public function getSidebar()
   {
-    $projects    = Project::collection()->loadAll()->setOrderBy('name');
-    $sidebarMenu = [];
-    foreach($projects as $project)
-    {
-      $sidebarMenu[$this->baseUri() . '/' . $project->id()] = $project->name;
-    }
-
-    return new Sidebar($this->request()->path(2), $sidebarMenu);
+    return null;
   }
 
   public function renderIndex()
   {
-    $projectId = $this->getInt('projectId');
+    $projectId = $this->getProjectId();
     $versions  = Version::collection(['project_id' => $projectId]);
     $versions->setOrderBy('id', "DESC");
 
@@ -53,8 +47,7 @@ class DefaultController extends BaseControl
         if(file_exists($docIndex))
         {
           $versionList->addElement(
-            $this->baseUri() . '/' . $projectId . '/' . $version->id(
-            ) . '/view',
+            $this->application()->baseUri() . '/' . $version->id() . '/view',
             VersionHelper::getVersionString($version)
           );
         }
@@ -80,7 +73,7 @@ class DefaultController extends BaseControl
 
   public function renderDocview()
   {
-    $projectId = $this->getInt('projectId');
+    $projectId = $this->getProjectId();
     $versionId = $this->getInt('versionId');
 
     $project = new Project($projectId);
@@ -88,7 +81,7 @@ class DefaultController extends BaseControl
     $iframe  = new HtmlElement(
       'iframe',
       [
-      'src'   => "/docs/$projectId/$versionId/",
+      'src'   => $this->application()->baseUri() . "/$versionId/",
       'style' => 'width:100%; height:800px; border:0;'
       ]
     );
@@ -96,7 +89,9 @@ class DefaultController extends BaseControl
     $versionString = VersionHelper::getVersionString($version);
     return new RenderGroup(
       "<h1>$project->name v$versionString
-      <a class='pull-right' title='Full Screen' href='/docs/$projectId/$versionId/'>
+      <a class='pull-right' title='Full Screen' href='" .
+      $this->application()->baseUri()
+      . "/$versionId/'>
       <i class='icon icon-fullscreen'></i></a></h1>",
       $iframe
     );
@@ -138,10 +133,10 @@ class DefaultController extends BaseControl
   public function getRoutes()
   {
     return [
-      ':projectId/:versionId/view'      => 'docview',
-      ':projectId/:versionId/'          => 'doc',
-      ':projectId/:versionId/:file@all' => 'doc',
-      ':projectId'                      => 'index',
+      ':versionId/view'      => 'docview',
+      ':versionId/'          => 'doc',
+      ':versionId/:file@all' => 'doc',
+      ''                     => 'index',
     ];
   }
 }

@@ -7,19 +7,19 @@ namespace Sidekick\Applications\Scripture\Controllers;
 
 use Cubex\Helpers\Strings;
 use Cubex\View\TemplatedView;
-use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
 use Sidekick\Applications\Scripture\Views\Scripture;
 use Sidekick\Applications\Scripture\Views\ScriptureRepos;
 use Sidekick\Components\Projects\Mappers\Project;
-use Sidekick\Components\Repository\Mappers\Source;
 
-class ScriptureController extends BaseControl
+class ScriptureController extends ProjectAwareBaseControl
 {
   protected $_titlePrefix = 'Scripture';
 
-  public function renderScripture($id = null, $file = 'README')
+  public function renderScripture($file = 'README')
   {
     $this->setTitle('Scripture');
+    $id = $this->getProjectId();
     if($id !== null)
     {
       $source = (new Project($id))->repository();
@@ -62,21 +62,18 @@ class ScriptureController extends BaseControl
     return new TemplatedView("Homepage", $this);
   }
 
+
+
   public function getSidebar()
   {
-    return $this->createView(
-      new ScriptureRepos(
-        Project::collection()->preFetch('repository')->setOrderBy("name"),
-        $this->getInt('id')
-      )
-    );
+    return null;
   }
 
   public function getRoutes()
   {
     return [
-      ''                   => 'scripture',
-      '{id}/(?P<file>.*)/' => 'scripture',
+      ''              => 'scripture',
+      '(?P<file>.*)/' => 'scripture',
     ];
   }
 }

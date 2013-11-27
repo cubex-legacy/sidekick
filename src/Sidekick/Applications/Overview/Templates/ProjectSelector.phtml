@@ -1,0 +1,30 @@
+<?php
+/**
+ * @author: brooke.bryan
+ * Application: Overview
+ * @var $this \Sidekick\Applications\Overview\Views\ProjectSelector
+ */
+?>
+<table class="table table-striped table-condensed">
+  <?php foreach($this->sections() as $section): ?>
+    <thead>
+    <tr>
+      <th colspan="3">
+        <h2><?= \Cubex\Helpers\Strings::titleize($section); ?></h2>
+      </th>
+    </tr>
+    <tr>
+      <th>PID</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <?php foreach($this->projects($section) as $project): ?>
+      <tr>
+        <td><a href="/P<?= $project->id(); ?>"><?= $project->id(); ?></a></td>
+        <td><a href="/P<?= $project->id(); ?>"><?= $project->name; ?></a></td>
+        <td><?= $project->description; ?></td>
+      </tr>
+    <?php endforeach; ?>
+  <?php endforeach; ?>
+</table>

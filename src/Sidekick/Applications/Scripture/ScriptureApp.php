@@ -5,12 +5,11 @@
 
 namespace Sidekick\Applications\Scripture;
 
-use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\SidekickApplication;
+use Sidekick\Applications\BaseApp\ProjectAwareApplication;
 use Sidekick\Applications\Scripture\Controllers\ScriptureController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class ScriptureApp extends SidekickApplication
+class ScriptureApp extends ProjectAwareApplication
 {
   protected $_composer;
 
@@ -29,13 +28,6 @@ class ScriptureApp extends SidekickApplication
     return "Documentation";
   }
 
-  public function getBundles()
-  {
-    return [
-      //new DebuggerBundle()
-    ];
-  }
-
   public function name()
   {
     return "Scripture";
@@ -44,13 +36,6 @@ class ScriptureApp extends SidekickApplication
   public function description()
   {
     return "Documentation";
-  }
-
-  public function getRoutes()
-  {
-    return [
-      '' => 'ScriptureController',
-    ];
   }
 
   public function userPermitted($userRole)

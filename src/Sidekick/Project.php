@@ -10,6 +10,7 @@ use Cubex\Core\Application\Application;
 use Cubex\Core\Http\Request;
 use Cubex\Facade\Auth;
 use Sidekick\Applications\Api\ApiApp;
+use Sidekick\Applications\BaseApp\ProjectAwareApplication;
 use Sidekick\Applications\Configurator\ConfiguratorApp;
 use Sidekick\Applications\Diffuse\DiffuseApp;
 use Sidekick\Applications\Dispatcher\DispatcherApp;
@@ -31,9 +32,14 @@ use Sidekick\Applications\Users\UsersApp;
 class Project extends \Cubex\Core\Project\Project
 {
   protected $_apps;
+  protected $_projectId;
 
   protected function _configure()
   {
+    if(!CUBEX_CLI)
+    {
+      $this->_attemptProject();
+    }
     $this->addApplication('projects', new ProjectsApp());
     $this->addApplication('phuse', new PhuseApp());
     $this->addApplication('repository', new RepositoryApp());
@@ -47,6 +53,24 @@ class Project extends \Cubex\Core\Project\Project
     $this->addApplication('events', new EventoApp());
     $this->addApplication('notify', new NotifyApp());
     $this->addApplication('rosetta', new RosettaApp());
+  }
+
+  public function getProjectId()
+  {
+    return $this->_projectId;
+  }
+
+  protected function _attemptProject()
+  {
+    $tryProject = $this->request()->path(1);
+    if(starts_with($tryProject, '/P'))
+    {
+      $projectId = (int)substr($tryProject, 2);
+      if($projectId > 0)
+      {
+        $this->_projectId = $projectId;
+      }
+    }
   }
 
   public function getBundles()
@@ -69,6 +93,16 @@ class Project extends \Cubex\Core\Project\Project
 
   public function addApplication($path, Application $application)
   {
+    if($application instanceof ProjectAwareApplication)
+    {
+      //Do not allow projectaware applications to run without a project selected
+      if($this->_projectId < 1)
+      {
+        return $this;
+      }
+      $path = 'P' . $this->_projectId . '/' . $path;
+    }
+
     $this->_apps[$path] = $application;
     return $this;
   }

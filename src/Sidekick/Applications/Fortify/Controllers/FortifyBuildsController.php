@@ -34,21 +34,21 @@ class FortifyBuildsController extends FortifyCrudController
   public function renderShow($id = 0)
   {
     $this->_mapper->load($id);
-    $tbl = new MappersTable(
-      $this->baseUri(),
-      (new RecordCollection($this->_mapper, [$this->_mapper])),
-      $this->_listColumns
+    $tbl = $this->createView(
+      new MappersTable(
+        $this->baseUri(),
+        (new RecordCollection($this->_mapper, [$this->_mapper])),
+        $this->_listColumns
+      )
     );
     return new RenderGroup($this->mapperNav(), $tbl);
   }
 
   public function renderNew()
   {
-    $form = new FortifyForm($this->_mapper, $this->baseUri());
-
     return new RenderGroup(
       '<h1>New ' . $this->_title . '</h1>',
-      $form
+      $this->createView(new FortifyForm($this->_mapper, $this->baseUri()))
     );
   }
 
@@ -58,7 +58,6 @@ class FortifyBuildsController extends FortifyCrudController
 
     $this->_mapper->load($id);
 
-    $form        = new FortifyForm($this->_mapper, $this->baseUri());
     $allCommands = Command::collection()->loadAll()->getKeyPair(
       'id',
       'name'
@@ -82,15 +81,17 @@ class FortifyBuildsController extends FortifyCrudController
     $buildCommandsView   = $this->createView(
       new BuildCommands($buildCommands)
     );
-    $addCommandModalForm = new AddBuildCommandsForm(
-      $id,
-      $unAssignedCommands,
-      $allCommands
+    $addCommandModalForm = $this->createView(
+      new AddBuildCommandsForm(
+        $id,
+        $unAssignedCommands,
+        $allCommands
+      )
     );
 
     return new RenderGroup(
       $this->mapperNav(),
-      $form,
+      $this->createView(new FortifyForm($this->_mapper, $this->baseUri())),
       $addCommandModalForm,
       $buildCommandsView
     );

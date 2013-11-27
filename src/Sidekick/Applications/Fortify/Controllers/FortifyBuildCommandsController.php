@@ -13,7 +13,7 @@ use Cubex\Facade\Redirect;
 use Cubex\Routing\StdRoute;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 
-class FortifyBuildCommandsController extends FortifyController
+class FortifyBuildCommandsController extends FortifyHomeController
 {
 
   public function renderIndex()
@@ -40,7 +40,9 @@ class FortifyBuildCommandsController extends FortifyController
       $depBuildCommand->saveChanges();
     }
 
-    Redirect::to('/fortify/builds/' . $postData['buildId'] . '/edit')->now();
+    Redirect::to(
+      $this->appBaseUri() . '/builds/' . $postData['buildId'] . '/edit'
+    )->now();
   }
 
   public function renderUpdate()
@@ -56,7 +58,7 @@ class FortifyBuildCommandsController extends FortifyController
     $buildCommand = new BuildsCommands([$buildId, $commandId]);
     $buildCommand->delete();
 
-    Redirect::to('/fortify/builds/' . $buildId . '/edit')->now();
+    Redirect::to($this->appBaseUri() . '/builds/' . $buildId . '/edit')->now();
   }
 
   public function getRoutes()

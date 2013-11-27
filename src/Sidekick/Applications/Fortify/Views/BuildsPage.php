@@ -11,6 +11,7 @@ use Cubex\View\HtmlElement;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class BuildsPage extends ViewModel
 {
@@ -35,7 +36,7 @@ class BuildsPage extends ViewModel
       $state = ($build->id() == $this->_buildType) ? 'active' : '';
       $tabItems->addElement(
         $state,
-        ('/fortify/' . $this->_projectId . '/' . $build->id()),
+        ($this->appBaseUri() . '/' . $build->id()),
         $build->name
       );
     }
@@ -106,8 +107,7 @@ class BuildsPage extends ViewModel
 
   public function render()
   {
-    $baseUri = $this->baseUri() . '/' . $this->_projectId .
-    '/' . $this->_buildType;
+    $baseUri = $this->appBaseUri() . '/' . $this->_buildType;
 
     $alert = '';
     if(Session::getFlash('msg'))
@@ -119,8 +119,10 @@ class BuildsPage extends ViewModel
       );
     }
 
+    $project = new Project($this->_projectId);
+
     return new RenderGroup(
-      '<h1>Project Builds</h1>',
+      '<h1>' . $project->name . ' Builds</h1>',
       $this->_buttonGroup($baseUri),
       $this->_tabs(),
       $alert,
@@ -134,7 +136,9 @@ class BuildsPage extends ViewModel
       ),
       $this->_filters($baseUri),
       '<h1>Build History</h1>',
-      new BuildRunsList($this->_buildRuns)
+      (new BuildRunsList($this->_buildRuns))->setHostController(
+        $this->getHostController()
+      )
     );
   }
 }

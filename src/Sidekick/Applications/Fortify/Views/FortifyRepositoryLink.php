@@ -31,7 +31,9 @@ class FortifyRepositoryLink extends TemplatedViewModel
   {
     if($this->_form === null)
     {
-      $this->_form = new Form('buildProjectRepo', '/fortify/repository/create');
+      $this->_form = new Form(
+        'buildProjectRepo', $this->appBaseUri() . '/repository/create'
+      );
       $this->_form->addSelectElement(
         'repository',
         $this->_repoOptions,

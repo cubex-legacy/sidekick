@@ -35,26 +35,7 @@ class FortifyCrudController extends MapperController
 
   public function getSidebar()
   {
-    $projects    = Project::collection()->loadAll()->setOrderBy('name');
-    $sidebarMenu = [];
-    foreach($projects as $project)
-    {
-      $sidebarMenu['/fortify/' . $project->id] = $project->name;
-    }
-
-    $main = new Sidebar(
-      $this->request()->path(2),
-      [
-      '/fortify/builds'   => 'Manage Builds',
-      '/fortify/commands' => 'Manage Commands'
-      ]
-    );
-
-    return new RenderGroup(
-      $main,
-      '<hr>',
-      new Sidebar($this->request()->path(2), $sidebarMenu)
-    );
+    return null;
   }
 
   protected function _saveMapper()

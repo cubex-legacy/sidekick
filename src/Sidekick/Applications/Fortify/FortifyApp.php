@@ -5,12 +5,11 @@
 
 namespace Sidekick\Applications\Fortify;
 
-use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\SidekickApplication;
-use Sidekick\Applications\Fortify\Controllers\FortifyController;
+use Sidekick\Applications\BaseApp\ProjectAwareApplication;
+use Sidekick\Applications\Fortify\Controllers\FortifyHomeController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class FortifyApp extends SidekickApplication
+class FortifyApp extends ProjectAwareApplication
 {
   public function name()
   {
@@ -24,19 +23,12 @@ class FortifyApp extends SidekickApplication
 
   public function defaultController()
   {
-    return new FortifyController();
+    return new FortifyHomeController();
   }
 
   public function getNavGroup()
   {
     return "Development";
-  }
-
-  public function getBundles()
-  {
-    return [
-      //      new DebuggerBundle()
-    ];
   }
 
   public function getRoutes()

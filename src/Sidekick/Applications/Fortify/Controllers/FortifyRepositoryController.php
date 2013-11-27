@@ -12,7 +12,7 @@ use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Projects\Mappers\Project;
 
-class FortifyRepositoryController extends BaseControl
+class FortifyRepositoryController extends FortifyController
 {
 
   public function renderCreate()
@@ -26,8 +26,7 @@ class FortifyRepositoryController extends BaseControl
     $buildRepo->saveChanges();
 
     Redirect::to(
-      '/fortify/' . $postData['projectId'] . '/' .
-      $postData['buildId'] . '/repository'
+      $this->appBaseUri() . '/' . $postData['buildId'] . '/repository'
     )->now();
   }
 

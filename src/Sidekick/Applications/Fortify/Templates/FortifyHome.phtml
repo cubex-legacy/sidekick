@@ -20,7 +20,7 @@
     <tr class="<?= $this->textClass($b->result);  ?>">
       <td>
         <a
-          href="/fortify/<?= $b->project_id ?>/<?= $b->build_id ?>/<?= $b->id; ?>">
+          href="<?= $this->appBaseUri() ?>/<?= $b->build_id ?>/<?= $b->id; ?>">
           <?= $this->project($b->project_id)->name; ?>: Build #<?= $b->id; ?>
         </a>
       </td>

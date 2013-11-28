@@ -94,7 +94,7 @@ abstract class MapperController extends BaseControl
   {
     if(null === $baseUri)
     {
-      $baseUri = $this->_request->path(2) . '/page/';
+      $baseUri = $this->baseUri() . '/page/';
     }
 
     preg_match('!\d+!', $pagenumber, $matches);

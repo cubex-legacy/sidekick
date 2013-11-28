@@ -48,7 +48,8 @@ class BuildChanges extends TemplatedViewModel
     }
     else
     {
-      return "/repository/commits/" . $commit->repository_id .
+      return "/P" . $this->getRepo(
+      )->projectId . "/repository/commits/" . $commit->repository_id .
       "/" . $this->runId . "/" . $commit->id();
     }
   }

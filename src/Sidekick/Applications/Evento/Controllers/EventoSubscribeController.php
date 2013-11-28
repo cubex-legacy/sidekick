@@ -8,7 +8,6 @@ namespace Sidekick\Applications\Evento\Controllers;
 use Cubex\Facade\Redirect;
 use Cubex\Routing\StdRoute;
 use Cubex\Routing\Templates\ResourceTemplate;
-use Sidekick\Applications\Evento\Views\EventoSidebar;
 use Sidekick\Applications\Evento\Views\EventoSubscribeIndex;
 use Sidekick\Components\Enums\Severity;
 use Sidekick\Components\Evento\Mappers\EventSubscription;
@@ -16,12 +15,6 @@ use Sidekick\Components\Evento\Mappers\EventType;
 
 class EventoSubscribeController extends EventoController
 {
-  public function preRender()
-  {
-    parent::preRender();
-    $this->nest('sidebar', new EventoSidebar());
-  }
-
   public function renderIndex()
   {
     $eventTypes         = EventType::collection();

@@ -22,12 +22,6 @@ use Sidekick\Components\Notify\NotifyMessage;
 
 class EventoSummaryController extends EventoController
 {
-  public function preRender()
-  {
-    parent::preRender();
-    $this->nest('sidebar', new EventoSidebar());
-  }
-
   public function renderIndex()
   {
     $events = Event::collection();

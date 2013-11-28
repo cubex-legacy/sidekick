@@ -283,7 +283,7 @@ class Build extends CliCommand
       ],
       [
       $this->_buildPath . DS . $this->_buildSourceDir,
-      dirname(WEB_ROOT) . DS . 'cubex',
+      CUBEX_PROJECT_ROOT . DS . 'cubex',
       CUBEX_ENV,
       (int)$this->project,
       (int)$this->build,

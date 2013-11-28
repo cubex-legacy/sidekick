@@ -100,8 +100,8 @@ class Project extends \Cubex\Core\Project\Project
       {
         return $this;
       }
-      $path = 'P' . $this->_projectId . '/' . $path;
     }
+    $path = 'P' . $this->_projectId . '/' . $path;
 
     $this->_apps[$path] = $application;
     return $this;

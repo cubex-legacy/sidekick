@@ -23,7 +23,7 @@
 <div class="pull-right">
   <label for="">Select Language: </label>
   <select name="lang" id="" onchange="window.location.href='<?=
-  $this->baseUri() ?>/<?= $this->getProjectId() ?>/'+$(this).val()">
+  $this->appBaseUri() ?>/'+$(this).val()">
     <option value="">--SELECT--</option>
     <?php foreach($this->getLanguageOptions() as $code => $language): ?>
       <option value="<?= $code ?>" <?=
@@ -52,8 +52,8 @@
                  data-rowkey="<?= $pending->rowKey ?>"
                  data-lang="<?= $pending->lang ?>"/></td>
       <td>
-        <a href="<?= $this->baseUri() ?>/<?= $this->getProjectId(
-        ) ?>/translations/<?= $pending->rowKey ?>">
+        <a href="<?=
+        $this->appBaseUri() ?>/translations/<?= $pending->rowKey ?>">
           <?= $pending->english ?>
         </a>
       </td>
@@ -64,7 +64,7 @@
       </td>
       <td>
         <a href="<?=
-        $this->baseUri() ?>/<?= $this->getProjectId(
+        $this->appBaseUri(
         ) ?>/approve/<?= $pending->rowKey ?>/<?= $pending->lang ?>"
            class="btn btn-success">
           <i class="icon-ok icon-white"></i>

@@ -15,8 +15,7 @@ use \Sidekick\Components\Rosetta\Helpers\LanguageCodes;
 <button class="btn btn-success approve-selected" disabled="disabled">
   Approve Selected
 </button>
-<a href="<?= $this->baseUri() ?>/<?= $this->getProjectId(
-) ?>/delete/<?= $this->getRowkey(); ?>"
+<a href="<?= $this->appBaseUri() ?>/delete/<?= $this->getRowkey(); ?>"
    title="Delete" class="btn btn-danger">
   <i class="icon-trash"></i> Delete All</a>
 <div style="margin-top:5px;"></div>
@@ -56,8 +55,7 @@ use \Sidekick\Components\Rosetta\Helpers\LanguageCodes;
       </td>
       <td>
         <a href="<?=
-        $this->baseUri() ?>/<?=
-        $this->getProjectId() ?>/retranslate/<?=
+        $this->appBaseUri() ?>/retranslate/<?=
         $this->getRowkey() ?>/<?= $pending->lang; ?>"
            title="Re-Translate" class="btn"><i class="icon-refresh"></i></a>
       </td>

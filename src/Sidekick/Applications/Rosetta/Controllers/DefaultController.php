@@ -11,6 +11,7 @@ use Cubex\Core\Http\Response;
 use Cubex\View\RenderGroup;
 use Cubex\View\Templates\Errors\Error404;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Rosetta\Views\RosettaIndex;
 use Sidekick\Applications\Rosetta\Views\Translations;
@@ -20,7 +21,7 @@ use Sidekick\Components\Rosetta\Helpers\TranslatorHelper;
 use Sidekick\Components\Rosetta\Mappers\PendingTranslation;
 use Sidekick\Components\Rosetta\Mappers\Translation;
 
-class DefaultController extends BaseControl
+class DefaultController extends ProjectAwareBaseControl
 {
   protected $_titlePrefix = 'Rosetta';
   private $_lang;
@@ -33,14 +34,7 @@ class DefaultController extends BaseControl
 
   public function getSidebar()
   {
-    $projects    = Project::collection()->loadAll()->setOrderBy('name');
-    $sidebarMenu = [];
-    foreach($projects as $project)
-    {
-      $sidebarMenu['/rosetta/' . $project->id] = $project->name;
-    }
-
-    return new Sidebar($this->request()->path(2), $sidebarMenu);
+    return null;
   }
 
   public function renderIndex()
@@ -73,7 +67,7 @@ class DefaultController extends BaseControl
       );
     }
 
-    $projectId           = $this->getInt('projectId');
+    $projectId           = $this->getProjectId();
     $pendingTranslations = PendingTranslation::collection(
       ['lang' => $this->_lang, 'project_id' => $projectId]
     );
@@ -86,8 +80,7 @@ class DefaultController extends BaseControl
     $page      = $this->getInt('page', 1);
     $perPage   = 100;
     $count     = $pendingTranslations->count();
-    $baseUri   = $this->baseUri() . '/'
-      . $projectId . '/' . $this->_lang . '/page/';
+    $baseUri   = $this->appBaseUri() . '/' . $this->_lang . '/page/';
     $paginator = $this->_getPaginator($page, $count, $perPage, $baseUri);
     $pendingTranslations->setLimit($paginator->getOffset(), $perPage);
 
@@ -113,13 +106,13 @@ class DefaultController extends BaseControl
     $result = [];
     foreach($pendingTranslations as $pending)
     {
-      $translationCf  = Translation::cf();
-      $translation = $translationCf->get(
+      $translationCf = Translation::cf();
+      $translation   = $translationCf->get(
         $pending->rowKey,
         ['lang:' . $pending->lang, 'lang:en']
       );
 
-      $englishData = idx($translation, 'lang:en');
+      $englishData    = idx($translation, 'lang:en');
       $translatedData = idx($translation, 'lang:' . $pending->lang);
 
       if($englishData && $translatedData)
@@ -150,13 +143,12 @@ class DefaultController extends BaseControl
 
   public function renderApprove()
   {
-    $rowKey    = $this->getStr('rowKey');
-    $lang      = $this->getStr('lang');
-    $projectId = $this->getInt('projectId');
+    $rowKey = $this->getStr('rowKey');
+    $lang   = $this->getStr('lang');
 
     $this->_approve($rowKey, $lang);
 
-    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $lang)->now();
+    Redirect::to($this->appBaseUri() . '/' . '/' . $lang)->now();
   }
 
   public function ajaxApprove()
@@ -199,9 +191,8 @@ class DefaultController extends BaseControl
 
   public function renderRetranslate()
   {
-    $rowKey    = $this->getStr('rowKey');
-    $lang      = $this->getStr('lang');
-    $projectId = $this->getInt('projectId');
+    $rowKey = $this->getStr('rowKey');
+    $lang   = $this->getStr('lang');
 
     //get english data
     $translationCf = Translation::cf();
@@ -219,17 +210,16 @@ class DefaultController extends BaseControl
     );
 
     Redirect::to(
-      $this->baseUri() . '/' . $projectId . '/translations/' . $rowKey
+      $this->appBaseUri() . '/' . '/translations/' . $rowKey
     )->now();
   }
 
   public function renderDelete()
   {
     $rowKey    = $this->getStr('rowKey');
-    $projectId = $this->getInt('projectId');
 
     $this->_deleteAllTranslation($rowKey);
-    Redirect::to($this->baseUri() . '/' . $projectId)->now();
+    Redirect::to($this->appBaseUri())->now();
   }
 
   private function _deleteAllTranslation($rowKey)
@@ -296,7 +286,7 @@ class DefaultController extends BaseControl
   {
     $this->requireJs('editing');
     $rowKey    = $this->getStr('rowKey');
-    $projectId = $this->getInt('projectId');
+    $projectId = $this->getProjectId();
 
     $translations = new Translation($rowKey);
     if($translations->exists())
@@ -309,17 +299,17 @@ class DefaultController extends BaseControl
   public function getRoutes()
   {
     return [
-      '/:projectId'                           => 'index',
-      '/:projectId/:lang'                     => 'index',
-      '/:projectId/:lang/page/:page'          => 'index',
-      '/:projectId/approve/:rowKey/:lang'     => 'approve',
-      '/:projectId/retranslate/:rowKey/:lang' => 'retranslate',
-      '/:projectId/delete/:rowKey'            => 'delete',
-      '/approve'                              => 'approve',
-      '/:projectId/translations/:rowKey'      => 'translations',
-      '/search/'                              => 'search',
-      '/search/:term/'                        => 'search',
-      '/edit/'                                => 'edit',
+      '/'                          => 'index',
+      '/:lang'                     => 'index',
+      '/:lang/page/:page'          => 'index',
+      '/approve/:rowKey/:lang'     => 'approve',
+      '/retranslate/:rowKey/:lang' => 'retranslate',
+      '/delete/:rowKey'            => 'delete',
+      '/approve'                   => 'approve',
+      '/translations/:rowKey'      => 'translations',
+      '/search/'                   => 'search',
+      '/search/:term/'             => 'search',
+      '/edit/'                     => 'edit',
     ];
   }
 }

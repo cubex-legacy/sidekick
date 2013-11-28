@@ -74,7 +74,8 @@ class DeployQueue extends CliCommand
 
     Log::debug("Starting Deployment");
 
-    $command = 'php "' . WEB_ROOT . DS . 'cubex" ' . implode(' ', $rawArgs);
+    $command = 'php "' . CUBEX_PROJECT_ROOT . DS . 'cubex" ';
+    $command .= implode(' ', $rawArgs);
 
     Log::debug("Executing: $command");
 

@@ -7,7 +7,6 @@ namespace Sidekick\Applications\Fortify\Controllers;
 
 use Cubex\Facade\Queue;
 use Cubex\Facade\Redirect;
-use Cubex\Facade\Session;
 use Cubex\Form\Form;
 use Cubex\Mapper\Collection;
 use Cubex\Queue\StdQueue;
@@ -15,8 +14,6 @@ use Cubex\Routing\StdRoute;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Applications\BaseApp\Controllers\BaseControl;
-use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Fortify\Reports\FortifyReport;
 use Sidekick\Applications\Fortify\Views\BuildChanges;
 use Sidekick\Applications\Fortify\Views\BuildDetailsView;
@@ -148,7 +145,18 @@ class FortifyHomeController extends FortifyController
     $commits = $changes->buildCommitRange();
 
     $repo = (new Project($projectId))->repository();
-    $view = $this->createView(new BuildChanges($repo, $runId, $commits));
+    if($repo)
+    {
+      $view = new BuildChanges($repo, $runId, $commits);
+    }
+    else
+    {
+      $view = new RenderGroup(
+        new HtmlElement(
+          'h3', ['class' => 'text-error'], 'No Repo is linked to this project'
+        )
+      );
+    }
 
     return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }
@@ -289,7 +297,7 @@ class FortifyHomeController extends FortifyController
         $msg       = new \stdClass();
         $msg->type = 'error';
         $msg->text = 'Your Build Request could not be processed.' .
-        ' No Repository is linked to this build type';
+          ' No Repository is linked to this build type';
       }
     }
     catch(\Exception $e)
@@ -304,7 +312,7 @@ class FortifyHomeController extends FortifyController
       $msg       = new \stdClass();
       $msg->type = 'error';
       $msg->text = 'Your Build Request could not be processed.' .
-      'More than one Repository is linked to this build type';
+        'More than one Repository is linked to this build type';
     }
 
     Redirect::to($this->baseUri() . '/' . $projectId . '/' . $buildId)

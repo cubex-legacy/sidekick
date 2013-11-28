@@ -297,7 +297,7 @@ class FortifyHomeController extends FortifyController
         $msg       = new \stdClass();
         $msg->type = 'error';
         $msg->text = 'Your Build Request could not be processed.' .
-          ' No Repository is linked to this build type';
+        ' No Repository is linked to this build type';
       }
     }
     catch(\Exception $e)
@@ -312,10 +312,10 @@ class FortifyHomeController extends FortifyController
       $msg       = new \stdClass();
       $msg->type = 'error';
       $msg->text = 'Your Build Request could not be processed.' .
-        'More than one Repository is linked to this build type';
+      'More than one Repository is linked to this build type';
     }
 
-    Redirect::to($this->baseUri() . '/' . $projectId . '/' . $buildId)
+    Redirect::to($this->baseUri() . '/' . $buildId)
     ->with('msg', $msg)->now();
   }
 

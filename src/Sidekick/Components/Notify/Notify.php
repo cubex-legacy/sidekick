@@ -2,55 +2,57 @@
 /**
  * Description
  *
- * @author Sam Waters <sam.waters@justdevelop.it>
+ * @author oke.ugwu
  */
 
 namespace Sidekick\Components\Notify;
 
-use Cubex\Facade\Auth;
 use Cubex\Facade\Queue;
 use Cubex\Queue\StdQueue;
 use Sidekick\Applications\BaseApp\SidekickApplication;
-use Sidekick\Components\Notify\Mappers\EventTypes;
+use Sidekick\Components\Notify\Interfaces\INotifiableApp;
 
 class Notify
 {
 
-  public static function trigger($eventKey, $eventData = [])
+  /**
+   * @param INotifiableApp|SidekickApplication $app
+   * @param string                             $eventKey
+   * @param array                              $eventData
+   *
+   * @throws \Exception
+   */
+  public static function trigger(
+    INotifiableApp $app, $eventKey, $eventData = []
+  )
   {
-    $evt = EventTypes::collection()->loadOneWhere(
-      [
-      "eventKey" => $eventKey
-      ]
-    );
-    //Valid event type?
-    if($evt == null)
+    //check that we have a valid eventKey
+    $config     = $app->getNotifyConfig();
+    $configItem = $config->getItem($eventKey);
+    if($configItem == null)
     {
-      throw new \Exception("Invalid notification type");
+      throw new \Exception("Invalid notification Event Key");
     }
+
+    $filters = $configItem->getFilters();
     //Do we have all the required data?
-    foreach($evt->eventParams as $requiredParam)
+    foreach($filters as $name => $options)
     {
-      if(!isset($eventData[$requiredParam]))
+      if(!isset($eventData[$name]))
       {
-        throw new \Exception("$eventKey requires the $requiredParam parameter to be set");
+        throw new \Exception("$eventKey requires the $name filter to be set");
       }
     }
+
     //All good, add to queue
-    $q = new StdQueue("notifyQueue");
     Queue::push(
-      $q,
+      new StdQueue("notifyQueue"),
       [
-      "event" => $eventKey,
-      "data" => $eventData,
+      "appName"   => $app->name(),
+      "event"     => $eventKey,
+      "data"      => $eventData,
       "timestamp" => time()
       ]
     );
-  }
-
-  public static function send(
-    $userId, INotifyMessage $message, SidekickApplication $app = null
-  )
-  {
   }
 }

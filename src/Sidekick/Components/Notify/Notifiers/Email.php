@@ -7,7 +7,9 @@
 
 namespace Sidekick\Components\Notify\Notifiers;
 
-use Sidekick\Components\Notify\INotify;
+use Sidekick\Applications\BaseApp\SidekickApplication;
+use Sidekick\Components\Notify\Interfaces\INotify;
+use Sidekick\Components\Notify\Interfaces\INotifyMessage;
 
 class Email implements INotify
 {
@@ -25,7 +27,9 @@ class Email implements INotify
   {
   }
 
-  public function notify()
+  public function notify(
+    $userId, INotifyMessage $message, SidekickApplication $app = null
+  )
   {
     //Whatever we do to notify
   }

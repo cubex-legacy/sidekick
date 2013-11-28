@@ -7,7 +7,7 @@
 
 namespace Sidekick\Components\Notify\Notifiers;
 
-use Sidekick\Components\Notify\INotify;
+use Sidekick\Components\Notify\Interfaces\INotify;
 
 class SMS implements INotify
 {

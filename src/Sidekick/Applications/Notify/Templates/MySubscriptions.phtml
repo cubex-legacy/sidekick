@@ -1,0 +1,51 @@
+<?php
+/**
+ * Description
+ *
+ * @author oke.ugwu
+ *
+ * @var \Sidekick\Applications\Notify\Views\MySubscriptions $this
+ */
+
+use \Cubex\Facade\Session;
+?>
+<h1>My Subscriptions</h1>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
+    <?= Session::getFlash('msg')->message; ?>
+  </div>
+<?php endif; ?>
+<table class="table table-bordered table-striped">
+  <tr>
+    <th>App</th>
+    <th>Event</th>
+    <th>Event Type</th>
+    <th>Contact Method</th>
+    <th>Filters</th>
+    <th></th>
+  </tr>
+  <?php foreach($this->getSubscriptions() as $s): ?>
+    <tr>
+      <td><?= $s->app ?></td>
+      <td><?= $s->eventKey; ?></td>
+      <td><?= $s->eventType ?></td>
+      <td><?= last(explode('\\', $s->contactMethod)) ?></td>
+      <td>
+        <?php $filters = $s->filters ?>
+        <?php foreach($filters as $filter): ?>
+          <li><?= $filter->name ?> =
+            <?= $this->getFilterOptions($s, $filter) ?>
+          </li>
+        <?php endforeach; ?>
+      </td>
+      <td width="120">
+        <a href="<?= $this->appBaseUri(); ?>/subscriptions/<?= $s->id(
+        ) ?>/unsubscribe"
+           class="btn btn-danger btn-block">
+          <i class="icon-minus icon-white"></i>
+          UnSubscribe</a>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+
+</table>

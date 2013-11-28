@@ -46,10 +46,8 @@ class NotifyApp extends SidekickApplication
   public function getRoutes()
   {
     return [
-      '/'         => 'NotifyController',
-      '/events/(.*)'   => 'NotifyEventsController',
-      '/hooks/(.*)'    => 'NotifyHooksController',
-      '/groups/(.*)'   => 'NotifyGroupsController'
+      '/'                   => 'NotifyController',
+      '/subscriptions/(.*)' => 'NotifySubscriptionsController',
     ];
   }
 }

@@ -1,0 +1,64 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 26/11/13 14:51
+ *
+ * @var \Sidekick\Applications\Notify\Views\NotifySubscribe $this
+ */
+?>
+<?php
+$configItem = $this->getNotifyConfigItem();
+?>
+<h1>Subscribe to <?= $this->getApp()->name() ?> (<?= $this->getEventName() ?>)
+    Events</h1>
+<div class="clearfix"></div>
+<div style="margin-top:10px;"></div>
+<?php if($this->getFlashMessage()): ?>
+  <div class="alert alert-<?= $this->getFlashMessage()->type; ?>">
+    <?= $this->getFlashMessage()->message; ?>
+  </div>
+<?php endif; ?>
+<div class="well">
+  Select your preferred contact method and configure the types of events, you
+  wish to be notified about. Leave the event type options as --SELECT-- if it is
+  of no interest to you
+</div>
+<form action="<?= $this->baseUri() ?>/<?=
+$this->getApp()->name() ?>/<?= $this->getEventKey() ?>" method="post">
+  <label for=""><strong>Select Contact Method</strong></label>
+  <select name="contactMethod" id="contactMethod" class="input-medium">
+    <option value="">--SELECT--</option>
+    <?php foreach($this->getContactOptions() as $option => $value): ?>
+      <option value="<?= $value ?>" <?=
+      ($this->getContactMethod(
+        ) === $value) ? 'selected="selected"' : '' ?>><?= $option ?></option>
+    <?php endforeach; ?>
+  </select>
+</form>
+<?= $this->form()->open(); ?>
+<?= $this->form()->getElement('app') ?>
+<?= $this->form()->getElement('eventKey') ?>
+<?= $this->form()->getElement('contactMethod') ?>
+<table class="table table-bordered">
+  <tr>
+    <th>Event Type</th>
+    <?php foreach($configItem->getFilters() as $filterName => $options): ?>
+      <th><?= $filterName ?></th>
+    <?php endforeach; ?>
+  </tr>
+  <?php foreach($configItem->eventTypes as $eventType): ?>
+    <tr>
+      <td>
+        <?= $eventType ?>
+      </td>
+      <?php foreach($configItem->getFilters() as $filterName => $options): ?>
+        <td>
+          <?php $name = "eventTypes[$eventType][$filterName]"; ?>
+          <?= $this->form()->getElement($name) ?>
+        </td>
+      <?php endforeach; ?>
+    </tr>
+  <?php endforeach; ?>
+</table>
+<?= $this->form()->getElement('subscribe') ?>
+<?= $this->form()->close() ?>

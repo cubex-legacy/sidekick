@@ -4,7 +4,7 @@
  * Date: 24/10/13 14:25
  */
 
-namespace Sidekick\Components\Notify;
+namespace Sidekick\Components\Notify\Interfaces;
 
 interface INotifyMessage
 {

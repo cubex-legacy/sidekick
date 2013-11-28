@@ -9,7 +9,7 @@ namespace Sidekick\Components\Notify\Enums;
 
 use Cubex\Type\Enum;
 
-class NotifyType extends Enum
+class NotifyContactMethod extends Enum
 {
   const __default = '\Sidekick\Components\Notify\Notifiers\Email';
   const EMAIL     = '\Sidekick\Components\Notify\Notifiers\Email';

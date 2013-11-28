@@ -6,6 +6,8 @@
 
 namespace Sidekick\Components\Notify;
 
+use Sidekick\Components\Notify\Interfaces\INotifyMessage;
+
 class NotifyMessage implements INotifyMessage
 {
   protected $_summary;

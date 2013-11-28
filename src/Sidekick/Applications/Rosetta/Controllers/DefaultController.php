@@ -148,7 +148,7 @@ class DefaultController extends ProjectAwareBaseControl
 
     $this->_approve($rowKey, $lang);
 
-    Redirect::to($this->appBaseUri() . '/' . '/' . $lang)->now();
+    Redirect::to($this->appBaseUri() . '/' . $lang)->now();
   }
 
   public function ajaxApprove()
@@ -210,13 +210,13 @@ class DefaultController extends ProjectAwareBaseControl
     );
 
     Redirect::to(
-      $this->appBaseUri() . '/' . '/translations/' . $rowKey
+      $this->appBaseUri() . '/translations/' . $rowKey
     )->now();
   }
 
   public function renderDelete()
   {
-    $rowKey    = $this->getStr('rowKey');
+    $rowKey = $this->getStr('rowKey');
 
     $this->_deleteAllTranslation($rowKey);
     Redirect::to($this->appBaseUri())->now();

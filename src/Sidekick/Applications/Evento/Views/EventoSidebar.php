@@ -12,14 +12,21 @@ use Cubex\View\RenderGroup;
 
 class EventoSidebar extends ViewModel
 {
+  protected $_appBaseUri;
+
+  public function __construct($appBaseUri)
+  {
+    $this->_appBaseUri = $appBaseUri;
+  }
+
   public function render()
   {
     $path      = $this->request()->path();
     $menuItems = [
-      'All Events'          => '/events',
-      'Open Events'         => '/events/open',
-      'Event Types'         => '/events/types',
-      'Subscribe to Events' => '/events/subscribe',
+      'All Events'          => $this->_appBaseUri,
+      'Open Events'         => $this->_appBaseUri . '/open',
+      'Event Types'         => $this->_appBaseUri . '/types',
+      'Subscribe to Events' => $this->_appBaseUri . '/subscribe',
     ];
 
     $str = '<div class="tabbable tabs-left">';

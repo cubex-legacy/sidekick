@@ -30,7 +30,9 @@ class AddBuildCommandsForm extends TemplatedViewModel
   {
     if($this->_form === null)
     {
-      $this->_form = new Form('addBuildCommand', '/fortify/buildCommands/create');
+      $this->_form = new Form(
+        'addBuildCommand', $this->appBaseUri() . '/buildCommands/create'
+      );
       $this->_form->setDefaultElementTemplate('{{input}}');
       $this->_form->addHiddenElement('buildId', $this->_buildId);
       $this->_form->addSelectElement('commandId', $this->_unAssignedCommits);

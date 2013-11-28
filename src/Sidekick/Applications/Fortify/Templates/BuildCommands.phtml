@@ -35,7 +35,7 @@
         </small>
       </td>
       <td>
-        <a href="<?= '/fortify/buildCommands/' . $command->commandId.'/'.$command->buildId.'/delete'; ?>"
+        <a href="<?= $this->appBaseUri() . '/buildCommands/' . $command->commandId.'/'.$command->buildId.'/delete'; ?>"
            title="delete"><i class="icon-trash"></i></a>
       </td>
     </tr>

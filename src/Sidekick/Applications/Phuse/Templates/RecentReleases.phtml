@@ -20,7 +20,8 @@
     <?php foreach($this->releases as $release): ?>
       <tr>
         <td>
-          <a href="/phuse/view/<?= $release->package()->id() ?>">
+          <a href="<?= $this->appBaseUri() ?>/view/<?= $release->package()->id(
+          ) ?>">
             <?= $release->package()->name; ?>
           </a>
         </td>

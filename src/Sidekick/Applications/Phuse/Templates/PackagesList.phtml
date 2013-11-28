@@ -23,7 +23,8 @@
     <?php foreach($this->getPackages() as $package): ?>
       <tr>
         <td>
-          <a href="/phuse/view/<?= $package->id() ?>"><?= $package->name; ?></a>
+          <a href="<?= $this->appBaseUri() ?>/view/<?= $package->id(
+          ) ?>"><?= $package->name; ?></a>
         </td>
         <td><?= $package->description; ?></td>
         <?php if($this->showFullList()): ?>

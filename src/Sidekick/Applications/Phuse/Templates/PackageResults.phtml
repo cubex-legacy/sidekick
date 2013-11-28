@@ -12,7 +12,7 @@
 <?php if(count($this->getPackages())): ?>
   <?php foreach($this->getPackages() as $package): ?>
     <div class="phuse-result well">
-      <h3><a href="<?= $this->baseUri() . '/view/' . $package->id; ?>">
+      <h3><a href="<?= $this->appBaseUri() . '/view/' . $package->id; ?>">
           <?= $package->name; ?></a>
       </h3>
 

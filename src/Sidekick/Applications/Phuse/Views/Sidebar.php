@@ -12,9 +12,13 @@ use Cubex\View\ViewModel;
 
 class Sidebar extends ViewModel
 {
-  public function __construct($path)
+  protected $_path;
+  protected $_appBaseUri;
+
+  public function __construct($path, $appBaseUri)
   {
-    $this->_path  = $path;
+    $this->_path       = $path;
+    $this->_appBaseUri = $appBaseUri;
   }
 
   public function render()
@@ -24,10 +28,10 @@ class Sidebar extends ViewModel
     );
 
     $items = [
-      '/phuse' => 'Home',
-      '/phuse/new-packages' => 'New Packages',
-      '/phuse/recent-releases' => 'Recent Releases',
-      '/phuse/all' => 'All Packages'
+      $this->_appBaseUri                      => 'Home',
+      $this->_appBaseUri . '/new-packages'    => 'New Packages',
+      $this->_appBaseUri . '/recent-releases' => 'Recent Releases',
+      $this->_appBaseUri . '/all'             => 'All Packages'
     ];
 
     foreach($items as $appPath => $name)

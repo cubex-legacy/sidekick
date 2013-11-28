@@ -21,12 +21,12 @@
 
     <div class="flow-block success">Initiation</div>
     <?php foreach($this->getPlatforms() as $platform): ?>
-      <a href="<?= $this->baseUri() . '/p/' . $platform->id(); ?>">
+      <a href="<?= $this->appBaseUri() . '/p/' . $platform->id(); ?>">
         <div
-        class="flow-block <?=
-        $this->getPlatformStateClass(
-          $platform->id()
-        ); ?>">
+          class="flow-block <?=
+          $this->getPlatformStateClass(
+            $platform->id()
+          ); ?>">
 
           <?= \Cubex\Helpers\Strings::titleize($platform->name); ?>
         </div>
@@ -37,13 +37,14 @@
   </div>
 </div>
 <ul class="inline text-center">
-  <li>Repo: <a href="/repository/commits/<?=
-    $this->getVersion()->repoId; ?>"><?=
-      idp($this->getVersion()->repo(), "name","Unknown Repo"); ?></a></li>
+  <li>Repo: <a
+      href="/P<?= $this->getVersion()->projectId; ?>/repository/commits/<?=
+      $this->getVersion()->repoId; ?>"><?=
+      idp($this->getVersion()->repo(), "name", "Unknown Repo"); ?></a></li>
   <li>Source Build: <a
-    href="/fortify/<?= $this->getVersion()->projectId; ?>/<?=
-    $this->getVersion()->fortifyBuild()->buildId; ?>/<?=
-    $this->getVersion()->buildId; ?>">#<?= $this->getVersion()->buildId; ?>
+      href="/P<?= $this->getVersion()->projectId; ?>/fortify/<?=
+      $this->getVersion()->fortifyBuild()->buildId; ?>/<?=
+      $this->getVersion()->buildId; ?>">#<?= $this->getVersion()->buildId; ?>
     </a></li>
   <li>Commit Range:
     <?= substr($this->getVersion()->fromCommitHash, 0, 6); ?> -
@@ -53,9 +54,8 @@
 
 <h4>
   Change Log
-  <small class="pull-right"><a href="<?= $this->baseUri(); ?>/changelog">Edit
-                                                                         Change
-                                                                         Log</a>
+  <small class="pull-right">
+    <a href="<?= $this->appBaseUri(); ?>/changelog">Edit Change Log</a>
   </small>
 </h4>
 <div class="well">
@@ -64,7 +64,7 @@
     <?= nl2br($changeLog); ?>
   <?php else: ?>
     No change log exists for this version.  Please <a
-    href="<?= $this->baseUri(); ?>/changelog">make one</a> :)
+      href="<?= $this->appBaseUri(); ?>/changelog">make one</a> :)
   <?php endif ?>
 </div>
 

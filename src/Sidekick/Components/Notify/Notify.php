@@ -17,13 +17,14 @@ class Notify
 
   /**
    * @param INotifiableApp|SidekickApplication $app
-   * @param string                             $eventKey
+   * @param                                    $eventKey
+   * @param NotifyMessage                      $msg
    * @param array                              $eventData
    *
    * @throws \Exception
    */
   public static function trigger(
-    INotifiableApp $app, $eventKey, $eventData = []
+    INotifiableApp $app, $eventKey, NotifyMessage $msg, $eventData = []
   )
   {
     //check that we have a valid eventKey
@@ -51,6 +52,7 @@ class Notify
       "appName"   => $app->name(),
       "event"     => $eventKey,
       "data"      => $eventData,
+      "msg"       => serialize($msg),
       "timestamp" => time()
       ]
     );

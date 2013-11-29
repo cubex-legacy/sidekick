@@ -15,12 +15,19 @@ use Cubex\View\RenderGroup;
 
 class ProjectsSidebar extends ViewModel
 {
+  protected $_appBaseUri;
+
+  public function __construct($appBaseUri)
+  {
+    $this->_appBaseUri = $appBaseUri;
+  }
+
   public function render()
   {
     $path      = $this->request()->path();
     $menuItems = [
-      'All Projects'   => '/projects',
-      'Create Project' => '/projects/create-project',
+      'All Projects'   => $this->_appBaseUri,
+      'Create Project' => $this->_appBaseUri . '/create-project',
     ];
 
     $str = '<div class="tabbable tabs-left">';

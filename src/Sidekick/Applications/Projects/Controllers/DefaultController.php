@@ -25,7 +25,7 @@ class DefaultController extends ProjectsController
   {
     parent::preRender();
     $this->requireCss('base');
-    $this->nest('sidebar', new ProjectsSidebar());
+    $this->nest('sidebar', new ProjectsSidebar($this->appBaseUri()));
   }
 
   public function renderIndex()

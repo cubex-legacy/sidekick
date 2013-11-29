@@ -26,7 +26,6 @@ class EventoSidebar extends ViewModel
       'All Events'          => $this->_appBaseUri,
       'Open Events'         => $this->_appBaseUri . '/open',
       'Event Types'         => $this->_appBaseUri . '/types',
-      'Subscribe to Events' => $this->_appBaseUri . '/subscribe',
     ];
 
     $str = '<div class="tabbable tabs-left">';

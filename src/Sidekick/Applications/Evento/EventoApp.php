@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Evento;
 use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Evento\Controllers\EventoSummaryController;
 use Sidekick\Components\Enums\Severity;
+use Sidekick\Components\Evento\Mappers\EventType;
 use Sidekick\Components\Notify\Interfaces\INotifiableApp;
 use Sidekick\Components\Notify\NotifyConfig;
 use Sidekick\Components\Notify\NotifyConfigItem;
@@ -51,22 +52,24 @@ class EventoApp extends SidekickApplication implements INotifiableApp
   public function getNotifyConfig()
   {
     $severityOptions = array_flip((new Severity())->getConstList());
+    $eventTypes = EventType::collection()->getKeyPair('id', 'name');
+
     $c1              = new NotifyConfigItem(
       'event.create', 'Event Create', 'When Evento event is created/opened'
     );
-    $c1->setEventTypes(['Marketing', 'Server Downtime', 'Bug Found']);
+    $c1->addFilter('Event Type', $eventTypes);
     $c1->addFilter('Severity', $severityOptions);
 
     $c3 = new NotifyConfigItem(
       'event.update', 'Event Update', 'When Evento event is updated'
     );
-    $c3->setEventTypes(['Marketing', 'Server Downtime']);
+    $c3->addFilter('Event Type', $eventTypes);
     $c3->addFilter('Severity', $severityOptions);
 
     $c4 = new NotifyConfigItem(
       'event.close', 'Event Close', 'When Evento event is closed/resolved'
     );
-    $c4->setEventTypes(['Marketing', 'Server Downtime']);
+    $c4->addFilter('Event Type', $eventTypes);
     $c4->addFilter('Severity', $severityOptions);
 
     $nc = new NotifyConfig();
@@ -82,7 +85,6 @@ class EventoApp extends SidekickApplication implements INotifiableApp
     return [
       '/'               => 'EventoSummaryController',
       '/types/(.*)'     => 'EventoTypesController',
-      '/subscribe/(.*)' => 'EventoSubscribeController',
     ];
   }
 }

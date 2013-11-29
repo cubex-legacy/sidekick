@@ -65,21 +65,17 @@ class EventoSummaryController extends EventoController
     $event->owner    = \Auth::user()->getId();
     $event->saveChanges();
 
-    //get users subscribed to this event type
-    $users = EventSubscription::collection(
-      [
-      'eventTypeId' => $event->eventTypeId,
-      'severity'    => $event->severity
-      ]
-    )->getUniqueField('userId');
+    $message = new NotifyMessage();
+    $message->setSubject("New Event: " . $event->name);
+    $message->setMessage($event->description);
+    $message->setSummary($event->description);
 
-    foreach($users as $userId)
-    {
-      $message = new NotifyMessage();
-      $message->setSubject("New Event: " . $event->name);
-      $message->setMessage($event->description);
-      Notify::send($userId, $message, $this->application());
-    }
+    $eventData = [
+      'Event Type' => $event->eventTypeId,
+      'Severity'    => $event->severity
+    ];
+
+    Notify::trigger($this->application(), 'event.create', $message, $eventData);
 
     \Redirect::to($this->baseUri())->now();
   }

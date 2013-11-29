@@ -29,17 +29,19 @@ class NotifyController extends BaseNotifyController
     $eventKey = $this->getStr('event');
 
     $contactMethod = $this->request()->postVariables('contactMethod');
-    if($contactMethod == null)
+    if(empty($contactMethod))
     {
       if(Session::getFlash('data'))
       {
         $contactMethod = idx(Session::getFlash('data'), 'contactMethod');
       }
     }
-    $subscriptions = null;
-    if($contactMethod !== null)
+
+    $userId        = \Auth::user()->getId();
+    $subscriptions = Subscription::collection(['user_id' => $userId]);
+
+    if(!empty($contactMethod))
     {
-      $userId    = \Auth::user()->getId();
       $condition = [
         'app'            => $appName,
         'event_key'      => $eventKey,
@@ -47,12 +49,10 @@ class NotifyController extends BaseNotifyController
         'user_id'        => $userId
       ];
 
-      $subscriptions = Subscription::collection($condition)->getKeyedArray(
-        'eventType',
-        ['filters']
-      );
+      $subscriptions = Subscription::collection($condition);
     }
 
+    $subscriptions->setOrderBy('contactMethod');
     if($appName !== null)
     {
       $this->requireJs('subscribe');
@@ -71,24 +71,22 @@ class NotifyController extends BaseNotifyController
     $isNotifiableApp = isset($this->_notifiableApps[$postData['app']]);
     if($isNotifiableApp && class_exists($postData['contactMethod']))
     {
-      foreach($postData['eventTypes'] as $eventType => $filters)
+      try
       {
-        try
-        {
-          $filters                     = $this->_formatFilters($filters);
-          $subscription                = new Subscription();
-          $subscription->app           = $postData['app'];
-          $subscription->eventKey      = $postData['eventKey'];
-          $subscription->eventType     = $eventType;
-          $subscription->contactMethod = $postData['contactMethod'];
-          $subscription->userId        = \Auth::user()->getId();
-          $subscription->filters       = $filters;
-          $subscription->id            = $subscription->id();
-          $subscription->saveChanges();
-        }
-        catch(\Exception $e)
-        {
-        }
+        $filters                     = $this->_formatFilters(
+          $postData['filters']
+        );
+        $subscription                = new Subscription();
+        $subscription->app           = $postData['app'];
+        $subscription->eventKey      = $postData['eventKey'];
+        $subscription->contactMethod = $postData['contactMethod'];
+        $subscription->userId        = \Auth::user()->getId();
+        $subscription->filters       = $filters;
+        $subscription->saveChanges();
+      }
+      catch(\Exception $e)
+      {
+        var_dump($e);
       }
     }
 
@@ -121,10 +119,32 @@ class NotifyController extends BaseNotifyController
     return $return;
   }
 
+  public function renderUnsubscribe()
+  {
+    $id           = $this->getStr('id');
+    $subscription = new Subscription($id);
+    $subscription->delete();
+
+    $msg = new TransportMessage(
+      'success', 'Your have successfully un-subscribed from event'
+    );
+
+    $data = [
+      'msg'           => $msg,
+      'contactMethod' => $subscription->contactMethod
+    ];
+
+    Redirect::to(
+      $this->baseUri(
+      ) . '/' . $subscription->app . '/' . $subscription->eventKey
+    )->with('data', $data)->now();
+  }
+
   public function getRoutes()
   {
     return [
       'subscribe'       => 'subscribe',
+      ':id/unsubscribe' => 'unsubscribe',
       ':appName'        => 'index',
       ':appName/:event' => 'events',
     ];

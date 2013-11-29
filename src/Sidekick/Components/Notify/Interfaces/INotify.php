@@ -7,7 +7,7 @@
 
 namespace Sidekick\Components\Notify\Interfaces;
 
-use Sidekick\Applications\BaseApp\SidekickApplication;
+use Sidekick\Components\Users\Mappers\User;
 
 interface INotify
 {
@@ -15,7 +15,5 @@ interface INotify
 
   public function setEventData($data);
 
-  public function notify(
-    $userId, INotifyMessage $message, SidekickApplication $app = null
-  );
+  public function notify(User $user, INotifyMessage $message);
 }

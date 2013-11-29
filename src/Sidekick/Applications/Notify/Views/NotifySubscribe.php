@@ -50,7 +50,7 @@ class NotifySubscribe extends TemplatedViewModel
 
   public function getSubscriptions()
   {
-    return $this->_subscriptions;
+    return ($this->_subscriptions)? $this->_subscriptions : [];
   }
 
   public function getContactMethod()
@@ -58,11 +58,11 @@ class NotifySubscribe extends TemplatedViewModel
     return $this->_contactMethod;
   }
 
-  public function getFilterValue($eventType, $filterName)
+  public function getFilterValue($filterName)
   {
-    if(isset($this->_subscriptions[$eventType]))
+    if(isset($this->_subscriptions[$this->_eventKey]))
     {
-      $filters = $this->_subscriptions[$eventType]['filters'];
+      $filters = $this->_subscriptions[$this->_eventKey]['filters'];
       foreach($filters as $filter)
       {
         if($filter->name === $filterName)
@@ -73,6 +73,13 @@ class NotifySubscribe extends TemplatedViewModel
     }
 
     return null;
+  }
+
+  public function getFilterOptions($filter)
+  {
+    $config = $this->getApp()->getNotifyConfig();
+    $configItem = $config->getItem($this->_eventKey);
+    return $configItem->getFilterOptions($filter->name)[$filter->value];
   }
 
   public function getNotifyConfigItem()
@@ -93,23 +100,21 @@ class NotifySubscribe extends TemplatedViewModel
         $this->getContactMethod()
       );
       $configItem = $this->getNotifyConfigItem();
-      foreach($configItem->eventTypes as $eventType)
+
+      foreach($configItem->getFilters() as $filterName => $options)
       {
-        foreach($configItem->getFilters() as $filterName => $options)
-        {
-          $options = ['' => '--SELECT--'] + $options;
-          $name    = "eventTypes[$eventType][$filterName]";
-          $this->_form->addSelectElement(
-            $name,
-            $options,
-            $this->getFilterValue($eventType, $filterName)
-          );
-          $this->_form->getElement($name)->addAttribute(
-            'class',
-            'input-medium filter' . md5($eventType)
-          );
-        }
+        $options = ['' => '--SELECT--'] + $options;
+        $name    = "filters[$filterName]";
+        $this->_form->addSelectElement(
+          $name,
+          $options
+        );
+        $this->_form->getElement($name)->addAttribute(
+          'class',
+          'input-medium'
+        );
       }
+
       $this->_form->addSubmitElement('Subscribe', 'subscribe');
       $this->_form->getElement('subscribe')->addAttribute(
         'class',

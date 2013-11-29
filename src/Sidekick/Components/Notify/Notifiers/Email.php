@@ -7,13 +7,12 @@
 
 namespace Sidekick\Components\Notify\Notifiers;
 
-use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Components\Notify\Interfaces\INotify;
 use Sidekick\Components\Notify\Interfaces\INotifyMessage;
+use Sidekick\Components\Users\Mappers\User;
 
 class Email implements INotify
 {
-
   public function __construct()
   {
   }
@@ -27,10 +26,19 @@ class Email implements INotify
   {
   }
 
-  public function notify(
-    $userId, INotifyMessage $message, SidekickApplication $app = null
-  )
+  public function notify(User $user, INotifyMessage $message)
   {
-    //Whatever we do to notify
+    try
+    {
+      \Cubex\Facade\Email::mail(
+        $user->email,
+        $message->getSubject(),
+        $message->getMessage()
+      );
+    }
+    catch(\Exception $e)
+    {
+      throw $e;
+    }
   }
 }

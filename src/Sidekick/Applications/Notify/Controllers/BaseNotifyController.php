@@ -8,7 +8,6 @@ namespace Sidekick\Applications\Notify\Controllers;
 
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
-use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Components\Notify\Interfaces\INotifiableApp;
 
 class BaseNotifyController extends BaseControl
@@ -30,13 +29,6 @@ class BaseNotifyController extends BaseControl
 
   public function getSidebar()
   {
-    $sidebarMenu = [
-      $this->appBaseUri()                    => "Home",
-      $this->appBaseUri() . "/subscriptions" => "My Subscriptions",
-    ];
-
-    return new RenderGroup(
-      new Sidebar($this->request()->path(3), $sidebarMenu)
-    );
+    return null;
   }
 }

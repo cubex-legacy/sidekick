@@ -11,7 +11,6 @@ class Subscription extends RecordMapper
 {
   public $app;
   public $eventKey;
-  public $eventType;
   public $userId;
   public $contactMethod;
   /**
@@ -19,22 +18,7 @@ class Subscription extends RecordMapper
    */
   public $filters = [];
 
-  protected $_idType = self::ID_MANUAL;
   protected $_autoTimestamp = false;
-
-  public function id()
-  {
-    return md5(
-      sprintf(
-        "%s-%s-%s-%s-%s",
-        $this->app,
-        $this->eventKey,
-        $this->eventType,
-        $this->userId,
-        $this->contactMethod
-      )
-    );
-  }
 
   protected function _configure()
   {

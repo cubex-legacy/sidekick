@@ -8,6 +8,8 @@
 namespace Sidekick\Components\Notify\Notifiers;
 
 use Sidekick\Components\Notify\Interfaces\INotify;
+use Sidekick\Components\Notify\Interfaces\INotifyMessage;
+use Sidekick\Components\Users\Mappers\User;
 
 class SMS implements INotify
 {
@@ -24,7 +26,7 @@ class SMS implements INotify
   {
   }
 
-  public function notify()
+  public function notify(User $user, INotifyMessage $message)
   {
     //Whatever we do to notify
   }

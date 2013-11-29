@@ -11,7 +11,6 @@ class NotifyConfigItem
   public $eventKey;
   public $eventName;
   public $eventDescription;
-  public $eventTypes = [];
   public $filters = [];
 
   public function __construct($eventKey, $eventName, $eventDescription)
@@ -51,22 +50,6 @@ class NotifyConfigItem
   public function getEventDescription()
   {
     return $this->eventDescription;
-  }
-
-  /**
-   * @param string[] $eventTypes
-   */
-  public function setEventTypes($eventTypes)
-  {
-    $this->eventTypes = $eventTypes;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getEventTypes()
-  {
-    return $this->eventTypes;
   }
 
   /**

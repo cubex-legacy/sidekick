@@ -42,14 +42,14 @@ class NotifyController extends BaseNotifyController
 
     if(!empty($contactMethod))
     {
-      $condition = [
+      $where = [
         'app'            => $appName,
         'event_key'      => $eventKey,
         'contact_method' => $contactMethod,
         'user_id'        => $userId
       ];
 
-      $subscriptions = Subscription::collection($condition);
+      $subscriptions = Subscription::collection($where);
     }
 
     $subscriptions->setOrderBy('contactMethod');
@@ -73,26 +73,44 @@ class NotifyController extends BaseNotifyController
     {
       try
       {
-        $filters                     = $this->_formatFilters(
-          $postData['filters']
+        $filters = $this->_formatFilters($postData['filters']);
+        /**
+         * @var Subscription $subscription
+         */
+        $subscription = Subscription::loadWhereOrNew(
+          [
+          'app'            => $postData['app'],
+          'event_key'      => $postData['eventKey'],
+          'contact_method' => $postData['contactMethod']
+          ]
         );
-        $subscription                = new Subscription();
+
         $subscription->app           = $postData['app'];
         $subscription->eventKey      = $postData['eventKey'];
         $subscription->contactMethod = $postData['contactMethod'];
         $subscription->userId        = \Auth::user()->getId();
         $subscription->filters       = $filters;
         $subscription->saveChanges();
+
+        $msg = new TransportMessage(
+          'success', 'Your notification preference has been saved'
+        );
       }
       catch(\Exception $e)
       {
-        var_dump($e);
+        $msg = new TransportMessage(
+          'error', 'Your notification preference could not be saved'
+        );
       }
     }
-
-    $msg = new TransportMessage(
-      'success', 'Your notification preference has been saved'
-    );
+    else
+    {
+      $msg = new TransportMessage(
+        'error',
+        'Your notification preference could not be saved. ' .
+        $postData['app'] . 'is not a Notifiable App'
+      );
+    }
 
     $data = [
       'msg'           => $msg,

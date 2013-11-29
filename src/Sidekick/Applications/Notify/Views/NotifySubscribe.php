@@ -10,6 +10,7 @@ use Cubex\Facade\Session;
 use Cubex\Form\Form;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Notify\Enums\NotifyContactMethod;
+use Sidekick\Components\Users\Mappers\User;
 
 class NotifySubscribe extends TemplatedViewModel
 {
@@ -50,12 +51,35 @@ class NotifySubscribe extends TemplatedViewModel
 
   public function getSubscriptions()
   {
-    return ($this->_subscriptions)? $this->_subscriptions : [];
+    return ($this->_subscriptions) ? $this->_subscriptions : [];
   }
 
   public function getContactMethod()
   {
     return $this->_contactMethod;
+  }
+
+  public function getUserContactMethods()
+  {
+    $contactMethods = [];
+    $userId         = \Auth::user()->getId();
+    $user           = new User($userId);
+    if(!empty($user->email))
+    {
+      $contactMethods['EMAIL'] = NotifyContactMethod::EMAIL;
+    }
+    if(!empty($user->phoneNumber))
+    {
+      $contactMethods['SMS'] = NotifyContactMethod::SMS;
+    }
+
+    return $contactMethods;
+  }
+
+  public function getContactOptions()
+  {
+    $allContactMethods = (new NotifyContactMethod())->getConstList();
+    return array_intersect($allContactMethods, $this->getUserContactMethods());
   }
 
   public function getFilterValue($filterName)
@@ -77,7 +101,7 @@ class NotifySubscribe extends TemplatedViewModel
 
   public function getFilterOptions($filter)
   {
-    $config = $this->getApp()->getNotifyConfig();
+    $config     = $this->getApp()->getNotifyConfig();
     $configItem = $config->getItem($this->_eventKey);
     return $configItem->getFilterOptions($filter->name)[$filter->value];
   }
@@ -123,11 +147,6 @@ class NotifySubscribe extends TemplatedViewModel
     }
 
     return $this->_form;
-  }
-
-  public function getContactOptions()
-  {
-    return (new NotifyContactMethod())->getConstList();
   }
 
   public function getFlashMessage()

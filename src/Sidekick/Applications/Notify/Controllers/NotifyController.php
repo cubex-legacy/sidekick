@@ -99,7 +99,8 @@ class NotifyController extends BaseNotifyController
       catch(\Exception $e)
       {
         $msg = new TransportMessage(
-          'error', 'Your notification preference could not be saved'
+          'error', 'Your notification preference could not be saved: '
+          . $e->getMessage()
         );
       }
     }

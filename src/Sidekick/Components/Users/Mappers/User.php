@@ -15,6 +15,7 @@ class User extends RecordMapper
   public $email;
   public $password;
   public $displayName;
+  public $phoneNumber;
   /**
    * @enumclass \Sidekick\Components\Users\Enums\UserRole
    */

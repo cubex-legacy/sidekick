@@ -15,12 +15,6 @@ use Sidekick\Components\Users\Mappers\User;
 
 class DefaultController extends UsersController
 {
-  public function preRender()
-  {
-    parent::preRender();
-    $this->nest('sidebar', new UsersSidebar());
-  }
-
   public function renderIndex()
   {
     $users = User::collection()->loadAll();

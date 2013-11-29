@@ -15,12 +15,18 @@ use Cubex\View\RenderGroup;
 
 class UsersSidebar extends ViewModel
 {
+  protected $_appBaseUri;
+  public function __construct($appBaseUri)
+  {
+    $this->_appBaseUri = $appBaseUri;
+  }
+
   public function render()
   {
     $path      = $this->request()->path();
     $menuItems = [
-      'All Users'   => '/users',
-      'Create User' => '/users/create',
+      'All Users'   => $this->_appBaseUri,
+      'Create User' => $this->_appBaseUri . '/create',
     ];
 
     $str = '<div class="tabbable tabs-left">';

@@ -39,14 +39,14 @@ class DefaultController extends ProjectsController
   {
     return new RenderGroup(
       new HtmlElement('h1', [], 'Create Project'),
-      new ProjectForm('/projects/create-project')
+      new ProjectForm($this->baseUri() . '/create-project')
     );
   }
 
   public function postCreateProject()
   {
     $postData = $this->request()->postVariables();
-    $form     = new ProjectForm('/projects/create-project');
+    $form     = new ProjectForm($this->baseUri() . '/create-project');
     $form->hydrate($postData);
     if($form->isValid())
     {
@@ -87,7 +87,9 @@ class DefaultController extends ProjectsController
   public function renderEditProject()
   {
     $projectId = $this->getInt('projectId');
-    $form      = new ProjectForm('/projects/update-project', $projectId);
+    $form      = new ProjectForm(
+      $this->baseUri() . '/update-project', $projectId
+    );
 
     return new RenderGroup(
       new HtmlElement('h1', [], 'Update Project'),
@@ -98,7 +100,7 @@ class DefaultController extends ProjectsController
   public function postUpdateProject()
   {
     $postData = $this->request()->postVariables();
-    $form     = new ProjectForm('/projects/update-project');
+    $form     = new ProjectForm($this->baseUri() . '/update-project');
     $form->hydrate($postData);
     if($form->isValid())
     {
@@ -152,7 +154,7 @@ class DefaultController extends ProjectsController
 
     $users = User::collection()->loadAll()->getKeyPair('id', 'display_name');
 
-    $form = new Form('projectUsers', '/projects/users/' . $projectId);
+    $form = new Form('projectUsers', $this->baseUri() . '/users/' . $projectId);
     $form->addSelectElement('userId', $users);
     $form->addHiddenElement('projectId', $projectId);
     $form->addCheckboxElements(
@@ -195,7 +197,7 @@ class DefaultController extends ProjectsController
     $msg->type = 'success';
     $msg->text = 'Project member was removed successfully';
 
-    Redirect::to('/projects/users/' . $projectId)->with(
+    Redirect::to($this->baseUri() . '/users/' . $projectId)->with(
       'msg',
       $msg
     )->now();

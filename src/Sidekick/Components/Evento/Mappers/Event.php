@@ -34,7 +34,7 @@ class Event extends RecordMapper
 
   public function eventType()
   {
-    return new EventType($this->id());
+    return new EventType($this->eventTypeId);
   }
 
 }

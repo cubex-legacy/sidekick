@@ -73,6 +73,7 @@ class NotifyController extends BaseNotifyController
     {
       try
       {
+        $userId  = \Auth::user()->getId();
         $filters = $this->_formatFilters($postData['filters']);
         /**
          * @var Subscription $subscription
@@ -81,14 +82,15 @@ class NotifyController extends BaseNotifyController
           [
           'app'            => $postData['app'],
           'event_key'      => $postData['eventKey'],
-          'contact_method' => $postData['contactMethod']
+          'contact_method' => $postData['contactMethod'],
+          'user_id'        => $userId
           ]
         );
 
         $subscription->app           = $postData['app'];
         $subscription->eventKey      = $postData['eventKey'];
         $subscription->contactMethod = $postData['contactMethod'];
-        $subscription->userId        = \Auth::user()->getId();
+        $subscription->userId        = $userId;
         $subscription->filters       = $filters;
         $subscription->saveChanges();
 

@@ -37,7 +37,7 @@
             strtotime($event->openedAt)
           ) ?>
           <br/>
-          <?php if($event->closedAt == null): ?>
+          <?php if($event->closedAt !== null): ?>
             <strong>Closed:</strong> <?= date(
               'd/m/Y H:iA',
               strtotime($event->closedAt)

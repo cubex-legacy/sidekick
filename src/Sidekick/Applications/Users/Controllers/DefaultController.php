@@ -23,7 +23,7 @@ class DefaultController extends UsersController
 
   public function renderCreate()
   {
-    $form = new Form('usersForm', '/users/create');
+    $form = new Form('usersForm', $this->appBaseUri() . '/create');
     $form->bindMapper(new User());
     return $form;
   }
@@ -38,13 +38,13 @@ class DefaultController extends UsersController
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'User was successfully created';
-    Redirect::to('/users')->with('msg', $msg)->now();
+    Redirect::to($this->appBaseUri())->with('msg', $msg)->now();
   }
 
   public function renderEdit()
   {
     $userId = $this->getInt('userId');
-    $form   = new Form('usersForm', '/users/update');
+    $form   = new Form('usersForm', $this->appBaseUri() . '/update');
     $form->bindMapper(new User($userId));
     return $form;
   }
@@ -69,14 +69,14 @@ class DefaultController extends UsersController
       $msg       = new \stdClass();
       $msg->type = 'success';
       $msg->text = 'User was successfully updated';
-      Redirect::to('/users')->with('msg', $msg)->now();
+      Redirect::to($this->appBaseUri())->with('msg', $msg)->now();
     }
     else
     {
       $msg       = new \stdClass();
       $msg->type = 'error';
       $msg->text = 'Something went wrong :s';
-      Redirect::to('/users')->with('msg', $msg)->now();
+      Redirect::to($this->appBaseUri())->with('msg', $msg)->now();
     }
   }
 
@@ -89,7 +89,7 @@ class DefaultController extends UsersController
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'User was successfully deleted';
-    Redirect::to('/users')->with('msg', $msg)->now();
+    Redirect::to($this->appBaseUri())->with('msg', $msg)->now();
   }
 
   public function getRoutes()

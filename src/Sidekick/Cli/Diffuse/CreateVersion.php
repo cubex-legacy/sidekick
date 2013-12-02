@@ -44,6 +44,8 @@ class CreateVersion extends CliCommand
    */
   public $version;
 
+  public $dryRun;
+
   protected $_echoLevel = 'debug';
 
   public function execute()
@@ -117,6 +119,12 @@ class CreateVersion extends CliCommand
         $versionFormat .= '-' . $this->type . $revision;
       }
 
+      //Exit out of the process, allowing to check a version create is possible
+      if($this->dryRun)
+      {
+        return true;
+      }
+
       Log::info("New Version: $versionFormat");
 
       $version->major     = $major;
@@ -131,7 +139,7 @@ class CreateVersion extends CliCommand
     }
 
     $reattempt = "\n\nPlease re-attempt with:\n" .
-    "bin/cubex Diffuse.CreateVersion --version=" . $version->id();
+    "./cubex Diffuse.CreateVersion --version=" . $version->id();
 
     $sourceDir = VersionHelper::sourceLocation($version);
 
@@ -271,6 +279,7 @@ class CreateVersion extends CliCommand
         );
       }
     }
+    return true;
   }
 
   public function copyDirectory($source, $destination)

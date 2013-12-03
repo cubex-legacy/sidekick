@@ -35,15 +35,15 @@ $this->getApp()->name() ?>/<?= $this->getEventKey() ?>" method="post">
 <label><strong>For:</strong></label>
 <table class="table table-bordered">
   <tr>
-    <?php foreach($configItem->getFilters() as $filterName => $options): ?>
-      <th><?= $filterName ?></th>
+    <?php foreach($configItem->getFilters() as $filter): ?>
+      <th><?= $filter->getName() ?></th>
     <?php endforeach; ?>
     <th></th>
   </tr>
   <tr>
-    <?php foreach($configItem->getFilters() as $filterName => $options): ?>
+    <?php foreach($configItem->getFilters() as $filter): ?>
       <td>
-        <?php $name = "filters[$filterName]"; ?>
+        <?php $name = "filters[" . $filter->getName() . "]"; ?>
         <?= $this->form()->getElement($name) ?>
       </td>
     <?php endforeach; ?>
@@ -67,8 +67,8 @@ $this->getApp()->name() ?>/<?= $this->getEventKey() ?>" method="post">
       <td>
         <?php $filters = $s->filters ?>
         <?php foreach($filters as $filter): ?>
-          <li><?= $filter->name ?> =
-            <?= $this->getFilterOptions($filter) ?>
+          <?php $filter = unserialize($filter); ?>
+          <li><?= $filter->getName() ?> = <?= $this->getOptionValue($filter) ?>
           </li>
         <?php endforeach; ?>
       </td>

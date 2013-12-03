@@ -9,6 +9,8 @@ use Sidekick\Applications\BaseApp\SidekickApplication;
 use Sidekick\Applications\Evento\Controllers\EventoSummaryController;
 use Sidekick\Components\Enums\Severity;
 use Sidekick\Components\Evento\Mappers\EventType;
+use Sidekick\Components\Notify\Filters\FilterEquals;
+use Sidekick\Components\Notify\Filters\FilterGreaterThan;
 use Sidekick\Components\Notify\Interfaces\INotifiableApp;
 use Sidekick\Components\Notify\NotifyConfig;
 use Sidekick\Components\Notify\NotifyConfigItem;
@@ -52,25 +54,25 @@ class EventoApp extends SidekickApplication implements INotifiableApp
   public function getNotifyConfig()
   {
     $severityOptions = array_flip((new Severity())->getConstList());
-    $eventTypes = EventType::collection()->getKeyPair('id', 'name');
+    $eventTypes      = EventType::collection()->getKeyPair('id', 'name');
 
-    $c1              = new NotifyConfigItem(
+    $c1 = new NotifyConfigItem(
       'event.create', 'Event Create', 'When Evento event is created/opened'
     );
-    $c1->addFilter('Event Type', $eventTypes);
-    $c1->addFilter('Severity', $severityOptions);
+    $c1->addFilter(new FilterEquals('Event Type', $eventTypes));
+    $c1->addFilter(new FilterGreaterThan('Severity', $severityOptions));
 
     $c3 = new NotifyConfigItem(
       'event.update', 'Event Update', 'When Evento event is updated'
     );
-    $c3->addFilter('Event Type', $eventTypes);
-    $c3->addFilter('Severity', $severityOptions);
+    $c3->addFilter(new FilterEquals('Event Type', $eventTypes));
+    $c3->addFilter(new FilterGreaterThan('Severity', $severityOptions));
 
     $c4 = new NotifyConfigItem(
       'event.close', 'Event Close', 'When Evento event is closed/resolved'
     );
-    $c4->addFilter('Event Type', $eventTypes);
-    $c4->addFilter('Severity', $severityOptions);
+    $c4->addFilter(new FilterEquals('Event Type', $eventTypes));
+    $c4->addFilter(new FilterGreaterThan('Severity', $severityOptions));
 
     $nc = new NotifyConfig();
     $nc->addItem($c1);
@@ -83,8 +85,8 @@ class EventoApp extends SidekickApplication implements INotifiableApp
   public function getRoutes()
   {
     return [
-      '/'               => 'EventoSummaryController',
-      '/types/(.*)'     => 'EventoTypesController',
+      '/'           => 'EventoSummaryController',
+      '/types/(.*)' => 'EventoTypesController',
     ];
   }
 }

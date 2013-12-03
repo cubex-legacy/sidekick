@@ -10,6 +10,7 @@ use Cubex\Facade\Session;
 use Cubex\Form\Form;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Notify\Enums\NotifyContactMethod;
+use Sidekick\Components\Notify\Filters\AbstractFilter;
 use Sidekick\Components\Users\Mappers\User;
 
 class NotifySubscribe extends TemplatedViewModel
@@ -82,6 +83,17 @@ class NotifySubscribe extends TemplatedViewModel
     return array_intersect($allContactMethods, $this->getUserContactMethods());
   }
 
+  /**
+   * @param AbstractFilter $filter
+   *
+   * @return mixed
+   */
+  public function getOptionValue($filter)
+  {
+    return $this->getNotifyConfigItem()->getFilter($filter->getName())
+           ->getOptions()[$filter->getValue()];
+  }
+
   public function getFilterValue($filterName)
   {
     if(isset($this->_subscriptions[$this->_eventKey]))
@@ -97,13 +109,6 @@ class NotifySubscribe extends TemplatedViewModel
     }
 
     return null;
-  }
-
-  public function getFilterOptions($filter)
-  {
-    $config     = $this->getApp()->getNotifyConfig();
-    $configItem = $config->getItem($this->_eventKey);
-    return $configItem->getFilterOptions($filter->name)[$filter->value];
   }
 
   public function getNotifyConfigItem()
@@ -125,10 +130,10 @@ class NotifySubscribe extends TemplatedViewModel
       );
       $configItem = $this->getNotifyConfigItem();
 
-      foreach($configItem->getFilters() as $filterName => $options)
+      foreach($configItem->getFilters() as $filter)
       {
-        $options = ['' => '--SELECT--'] + $options;
-        $name    = "filters[$filterName]";
+        $options = ['' => '--SELECT--'] + $filter->getOptions();
+        $name    = "filters[" . $filter->getName() . "]";
         $this->_form->addSelectElement(
           $name,
           $options

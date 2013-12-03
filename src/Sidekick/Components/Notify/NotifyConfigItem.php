@@ -6,6 +6,8 @@
 
 namespace Sidekick\Components\Notify;
 
+use Sidekick\Components\Notify\Filters\AbstractFilter;
+
 class NotifyConfigItem
 {
   public $eventKey;
@@ -53,38 +55,25 @@ class NotifyConfigItem
   }
 
   /**
-   * @param string $name
-   * @param array  $options
+   * @param AbstractFilter $filter
    */
-  public function addFilter($name, $options)
+  public function addFilter($filter)
   {
-    $this->filters[$name] = $options;
+    $this->filters[$filter->getName()] = $filter;
   }
 
   /**
    * @param string $name
    *
-   * @return array $options
+   * @return AbstractFilter $filter
    */
-  public function getFilterOptions($name)
+  public function getFilter($name)
   {
     return $this->filters[$name];
   }
 
   /**
-   * Accepts an associative array like this: $filters['name'] => 'value'
-   *
-   * @param array $filters
-   */
-  public function setFilters($filters)
-  {
-    $this->filters = $filters;
-  }
-
-  /**
-   * Returns an associative array like this: $filters['name'] => 'value'
-   *
-   * @return array
+   * @return AbstractFilter[]
    */
   public function getFilters()
   {

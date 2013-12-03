@@ -13,6 +13,7 @@ use Cubex\Facade\Session;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Notify\Views\NotifyIndex;
 use Sidekick\Applications\Notify\Views\NotifySubscribe;
+use Sidekick\Components\Notify\Interfaces\INotifiableApp;
 use Sidekick\Components\Notify\Mappers\Subscription;
 
 class NotifyController extends BaseNotifyController
@@ -74,7 +75,11 @@ class NotifyController extends BaseNotifyController
       try
       {
         $userId  = \Auth::user()->getId();
-        $filters = $this->_formatFilters($postData['filters']);
+        $filters = $this->_formatFilters(
+          $postData['app'],
+          $postData['eventKey'],
+          $postData['filters']
+        );
         /**
          * @var Subscription $subscription
          */
@@ -111,7 +116,7 @@ class NotifyController extends BaseNotifyController
       $msg = new TransportMessage(
         'error',
         'Your notification preference could not be saved. ' .
-        $postData['app'] . 'is not a Notifiable App'
+        $postData['app'] . ' is not a Notifiable App'
       );
     }
 
@@ -125,7 +130,7 @@ class NotifyController extends BaseNotifyController
     )->with('data', $data)->now();
   }
 
-  private function _formatFilters($filters)
+  private function _formatFilters($app, $eventKey, $filters)
   {
     $return = [];
     foreach($filters as $name => $value)
@@ -134,7 +139,16 @@ class NotifyController extends BaseNotifyController
       {
         throw new \Exception('Empty value');
       }
-      $return[] = ['name' => $name, 'value' => $value];
+
+      //store actual filter objects
+      /**
+       * @var INotifiableApp $appObj
+       */
+      $appObj     = $this->_notifiableApps[$app];
+      $configItem = $appObj->getNotifyConfig()->getItem($eventKey);
+      $filter = $configItem->getFilter($name);
+      $filter->setValue($value);
+      $return[]   = serialize($filter);
     }
 
     return $return;

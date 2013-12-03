@@ -15,6 +15,7 @@ use Cubex\Facade\Queue;
 use Cubex\Queue\CallableQueueConsumer;
 use Cubex\Queue\StdQueue;
 use Sidekick\Applications\BaseApp\SidekickApplication;
+use Sidekick\Components\Notify\Filters\AbstractFilter;
 use Sidekick\Components\Notify\Interfaces\INotify;
 use Sidekick\Components\Notify\Mappers\Subscription;
 use Sidekick\Components\Notify\NotifyMessage;
@@ -56,9 +57,13 @@ class Notification extends CliCommand
       $notify  = true;
       foreach($filters as $filter)
       {
-        if(isset($eventData[$filter->name]))
+        /**
+         * @var AbstractFilter $filter
+         */
+        $filter = unserialize($filter);
+        if(isset($eventData[$filter->getName()]))
         {
-          if($eventData[$filter->name] != $filter->value)
+          if(!$filter->validate($eventData[$filter->getName()]))
           {
             $notify = false;
           }

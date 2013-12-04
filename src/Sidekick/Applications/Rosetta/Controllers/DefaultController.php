@@ -300,16 +300,16 @@ class DefaultController extends ProjectAwareBaseControl
   {
     return [
       '/'                          => 'index',
-      '/:lang'                     => 'index',
-      '/:lang/page/:page'          => 'index',
-      '/approve/:rowKey/:lang'     => 'approve',
-      '/retranslate/:rowKey/:lang' => 'retranslate',
+      '/edit'                      => 'edit',
       '/delete/:rowKey'            => 'delete',
       '/approve'                   => 'approve',
+      '/approve/:rowKey/:lang'     => 'approve',
+      '/retranslate/:rowKey/:lang' => 'retranslate',
       '/translations/:rowKey'      => 'translations',
       '/search/'                   => 'search',
       '/search/:term/'             => 'search',
-      '/edit/'                     => 'edit',
+      '/:lang'                     => 'index',
+      '/:lang/page/:page'          => 'index',
     ];
   }
 }

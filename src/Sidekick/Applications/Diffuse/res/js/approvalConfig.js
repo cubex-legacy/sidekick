@@ -24,7 +24,7 @@ function updateField(obj, projectId, role)
   var name = $(obj).attr('name');
   var post = {projectId:projectId, role:role};
   post[name] = $(obj).val();
-  var postUrl = '/diffuse/approval/'+projectId+'/'+role+'/edit';
+  var postUrl = '/P'+PROJECTID+'/diffuse/approval/'+projectId+'/'+role+'/edit';
 
   $.post(postUrl, post, function(data){
     console.log(data);

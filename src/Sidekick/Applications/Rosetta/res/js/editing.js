@@ -9,7 +9,7 @@ $(function(){
     post['lang'] = $(this).data('lang');
     post['text'] = $(this).text().trim();
 
-    var postUrl = '/rosetta/edit';
+    var postUrl = '/P'+PROJECTID+'/rosetta/edit';
     $.post(postUrl, post, function(data){
       console.log(post);
       console.log(data);
@@ -58,7 +58,7 @@ $(function(){
         post['rowKey'] = $(obj).data('rowkey');
         post['lang'] = $(obj).data('lang');
 
-        var postUrl = '/rosetta/approve';
+        var postUrl = '/P'+PROJECTID+'/rosetta/approve';
         $.post(postUrl, post, function(data){
           //hide approved rows
           console.log(data);

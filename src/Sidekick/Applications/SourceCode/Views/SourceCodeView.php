@@ -111,13 +111,15 @@ class SourceCodeView extends ViewModel
     $sourceText = '';
     foreach($lines as $line)
     {
-      $line = trim($line);
-      if($line == '')
+      if($line == PHP_EOL)
       {
-        $line = ' ';
+        $line = trim($line);
+        if($line == '')
+        {
+          $line = ' ';
+        }
+        $line = $line . PHP_EOL;
       }
-      $line = $line . PHP_EOL;
-
       $sourceText .= $line;
     }
 

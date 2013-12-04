@@ -19,6 +19,6 @@ class ConfiguratorController extends BaseControl
     $this->requireCssPackage('configurator');
     $this->requireJs('project');
 
-    $this->nest('sidebar', new Sidebar());
+    $this->nest('sidebar', new Sidebar($this->appBaseUri()));
   }
 }

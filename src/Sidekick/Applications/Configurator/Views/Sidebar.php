@@ -16,13 +16,19 @@ use Cubex\View\ViewModel;
 
 class Sidebar extends ViewModel
 {
+  private $_appBaseUri;
+
+  public function __construct($appBaseUri)
+  {
+    $this->_appBaseUri = $appBaseUri;
+  }
 
   public function render()
   {
     $path      = $this->request()->path();
     $menuItems = [
-      'Projects'     => '/configurator',
-      'Environments' => '/configurator/environments'
+      'Projects'     => $this->_appBaseUri . '',
+      'Environments' => $this->_appBaseUri . '/environments'
     ];
 
     $str = '<div class="tabbable tabs-left">';
@@ -37,7 +43,7 @@ class Sidebar extends ViewModel
       {
         $str .= '<li>';
       }
-      $str .= '<a href="'.$href.'">'.$label.'</a>';
+      $str .= '<a href="' . $href . '">' . $label . '</a>';
       $str .= '</li>';
     }
     $str .= '</ul></div>';

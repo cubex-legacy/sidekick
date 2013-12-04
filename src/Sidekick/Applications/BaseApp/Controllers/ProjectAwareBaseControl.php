@@ -19,4 +19,10 @@ class ProjectAwareBaseControl extends BaseControl
   {
     return $this->application()->getProjectId();
   }
+
+  public function preRender()
+  {
+    parent::preRender();
+    $this->addJsBlock("var PROJECTID=" . $this->getProjectId());
+  }
 }

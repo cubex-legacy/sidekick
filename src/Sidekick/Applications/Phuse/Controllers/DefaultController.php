@@ -73,9 +73,9 @@ class DefaultController extends PhuseController
   {
     $recentDate = date('Y-m-d 00:00:00', strtotime('-2 months'));
     $packages   = Package::collection()->whereGreaterThan(
-                    'created_at',
-                    $recentDate
-                  )->setOrderBy('created_at', 'DESC');
+      'created_at',
+      $recentDate
+    )->setOrderBy('created_at', 'DESC');
     return $this->createView(new PackagesList($packages, 'New Packages'));
   }
 

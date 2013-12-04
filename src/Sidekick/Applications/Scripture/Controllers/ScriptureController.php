@@ -62,8 +62,6 @@ class ScriptureController extends ProjectAwareBaseControl
     return new TemplatedView("Homepage", $this);
   }
 
-
-
   public function getSidebar()
   {
     return null;

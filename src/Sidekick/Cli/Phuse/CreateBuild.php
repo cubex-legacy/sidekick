@@ -71,8 +71,11 @@ class CreateBuild extends CliCommand
     $package->projectId   = $this->projectId;
     $package->name        = idp($composer, "name");
     $package->description = idp($composer, "description");
-    $package->vendor      = explode('/', $package->name)[0];
-    $package->library     = explode('/', $package->name)[1];
+    list($package->vendor, $package->library) = exploded(
+      '/',
+      $package->name,
+      ["unknown-vendor","unknown-library"]
+    );
     $package->version     = idp($composer, "version");
     $package->license     = idp($composer, "license");
     $package->authors     = idp($composer, "authors");

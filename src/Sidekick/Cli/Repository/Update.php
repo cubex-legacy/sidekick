@@ -73,10 +73,11 @@ class Update extends CliCommand
 
     foreach($branches as $branchId)
     {
-      $this->_currentBranchId = $branchId;
-      $branch                 = new Branch($this->_currentBranchId);
-      $this->_currentBranch   = $branch;
-      $repo                   = $branch->repository();
+      $this->_currentBranchId   = $branchId;
+      $branch                   = new Branch($this->_currentBranchId);
+      $this->_currentBranch     = $branch;
+      $repo                     = $branch->repository();
+      $this->_currentRepository = $repo;
 
       if(!$branch->exists())
       {

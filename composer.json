@@ -24,6 +24,7 @@
     "cubex/nrpe":                "*",
     "symfony/process":           "*",
     "bundl/debugger":            "*",
+    "bundl/debugtoolbar":            "*",
     "themed/sidekick":           "*",
     "phpseclib/phpseclib":       "*",
     "ircmaxell/password-compat": "*",

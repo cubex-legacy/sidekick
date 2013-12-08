@@ -285,7 +285,7 @@ class FortifyHomeController extends FortifyController
         $queue = new StdQueue('buildRequest');
         Queue::push(
           $queue,
-          ['respositoryId' => $repoId, 'buildId' => $buildId]
+          ['projectId' => $this->getProjectId(), 'buildId' => $buildId]
         );
 
         $msg       = new \stdClass();

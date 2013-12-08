@@ -11,17 +11,18 @@ namespace Sidekick\Applications\Repository\Views;
 
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Repository\Helpers\DiffusionHelper;
+use Sidekick\Components\Repository\Mappers\Branch;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Sidekick\Components\Repository\Mappers\Source;
 
 class CommitsIndex extends TemplatedViewModel
 {
-  protected $_repo;
+  protected $_branch;
   protected $_commits;
 
-  public function __construct(Source $repo, $commits)
+  public function __construct(Branch $branch, $commits)
   {
-    $this->_repo    = $repo;
+    $this->_branch  = $branch;
     $this->_commits = $commits;
   }
 
@@ -36,30 +37,8 @@ class CommitsIndex extends TemplatedViewModel
   /**
    * @return Source
    */
-  public function getRepo()
+  public function getBranch()
   {
-    return $this->_repo;
-  }
-
-  public function getDiffusionCommitUrl()
-  {
-    $diffusion = DiffusionHelper::diffusionUrlCallsign(
-      $this->getRepo()
-    );
-
-    if($diffusion !== null)
-    {
-      $diffusionBaseUri = trim($diffusion[0], '/');
-      $callSign         = $diffusion[1];
-
-      $commitUri = str_replace(
-        "diffusion/$callSign",
-        "r{$callSign}",
-        $diffusionBaseUri
-      );
-      return $commitUri;
-    }
-
-    return null;
+    return $this->_branch;
   }
 }

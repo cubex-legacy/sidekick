@@ -5,6 +5,7 @@
 
 namespace Sidekick\Cli\Fortify;
 
+use Bundl\Debugger\DebuggerBundle;
 use Cubex\Cli\CliCommand;
 use Cubex\Cli\Shell;
 use Cubex\FileSystem\FileSystem;
@@ -25,8 +26,10 @@ use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Fortify\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Enums\RepositoryProvider;
+use Sidekick\Components\Repository\Mappers\Branch;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Sidekick\Components\Repository\Mappers\CommitFile;
+use Sidekick\Components\Repository\Mappers\Repository;
 use Sidekick\Components\Repository\Mappers\Source;
 use Symfony\Component\Process\Process;
 
@@ -86,18 +89,15 @@ class Build extends CliCommand
 
   public function execute()
   {
+    $x = new DebuggerBundle();
+    $x->init();
     $this->_lineSplit = str_repeat('=', 80);
 
     $projectId = (int)$this->project;
     $buildId   = (int)$this->build;
 
-    $project      = new Project($projectId);
-    $build        = new \Sidekick\Components\Fortify\Mappers\Build($buildId);
-    $buildProject = new BuildsProjects([$build, $project]);
-    if($buildProject->buildSourceId < 1)
-    {
-      $buildProject->buildSourceId = $project->repository('master')->id();
-    }
+    $project = new Project($projectId);
+    $build   = new \Sidekick\Components\Fortify\Mappers\Build($buildId);
 
     $buildRun            = new BuildRun();
     $buildRun->buildId   = $build->id();
@@ -108,7 +108,7 @@ class Build extends CliCommand
     $buildRun->saveChanges();
     $this->_buildRunId = $buildRun->id();
 
-    if(!System::isWindows())
+    if(!System::isWindows() && function_exists("pcntl_signal"))
     {
       declare(ticks = 1);
       pcntl_signal(SIGINT, array($buildRun, "exited"));
@@ -131,9 +131,17 @@ class Build extends CliCommand
     $buildRun->endTime  = new \DateTime();
     $buildRun->saveChanges();
 
-    $buildSource   = new Source($buildProject->buildSourceId);
-    $this->_branch = $buildSource->branch;
-    $this->_downloadSourceCode($buildSource, $this->_buildSourceDir);
+    $repo = Repository::loadWhere(["project_id" => $projectId]);
+
+    $branch = Branch::loadWhere(["repository_id" => $repo->id()]);
+
+    if($branch === null)
+    {
+      throw new \Exception("Branch Unavailable");
+    }
+
+    $this->_branch = $branch->branch;
+    $this->_downloadSourceCode($branch, $this->_buildSourceDir);
 
     chdir($this->_buildSourceDir);
     $process = new Process("git rev-parse --verify HEAD");
@@ -187,16 +195,9 @@ class Build extends CliCommand
     $buildRun->endTime = new \DateTime();
     $buildRun->saveChanges();
 
-    //Only update commit hash if its the pure repo source
-    if($this->patch === null)
-    {
-      $buildProject->lastCommitHash = $buildRun->commitHash;
-      $buildProject->saveChanges();
-    }
-
     $this->_buildResults($buildRun);
 
-    if(!System::isWindows())
+    if(!System::isWindows() && function_exists("pcntl_signal"))
     {
       //Unregister Signals
       pcntl_signal(SIGINT, SIG_IGN);
@@ -502,7 +503,7 @@ class Build extends CliCommand
     echo "\n$lineSplitter\n\n";
   }
 
-  protected function _downloadSourceCode(Source $source, $location)
+  protected function _downloadSourceCode(Branch $branch, $location)
   {
     $log = new BuildLog();
     if($this->verbose)
@@ -514,14 +515,16 @@ class Build extends CliCommand
     $log->exitCode  = -1;
     $log->saveChanges();
 
-    switch($source->repositoryType)
+    $repository = $branch->repository();
+
+    switch($repository->repositoryType)
     {
       case RepositoryProvider::GIT:
         $this->_outputStep("Cloning Repo");
 
         $cloneCommand = 'git clone -v';
-        $cloneCommand .= " $source->fetchUrl";
-        $cloneCommand .= " --branch " . $source->branch;
+        $cloneCommand .= " $repository->fetchUrl";
+        $cloneCommand .= " --branch " . $branch->branch;
         $cloneCommand .= " $location";
 
         $process = new Process($cloneCommand);
@@ -532,7 +535,7 @@ class Build extends CliCommand
         break;
       default:
         throw new \Exception(
-          "The repository type '" . $source->repositoryType . "' " .
+          "The repository type '" . $repository->repositoryType . "' " .
           "is currently unsupported"
         );
     }

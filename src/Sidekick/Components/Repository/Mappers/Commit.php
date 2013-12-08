@@ -9,12 +9,12 @@ use Cubex\Mapper\Database\RecordMapper;
 
 /**
  * Class Commit
- * @unique repository_id,commit_hash
- * @index  repository_id
+ * @index  branch_id
+ * @unique branch_id,commit_hash
  */
 class Commit extends RecordMapper
 {
-  public $repositoryId;
+  public $branchId;
   public $commitHash;
   public $subject;
   /**
@@ -47,7 +47,7 @@ class Commit extends RecordMapper
 
     $commitIds = Commit::collection()
     ->whereIn('commit_hash', $findCommits)
-    ->setColumns(['commit_hash', 'repository_id', 'id'])
+    ->setColumns(['commit_hash', 'branch_id', 'id'])
     ->get();
 
     $range = Commit::collection();
@@ -84,7 +84,7 @@ class Commit extends RecordMapper
         break;
     }
 
-    $range->whereEq("repository_id", $commitIds->getField('repository_id'))
+    $range->whereEq("branch_id", $commitIds->getField('branch_id'))
     ->setOrderBy('committed_at', 'DESC');
 
     return $range;

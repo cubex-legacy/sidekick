@@ -5,12 +5,11 @@
 
 namespace Sidekick\Applications\Repository;
 
-use Bundl\Debugger\DebuggerBundle;
-use Sidekick\Applications\BaseApp\SidekickApplication;
+use Sidekick\Applications\BaseApp\ProjectAwareApplication;
 use Sidekick\Applications\Repository\Controllers\DefaultController;
 use Sidekick\Components\Users\Enums\UserRole;
 
-class RepositoryApp extends SidekickApplication
+class RepositoryApp extends ProjectAwareApplication
 {
   public function name()
   {
@@ -32,16 +31,10 @@ class RepositoryApp extends SidekickApplication
     return "Configuration";
   }
 
-  public function getBundles()
-  {
-    //return [new DebuggerBundle()];
-  }
-
   public function getRoutes()
   {
     return [
-      '/commits'      => 'CommitsController',
-      '/commits/(.*)' => 'CommitsController'
+      '/branch/:branchId/commits' => 'CommitsController'
     ];
   }
 

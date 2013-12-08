@@ -5,80 +5,101 @@
 
 namespace Sidekick\Applications\Repository\Controllers;
 
+use Cubex\Data\Transportable\TransportMessage;
 use Cubex\Facade\Redirect;
-use Sidekick\Applications\Repository\Views\RepositoryForm;
+use Cubex\Form\Form;
+use Cubex\Form\FormElement;
 use Sidekick\Applications\Repository\Views\RepositoryIndex;
-use Sidekick\Components\Repository\Mappers\Source;
+use Sidekick\Components\Repository\Mappers\Branch;
+use Sidekick\Components\Repository\Mappers\Repository;
 
 class DefaultController extends RepositoryController
 {
   public function renderIndex()
   {
-    $repositories = Source::collection()->loadAll();
-    return $this->createView(new RepositoryIndex($repositories));
+    $repo = Repository::loadWhere(["project_id" => $this->getProjectId()]);
+    if($repo !== null)
+    {
+      $branches = Branch::collection(
+        ["repository_id" => $repo->id()]
+      );
+      return $this->createView(new RepositoryIndex($branches));
+    }
+    else
+    {
+      return $this->renderCreate();
+    }
   }
 
-  public function renderAddRepo()
+  public function renderCreate()
   {
-    return $this->createView(new RepositoryForm());
+    $form = $this->_makeRepoForm(
+      new Repository(),
+    $this->appBaseUri() . '/create'
+    );
+    return $form;
   }
 
-  public function postAddRepo()
+  public function postCreate()
   {
-    $postData = $this->request()->postVariables();
+    $repo = Repository::loadWhereOrNew(["project_id" => $this->getProjectId()]);
+    $repo->hydrate($this->request()->postVariables());
+    $repo->saveChanges();
 
-    $source = new Source();
-    $source->hydrate($postData);
-    $source->saveChanges();
+    $branch               = Branch::loadWhereOrNew(
+      ["repository_id" => $repo->id()]
+    );
+    $branch->repositoryId = $repo->id();
+    $branch->branch       = 'master';
+    $branch->name         = 'master branch';
+    $branch->saveChanges();
 
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Repository was successfully created';
+    $msg = new TransportMessage("success", "Repository Created");
 
-    Redirect::to($this->baseUri())->with('msg', $msg)->now();
+    Redirect::to($this->appBaseUri())->with("msg", $msg)->now();
   }
 
-  public function renderEditRepo()
+  protected function _makeRepoForm(Repository $repo, $action)
   {
-    $repoId = $this->getInt('repoId');
-    return $this->createView(new RepositoryForm($repoId));
+    $form            = new Form("Repository", $action);
+    $repo->projectId = $this->getProjectId();
+    $form->bindMapper($repo, true);
+    $form->get("project_id")->setType(FormElement::HIDDEN);
+    $form->get("username")->addAttribute("autocomplete", "off");
+    $form->get("password")->addAttribute("autocomplete", "off");
+    return $form;
   }
 
-  public function postUpdateRepo()
+  public function postUpdate()
   {
-    $postData = $this->request()->postVariables();
-
-    $source = new Source($postData['id']);
-    $source->hydrate($postData);
-    $source->saveChanges();
-
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Project was successfully updated';
-
-    Redirect::to($this->baseUri())->with('msg', $msg)->now();
+    $repo = new Repository($this->request()->postVariables("id"));
+    if($repo->exists())
+    {
+      $repo->hydrate($this->request()->postVariables());
+      $repo->saveChanges();
+      $msg = new TransportMessage("success", "Repository Updated");
+    }
+    else
+    {
+      $msg = new TransportMessage("error", "Repository Not Found");
+    }
+    Redirect::to($this->appBaseUri())->with("msg", $msg)->now();
   }
 
-  public function renderDeleteRepo()
+  public function renderUpdate()
   {
-    $repoId = $this->getInt('repoId');
-    $source = new Source($repoId);
-    $source->delete();
-
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Repository was deleted successfully';
-
-    Redirect::to($this->baseUri())->with('msg', $msg)->now();
+    $form = $this->_makeRepoForm(
+      Repository::loadWhere(["project_id" => $this->getProjectId()]),
+      ($this->appBaseUri() . '/update')
+    );
+    return $form;
   }
 
   public function getRoutes()
   {
     return [
-      'add-repository'    => 'addRepo',
-      'update-repository' => 'updateRepo',
-      'edit/:repoId'      => 'editRepo',
-      'delete/:repoId'    => 'deleteRepo',
+      'update' => 'update',
+      'create' => 'create'
     ];
   }
 }

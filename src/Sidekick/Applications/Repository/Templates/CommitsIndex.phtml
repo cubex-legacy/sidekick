@@ -7,7 +7,7 @@
  * @var $this \Sidekick\Applications\Repository\Views\CommitsIndex.
  */
 ?>
-<h1><?php echo $this->getRepo()->name; ?> Commits</h1>
+<h1><?php echo $this->getBranch()->name; ?> Commits</h1>
 <div style="margin-top:10px;"></div>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
@@ -23,20 +23,7 @@
   </tr>
   <?php foreach($this->getCommits() as $commit): ?>
     <tr>
-      <td><a<?php
-        $diffusionBase = $this->getRepo()->diffusionBaseUri;
-        if(!empty($diffusionBase))
-        {
-          echo ' href="' . $this->getDiffusionCommitUrl(
-            ) . $commit->commitHash . '"';
-          echo ' onclick="window.open(this.href); return false"';
-        }
-        else
-        {
-          echo ' href="' . $this->baseUri() . '/src/' . $commit->id() . '"';
-        }
-        ?>><?php echo substr($commit->commitHash, 0, 8); ?>
-        </a>
+      <td><?php echo substr($commit->commitHash, 0, 8); ?>
       </td>
       <td>
         <?php echo date('d/M/Y H:i', strtotime($commit->committedAt)); ?>

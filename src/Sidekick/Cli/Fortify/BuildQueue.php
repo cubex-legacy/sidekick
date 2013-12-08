@@ -58,7 +58,7 @@ class BuildQueue extends CliCommand
 
     Log::debug("Build IDs Available: " . implode(',', $buildIds));
 
-    $project = (new Source($data->respositoryId))->projectId;
+    $project = $data->projectId;
 
     foreach($buildIds as $buildId)
     {

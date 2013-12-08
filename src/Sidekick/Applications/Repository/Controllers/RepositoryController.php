@@ -5,9 +5,9 @@
 
 namespace Sidekick\Applications\Repository\Controllers;
 
-use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
 
-class RepositoryController extends BaseControl
+class RepositoryController extends ProjectAwareBaseControl
 {
   protected $_titlePrefix = 'Repository';
 

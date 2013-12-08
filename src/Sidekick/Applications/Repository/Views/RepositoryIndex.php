@@ -11,27 +11,23 @@ namespace Sidekick\Applications\Repository\Views;
 
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Repository\Helpers\DiffusionHelper;
+use Sidekick\Components\Repository\Mappers\Branch;
 use Sidekick\Components\Repository\Mappers\Source;
 
 class RepositoryIndex extends TemplatedViewModel
 {
-  protected $_repositories;
+  protected $_branches;
 
-  public function __construct($repositories)
+  public function __construct($branches)
   {
-    $this->_repositories = $repositories;
+    $this->_branches = $branches;
   }
 
   /**
-   * @return Source[]
+   * @return Branch[]
    */
-  public function getRepositories()
+  public function getBranches()
   {
-    return $this->_repositories;
-  }
-
-  public function diffusionUrlCallsign(Source $repo)
-  {
-    return DiffusionHelper::diffusionUrlCallsign($repo);
+    return $this->_branches;
   }
 }

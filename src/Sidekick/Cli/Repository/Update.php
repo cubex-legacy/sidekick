@@ -5,18 +5,17 @@
 
 namespace Sidekick\Cli\Repository;
 
-use Bundl\Debugger\DebuggerBundle;
 use Cubex\Cli\CliCommand;
 use Cubex\Cli\PidFile;
-use Cubex\Cli\Shell;
 use Cubex\Facade\Queue;
 use Cubex\Helpers\Strings;
 use Cubex\I18n\TranslateTraits;
 use Cubex\Log\Log;
 use Cubex\Queue\StdQueue;
+use Sidekick\Components\Repository\Mappers\Branch;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Sidekick\Components\Repository\Mappers\CommitFile;
-use Sidekick\Components\Repository\Mappers\Source;
+use Sidekick\Components\Repository\Mappers\Repository;
 use Symfony\Component\Process\Process;
 
 /**
@@ -31,7 +30,7 @@ class Update extends CliCommand
    * @required
    * @valuerequired
    */
-  public $repositories;
+  public $branches;
   public $verbose;
 
   /**
@@ -41,11 +40,15 @@ class Update extends CliCommand
 
   protected $_pidFile;
 
-  protected $_currentRepoId;
+  protected $_currentBranchId;
   /**
-   * @var Source
+   * @var Repository
    */
-  protected $_currentSource;
+  protected $_currentRepository;
+  /**
+   * @var Branch
+   */
+  protected $_currentBranch;
 
   public function longRun()
   {
@@ -59,38 +62,39 @@ class Update extends CliCommand
 
   public function execute()
   {
-    if($this->repositories === 'all')
+    if($this->branches === 'all')
     {
-      $repos = Source::collection()->get()->loadedIds();
+      $branches = Branch::collection()->get()->loadedIds();
     }
     else
     {
-      $repos = Strings::stringToRange($this->repositories);
+      $branches = Strings::stringToRange($this->branches);
     }
-    foreach($repos as $repoId)
+
+    foreach($branches as $branchId)
     {
-      $this->_currentRepoId = $repoId;
-      $repo                 = new Source($this->_currentRepoId);
-      $this->_currentSource = $repo;
-      if(!$repo->exists())
+      $this->_currentBranchId = $branchId;
+      $branch                 = new Branch($this->_currentBranchId);
+      $this->_currentBranch   = $branch;
+      $repo                   = $branch->repository();
+
+      if(!$branch->exists())
       {
-        Log::error("The repository specified could not be located");
+        Log::error("The branch specified could not be located");
         return;
       }
 
-      echo Shell::colourText(
-        "\nLoading Repository: " . $repo->name . "\n",
-        Shell::COLOUR_FOREGROUND_GREEN
-      );
+      Log::info("Loading Repository: " . $repo->name);
 
-      if(!file_exists($repo->localpath))
+      if(!file_exists($branch->getLocalPath()))
       {
         Log::info("Attempting to clone repo");
         $cloneCommand = 'git clone -v';
         $cloneCommand .= " $repo->fetchUrl";
-        $cloneCommand .= " --branch " . $repo->branch;
-        $cloneCommand .= " " . $repo->localpath;
+        $cloneCommand .= " --branch " . $branch->branch;
+        $cloneCommand .= " " . $branch->getLocalPath();
         Log::debug($cloneCommand);
+
         $process = new Process($cloneCommand);
         $process->run();
         if($this->verbose)
@@ -99,13 +103,15 @@ class Update extends CliCommand
         }
       }
 
-      if(!file_exists($repo->localpath))
+      if(!file_exists($branch->getLocalPath()))
       {
-        Log::error("The repo has not been checked out to: " . $repo->localpath);
+        Log::error(
+          "The repo has not been checked out to: " . $branch->getLocalPath()
+        );
         return;
       }
 
-      chdir($repo->localpath);
+      chdir($branch->getLocalPath());
       $process = new Process("git pull");
       $process->run(
         function ($type, $data)
@@ -137,8 +143,8 @@ class Update extends CliCommand
       $lastCommit = Commit::max(
         "committed_at",
         "%C = %d",
-        "repository_id",
-        $this->_currentRepoId
+        "branch_id",
+        $this->_currentBranchId
       );
     }
     catch(\Exception $e)
@@ -150,8 +156,8 @@ class Update extends CliCommand
     {
       $latest = Commit::collection(
         "%C = %d AND %C = %s",
-        'repository_id',
-        $this->_currentRepoId,
+        'branch_id',
+        $this->_currentBranchId,
         'committed_at',
         $lastCommit
       )->setOrderBy("id", "DESC")->setLimit(0, 1)->first();
@@ -165,10 +171,12 @@ class Update extends CliCommand
       }
     }
 
-    $format        = "%H%n%cn%n%ct%n%s%n%b%x03";
-    $command       = "git log --format=\"$format\" --reverse $fromHash";
+    $format  = "%H%n%cn%n%ct%n%s%n%b%x03";
+    $command = "git log --format=\"$format\" --reverse $fromHash";
+
     $commitProcess = new Process($command);
     $commitProcess->run();
+
     $out         = $commitProcess->getOutput();
     $commits     = explode(chr(03), $out);
     $commitCount = 0;
@@ -191,13 +199,13 @@ class Update extends CliCommand
       $subject    = trim($subject);
       $message    = trim($message);
 
-      $commitO               = new Commit();
-      $commitO->repositoryId = $this->_currentRepoId;
-      $commitO->commitHash   = $commitHash;
-      $commitO->author       = $author;
-      $commitO->committedAt  = date("Y-m-d H:i:s", $date);
-      $commitO->subject      = $subject;
-      $commitO->message      = $message;
+      $commitO              = new Commit();
+      $commitO->branchId    = $this->_currentBranchId;
+      $commitO->commitHash  = $commitHash;
+      $commitO->author      = $author;
+      $commitO->committedAt = date("Y-m-d H:i:s", $date);
+      $commitO->subject     = $subject;
+      $commitO->message     = $message;
       $commitO->saveChanges();
 
       if($this->verbose)
@@ -209,17 +217,17 @@ class Update extends CliCommand
 
       $diffProcess = new Process($command);
       $diffProcess->run();
+
       $changedFiles = explode("\n", $diffProcess->getOutput());
       foreach($changedFiles as $file)
       {
         if(stristr($file, "\t"))
         {
           list($changeType, $filePath) = explode("\t", $file, 2);
-          $cFile               = new CommitFile();
-          $cFile->changeType   = strtoupper(trim($changeType));
-          $cFile->commitId     = $commitO->id();
-          $cFile->repositoryId = $this->_currentRepoId;
-          $cFile->filePath     = trim($filePath);
+          $cFile             = new CommitFile();
+          $cFile->changeType = strtoupper(trim($changeType));
+          $cFile->commitId   = $commitO->id();
+          $cFile->filePath   = trim($filePath);
           $cFile->saveChanges();
         }
       }
@@ -241,8 +249,9 @@ class Update extends CliCommand
       Queue::push(
         $queue,
         [
-        'respositoryId' => $this->_currentRepoId,
-        'buildId'       => $this->_currentSource->commitBuildId,
+        'branchId'  => $this->_currentBranchId,
+        'projectId' => $this->_currentRepository->projectId,
+        'buildId'   => $this->_currentBranch->commitBuildId,
         ]
       );
     }

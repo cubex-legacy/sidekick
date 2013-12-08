@@ -1,63 +1,39 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: oke.ugwu
- * Date: 31/05/13
- * Time: 08:44
- * @var $this \Sidekick\Applications\Repository\Views\RepositoryIndex.
+ * @var $this \Sidekick\Applications\Repository\Views\RepositoryIndex
  */
 ?>
-<h1>Repositories</h1>
-<a href="<?= $this->baseUri() . '/add-repository'; ?>"
-   class="btn btn-success pull-right"
-   style="margin-top:-20px;">
-  <i class="icon-plus icon-white"></i>
-  Add Repository</a>
+<h1>Branches</h1>
 <div class="clearfix"></div>
 <div style="margin-top:10px;"></div>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
-    <?= Session::getFlash('msg')->text; ?>
+    <?= Session::getFlash('msg')->message; ?>
   </div>
 <?php endif; ?>
 <table class="table table-striped table-bordered table-hover">
   <tr class="info">
+    <th>Branch</th>
     <th>Name</th>
-    <th>Type</th>
     <th>Commits</th>
-    <th>Diffusion</th>
-    <th>Created</th>
-    <th>Last Update</th>
-    <th></th>
+    <th>Version</th>
+    <th>Creation Date</th>
   </tr>
-  <?php foreach($this->getRepositories() as $repo): ?>
+  <?php foreach($this->getBranches() as $branch): ?>
     <tr>
-      <td><a href="<?= $this->baseUri() . '/commits/' . $repo->id(); ?>">
-          <?= $repo->name; ?></a>
-      </td>
-      <td><?= $repo->repositoryType ?></td>
-      <td><?= number_format($repo->commits()->count(), 0); ?></td>
       <td>
-        <?php $diffusion = $this->diffusionUrlCallsign($repo); ?>
-        <?php if($diffusion === null): ?>
-          Not Available
-        <?php else: ?>
-          <a href="<?= $diffusion[0] ?>"
-             onclick="window.open(this.href); return false;">
-            Browse <?= $diffusion[1] ?></a>
-        <?php endif ?>
+          <?= $branch->branch; ?>
       </td>
-      <td><?= date('d/M/Y', strtotime($repo->createdAt)) ?></td>
-      <td><?= date('d/M/Y', strtotime($repo->updatedAt)) ?></td>
+      <td><?= $branch->name ?></td>
       <td>
-
-        <a href="<?= $this->baseUri() . '/edit/' . $repo->id() ?>"
-           title="edit"><i class="icon-edit"></i></a>
-
-        <a href="<?= $this->baseUri() . '/delete/' . $repo->id() ?>"
-           title="delete"><i class="icon-trash"></i></a>
-
+        <a href="<?= $this->appBaseUri() . '/branch/' . $branch->id(); ?>/commits">
+          <?= number_format($branch->commits()->count(), 0); ?>
+        </a>
       </td>
+      <td><?= $branch->majorVersion?:"x"; ?>.<?= $branch->minorVersion?:"x"; ?></td>
+      <td><?= date('d/M/Y', strtotime($branch->createdAt)) ?></td>
     </tr>
   <?php endforeach; ?>
 </table>
+
+<a href="<?=$this->appBaseUri(); ?>/update">Update Repo</a>

@@ -240,11 +240,11 @@ class Update extends CliCommand
       )
     );
 
-    if($commitCount > 0 && $this->_currentSource->commitBuildId > 0)
+    if($commitCount > 0 && $this->_currentBranch->commitBuildId > 0)
     {
       $queue = new StdQueue('buildRequest');
       Log::info(
-        "Pushing to build queue " . $this->_currentSource->commitBuildId
+        "Pushing to build queue " . $this->_currentBranch->commitBuildId
       );
       Queue::push(
         $queue,

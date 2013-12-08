@@ -245,7 +245,8 @@ class Update extends CliCommand
     {
       $queue = new StdQueue('buildRequest');
       Log::info(
-        "Pushing to build queue " . $this->_currentBranch->commitBuildId
+        "Pushing to build queue " . $this->_currentBranch->commitBuildId .
+        " for Project " . $this->_currentRepository->projectId
       );
       Queue::push(
         $queue,

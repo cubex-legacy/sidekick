@@ -27,6 +27,7 @@ abstract class MapperController extends BaseControl
   protected $_mapper;
   protected $_title;
   protected $_listColumns;
+  protected $_perPage = 5;
 
   public function __construct(
     RecordMapper $mapper, $listColumns = null
@@ -41,13 +42,12 @@ abstract class MapperController extends BaseControl
     $collection = new RecordCollection($this->_mapper);
     $collection->loadAll();
 
-    $perpage = 5;
     //cloning because if i count it loads the collection then i can't limit
     $cloneToCount = clone $collection;
     $count        = $cloneToCount->count();
-    $paginator    = $this->_getPaginator($page, $count, $perpage);
+    $paginator    = $this->_getPaginator($page, $count, $this->_perPage);
     $offset       = $paginator->getOffset();
-    $collection->setLimit($offset, $perpage);
+    $collection->setLimit($offset, $this->_perPage);
 
     $mapperTable = new MappersTable(
       $this->baseUri(), $collection, $this->_listColumns

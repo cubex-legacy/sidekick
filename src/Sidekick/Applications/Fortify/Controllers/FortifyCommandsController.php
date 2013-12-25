@@ -19,6 +19,7 @@ use Sidekick\Components\Fortify\Mappers\Command;
 class FortifyCommandsController extends FortifyCrudController
 {
   protected $_title = 'Command';
+  protected $_perPage = 20;
 
   public function __construct()
   {

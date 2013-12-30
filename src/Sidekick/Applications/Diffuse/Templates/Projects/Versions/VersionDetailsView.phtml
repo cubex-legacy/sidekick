@@ -97,3 +97,12 @@
 <?php else: ?>
   <p class="text-center">No commits have been tracked to this version :s</p>
 <?php endif ?>
+
+<?php if($this->rejectButtonStatus()): ?>
+  <h4>Danger Zone</h4>
+  <?php echo (new \Qubes\Bootstrap\Button(
+    'Reject this version as it has not yet been deployed',
+    \Qubes\Bootstrap\Button::ELEMENT_ANCHOR,
+    \Qubes\Bootstrap\Button::STYLE_DANGER
+  ))->addAttributes(["href" => $this->baseUri() . '/reject']); ?>
+<?php endif; ?>

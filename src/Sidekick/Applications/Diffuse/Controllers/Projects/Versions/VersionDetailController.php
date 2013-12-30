@@ -10,6 +10,8 @@ use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionChangeLogView;
 use Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionDetailsView;
+use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
+use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Components\Repository\Mappers\Commit;
 
 class VersionDetailController extends VersionsController
@@ -29,6 +31,11 @@ class VersionDetailController extends VersionsController
           Commit::INCLUDE_LATEST
         )
       );
+    }
+
+    if($this->_version->deployments()->count() === 0)
+    {
+      $view->enableRejectButton();
     }
 
     return $this->_buildView($view);
@@ -62,10 +69,45 @@ class VersionDetailController extends VersionsController
     return (new \Redirect())->to($this->baseUri());
   }
 
+  public function renderReject()
+  {
+    try
+    {
+      if($this->_version->deployments()->count() > 0)
+      {
+        throw new \Exception("you have already deployed it");
+      }
+
+      if($this->_version->versionState == ApprovalState::APPROVED)
+      {
+        throw new \Exception("its already approved");
+      }
+
+      $this->_version->versionState = ApprovalState::REJECTED;
+      $this->_version->saveChanges();
+
+      \Session::flash(
+        "msg",
+        new TransportMessage("success", "Version rejected")
+      );
+    }
+    catch(\Exception $e)
+    {
+      \Session::flash(
+        "msg",
+        new TransportMessage(
+          "error",
+        "You cannot rejected this version because " . $e->getMessage())
+      );
+    }
+    return (new \Redirect())->to($this->baseUri());
+  }
+
   public function getRoutes()
   {
     return [
-      '/changelog' => 'changelog'
+      '/changelog' => 'changelog',
+      '/reject'    => 'reject',
     ];
   }
 }

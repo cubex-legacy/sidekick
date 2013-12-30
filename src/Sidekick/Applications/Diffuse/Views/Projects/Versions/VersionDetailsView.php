@@ -25,6 +25,7 @@ class VersionDetailsView extends TemplatedViewModel
    * @var RecordCollection|Commit[]
    */
   protected $_commits;
+  protected $_rejectButton = false;
 
   public function __construct(Version $version, $platforms, $platformStates)
   {
@@ -119,5 +120,20 @@ class VersionDetailsView extends TemplatedViewModel
   public function getVersion()
   {
     return $this->_version;
+  }
+
+  public function enableRejectButton()
+  {
+    $this->_rejectButton = true;
+  }
+
+  public function disableRejectButton()
+  {
+    $this->_rejectButton = false;
+  }
+
+  public function rejectButtonStatus()
+  {
+    return (bool)$this->_rejectButton;
   }
 }

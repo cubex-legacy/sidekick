@@ -6,6 +6,8 @@
 
 namespace Sidekick\Applications\Api\Controllers\Rosetta;
 
+use Cubex\Foundation\Config\Config;
+use Cubex\Foundation\Container;
 use Sidekick\Applications\Api\Controllers\ApiController;
 use Sidekick\Components\Rosetta\Helpers\TranslatorHelper;
 use Sidekick\Components\Rosetta\Mappers\PendingTranslation;
@@ -47,11 +49,20 @@ class Translate extends ApiController
           $projectId
         );
 
+        $pendingTranslation            = new PendingTranslation();
+        $pendingTranslation->rowKey    = $key;
+        $pendingTranslation->lang      = $targetLang;
+        $pendingTranslation->projectId = $projectId;
+        $pendingTranslation->saveChanges();
+
         $translatedText = TranslatorHelper::translate(
           $params['text'],
           $sourceLang,
           $targetLang
         );
+
+        $config = Container::config()->get("i18n", new Config());
+        $source = $config->getStr("translator", null);
 
         TranslatorHelper::saveTranslation(
           $key,
@@ -63,15 +74,7 @@ class Translate extends ApiController
       else
       {
         $translatedText = json_decode(current($data))->translated;
-      }
-
-      if(!count($data) || !json_decode(current($data))->approved)
-      {
-        $pendingTranslation            = new PendingTranslation();
-        $pendingTranslation->rowKey    = $key;
-        $pendingTranslation->lang      = $targetLang;
-        $pendingTranslation->projectId = $projectId;
-        $pendingTranslation->saveChanges();
+        $source         = 'rosetta';
       }
 
       return [
@@ -80,7 +83,8 @@ class Translate extends ApiController
           'message' => 'Text translated successfully'
         ],
         'result' => [
-          'text' => $translatedText
+          'translation_source' => $source,
+          'text'               => $translatedText
         ]
       ];
     }

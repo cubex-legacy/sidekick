@@ -1,0 +1,32 @@
+build_settings:
+    verbose: false
+    ignore:
+        - "vendor"
+        - "Tests"
+        - "tests"
+        - "public"
+
+notifications:
+  email: false
+
+env:
+  CUBEX_ENV: development
+
+analyse:
+  PhpSuperGlobals:
+  Todos: "*.php"
+  PhpLoc:
+
+install:
+  ComposerCache: "LoadFromProjectBranch"
+  RawCommand:
+    ComposerUpdate: "composer update -o --prefer-dist"
+
+script:
+    PhpLint:
+    PhpMessDetection:
+    PhpCodeSniffer:
+        standard: "Cubex_Code_Standards"
+
+uninstall:
+    ComposerCache: "Store"

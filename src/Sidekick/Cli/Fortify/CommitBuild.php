@@ -6,32 +6,46 @@
 namespace Sidekick\Cli\Fortify;
 
 use Cubex\Cli\CliCommand;
+use Sidekick\Components\Fortify\Build\FortifyBuildProcess;
+use Sidekick\Components\Fortify\Enums\BuildStatus;
+use Sidekick\Components\Fortify\Mappers\CommitBuild as CommitBuildMapper;
 
 class CommitBuild extends CliCommand
 {
+  /**
+   * @valuerequired
+   * @required
+   */
+  public $branchId;
+  /**
+   * @valuerequired
+   * @required
+   */
+  public $commitHash;
+
   public function execute()
   {
-    //Create build path
-    //mkdir build/path
+    $build = new CommitBuildMapper([$this->branchId, $this->commitHash]);
+    if(!$build->exists())
+    {
+      throw new \RuntimeException("The build specified does not exist");
+    }
 
-    //Rsync git repo into build directory, using hard links
-    //rsync -lrtH repo/path build/path
+    if($build->status !== BuildStatus::PENDING)
+    {
+      /*throw new \RuntimeException(
+        "This build is currently in a " . $build->status . ' state, ' .
+        'therefore cannot be executed.'
+      );*/
+    }
 
-    //Checkout the build path to the desired commit hash
-    //git checkout commithash
+    $buildProcess = new FortifyBuildProcess();
+    $buildProcess->loadYaml(
+      file_get_contents(
+        build_path(CUBEX_PROJECT_ROOT, 'conf/sidekick.yaml')
+      )
+    );
 
-    //Load all static analysis classes
-
-    //Loop over all changed files and pass file path into each analysis class
-
-    //Loop over all analysis classes which run on entire directory
-
-    //Once analysis complete, start build processes e.g. composer
-
-    //Copy vendor directory in from vendor/repos/branch/latest
-    //Composer update
-    //Push vendor dir back to latest vendor/repos/branch/latest
-
-    //Run build commands
+    $buildProcess->runBuild($build);
   }
 }

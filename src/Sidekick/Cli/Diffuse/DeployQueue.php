@@ -80,18 +80,28 @@ class DeployQueue extends CliCommand
     Log::debug("Executing: $command");
 
     $process = new Process($command);
-    if($this->verbose)
+    try
     {
-      $process->run(
-        function ($type, $buffer)
-        {
-          echo $buffer;
-        }
-      );
+      if($this->verbose)
+      {
+        $process->run(
+          function ($type, $buffer)
+          {
+            echo $buffer;
+          }
+        );
+      }
+      else
+      {
+        $process->run();
+      }
     }
-    else
+    catch(\Exception $e)
     {
-      $process->run();
+      Log::debug(
+        "Failed Deployment (Exit Code: " . $process->getExitCode() . ")"
+      );
+      Log::error($e->getMessage());
     }
 
     Log::debug(

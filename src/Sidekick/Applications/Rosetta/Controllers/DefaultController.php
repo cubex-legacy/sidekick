@@ -281,13 +281,13 @@ class DefaultController extends ProjectAwareBaseControl
     $term = trim($this->request()->postVariables('term'));
     if($term !== null)
     {
-      if(strlen($term) == 34 && !stristr($term,' '))
+      if(strlen($term) > 32 && !stristr($term,' '))
       {
         Redirect::to($this->appBaseUri() . '/translations/' . $term)->now();
       }
       else
       {
-        $hash = md5($term);
+        $hash = md5($term) . strlen($term);
         Redirect::to($this->appBaseUri() . '/translations/' . $hash)->now();
       }
     }

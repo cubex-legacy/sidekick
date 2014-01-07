@@ -5,20 +5,20 @@
  */
 ?>
 
+<div class="well pull-right">
+  <form method="post" action="<?= $this->appBaseUri() ?>/search">
+    <input class="input-xxlarge rosetta-search" type="text"
+           placeholder="Start searching by typing the string of characters or the lookup ID."
+           name="term"
+      />
+    <button class="btn btn-success search-btn">Search</button>
+  </form>
+</div>
+
 <h1>Welcome to Rosetta</h1>
 <p>Rosetta is the translations manager.</p>
 
-<!--<div class="well">
-  <h2>Search</h2>
-
-  <p>Start searching by typing the string of characters or the lookup ID.</p>
-
-  <form method="get" action="rosetta/search">
-    <input class="input-xxlarge rosetta-search" type="text"
-           placeholder="Start typing some text..." name="term"/>
-    <button class="btn btn-success search-btn">Search</button>
-  </form>
-</div>-->
+<div class="clearfix"></div>
 
 <div class="pull-right">
   <label for="">Select Language: </label>

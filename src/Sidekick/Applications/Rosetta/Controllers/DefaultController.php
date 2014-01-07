@@ -276,10 +276,25 @@ class DefaultController extends ProjectAwareBaseControl
     return ['updated' => true];
   }
 
-  public function renderSearch()
+  public function postSearch()
   {
-    $this->requireJs('search');
-    //TODO: implement once elastic search is ready
+    $term = trim($this->request()->postVariables('term'));
+    if($term !== null)
+    {
+      if(strlen($term) == 34 && !stristr($term,' '))
+      {
+        Redirect::to($this->appBaseUri() . '/translations/' . $term)->now();
+      }
+      else
+      {
+        $hash = md5($term);
+        Redirect::to($this->appBaseUri() . '/translations/' . $hash)->now();
+      }
+    }
+    else
+    {
+      Redirect::back()->now();
+    }
   }
 
   public function renderTranslations()
@@ -293,7 +308,11 @@ class DefaultController extends ProjectAwareBaseControl
     {
       return new Translations($projectId, $rowKey, $translations);
     }
-    return new Error404();
+    else
+    {
+      echo new Error404();
+      echo "The Key '$rowKey' could not be located";
+    }
   }
 
   public function getRoutes()
@@ -307,7 +326,6 @@ class DefaultController extends ProjectAwareBaseControl
       '/retranslate/:rowKey/:lang' => 'retranslate',
       '/translations/:rowKey'      => 'translations',
       '/search/'                   => 'search',
-      '/search/:term/'             => 'search',
       '/:lang'                     => 'index',
       '/:lang/page/:page'          => 'index',
     ];

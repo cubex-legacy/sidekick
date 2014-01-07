@@ -12,6 +12,7 @@ use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\Version;
+use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Deployment\BaseDeploymentService;
 use Symfony\Component\Process\Process;
 
@@ -102,7 +103,26 @@ class RsyncService extends BaseDeploymentService
 
   protected function _previsionVersion()
   {
-    return new Version();
+    if($this->_version->build < 1)
+    {
+      return new Version();
+    }
+    $previous = Version::loadWhere(
+      [
+        "projectId"    => $this->_version->projectId,
+        "versionState" => ApprovalState::APPROVED,
+        "major"        => $this->_version->major,
+        "minor"        => $this->_version->minor,
+        "build"        => $this->_version->build - 1,
+      ]
+    );
+
+    if($previous === null)
+    {
+      return new Version();
+    }
+
+    return $previous;
   }
 
   public static function getConfigurationItems()

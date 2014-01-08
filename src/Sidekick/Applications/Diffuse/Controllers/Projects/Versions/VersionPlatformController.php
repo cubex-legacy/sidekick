@@ -9,9 +9,7 @@ use Cubex\Core\Http\Redirect;
 use Cubex\Data\Transportable\TransportMessage;
 use Cubex\Facade\Session;
 use Cubex\Form\Form;
-use Cubex\Helpers\Strings;
 use Cubex\Mapper\Database\RecordCollection;
-use Cubex\Queue\StdQueue;
 use Sidekick\Applications\Diffuse\Forms\DiffuseActionForm;
 use Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionPlatformView;
 use Sidekick\Components\Enums\ActionType;
@@ -262,6 +260,7 @@ class VersionPlatformController extends VersionsController
     $deployment             = new Deployment();
     $deployment->pending    = true;
     $deployment->platformId = $this->getInt("platformId");
+    $deployment->projectId  = $this->getProjectId();
     $deployment->versionId  = $this->getInt("versionId");
     $deployment->userId     = \Auth::user()->getId();
     $deployment->saveChanges();

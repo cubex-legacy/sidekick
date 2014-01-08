@@ -51,7 +51,7 @@ class Deploy extends CliCommand
     if($this->deploymentId > 0)
     {
       $deployment = new Deployment($this->deploymentId);
-      if(!$deployment->exists() || $deployment->pending !== true)
+      if(!$deployment->exists() || $deployment->pending != true)
       {
         throw new \Exception(
           "The deployment you are trying to run is not pending, " .

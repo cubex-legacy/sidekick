@@ -12,6 +12,7 @@ use Cubex\Facade\Queue;
 use Cubex\Log\Log;
 use Cubex\Queue\CallableQueueConsumer;
 use Cubex\Queue\StdQueue;
+use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Symfony\Component\Process\Process;
@@ -27,19 +28,32 @@ class DeployQueue extends CliCommand
 
   protected $_echoLevel = 'debug';
 
+  /**
+   * @valuerequired
+   */
+  public $inactiveSleep = 5;
+
   public function execute()
   {
     $this->_pidFile = new PidFile();
     Log::debug("Starting Queue Consumer");
-    $queue = new StdQueue('DeployRequest');
-    Queue::consume(
-      $queue,
-      new CallableQueueConsumer([$this, 'runDeployment'], 10)
-    );
+    while(true)
+    {
+      $deployment = Deployment::collection(["pending" => 1])->setLimit(1);
+      if($deployment->hasMappers())
+      {
+        $data = $deployment->first();
+        $this->runDeployment($data);
+      }
+      else
+      {
+        sleep($this->inactiveSleep);
+      }
+    }
     Log::debug("Completed Consume");
   }
 
-  public function runDeployment($queue, $data)
+  public function runDeployment($data)
   {
     $platformId = $data->platformId;
     $versionId  = $data->versionId;
@@ -53,14 +67,27 @@ class DeployQueue extends CliCommand
     );
 
     $cwd     = getcwd();
-    $rawArgs = [
-      '--cubex-env=' . CUBEX_ENV,
-      'Diffuse.Deploy',
-      '--versionId=' . $versionId,
-      '--platformId=' . $platformId,
-      '--echo-level=' . $this->_logger->getEchoLevel(),
-      '--log-level=' . $this->_logger->getLogLevel(),
-    ];
+    if(isset($data->id))
+    {
+      $rawArgs = [
+        '--cubex-env=' . CUBEX_ENV,
+        'Diffuse.Deploy',
+        '--deploymentId=' . $data->id,
+        '--echo-level=' . $this->_logger->getEchoLevel(),
+        '--log-level=' . $this->_logger->getLogLevel(),
+      ];
+    }
+    else
+    {
+      $rawArgs = [
+        '--cubex-env=' . CUBEX_ENV,
+        'Diffuse.Deploy',
+        '--versionId=' . $versionId,
+        '--platformId=' . $platformId,
+        '--echo-level=' . $this->_logger->getEchoLevel(),
+        '--log-level=' . $this->_logger->getLogLevel(),
+      ];
+    }
 
     if($this->verbose)
     {

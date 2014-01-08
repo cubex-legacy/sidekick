@@ -17,8 +17,10 @@ class Deployment extends RecordMapper
   public $platformId;
   public $userId;
   public $projectId;
+  public $startedAt;
   public $deployedOn;
   public $completed = false;
+  public $pending = false;
   public $passed = false;
   public $comment;
 

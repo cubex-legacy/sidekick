@@ -6,7 +6,6 @@
 namespace Sidekick\Cli\Diffuse;
 
 use Cubex\Cli\CliCommand;
-use Cubex\Cli\Shell;
 use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
@@ -39,47 +38,84 @@ class Deploy extends CliCommand
    */
   public $platformId;
 
+  /**
+   * @valuerequired
+   */
+  public $deploymentId;
+
   protected $_echoLevel = 'debug';
 
   public function execute()
   {
-    $version = new Version($this->versionId);
-    if(!$version->exists())
+    $deployment = null;
+    if($this->deploymentId > 0)
     {
-      throw new \Exception("The version specified does not exist");
+      $deployment = new Deployment($this->deploymentId);
+      if(!$deployment->exists() || $deployment->pending !== true)
+      {
+        throw new \Exception(
+          "The deployment you are trying to run is not pending, " .
+          "or does not exist."
+        );
+      }
+      else
+      {
+        $version  = new Version($deployment->versionId);
+        $platform = new Platform($deployment->platformId);
+        $project  = new Project($deployment->projectId);
+        $user     = new User($deployment->userId);
+      }
     }
 
-    $platform = new Platform($this->platformId);
-    if(!$platform->exists())
+    if($deployment === null)
     {
-      throw new \Exception("The platform specified does not exist");
-    }
+      $version = new Version($this->versionId);
+      if(!$version->exists())
+      {
+        throw new \Exception("The version specified does not exist");
+      }
 
-    $project = new Project($version->projectId);
-    if(!$project->exists())
-    {
-      throw new \Exception("The project specified does not exist");
-    }
+      $platform = new Platform($this->platformId);
+      if(!$platform->exists())
+      {
+        throw new \Exception("The platform specified does not exist");
+      }
 
-    $user = new User($this->userId);
-    if(!$user->exists())
-    {
-      throw new \Exception("The user specified does not exist");
+      $project = new Project($version->projectId);
+      if(!$project->exists())
+      {
+        throw new \Exception("The project specified does not exist");
+      }
+
+      $user = new User($this->userId);
+      if(!$user->exists())
+      {
+        throw new \Exception("The user specified does not exist");
+      }
     }
 
     $this->_createVersionDataFile($version);
 
-    $deployment             = new Deployment();
-    $deployment->platformId = $platform->id();
-    $deployment->versionId  = $version->id();
-    $deployment->projectId  = $project->id();
-    $deployment->userId     = $user->id();
+    if($deployment === null)
+    {
+      $deployment             = new Deployment();
+      $deployment->platformId = $platform->id();
+      $deployment->versionId  = $version->id();
+      $deployment->projectId  = $project->id();
+      $deployment->userId     = $user->id();
+    }
+
+    //Stop the deployment from being pending, to ensure it no longer gets
+    //picked up by the queue consumer
+
+    $deployment->pending   = false;
+    $deployment->startedAt = new \DateTime();
     $deployment->saveChanges(); //Initiate deployment for the ID
 
     $hosts = HostPlatform::collection(
       [
-      "platform_id" => $platform->id(),
-      "project_id"  => $project->id()
+        "platform_id" => $platform->id(),
+        "project_id"  => $project->id()
       ]
     );
 
@@ -92,8 +128,8 @@ class Deploy extends CliCommand
 
     $stages    = DeploymentStage::collection(
       [
-      'platform_id' => $platform->id(),
-      'project_id'  => $project->id(),
+        'platform_id' => $platform->id(),
+        'project_id'  => $project->id(),
       ]
     );
     $passStage = true;
@@ -122,7 +158,7 @@ class Deploy extends CliCommand
              * @var $hostPlat \Sidekick\Components\Diffuse\Mappers\HostPlatform
              */
             $stageHost                    = new DeploymentStageHost();
-            $stageHost->serverId            = $hostPlat->serverId;
+            $stageHost->serverId          = $hostPlat->serverId;
             $stageHost->deploymentId      = $deployment->id();
             $stageHost->deploymentStageId = $stage->id();
             $diffuser->addHost($stageHost);

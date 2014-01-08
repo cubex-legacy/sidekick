@@ -41,12 +41,12 @@ class VersionPlatformController extends VersionsController
     $deployments = Deployment::collection(
       ['version_id' => $this->_version->id(), 'platform_id' => $platformId]
     )->setLimit(0, 5)
-    ->setOrderBy("id", "DESC");
+      ->setOrderBy("id", "DESC");
 
     $approvals = ApprovalConfiguration::collection(
       [
-      'platform_id' => $platformId,
-      'project_id'  => $this->_version->projectId
+        'platform_id' => $platformId,
+        'project_id'  => $this->_version->projectId
       ]
     );
 
@@ -92,7 +92,7 @@ class VersionPlatformController extends VersionsController
         array_map(
           '\Cubex\Helpers\Strings::titleize',
           Platform::collection()->loadIds($reqPlatforms)
-          ->getUniqueField("name")
+            ->getUniqueField("name")
         )
       );
     }
@@ -148,8 +148,8 @@ class VersionPlatformController extends VersionsController
       $platformState->state = ApprovalState::REJECTED;
     }
     else if((!(in_array(false, $requires) ||
-    (empty($requires) && in_array(false, $optional)))
-    && $platformState->deploymentCount > 0)
+        (empty($requires) && in_array(false, $optional)))
+      && $platformState->deploymentCount > 0)
     )
     {
       //Any requirements fail, or any optionals require if no required pass
@@ -166,12 +166,14 @@ class VersionPlatformController extends VersionsController
 
     $platformState->saveChanges();
 
-    $states   = $this->_platformStates->getKeyPair("platformId", "state");
-    $complete = array_fill_keys(
+    $states = $this->_platformStates->getKeyPair("platformId", "state");
+
+    $states[$platformState->id()] = $platformState->state;
+    $complete                     = array_fill_keys(
       $this->_platforms->loadedIds(),
       ApprovalState::APPROVED
     );
-    $diff     = array_diff_assoc($complete, $states);
+    $diff                         = array_diff_assoc($complete, $states);
     if(empty($diff))
     {
       $this->_version->versionState = ApprovalState::APPROVED;
@@ -244,8 +246,8 @@ class VersionPlatformController extends VersionsController
       //Show users own roles on form
       $roles = new ProjectUser(
         [
-        $this->_version->projectId,
-        \Auth::user()->getId()
+          $this->_version->projectId,
+          \Auth::user()->getId()
         ]
       );
       $this->_form->getElement("userRole")->setOptions(
@@ -257,11 +259,12 @@ class VersionPlatformController extends VersionsController
 
   public function deploy()
   {
-    $deployRequest             = new \stdClass;
-    $deployRequest->platformId = $this->getInt("platformId");
-    $deployRequest->versionId  = $this->getInt("versionId");
-    $deployRequest->userId     = \Auth::user()->getId();
-    \Queue::push(new StdQueue('DeployRequest'), $deployRequest);
+    $deployment             = new Deployment();
+    $deployment->pending    = true;
+    $deployment->platformId = $this->getInt("platformId");
+    $deployment->versionId  = $this->getInt("versionId");
+    $deployment->userId     = \Auth::user()->getId();
+    $deployment->saveChanges();
 
     //Change pending versions to review when first deployment made
     if($this->_version->versionState === ApprovalState::PENDING)

@@ -39,7 +39,8 @@ class DeployQueue extends CliCommand
     Log::debug("Starting Queue Consumer");
     while(true)
     {
-      $deployment = Deployment::collection(["pending" => 1])->setLimit(1);
+      $deployment = Deployment::collection(["pending" => 1]);
+      $deployment->setLimit(0, 1)->get();
       if($deployment->hasMappers())
       {
         $data = $deployment->first();
@@ -47,6 +48,9 @@ class DeployQueue extends CliCommand
       }
       else
       {
+        Log::debug(
+          "Nothing to do, sleeping for " . $this->inactiveSleep . "seconds"
+        );
         sleep($this->inactiveSleep);
       }
     }
@@ -66,7 +70,7 @@ class DeployQueue extends CliCommand
       "Version: " . $version->format() . ", Platform: " . $platform->name
     );
 
-    $cwd     = getcwd();
+    $cwd = getcwd();
     if(isset($data->id))
     {
       $rawArgs = [

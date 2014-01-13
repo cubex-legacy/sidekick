@@ -1,17 +1,13 @@
 <?php
-/**
- * @author  brooke.bryan
- */
-
-namespace Sidekick\Components\Fortify\Analysers\PhpLint;
+namespace Sidekick\Components\Fortify\Analysers\PhpSuperGlobals;
 
 use Sidekick\Components\Fortify\Analysers\AbstractAnalyser;
 use Sidekick\Components\Repository\Mappers\Commit;
-use Symfony\Component\Process\Process;
 
-class PhpLint extends AbstractAnalyser
+class PhpSuperGlobals extends AbstractAnalyser
 {
   protected $_pattern = '.*\.php$';
+  protected $_matchOn = ["\\btodo\\b.*", "\\bfixme\\b.*"];
 
   protected $_fileResults = [];
 
@@ -29,22 +25,16 @@ class PhpLint extends AbstractAnalyser
 
   public function analyse(Commit $commit)
   {
+    //TODO: Add all todo's to a new Table for quick lookups and listing
+    //Remove all dropped todos from the data source - list the commit and date
+
     $passed = true;
 
     foreach($this->_getCurrentFiles($commit) as $file)
     {
-      if(preg_match("/$this->_pattern/", $file))
+      if(preg_match("/$this->_pattern/", $file->filePath))
       {
-        $command = 'php -l ' . build_path($this->_basePath, $file);
-        $process = new Process($command);
-        $process->run();
-        $this->_fileResults[$file] = $process->getExitCode();
-
-        if($this->_fileResults[$file] !== 0)
-        {
-          $passed = false;
-        }
-        break;
+        echo $file->filePath . "\n";
       }
     }
 

@@ -5,16 +5,15 @@
 
 namespace Sidekick\Components\Fortify\Analysers;
 
-interface FortifyAnalyser
+use Sidekick\Components\Fortify\FortifyBuildElement;
+use Sidekick\Components\Repository\Mappers\Commit;
+
+interface FortifyAnalyser extends FortifyBuildElement
 {
-  public function configure($configuration);
-
-  public function setFileBasePath($basePath);
-
-  public function addFile($filePath);
-
   /**
-   * @return bool
+   * @param Commit $commit
+   *
+   * @return bool Completed Analysis
    */
-  public function analyse();
+  public function analyse(Commit $commit);
 }

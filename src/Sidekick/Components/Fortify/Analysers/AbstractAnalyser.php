@@ -5,31 +5,98 @@
 
 namespace Sidekick\Components\Fortify\Analysers;
 
-abstract class AbstractAnalyser implements FortifyAnalyser
+use Sidekick\Components\Fortify\AbstractFortifyElement;
+use Sidekick\Components\Repository\Enums\ChangeType;
+use Sidekick\Components\Repository\Mappers\Commit;
+use Sidekick\Components\Repository\Mappers\CommitFile;
+
+abstract class AbstractAnalyser extends AbstractFortifyElement
+  implements FortifyAnalyser
 {
-  protected $_files = [];
-  protected $_basePath = '';
-
-  public function setFileBasePath($basePath)
+  /**
+   * Return all files within the repository
+   *
+   * @return array
+   */
+  protected function _getRepositoryFiles()
   {
-    $this->_basePath = $basePath;
-    return $this;
+    return $this->_getFullFilelisting($this->_basePath);
   }
 
-  public function addFile($filePath)
+  protected function _getFullFilelisting($directory, $filePatten = '.*')
   {
-    $this->_files[] = $filePath;
-    return $this;
+    $files = [];
+
+    $recursive = new \RecursiveDirectoryIterator($directory);
+    foreach($recursive as $file)
+    {
+      /***
+       * @var $file \SplFileInfo
+       */
+      $filePath = $file->getRealPath();
+      if($file->isDir() && !in_array($file->getFilename(), ['.', '..']))
+      {
+        $files = array_merge(
+          $files,
+          $this->_getFullFilelisting($filePath, $filePatten)
+        );
+      }
+      else if(preg_match("/$filePatten/", $filePath))
+      {
+        $files[] = $filePath;
+      }
+    }
+
+    return $files;
   }
 
-  protected function _getFiles()
+  /**
+   * @param Commit $commit
+   *
+   * @return CommitFile[]|\Cubex\Mapper\Database\RecordCollection
+   */
+  protected function _getCommitFiles(Commit $commit)
   {
-    return $this->_files;
+    return $commit->commitFiles();
   }
 
-  public function clearFiles()
+  /**
+   * @param Commit $commit
+   *
+   * @return CommitFile[]|\Cubex\Mapper\Database\RecordCollection
+   */
+  protected function _getModifiedFiles(Commit $commit)
   {
-    $this->_files = [];
-    return $this;
+    return $commit->commitFiles([ChangeType::MODIFIED]);
+  }
+
+  /**
+   * @param Commit $commit
+   *
+   * @return CommitFile[]|\Cubex\Mapper\Database\RecordCollection
+   */
+  protected function _getAddedFiles(Commit $commit)
+  {
+    return $commit->commitFiles([ChangeType::ADDED]);
+  }
+
+  /**
+   * @param Commit $commit
+   *
+   * @return CommitFile[]|\Cubex\Mapper\Database\RecordCollection
+   */
+  protected function _getCurrentFiles(Commit $commit)
+  {
+    return $commit->commitFiles([ChangeType::ADDED, ChangeType::MODIFIED]);
+  }
+
+  /**
+   * @param Commit $commit
+   *
+   * @return CommitFile[]|\Cubex\Mapper\Database\RecordCollection
+   */
+  protected function _getDeletedFiles(Commit $commit)
+  {
+    return $commit->commitFiles([ChangeType::DELETED]);
   }
 }

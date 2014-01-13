@@ -1,8 +1,4 @@
 <?php
-/**
- * @author Brooke Bryan @bajbnet
- */
-
 namespace Sidekick\Cli\Fortify;
 
 use Cubex\Cli\CliCommand;
@@ -33,16 +29,16 @@ class CommitBuild extends CliCommand
 
     if($build->status !== BuildStatus::PENDING)
     {
-      /*throw new \RuntimeException(
+      throw new \RuntimeException(
         "This build is currently in a " . $build->status . ' state, ' .
         'therefore cannot be executed.'
-      );*/
+      );
     }
 
     $buildProcess = new FortifyBuildProcess();
     $buildProcess->loadYaml(
       file_get_contents(
-        build_path(CUBEX_PROJECT_ROOT, 'conf/sidekick.yaml')
+        build_path(CUBEX_PROJECT_ROOT, 'conf/default.yaml')
       )
     );
 

@@ -6,6 +6,7 @@
 namespace Sidekick\Components\Repository\Mappers;
 
 use Cubex\Mapper\Database\RecordMapper;
+use Sidekick\Components\Repository\Enums\ChangeType;
 
 /**
  * Class Commit
@@ -46,9 +47,9 @@ class Commit extends RecordMapper
     }
 
     $commitIds = Commit::collection()
-    ->whereIn('commit_hash', $findCommits)
-    ->setColumns(['commit_hash', 'branch_id', 'id'])
-    ->get();
+      ->whereIn('commit_hash', $findCommits)
+      ->setColumns(['commit_hash', 'branch_id', 'id'])
+      ->get();
 
     $range = Commit::collection();
 
@@ -85,8 +86,21 @@ class Commit extends RecordMapper
     }
 
     $range->whereEq("branch_id", $commitIds->getField('branch_id'))
-    ->setOrderBy('committed_at', 'DESC');
+      ->setOrderBy('committed_at', 'DESC');
 
     return $range;
+  }
+
+  public function commitFiles(array $changeTypes = null)
+  {
+    $relationship = $this->hasMany(new CommitFile());
+
+    if($changeTypes !== null)
+    {
+      $relationship->whereIn("change_type", $changeTypes);
+      return $relationship;
+    }
+
+    return $relationship;
   }
 }

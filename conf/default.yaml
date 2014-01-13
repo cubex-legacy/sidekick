@@ -16,17 +16,24 @@ analyse:
   PhpSuperGlobals:
   Todos: "*.php"
   PhpLoc:
+  PhpLint:
+  PhpMessDetection:
+  PhpCodeSniffer:
+      standard: "Cubex_Code_Standards"
 
 install:
-  ComposerCache: "LoadFromProjectBranch"
-  RawCommand:
+  ComposerCache:
+  Command:
     ComposerUpdate: "composer update -o --prefer-dist"
 
 script:
-    PhpLint:
-    PhpMessDetection:
-    PhpCodeSniffer:
-        standard: "Cubex_Code_Standards"
+    PhpUnit:
+
+passed:
+  Translate:
+  Dispatch:
+
+failed:
 
 uninstall:
-    ComposerCache: "Store"
+    ComposerCache:

@@ -169,9 +169,9 @@ class DefaultController extends ProjectAwareBaseControl
 
     $columnValue = json_encode(
       [
-      'translated' => json_decode(current($data))->translated,
-      'approved'   => true,
-      'approver'   => Auth::user()->getId()
+        'translated' => json_decode(current($data))->translated,
+        'approved'   => true,
+        'approver'   => Auth::user()->getId()
       ]
     );
     $translationCf->insert(
@@ -263,9 +263,9 @@ class DefaultController extends ProjectAwareBaseControl
     $translationCf = Translation::cf();
     $columnValue   = json_encode(
       [
-      'translated' => $text,
-      'approved'   => false,
-      'approver'   => null
+        'translated' => $text,
+        'approved'   => false,
+        'approver'   => null
       ]
     );
     $translationCf->insert(
@@ -281,7 +281,7 @@ class DefaultController extends ProjectAwareBaseControl
     $term = trim($this->request()->postVariables('term'));
     if($term !== null)
     {
-      if(strlen($term) > 32 && !stristr($term,' '))
+      if(strlen($term) > 32 && !stristr($term, ' '))
       {
         Redirect::to($this->appBaseUri() . '/translations/' . $term)->now();
       }
@@ -301,6 +301,7 @@ class DefaultController extends ProjectAwareBaseControl
   {
     $this->requireJs('editing');
     $rowKey    = $this->getStr('rowKey');
+    $rowKey    = str_replace('-', '', $rowKey);
     $projectId = $this->getProjectId();
 
     $translations = new Translation($rowKey);

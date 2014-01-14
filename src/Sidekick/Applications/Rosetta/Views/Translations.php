@@ -37,12 +37,9 @@ class Translations extends TemplatedViewModel
       {
         if(substr($lang, 0, 4) == 'lang')
         {
-          $data = json_decode($t);
-          if($data->approved == false)
-          {
-            $data->lang                       = substr($lang, -2);
-            $this->_translations[$data->lang] = $data;
-          }
+          $data                             = json_decode($t);
+          $data->lang                       = substr($lang, -2);
+          $this->_translations[$data->lang] = $data;
         }
       }
     }

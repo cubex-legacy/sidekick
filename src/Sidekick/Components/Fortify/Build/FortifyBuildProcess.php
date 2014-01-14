@@ -14,6 +14,7 @@ use Sidekick\Components\Fortify\Enums\BuildStatus;
 use Sidekick\Components\Fortify\FortifyHelper;
 use Sidekick\Components\Fortify\Mappers\BuildAnalysis;
 use Sidekick\Components\Fortify\Mappers\CommitBuild;
+use Sidekick\Components\Fortify\Mappers\CommitBuildInsight;
 use Sidekick\Components\Fortify\Processes\FortifyProcess;
 use Sidekick\Components\Repository\Mappers\Branch;
 use Symfony\Component\Process\Process;
@@ -115,6 +116,11 @@ class FortifyBuildProcess
     $config = new DataHandler();
     $config->hydrate($this->_config);
 
+    $insight           = new CommitBuildInsight();
+    $insight->commit   = $build->commit;
+    $insight->branchId = $build->branchId;
+    $insight->saveChanges();
+
     //Queue Up each analyser, as can be processed in parallel
     foreach($config->getArr("analyse", []) as $analyser => $cnf)
     {
@@ -127,9 +133,12 @@ class FortifyBuildProcess
       $analysis->scratchPath   = $scratchPath;
       $analysis->buildPath     = $buildPath;
       $analysis->running       = 0;
+
       try
       {
         $analysis->saveChanges();
+        $insight->setProcessState("analyse", $analyser, BuildStatus::PENDING());
+        $insight->saveChanges();
       }
       catch(\Exception $e)
       {

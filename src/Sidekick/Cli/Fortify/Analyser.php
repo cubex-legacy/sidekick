@@ -4,8 +4,10 @@ namespace Sidekick\Cli\Fortify;
 use Cubex\Cli\CliCommand;
 use Cubex\Log\Log;
 use Sidekick\Components\Fortify\Analysers\FortifyAnalyser;
+use Sidekick\Components\Fortify\Enums\BuildStatus;
 use Sidekick\Components\Fortify\FortifyHelper;
 use Sidekick\Components\Fortify\Mappers\BuildAnalysis;
+use Sidekick\Components\Fortify\Mappers\CommitBuildInsight;
 use Sidekick\Components\Repository\Mappers\Branch;
 use Sidekick\Components\Repository\Mappers\Commit;
 
@@ -36,6 +38,10 @@ class Analyser extends CliCommand
         $analyser->running = 1;
         $analyser->saveChanges();
 
+        $insight           = new CommitBuildInsight();
+        $insight->commit   = $analyser->commitHash;
+        $insight->branchId = $analyser->branchId;
+
         try
         {
           $class = FortifyHelper::configAliasToClass(
@@ -48,6 +54,12 @@ class Analyser extends CliCommand
           $analyser->error   = $e->getMessage();
           $analyser->running = 2;
           $analyser->saveChanges();
+          $insight->setProcessState(
+            "analyse",
+            $analyser->class,
+            BuildStatus::FAILED()
+          );
+          $insight->saveChanges();
           continue;
         }
 
@@ -100,12 +112,31 @@ class Analyser extends CliCommand
         if($passed)
         {
           Log::info("Analysis complete");
+          $insight->setProcessState(
+            "analyse",
+            $analyser->class,
+            BuildStatus::SUCCESS()
+          );
+          $insight->saveChanges();
           $analyser->delete();
         }
         else
         {
+          $insight->setProcessState(
+            "analyse",
+            $analyser->class,
+            BuildStatus::FAILED()
+          );
+          $insight->setInsight(
+            $analyser->class,
+            'error_message',
+            $analyser->error
+          );
+          $insight->saveChanges();
+
           $analyser->running = 2;
           $analyser->saveChanges();
+
           Log::error("Failed to analyse");
         }
       }

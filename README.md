@@ -116,3 +116,50 @@ Recommended Tools
 Import the Cubex Code Standards
 ==
     git clone https://github.com/qbex/CubexCodeStandards.git /usr/share/php/PHP/CodeSniffer/Standards/CubexCodeStandards
+
+
+
+Example sidekick.yaml
+==
+
+build_settings:
+    verbose: false
+    ignore:
+        - "vendor"
+        - "Tests"
+        - "tests"
+        - "public"
+
+notifications:
+  email: false
+
+env:
+  CUBEX_ENV: development
+
+analyse:
+  PhpSuperGlobals:
+  Todos: "*.php"
+  PhpLoc:
+  PhpLint:
+  PhpMessDetection:
+  PhpCodeSniffer:
+      standard: "Cubex_Code_Standards"
+  \FWEKh\fewhke\fkrehfew:
+
+install:
+  ComposerCache:
+  Command:
+    ComposerUpdate: "composer update -o --prefer-dist"
+
+script:
+    PhpUnit:
+
+passed:
+  Translate:
+  Dispatch:
+
+failed:
+  DoNothing:
+
+uninstall:
+    ComposerCache:

@@ -1,0 +1,39 @@
+build_settings:
+    verbose: false
+    ignore:
+        - "vendor"
+        - "Tests"
+        - "tests"
+        - "public"
+
+notifications:
+  email: false
+
+env:
+  CUBEX_ENV: development
+
+analyse:
+  PhpSuperGlobals:
+  Todos: "*.php"
+  PhpLoc:
+  PhpLint:
+  PhpMessDetection:
+  PhpCodeSniffer:
+      standard: "Cubex_Code_Standards"
+
+install:
+  ComposerCache:
+  Command:
+    ComposerUpdate: "composer update -o --prefer-dist"
+
+script:
+    PhpUnit:
+
+passed:
+  Translate:
+  Dispatch:
+
+failed:
+
+uninstall:
+    ComposerCache:

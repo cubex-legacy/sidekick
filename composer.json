@@ -28,7 +28,7 @@
     "themed/sidekick":           "*",
     "phpseclib/phpseclib":       "*",
     "ircmaxell/password-compat": "*",
-    "apigen/apigen":             "2.8.0"
+    "symfony/yaml":              "*"
   },
   "autoload":          {
     "psr-0": {

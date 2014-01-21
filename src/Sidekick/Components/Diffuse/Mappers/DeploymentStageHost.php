@@ -24,6 +24,9 @@ class DeploymentStageHost extends RecordMapper
   public $log;
   public $stdOut;
   public $stdErr;
+  /**
+   * @datatype float
+   */
   public $executionTime; //microtime(true)
 
   protected function _configure()

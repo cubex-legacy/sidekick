@@ -1,8 +1,7 @@
 <?php
 /**
- * ./cubex Fortify.commitBuild -b 1
- * -c 8f2647210dc5beaf70105a841a2268b6dc1ee3bd --echo-level=debug
- * ./cubex Fortify.Analyse --echo-level=debug
+ * ./cubex Fortify.commitBuild -b 1 -c 8f2647210dc5beaf70105a841a2268b6dc1ee3bd --echo-level=debug
+ * ./cubex Fortify.Analyser --echo-level=debug
  */
 
 namespace Sidekick\Components\Fortify\Build;

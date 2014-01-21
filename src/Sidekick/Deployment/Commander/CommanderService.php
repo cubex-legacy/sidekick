@@ -37,50 +37,51 @@ class CommanderService extends BaseDeploymentService
 
       $cmd = str_replace(
         [
-        '{username}',
-        '{server}',
-        '{hostname}',
-        '{sshport}',
-        '{ipv4}',
-        '{ipv6}',
-        '{version_format}',
-        '{version_major}',
-        '{version_minor}',
-        '{version_build}',
-        '{version_revision}',
-        '{version_type}',
-        '{version_build_id}',
-        '{version_project_id}',
-        '{version_repo_id}',
-        '{version_from_commit_hash}',
-        '{version_to_commit_hash}',
-        '{version_change_log}',
+          '{username}',
+          '{server}',
+          '{hostname}',
+          '{sshport}',
+          '{ipv4}',
+          '{ipv6}',
+          '{version_format}',
+          '{version_major}',
+          '{version_minor}',
+          '{version_build}',
+          '{version_revision}',
+          '{version_type}',
+          '{version_build_id}',
+          '{version_project_id}',
+          '{version_repo_id}',
+          '{version_from_commit_hash}',
+          '{version_to_commit_hash}',
+          '{version_change_log}',
         ],
         [
-        $host->sshUser,
-        $host->getConnPreference(),
-        $host->hostname,
-        $host->sshPort,
-        $host->ipv4,
-        $host->ipv6,
-        $this->_version->format(),
-        $this->_version->major,
-        $this->_version->minor,
-        $this->_version->build,
-        $this->_version->revision,
-        $this->_version->type,
-        $this->_version->buildId,
-        $this->_version->projectId,
-        $this->_version->repoId,
-        $this->_version->fromCommitHash,
-        $this->_version->toCommitHash,
-        $this->_version->changeLog,
+          $host->sshUser,
+          $host->getConnPreference(),
+          $host->hostname,
+          $host->sshPort,
+          $host->ipv4,
+          $host->ipv6,
+          $this->_version->format(),
+          $this->_version->major,
+          $this->_version->minor,
+          $this->_version->build,
+          $this->_version->revision,
+          $this->_version->type,
+          $this->_version->buildId,
+          $this->_version->projectId,
+          $this->_version->repoId,
+          $this->_version->fromCommitHash,
+          $this->_version->toCommitHash,
+          $this->_version->changeLog,
         ],
         $command
       );
 
       Log::info($cmd);
 
+      $start   = microtime(true);
       $process = new Process($cmd);
       $process->run(
         function ($type, $buffer)
@@ -89,10 +90,11 @@ class CommanderService extends BaseDeploymentService
         }
       );
 
-      $stageHost->command = $cmd;
-      $stageHost->stdErr  = $process->getErrorOutput();
-      $stageHost->stdOut  = $process->getOutput();
-      $stageHost->passed  = in_array($process->getExitCode(), $exitCodes);
+      $stageHost->executionTime = microtime(true) - $start;
+      $stageHost->command       = $cmd;
+      $stageHost->stdErr        = $process->getErrorOutput();
+      $stageHost->stdOut        = $process->getOutput();
+      $stageHost->passed        = in_array($process->getExitCode(), $exitCodes);
     }
   }
 

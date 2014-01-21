@@ -81,7 +81,8 @@ class RsyncService extends BaseDeploymentService
         "Deploying to " . $host->name . " with '" . $cmd . "'"
       );
 
-      $proc = new Process($cmd);
+      $start = microtime(true);
+      $proc  = new Process($cmd);
       $proc->run(
         function ($type, $buffer)
         {
@@ -89,10 +90,11 @@ class RsyncService extends BaseDeploymentService
         }
       );
 
-      $stageHost->command = $cmd;
-      $stageHost->stdErr  = $proc->getErrorOutput();
-      $stageHost->stdOut  = $proc->getOutput();
-      $stageHost->passed  = $proc->getExitCode() === 0;
+      $stageHost->executionTime = microtime(true) - $start;
+      $stageHost->command       = $cmd;
+      $stageHost->stdErr        = $proc->getErrorOutput();
+      $stageHost->stdOut        = $proc->getOutput();
+      $stageHost->passed        = $proc->getExitCode() === 0;
     }
   }
 

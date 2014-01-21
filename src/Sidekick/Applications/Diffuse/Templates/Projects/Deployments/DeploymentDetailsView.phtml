@@ -35,6 +35,7 @@ use Sidekick\Components\Diffuse\Helpers\DeploymentHelper;
       <th>Time</th>
       <th>Host</th>
       <th>Passed</th>
+      <th>Exec Time</th>
       <th>Log</th>
     </tr>
     <?php foreach($this->getDeploymentDetail() as $d): ?>
@@ -48,6 +49,7 @@ use Sidekick\Components\Diffuse\Helpers\DeploymentHelper;
           <td class="text-<?= $d->passed ? 'success' : 'error' ?>">
             <?= $d->passed ? 'Passed' : 'Failed' ?>
           </td>
+          <td><?= number_format($d->executionTime * 1000, 4); ?>ms</td>
           <td style="width:550px;"><?= $d->stdErr ?> <?= $d->stdOut ?></td>
         </tr>
       <?php endif; ?>

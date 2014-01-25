@@ -33,6 +33,8 @@ class Analyser extends CliCommand
         /**
          * @var $analyser BuildAnalysis
          */
+        $alias = $analyser->class;
+        Log::debug("Processing alias " . $alias);
 
         //Remove the analyser from the queue
         $analyser->running = 1;
@@ -52,17 +54,16 @@ class Analyser extends CliCommand
         }
         catch(\Exception $e)
         {
-          $analyser->error   = $e->getMessage();
-          $analyser->running = 2;
+          $analyser->error = $e->getMessage();
           $analyser->delete();
           $insight->setProcessState(
             "analyse",
-            $analyser->class,
+            $alias,
             BuildStatus::FAILED()
           );
           $insight->setProcessLog(
             "analyse",
-            $analyser->class,
+            $alias,
             $analyser->error
           );
           $insight->saveChanges();
@@ -96,7 +97,7 @@ class Analyser extends CliCommand
               $analyse->setBranch(new Branch($analyser->branchId));
               $analyse->setInsight($insight);
               $analyse->setStage('analyse');
-              $analyse->setAlias($analyser->class);
+              $analyse->setAlias($alias);
               $analyse->configure($analyser->configuration);
               $passed = $analyse->analyse($commit);
             }
@@ -123,7 +124,7 @@ class Analyser extends CliCommand
           Log::info("Analysis complete");
           $insight->setProcessState(
             "analyse",
-            $analyser->class,
+            $alias,
             BuildStatus::SUCCESS()
           );
           $insight->saveChanges();
@@ -133,12 +134,12 @@ class Analyser extends CliCommand
         {
           $insight->setProcessState(
             "analyse",
-            $analyser->class,
+            $alias,
             BuildStatus::FAILED()
           );
           $insight->setProcessLog(
             "analyse",
-            $analyser->class,
+            $alias,
             $analyser->error
           );
 
@@ -155,11 +156,5 @@ class Analyser extends CliCommand
       }
     }
     Log::info("Finished consuming");
-  }
-
-  protected function _addFiles(
-    BuildAnalysis $analyseRequest, FortifyAnalyser $analyser
-  )
-  {
   }
 }

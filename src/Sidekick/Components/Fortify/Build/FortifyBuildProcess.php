@@ -259,9 +259,9 @@ class FortifyBuildProcess
     $build->finishedAt = new \DateTime();
     $build->saveChanges();
 
-    //TODO: For testing only, REMOVE
-    $build->status = BuildStatus::PENDING;
-    $build->saveChanges();
+    //Clear Down the build directories
+    $this->clearPath($buildPath);
+    $this->clearPath($scratchPath);
   }
 
   public function clearPath($path)

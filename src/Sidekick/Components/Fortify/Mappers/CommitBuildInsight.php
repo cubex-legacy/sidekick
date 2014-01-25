@@ -16,11 +16,13 @@ class CommitBuildInsight extends CassandraMapper
 
   public function id()
   {
-    return sprintf(
-      "%s:%s",
-      $this->branchId,
-      $this->commit
-    );
+    return sprintf("%s:%s", $this->branchId, $this->commit);
+  }
+
+  public function buildKey($source, $alias, $reference, $key = null)
+  {
+    $format = trim(str_repeat("%s:", func_num_args()), ':');
+    return vsprintf($format, func_get_args());
   }
 
   public function setProcessState($stage, $alias, BuildStatus $state)
@@ -34,6 +36,28 @@ class CommitBuildInsight extends CassandraMapper
     return $this->getData($this->buildKey('process', $stage, $alias));
   }
 
+  public function setProcessLog($stage, $alias, $log)
+  {
+    $key = $this->buildKey('log', $stage, $alias);
+    $this->setData($key, $log);
+  }
+
+  public function getProcessLog($stage, $alias)
+  {
+    return $this->getData($this->buildKey('log', $stage, $alias));
+  }
+
+  public function setProcessData($stage, $alias, $dataKey, $data)
+  {
+    $key = $this->buildKey('x-data', $stage, $alias, $dataKey);
+    $this->setData($key, $data);
+  }
+
+  public function getProcessData($stage, $alias, $dataKey)
+  {
+    return $this->getData($this->buildKey('x-data', $stage, $alias, $dataKey));
+  }
+
   /**
    * @param $class     string Calling class e.g. PhpUnit
    * @param $reference string e.g. Open Fix Tags
@@ -43,16 +67,6 @@ class CommitBuildInsight extends CassandraMapper
   {
     $key = $this->buildKey('insight', $class, $reference);
     $this->setData($key, $value);
-  }
-
-  public function buildKey($source, $alias, $reference)
-  {
-    return sprintf(
-      "%s:%s:%s",
-      $source,
-      $alias,
-      $reference
-    );
   }
 
   public function getInsight($class, $reference)

@@ -135,9 +135,11 @@ class FortifyBuildProcess
 
       try
       {
-        $analysis->saveChanges();
         $insight->setProcessState("analyse", $analyser, BuildStatus::PENDING());
         $insight->saveChanges();
+        //Analysis must save after insight, to avoid race condition and the
+        //insight ending in a pending state
+        $analysis->saveChanges();
       }
       catch(\Exception $e)
       {
@@ -180,12 +182,9 @@ class FortifyBuildProcess
       "install",
       $buildPath,
       $scratchPath,
-      $branch
+      $branch,
+      $insight
     );
-
-    //Copy vendor directory in from vendor/repos/branch/latest
-    //Composer update
-    //Push vendor dir back to latest vendor/repos/branch/latest
 
     $build->status = BuildStatus::FAILED;
 
@@ -198,25 +197,47 @@ class FortifyBuildProcess
         "script",
         $buildPath,
         $scratchPath,
-        $branch
+        $branch,
+        $insight
       );
 
       if($passedScripts)
       {
         Log::info("Build scripts passed");
         $build->status = BuildStatus::SUCCESS;
-        $this->_runStage($config, "success", $buildPath, $scratchPath, $branch);
+        $this->_runStage(
+          $config,
+          "success",
+          $buildPath,
+          $scratchPath,
+          $branch,
+          $insight
+        );
       }
       else
       {
         Log::info("Build scripts failed");
         $build->status = BuildStatus::FAILED;
-        $this->_runStage($config, "failed", $buildPath, $scratchPath, $branch);
+        $this->_runStage(
+          $config,
+          "failed",
+          $buildPath,
+          $scratchPath,
+          $branch,
+          $insight
+        );
       }
     }
 
     Log::info("Running uninstall processes");
-    $this->_runStage($config, "uninstall", $buildPath, $scratchPath, $branch);
+    $this->_runStage(
+      $config,
+      "uninstall",
+      $buildPath,
+      $scratchPath,
+      $branch,
+      $insight
+    );
 
     //Mark the build as complete
     $build->finishedAt = new \DateTime();
@@ -240,7 +261,8 @@ class FortifyBuildProcess
   }
 
   protected function _runStage(
-    DataHandler $config, $stage, $buildPath, $scratchPath, Branch $branch
+    DataHandler $config, $stage, $buildPath, $scratchPath, Branch $branch,
+    CommitBuildInsight $insight
   )
   {
     $processes = $config->getArr($stage, []);
@@ -259,14 +281,25 @@ class FortifyBuildProcess
             $process->setScratchDir($scratchPath);
             $process->setRepoBasePath($buildPath);
             $process->setBranch($branch);
+            $process->setInsight($insight);
+            $process->setAlias($alias);
+            $process->setStage($stage);
+
             Log::info("Processing $stage > $alias");
 
-            $passed = $this->_runProcess($process, $stage);
+            $passed = $this->_runProcess($process, $stage, $alias, $insight);
+
             if(!$passed)
             {
+              $insight->setProcessState($stage, $alias, BuildStatus::FAILED());
               Log::info("$stage > $alias Failed");
               return false;
             }
+            else
+            {
+              $insight->setProcessState($stage, $alias, BuildStatus::SUCCESS());
+            }
+            $insight->saveChanges();
           }
         }
       }
@@ -279,16 +312,20 @@ class FortifyBuildProcess
     return true;
   }
 
-  protected function _runProcess(FortifyProcess $process, $stage)
+  protected function _runProcess(
+    FortifyProcess $process, $stage, $alias, CommitBuildInsight $insight
+  )
   {
     $passed = false;
     try
     {
       $exitCode = $process->process($stage);
       $passed   = $exitCode === true || $exitCode === 0;
+      $insight->setProcessLog($stage, $alias, $process->getLog());
     }
     catch(\Exception $e)
     {
+      $insight->setProcessLog($stage, $alias, $e->getMessage());
       Log::error($e->getMessage());
     }
     return $passed;

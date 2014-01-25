@@ -17,10 +17,12 @@ class PhpUnit extends AbstractFortifyProcess
     $command = 'phpunit';
 
     $command .= " --coverage-clover ";
-    $command .= build_path($this->_scratchPath, 'clover.sml');
+    $cloverOut = build_path($this->_scratchPath, 'clover.sml');
+    $command .= $cloverOut;
 
     $command .= " --log-json  ";
-    $command .= build_path($this->_scratchPath, 'phpunit.json');
+    $jsonLog = build_path($this->_scratchPath, 'phpunit.json');
+    $command .= $jsonLog;
 
     $command .= " -c ";
     $command .= build_path($this->_basePath, 'phpunit.xml.dist');
@@ -29,7 +31,19 @@ class PhpUnit extends AbstractFortifyProcess
     $process->setWorkingDirectory($this->_basePath);
     $process->run();
 
+    if(file_exists($jsonLog))
+    {
+      $this->_storeData("phpunit.json", file_get_contents($jsonLog));
+    }
+
+    if(file_exists($cloverOut))
+    {
+      $this->_storeData("clover.sml", file_get_contents($cloverOut));
+    }
+
     Log::debug($process->getOutput());
+
+    $this->_writeToLog($process->getOutput());
 
     return $process->getExitCode();
   }

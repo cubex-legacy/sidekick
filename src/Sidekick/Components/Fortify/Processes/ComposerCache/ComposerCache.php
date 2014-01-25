@@ -33,6 +33,12 @@ class ComposerCache extends AbstractFortifyProcess
       Log::debug($command);
       $proc = new Process($command);
       $proc->run();
+      $this->_writeToLog($proc->getOutput());
+      $this->_writeToLog("Composer cache imported");
+    }
+    else
+    {
+      $this->_writeToLog("No cached version of composer yet exists");
     }
     return true;
   }
@@ -46,6 +52,12 @@ class ComposerCache extends AbstractFortifyProcess
       Log::debug($command);
       $proc = new Process($command);
       $proc->run();
+      $this->_writeToLog($proc->getOutput());
+      $this->_writeToLog("Composer cache updated");
+    }
+    else
+    {
+      $this->_writeToLog("vendor directory missing");
     }
     return true;
   }

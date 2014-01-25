@@ -11,4 +11,11 @@ interface FortifyProcess extends FortifyBuildElement
    * @return bool|int Exit code, or true for success
    */
   public function process($stage);
+
+  /**
+   * Return the log from the process
+   *
+   * @return string
+   */
+  public function getLog();
 }

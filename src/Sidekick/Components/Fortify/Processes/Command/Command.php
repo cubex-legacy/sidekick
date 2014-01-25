@@ -27,6 +27,9 @@ class Command extends AbstractFortifyProcess
 
       Log::debug($process->getOutput());
 
+      $this->_writeLogLine("Running $alias '$command'");
+      $this->_writeLogLine($process->getOutput());
+
       if($process->getExitCode() !== 0)
       {
         Log::error($process->getErrorOutput());

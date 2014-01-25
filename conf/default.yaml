@@ -24,7 +24,8 @@ analyse:
 install:
   ComposerCache:
   Command:
-    ComposerUpdate: "composer update -o --prefer-dist"
+    ComposerSelfUpdate: "composer self-update"
+    ComposerUpdate: "composer update -o --prefer-dist --no-interaction"
 
 script:
     PhpUnit:

@@ -5,6 +5,7 @@
 
 namespace Sidekick\Components\Fortify\Analysers\PhpLint;
 
+use Cubex\Log\Log;
 use Sidekick\Components\Fortify\Analysers\AbstractAnalyser;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Symfony\Component\Process\Process;
@@ -29,24 +30,33 @@ class PhpLint extends AbstractAnalyser
 
   public function analyse(Commit $commit)
   {
+    $failed = 0;
     $passed = true;
 
     foreach($this->_getCurrentFiles($commit) as $file)
     {
-      if(preg_match("/$this->_pattern/", $file))
+      if(preg_match("/$this->_pattern/", $file->filePath))
       {
-        $command = 'php -l ' . build_path($this->_basePath, $file);
+        $command = 'php -l ' . build_path($this->_basePath, $file->filePath);
+        Log::debug($command);
         $process = new Process($command);
         $process->run();
-        $this->_fileResults[$file] = $process->getExitCode();
 
-        if($this->_fileResults[$file] !== 0)
+        if($process->getExitCode() !== 0)
         {
-          $passed = false;
+          $failedFiles[] = $file->filePath;
+          $passed        = false;
+          $failed++;
         }
-        break;
       }
     }
+
+    if(!empty($failedFiles))
+    {
+      $this->_storeData("failed.json", json_encode($failedFiles));
+    }
+
+    $this->_trackInsight("failed", $failed);
 
     return $passed;
   }

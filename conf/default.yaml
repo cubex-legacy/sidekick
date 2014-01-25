@@ -14,7 +14,7 @@ env:
 
 analyse:
   PhpSuperGlobals:
-  Todos: ".*\.php$"
+  Todos:
   PhpLoc:
   PhpLint:
   PhpMessDetection:

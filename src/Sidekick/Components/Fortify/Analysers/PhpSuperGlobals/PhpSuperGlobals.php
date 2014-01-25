@@ -38,6 +38,8 @@ class PhpSuperGlobals extends AbstractAnalyser
       }
     }
 
+    $this->_trackInsight("todos", 6);
+
     return $passed;
   }
 }

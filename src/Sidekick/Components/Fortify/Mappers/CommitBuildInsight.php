@@ -8,11 +8,8 @@ class CommitBuildInsight extends CassandraMapper
 {
   public $commit;
   public $branchId;
-
-  protected function _configure()
-  {
-    $this->_addCompositeAttribute("id", ["branchID", "commit"]);
-  }
+  public $status;
+  public $commitTime;
 
   public function id()
   {
@@ -67,6 +64,10 @@ class CommitBuildInsight extends CassandraMapper
   {
     $key = $this->buildKey('insight', $class, $reference);
     $this->setData($key, $value);
+    $timeline = new InsightTimeline();
+    $timeline->setId("$this->branchId:$class:$reference");
+    $timeline->setData($this->commitTime, $value);
+    $timeline->saveChanges();
   }
 
   public function getInsight($class, $reference)

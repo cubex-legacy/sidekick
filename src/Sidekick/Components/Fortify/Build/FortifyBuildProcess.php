@@ -16,6 +16,7 @@ use Sidekick\Components\Fortify\Mappers\CommitBuild;
 use Sidekick\Components\Fortify\Mappers\CommitBuildInsight;
 use Sidekick\Components\Fortify\Processes\FortifyProcess;
 use Sidekick\Components\Repository\Mappers\Branch;
+use Sidekick\Components\Repository\Mappers\Commit;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
@@ -115,9 +116,18 @@ class FortifyBuildProcess
     $config = new DataHandler();
     $config->hydrate($this->_config);
 
-    $insight           = new CommitBuildInsight();
-    $insight->commit   = $build->commit;
-    $insight->branchId = $build->branchId;
+    $commit = Commit::loadWhere(
+      [
+        "branchId"   => $build->branchId,
+        "commitHash" => $build->commit,
+      ]
+    );
+
+    $insight             = new CommitBuildInsight();
+    $insight->commit     = $build->commit;
+    $insight->branchId   = $build->branchId;
+    $insight->status     = $build->status;
+    $insight->commitTime = strtotime($commit->committedAt);
     $insight->saveChanges();
 
     //Queue Up each analyser, as can be processed in parallel
@@ -150,6 +160,9 @@ class FortifyBuildProcess
         }
       }
     }
+
+    //Wait for the DB to catch up, so analysers will appear in the check
+    sleep(1);
 
     //Wait for pending analysers to complete
     while(true)
@@ -238,6 +251,9 @@ class FortifyBuildProcess
       $branch,
       $insight
     );
+
+    $insight->status = $build->status;
+    $insight->saveChanges();
 
     //Mark the build as complete
     $build->finishedAt = new \DateTime();

@@ -41,6 +41,7 @@ class Analyser extends CliCommand
         $insight           = new CommitBuildInsight();
         $insight->commit   = $analyser->commitHash;
         $insight->branchId = $analyser->branchId;
+        $insight->load($insight->id());
 
         try
         {
@@ -53,11 +54,16 @@ class Analyser extends CliCommand
         {
           $analyser->error   = $e->getMessage();
           $analyser->running = 2;
-          $analyser->saveChanges();
+          $analyser->delete();
           $insight->setProcessState(
             "analyse",
             $analyser->class,
             BuildStatus::FAILED()
+          );
+          $insight->setProcessLog(
+            "analyse",
+            $analyser->class,
+            $analyser->error
           );
           $insight->saveChanges();
           continue;
@@ -88,6 +94,9 @@ class Analyser extends CliCommand
               $analyse->setRepoBasePath($analyser->buildPath);
               $analyse->setScratchDir($analyser->scratchPath);
               $analyse->setBranch(new Branch($analyser->branchId));
+              $analyse->setInsight($insight);
+              $analyse->setStage('analyse');
+              $analyse->setAlias($analyser->class);
               $analyse->configure($analyser->configuration);
               $passed = $analyse->analyse($commit);
             }
@@ -127,15 +136,14 @@ class Analyser extends CliCommand
             $analyser->class,
             BuildStatus::FAILED()
           );
-          $insight->setInsight(
+          $insight->setProcessLog(
+            "analyse",
             $analyser->class,
-            'error_message',
             $analyser->error
           );
-          $insight->saveChanges();
 
-          $analyser->running = 2;
-          $analyser->saveChanges();
+          $insight->saveChanges();
+          $analyser->delete();
 
           Log::error("Failed to analyse");
         }

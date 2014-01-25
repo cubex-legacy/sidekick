@@ -99,4 +99,17 @@ abstract class AbstractAnalyser extends AbstractFortifyElement
   {
     return $commit->commitFiles([ChangeType::DELETED]);
   }
+
+  protected function _trackInsight($key, $value)
+  {
+    if($this->_alias === null)
+    {
+      $alias = class_shortname(get_called_class());
+    }
+    else
+    {
+      $alias = $this->_alias;
+    }
+    $this->_insight->setInsight($alias, $key, $value);
+  }
 }

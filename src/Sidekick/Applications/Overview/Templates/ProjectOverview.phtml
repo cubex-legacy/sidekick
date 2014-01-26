@@ -7,20 +7,20 @@
 ?>
 <h2>
   <?= $this->getProject()->name; ?>  <img
-      src="https://raw2.github.com/badges/shields/master/static/travis/travis_<?php
-      switch($this->_commitBuild->status)
-      {
-        case 'success':
-          echo 'passing';
-          break;
-        case 'failed':
-          echo 'failing';
-          break;
-        case 'pending':
-          echo 'pending';
-          break;
-      }
-      ?>.png" height="143"/>
+    src="https://raw2.github.com/badges/shields/master/static/travis/travis_<?php
+    switch($this->_commitBuild->status)
+    {
+      case 'success':
+        echo 'passing';
+        break;
+      case 'failed':
+        echo 'failing';
+        break;
+      case 'pending':
+        echo 'pending';
+        break;
+    }
+    ?>.png" height="143"/>
 
 </h2>
 <div class="row-fluid">
@@ -35,6 +35,7 @@
         <th>Finished</th>
         <th>Status</th>
       </tr>
+      <?php if (!empty($this->_commitBuilds)): ?>
       <?php foreach($this->_commitBuilds as $build): ?>
         <tr>
           <td><?= substr($build->commit, 0, 9); ?></td>
@@ -43,6 +44,7 @@
           <td><?= $build->status; ?></td>
         </tr>
       <?php endforeach; ?>
+      <?php endif; ?>
     </table>
 
   </div>

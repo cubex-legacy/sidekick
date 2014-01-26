@@ -59,12 +59,15 @@ class ProjectOverview extends TemplatedViewModel
   public function getBuildProcessTable()
   {
     $results = [];
-    foreach($this->_insight as $k => $v)
+    if($this->_insight)
     {
-      if(starts_with($k, 'process:'))
+      foreach($this->_insight as $k => $v)
       {
-        list(, $stage, $alias) = explode(":", $k);
-        $results[$stage][$alias] = $v;
+        if(starts_with($k, 'process:'))
+        {
+          list(, $stage, $alias) = explode(":", $k);
+          $results[$stage][$alias] = $v;
+        }
       }
     }
 

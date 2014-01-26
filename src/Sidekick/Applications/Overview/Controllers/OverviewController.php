@@ -11,7 +11,11 @@ use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\Overview\Views\ProjectOverview;
 use Sidekick\Applications\Overview\Views\ProjectSelector;
 use Sidekick\Applications\Overview\Views\Releases;
+use Sidekick\Components\Fortify\Mappers\CommitBuild;
+use Sidekick\Components\Fortify\Mappers\CommitBuildInsight;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Repository\Mappers\Branch;
+use Sidekick\Components\Repository\Mappers\Repository;
 
 class OverviewController extends BaseControl
 {
@@ -20,7 +24,7 @@ class OverviewController extends BaseControl
     $projectId = $this->application()->project()->getProjectId();
     if($projectId > 0)
     {
-      return new ProjectOverview(new Project($projectId));
+      return $this->renderProject($projectId);
     }
 
     $projects = Project::collection();
@@ -32,6 +36,41 @@ class OverviewController extends BaseControl
     {
       return new TemplatedView('Homepage', $this);
     }
+  }
+
+  public function renderProject($projectId)
+  {
+    $project = new Project($projectId);
+
+    $repository = Repository::loadWhere(["projectId" => $projectId]);
+
+    $branch = Branch::loadWhere(
+      [
+        "branch"       => "master",
+        "repositoryId" => $repository->id
+      ]
+    );
+
+    $commitBuilds = CommitBuild::collection(
+      [
+        "branchId" => $branch->id
+      ]
+    )
+      ->setOrderBy('startedAt', "DESC")
+      ->setLimit(0, 5);
+
+    $insight           = new CommitBuildInsight();
+    $insight->branchId = $branch->id;
+    $insight->commit   = $commitBuilds->first()->commit;
+    $insight->load($insight->id());
+
+    $view = new ProjectOverview($project);
+    $view->setRepository($repository);
+    $view->setBranch($branch);
+    $view->setCommitBuilds($commitBuilds);
+    $view->setInsight($insight);
+
+    echo $this->createView($view);
   }
 
   public function getSidebar()

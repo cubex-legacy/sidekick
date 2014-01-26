@@ -72,6 +72,11 @@ class CommitBuildInsight extends CassandraMapper
 
   public function getInsight($class, $reference)
   {
-    return $this->getData($this->buildKey('insight', $class, $reference));
+    $key = $this->buildKey('insight', $class, $reference);
+    if($this->attributeExists($key))
+    {
+      return $this->getData($key);
+    }
+    return null;
   }
 }

@@ -1,12 +1,12 @@
 <?php
-namespace Sidekick\Components\Fortify\Analysers\PhpLoc;
+namespace Sidekick\Components\Fortify\Analysers\PhpMessDetection;
 
 use Cubex\Log\Log;
 use Sidekick\Components\Fortify\Analysers\AbstractAnalyser;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Symfony\Component\Process\Process;
 
-class PhpLoc extends AbstractAnalyser
+class PhpMessDetection extends AbstractAnalyser
 {
   /**
    * @param Commit $commit
@@ -15,10 +15,11 @@ class PhpLoc extends AbstractAnalyser
    */
   public function analyse(Commit $commit)
   {
-    $logFile = build_path($this->_scratchPath, 'phploc.xml');
+    $logFile = build_path($this->_scratchPath, 'pmd.report.xml');
 
-    $command = "phploc --log-xml $logFile --no-interaction ";
-    $command .= $this->_basePath;
+    $command = "phpmd " . build_path($this->_basePath, "src") . " xml ";
+    $command .= build_path($this->_basePath, "phpmd.xml");
+    $command .= " --reportfile $logFile";
 
     Log::debug($command);
 
@@ -31,14 +32,7 @@ class PhpLoc extends AbstractAnalyser
       $xml = file_get_contents($logFile);
       if(!empty($xml))
       {
-        $log = new \SimpleXMLElement($xml);
-        if(!empty($log))
-        {
-          foreach($log as $item => $value)
-          {
-            $this->_trackInsight($item, $value);
-          }
-        }
+        $this->_storeData("pmd.report.xml", $xml);
       }
     }
 

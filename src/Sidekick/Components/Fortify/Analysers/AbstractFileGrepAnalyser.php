@@ -67,5 +67,8 @@ abstract class AbstractFileGrepAnalyser extends AbstractAnalyser
     return $passed;
   }
 
-  abstract protected function _getMetric();
+  protected function _getMetric()
+  {
+    return 'count';
+  }
 }

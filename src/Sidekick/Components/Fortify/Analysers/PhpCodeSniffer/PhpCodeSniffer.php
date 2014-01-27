@@ -1,12 +1,12 @@
 <?php
-namespace Sidekick\Components\Fortify\Analysers\PhpLoc;
+namespace Sidekick\Components\Fortify\Analysers\PhpCodeSniffer;
 
 use Cubex\Log\Log;
 use Sidekick\Components\Fortify\Analysers\AbstractAnalyser;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Symfony\Component\Process\Process;
 
-class PhpLoc extends AbstractAnalyser
+class PhpCodeSniffer extends AbstractAnalyser
 {
   /**
    * @param Commit $commit
@@ -15,10 +15,13 @@ class PhpLoc extends AbstractAnalyser
    */
   public function analyse(Commit $commit)
   {
-    $logFile = build_path($this->_scratchPath, 'phploc.xml');
+    $logFile = build_path($this->_scratchPath, 'phpcs.xml');
 
-    $command = "phploc --log-xml $logFile --no-interaction ";
-    $command .= $this->_basePath;
+    $command = "phpcs --extensions=php -p ";
+    $command .= "--report=checkstyle --warning-severity=0 ";
+    $command .= "--report-file=$logFile ";
+    $command .= "--standard=" . build_path($this->_basePath, "phpcs.xml");
+    $command .= " " . build_path($this->_basePath, "src");
 
     Log::debug($command);
 
@@ -31,14 +34,7 @@ class PhpLoc extends AbstractAnalyser
       $xml = file_get_contents($logFile);
       if(!empty($xml))
       {
-        $log = new \SimpleXMLElement($xml);
-        if(!empty($log))
-        {
-          foreach($log as $item => $value)
-          {
-            $this->_trackInsight($item, $value);
-          }
-        }
+        $this->_storeData("phpcs.xml", $xml);
       }
     }
 

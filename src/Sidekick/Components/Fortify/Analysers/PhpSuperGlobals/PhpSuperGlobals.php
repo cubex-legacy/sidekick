@@ -16,9 +16,4 @@ class PhpSuperGlobals extends AbstractFileGrepAnalyser
     '$_REQUEST',
     '$_ENV',
   ];
-
-  protected function _getMetric()
-  {
-    return 'superglobals';
-  }
 }

@@ -10,6 +10,8 @@ interface FortifyBuildElement
 
   public function setBranch(Branch $branch);
 
+  public function setCommitHash($commitHash);
+
   public function setAlias($alias);
 
   public function setStage($stage);

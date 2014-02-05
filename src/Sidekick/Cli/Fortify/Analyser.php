@@ -95,6 +95,7 @@ class Analyser extends CliCommand
               $analyse->setRepoBasePath($analyser->buildPath);
               $analyse->setScratchDir($analyser->scratchPath);
               $analyse->setBranch(new Branch($analyser->branchId));
+              $analyse->setCommitHash($analyser->commitHash);
               $analyse->setInsight($insight);
               $analyse->setStage('analyse');
               $analyse->setAlias($alias);

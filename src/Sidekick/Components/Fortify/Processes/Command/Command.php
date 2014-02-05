@@ -23,6 +23,7 @@ class Command extends AbstractFortifyProcess
     {
       Log::info("Running $alias '$command'");
       $process = new Process($command, $this->_basePath);
+      $process->setIdleTimeout(60);
       $process->run();
 
       Log::debug($process->getOutput());

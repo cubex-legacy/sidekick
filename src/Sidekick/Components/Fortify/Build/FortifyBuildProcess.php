@@ -220,7 +220,7 @@ class FortifyBuildProcess
         $build->status = BuildStatus::SUCCESS;
         $this->_runStage(
           $config,
-          "success",
+          "passed",
           $buildPath,
           $scratchPath,
           $branch,
@@ -300,6 +300,7 @@ class FortifyBuildProcess
             $process->setInsight($insight);
             $process->setAlias($alias);
             $process->setStage($stage);
+            $process->setCommitHash($insight->commit);
 
             Log::info("Processing $stage > $alias");
 

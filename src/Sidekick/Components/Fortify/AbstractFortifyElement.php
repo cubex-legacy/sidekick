@@ -11,6 +11,7 @@ abstract class AbstractFortifyElement implements FortifyBuildElement
   protected $_config;
   protected $_alias;
   protected $_stage;
+  protected $_commitHash;
 
   /**
    * @var Branch
@@ -25,6 +26,12 @@ abstract class AbstractFortifyElement implements FortifyBuildElement
   public function setBranch(Branch $branch)
   {
     $this->_branch = $branch;
+    return $this;
+  }
+
+  public function setCommitHash($commitHash)
+  {
+    $this->_commitHash = $commitHash;
     return $this;
   }
 

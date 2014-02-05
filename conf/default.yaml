@@ -29,12 +29,14 @@ install:
 
 script:
     PhpUnit:
+    #Translate:
+    #Dispatch:
 
 passed:
-  Translate:
-  Dispatch:
+  Store:
+  ComposerCache:
+  #Phuse:
 
 failed:
 
 uninstall:
-    ComposerCache:

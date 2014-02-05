@@ -8,9 +8,15 @@ use Sidekick\Components\Repository\Mappers\Commit;
 
 class CommitRebuild extends CliCommand
 {
+  /**
+   * @valuerequired
+   * @required
+   */
+  public $branch;
+
   public function execute()
   {
-    $branch = new Branch(1);
+    $branch = new Branch($this->branch);
     foreach($branch->commits() as $commit)
     {
       /**

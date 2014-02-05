@@ -14,6 +14,10 @@ class ComposerCache extends AbstractFortifyProcess
    */
   public function process($stage)
   {
+    if(!file_exists($this->_getCacheDirectory()))
+    {
+      mkdir($this->_getCacheDirectory());
+    }
     switch($stage)
     {
       case 'install':
@@ -64,6 +68,11 @@ class ComposerCache extends AbstractFortifyProcess
 
   protected function _getCacheDirectory()
   {
-    return build_path('fortify', 'b' . $this->_branch->id(), 'composerCache');
+    return build_path(
+      CUBEX_PROJECT_ROOT,
+      'fortify',
+      'b' . $this->_branch->id(),
+      'composerCache'
+    );
   }
 }

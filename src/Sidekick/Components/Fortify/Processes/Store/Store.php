@@ -30,8 +30,10 @@ class Store extends AbstractFortifyProcess
     $command = "tar -cvzf $zipLoc $this->_basePath";
     Log::info("Running " . $command);
 
+    $this->_writeLogLine($command);
     $process = new Process($command);
     $process->run();
+    $this->_writeToLog($process->getOutput());
 
     Log::debug($process->getOutput());
 

@@ -22,10 +22,13 @@ class PhpMessDetection extends AbstractAnalyser
     $command .= " --reportfile $logFile";
 
     Log::debug($command);
+    $this->_writeToLog($command);
 
     $process = new Process($command);
     $process->setWorkingDirectory($this->_scratchPath);
     $process->run();
+
+    $this->_writeToLog($process->getOutput());
 
     if(file_exists($logFile))
     {

@@ -27,6 +27,8 @@ class PhpUnit extends AbstractFortifyProcess
     $command .= " -c ";
     $command .= build_path($this->_basePath, 'phpunit.xml.dist');
 
+    $this->_writeLogLine($command);
+
     $process = new Process($command);
     $process->setWorkingDirectory($this->_basePath);
     $process->run();

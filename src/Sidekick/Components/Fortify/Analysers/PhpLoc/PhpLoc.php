@@ -21,10 +21,13 @@ class PhpLoc extends AbstractAnalyser
     $command .= $this->_basePath;
 
     Log::debug($command);
+    $this->_writeToLog($command);
 
     $process = new Process($command);
     $process->setWorkingDirectory($this->_scratchPath);
     $process->run();
+
+    $this->_writeToLog($process->getOutput());
 
     if(file_exists($logFile))
     {

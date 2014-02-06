@@ -24,10 +24,13 @@ class PhpCodeSniffer extends AbstractAnalyser
     $command .= " " . build_path($this->_basePath, "src");
 
     Log::debug($command);
+    $this->_writeToLog($command);
 
     $process = new Process($command);
     $process->setWorkingDirectory($this->_scratchPath);
     $process->run();
+
+    $this->_writeToLog($process->getOutput());
 
     if(file_exists($logFile))
     {

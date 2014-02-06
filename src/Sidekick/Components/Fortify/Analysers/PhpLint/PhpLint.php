@@ -42,6 +42,8 @@ class PhpLint extends AbstractAnalyser
         $process = new Process($command);
         $process->run();
 
+        $this->_writeToLog($command);
+
         if($process->getExitCode() !== 0)
         {
           $failedFiles[] = $file->filePath;

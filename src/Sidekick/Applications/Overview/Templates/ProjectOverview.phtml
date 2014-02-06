@@ -40,7 +40,7 @@
         <tr>
           <td><?= substr($build->commit, 0, 9); ?></td>
           <td><?= $build->startedAt; ?></td>
-          <td><?= $build->finishedAt; ?></td>
+          <td><?= $build->finishedAt ? : 'Still Running'; ?></td>
           <td><?= $build->status; ?></td>
         </tr>
       <?php endforeach; ?>

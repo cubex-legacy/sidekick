@@ -80,4 +80,21 @@ abstract class AbstractFortifyElement implements FortifyBuildElement
       $data
     );
   }
+
+  protected $_log = [];
+
+  protected function _writeToLog($line)
+  {
+    $this->_log[] = $line;
+  }
+
+  protected function _writeLogLine($line)
+  {
+    $this->_writeToLog($line . "\n");
+  }
+
+  public function getLog()
+  {
+    return implode("", $this->_log);
+  }
 }

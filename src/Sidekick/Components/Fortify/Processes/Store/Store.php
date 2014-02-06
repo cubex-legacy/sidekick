@@ -27,13 +27,13 @@ class Store extends AbstractFortifyProcess
       $fileName
     );
 
-    $command = "tar -cvzf $zipLoc $this->_basePath";
+    $exclude = build_path($this->_basePath, '.git');
+    $command = "tar -cvzf $zipLoc $this->_basePath --exclude \"$exclude\"";
     Log::info("Running " . $command);
 
     $this->_writeLogLine($command);
     $process = new Process($command);
     $process->run();
-    $this->_writeToLog($process->getOutput());
 
     Log::debug($process->getOutput());
 

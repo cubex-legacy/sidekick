@@ -65,10 +65,22 @@ class OverviewController extends BaseControl
     $insight->load($insight->id());
 
     $view = new ProjectOverview($project);
-    $view->setRepository($repository);
-    $view->setBranch($branch);
-    $view->setCommitBuilds($commitBuilds);
-    $view->setInsight($insight);
+    if($repository)
+    {
+      $view->setRepository($repository);
+    }
+    if($branch)
+    {
+      $view->setBranch($branch);
+    }
+    if($commitBuilds)
+    {
+      $view->setCommitBuilds($commitBuilds);
+    }
+    if($insight)
+    {
+      $view->setInsight($insight);
+    }
 
     echo $this->createView($view);
   }

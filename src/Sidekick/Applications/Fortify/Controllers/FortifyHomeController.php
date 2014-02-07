@@ -254,51 +254,19 @@ class FortifyHomeController extends FortifyController
    */
   public function build()
   {
-    $projectId = $this->getProjectId();
     $buildId   = $this->getInt('buildType');
 
     try
     {
-      $repoId = 0;
-
-      $buildRepo = BuildsProjects::collection()->loadOneWhere(
-        ['project_id' => $projectId, 'build_id' => $buildId]
+      $queue = new StdQueue('buildRequest');
+      Queue::push(
+        $queue,
+        ['projectId' => $this->getProjectId(), 'buildId' => $buildId]
       );
 
-      if($buildRepo === null)
-      {
-        //try to get the master repo for project
-        $project   = new Project($projectId);
-        $buildRepo = $project->repository();
-        if($buildRepo->exists())
-        {
-          $repoId = $buildRepo->id();
-        }
-      }
-      else if($buildRepo->exists())
-      {
-        $repoId = $buildRepo->buildSourceId;
-      }
-
-      if($repoId > 0)
-      {
-        $queue = new StdQueue('buildRequest');
-        Queue::push(
-          $queue,
-          ['projectId' => $this->getProjectId(), 'buildId' => $buildId]
-        );
-
-        $msg       = new \stdClass();
-        $msg->type = 'success';
-        $msg->text = 'Your Build Request has been queued up!';
-      }
-      else
-      {
-        $msg       = new \stdClass();
-        $msg->type = 'error';
-        $msg->text = 'Your Build Request could not be processed.' .
-        ' No Repository is linked to this build type';
-      }
+      $msg       = new \stdClass();
+      $msg->type = 'success';
+      $msg->text = 'Your Build Request has been queued up!';
     }
     catch(\Exception $e)
     {

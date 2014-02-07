@@ -57,7 +57,6 @@ class BuildsPage extends ViewModel
     $buttons = [
       $this->appBaseUri() . '/builds'   => 'Builds',
       $this->appBaseUri() . '/commands' => 'Commands',
-      $baseUri . '/repository'          => 'Repository',
     ];
     foreach($buttons as $href => $txt)
     {

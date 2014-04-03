@@ -8,9 +8,14 @@ namespace Sidekick\Deployment;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\Version;
+use Sidekick\Components\Users\Mappers\User;
 
 abstract class BaseDeploymentService implements IDeploymentService
 {
+  /**
+   * @var User
+   */
+  protected $_user;
   protected $_version;
   protected $_stage;
   /**
@@ -51,6 +56,12 @@ abstract class BaseDeploymentService implements IDeploymentService
   public function getHost($serverId)
   {
     return isset($this->_hosts[$serverId]) ? $this->_hosts[$serverId] : null;
+  }
+
+  public function setUser(User $user)
+  {
+    $this->_user = $user;
+    return $this;
   }
 
   public static function getConfigurationItems()

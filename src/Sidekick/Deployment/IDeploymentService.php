@@ -8,6 +8,7 @@ namespace Sidekick\Deployment;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\Version;
+use Sidekick\Components\Users\Mappers\User;
 
 interface IDeploymentService
 {
@@ -40,6 +41,8 @@ interface IDeploymentService
    * @return void
    */
   public function deploy();
+
+  public function setUser(User $user);
 
   /**
    * Return a keyed array of configuration items.

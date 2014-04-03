@@ -166,6 +166,7 @@ class Deploy extends CliCommand
             $diffuser->addHost($stageHost);
           }
 
+          $diffuser->setUser($user);
           $diffuser->deploy();
 
           $hostResults = $diffuser->getHosts();

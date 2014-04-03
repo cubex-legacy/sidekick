@@ -139,7 +139,7 @@ class CreateVersion extends CliCommand
     }
 
     $reattempt = "\n\nPlease re-attempt with:\n" .
-    "./cubex Diffuse.CreateVersion --version=" . $version->id();
+      "./cubex Diffuse.CreateVersion --version=" . $version->id();
 
     $sourceDir = VersionHelper::sourceLocation($version);
 
@@ -190,23 +190,27 @@ class CreateVersion extends CliCommand
         //Locate previous approved version for commit hash
         $lastVersion = Version::collection(
           [
-          "projectId"    => $version->projectId,
-          "versionState" => ApprovalState::APPROVED,
+            "projectId"    => $version->projectId,
+            "versionState" => ApprovalState::APPROVED,
           ]
         )->setLimit(0, 1)
-        ->setOrderByQuery(
-          "major DESC, minor DESC, build DESC, revision DESC, created_at DESC"
-        );
+          ->setOrderByQuery(
+            "major DESC, minor DESC, build DESC, revision DESC, created_at DESC"
+          );
         if($lastVersion->hasMappers())
         {
           $version->fromCommitHash = $lastVersion->first()->toCommitHash;
         }
       }
 
-      if(
-      $version->changeLog === null &&
-      $version->fromCommitHash !== null &&
-      $version->toCommitHash !== null
+      if($version->fromCommitHash === $version->toCommitHash)
+      {
+        $version->changeLog = 'No Changes';
+      }
+      else if(
+        $version->changeLog === null &&
+        $version->fromCommitHash !== null &&
+        $version->toCommitHash !== null
       )
       {
         $commits = Commit::collectionBetween(
@@ -221,7 +225,7 @@ class CreateVersion extends CliCommand
           foreach($commits as $commit)
           {
             $changes[] = $commit->subject .
-            (empty($commit->message) ? "" : "\n$commit->message");
+              (empty($commit->message) ? "" : "\n$commit->message");
           }
 
           //Switch to date ordered

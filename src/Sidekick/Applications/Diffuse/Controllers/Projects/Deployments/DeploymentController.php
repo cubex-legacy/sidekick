@@ -17,14 +17,17 @@ class DeploymentController extends DiffuseController
   public function renderIndex()
   {
     $deploymentId = $this->getInt('deploymentId');
-    $deployment = new Deployment($deploymentId);
+    $deployment   = new Deployment($deploymentId);
 
     $deploymentStagesHosts = DeploymentStageHost::collection(
       ['deployment_id' => $deploymentId]
     );
 
     $deploymentStages = DeploymentStage::collection(
-      ['platform_id' => $deployment->platformId]
+      [
+        'platform_id' => $deployment->platformId,
+        'project_id'  => $this->getProjectId()
+      ]
     );
 
     return new DeploymentDetailsView(

@@ -17,7 +17,7 @@ class RollbarService extends BaseDeploymentService
       'https://api.rollbar.com/api/1/deploy/',
       [],
       [
-        'access_token' => $cfg->getStr("command", null),
+        'access_token' => $cfg->getStr("access_token", null),
         'environment'  => $cfg->getStr("environment", 'production'),
         'revision'     => $this->_version->format(),
         'comment'      => $this->_version->changeLog
@@ -47,4 +47,3 @@ class RollbarService extends BaseDeploymentService
     ];
   }
 }
-

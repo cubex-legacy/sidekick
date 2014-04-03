@@ -28,13 +28,22 @@ class RollbarService extends BaseDeploymentService
       'https://api.rollbar.com/api/1/deploy/' . $this->_version->format(
       ) . '/' . $this->_stage->platform()->name
     );
+
+    foreach($this->_hosts as $stageHost)
+    {
+      $stageHost->executionTime = 0;
+      $stageHost->command       = '';
+      $stageHost->stdErr        = '';
+      $stageHost->stdOut        = '';
+      $stageHost->passed        = true;
+    }
   }
 
   public static function getConfigurationItems()
   {
     return [
       'access_token' => 'Your project access token. Required.',
-      'environment' => 'Environment you will be deploying to',
+      'environment'  => 'Environment you will be deploying to',
     ];
   }
 }

@@ -28,6 +28,7 @@
     "themed/sidekick":           "*",
     "phpseclib/phpseclib":       "*",
     "ircmaxell/password-compat": "*",
+    "rmccue/requests":           "*",
     "symfony/yaml":              "*"
   },
   "autoload":          {

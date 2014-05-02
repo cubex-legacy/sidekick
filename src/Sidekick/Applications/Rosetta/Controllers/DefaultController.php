@@ -74,7 +74,7 @@ class DefaultController extends ProjectAwareBaseControl
 
     $getLanguages           = PendingTranslation::collection(
       ['project_id' => $projectId]
-    );
+    )->setGroupBy('lang');
     $availableLanguageCodes = $getLanguages->getUniqueField('lang');
 
     $page      = $this->getInt('page', 1);

@@ -42,6 +42,7 @@ class Translate extends ApiController
 
       if(!count($data))
       {
+        //Save original version
         TranslatorHelper::saveTranslation(
           $key,
           $params['text'],
@@ -49,27 +50,31 @@ class Translate extends ApiController
           $projectId
         );
 
-        $pendingTranslation            = new PendingTranslation();
-        $pendingTranslation->rowKey    = $key;
-        $pendingTranslation->lang      = $targetLang;
-        $pendingTranslation->projectId = $projectId;
-        $pendingTranslation->saveChanges();
-
+        //Translate it
         $translatedText = TranslatorHelper::translate(
           $params['text'],
           $sourceLang,
           $targetLang
         );
 
+        if($translatedText != $params['text'])
+        {
+          TranslatorHelper::saveTranslation(
+            $key,
+            $translatedText,
+            $targetLang,
+            $projectId
+          );
+
+          $pendingTranslation            = new PendingTranslation();
+          $pendingTranslation->rowKey    = $key;
+          $pendingTranslation->lang      = $targetLang;
+          $pendingTranslation->projectId = $projectId;
+          $pendingTranslation->saveChanges();
+        }
+
         $config = Container::config()->get("i18n", new Config());
         $source = $config->getStr("translator", null);
-
-        TranslatorHelper::saveTranslation(
-          $key,
-          $translatedText,
-          $targetLang,
-          $projectId
-        );
       }
       else
       {

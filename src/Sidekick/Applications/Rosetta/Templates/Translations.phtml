@@ -45,6 +45,7 @@ use \Sidekick\Components\Rosetta\Helpers\LanguageCodes;
         <?= LanguageCodes::getLanguageFromCode($pending->lang) ?>
       </td>
       <td>
+        <?php if ($pending->approved !== true){ ?>
         <a href="<?=
         $this->baseUri() ?>/<?=
         $this->getProjectId() ?>/approve/<?=
@@ -52,6 +53,7 @@ use \Sidekick\Components\Rosetta\Helpers\LanguageCodes;
            class="btn btn-success">
           <i class="icon-ok icon-white"></i>
         </a>
+        <?php } ?>
       </td>
       <td>
         <a href="<?=

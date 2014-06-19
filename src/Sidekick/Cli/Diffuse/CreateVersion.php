@@ -17,6 +17,7 @@ use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Repository\Mappers\Commit;
+use Symfony\Component\Process\Process;
 
 class CreateVersion extends CliCommand
 {
@@ -270,7 +271,10 @@ class CreateVersion extends CliCommand
     }
     else
     {
-      $copy = $this->copyDirectory($buildSource, $sourceDir);
+      $command = "cp $buildSource/* $sourceDir -r";
+      $process = new Process($command);
+      $process->run();
+      /*$copy = $this->copyDirectory($buildSource, $sourceDir);
       if($copy)
       {
         Log::info("Version creation complete");
@@ -281,7 +285,7 @@ class CreateVersion extends CliCommand
           "Unable to copy from " .
           "'" . $buildSource . "' to '" . $sourceDir . "'. " . $reattempt
         );
-      }
+      }*/
     }
     return true;
   }

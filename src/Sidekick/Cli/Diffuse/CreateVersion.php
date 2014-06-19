@@ -271,12 +271,13 @@ class CreateVersion extends CliCommand
     }
     else
     {
-      sleep(5);
+      (new Process("sync"))->run();
+      sleep(1);
       $command = "cp $buildSource/* $sourceDir -rv";
       Log::info($command);
       $process = new Process($command);
       $process->run();
-      /*$copy = $this->copyDirectory($buildSource, $sourceDir);
+      $copy = $this->copyDirectory($buildSource, $sourceDir);
       if($copy)
       {
         Log::info("Version creation complete");
@@ -287,7 +288,7 @@ class CreateVersion extends CliCommand
           "Unable to copy from " .
           "'" . $buildSource . "' to '" . $sourceDir . "'. " . $reattempt
         );
-      }*/
+      }
     }
     return true;
   }

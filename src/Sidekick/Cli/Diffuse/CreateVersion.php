@@ -272,6 +272,7 @@ class CreateVersion extends CliCommand
     else
     {
       $command = "cp $buildSource/* $sourceDir -r";
+      Log::info($command);
       $process = new Process($command);
       $process->run();
       /*$copy = $this->copyDirectory($buildSource, $sourceDir);

@@ -271,7 +271,8 @@ class CreateVersion extends CliCommand
     }
     else
     {
-      $command = "cp $buildSource/* $sourceDir -r";
+      sleep(5);
+      $command = "cp $buildSource/* $sourceDir -rv";
       Log::info($command);
       $process = new Process($command);
       $process->run();

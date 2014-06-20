@@ -27,8 +27,7 @@ class Store extends AbstractFortifyProcess
       $fileName
     );
 
-    $exclude = build_path($this->_basePath, '.git');
-    $command = "tar -czf $zipLoc $this->_basePath --exclude \"$exclude\"";
+    $command = "tar -czf $zipLoc -C $this->_basePath --exclude-vcs";
     Log::info("Running " . $command);
 
     $this->_writeLogLine($command);

@@ -271,24 +271,22 @@ class CreateVersion extends CliCommand
     }
     else
     {
-      (new Process("sync"))->run();
-      sleep(1);
-      $command = "cp $buildSource/* $sourceDir -rv";
+      $zipLoc  = build_path($sourceDir, 'diffuse.tar.gz');
+      $command = "tar -czvf $zipLoc -C $buildSource . --exclude-vcs";
       Log::info($command);
       $process = new Process($command);
       $process->run();
-      $copy = $this->copyDirectory($buildSource, $sourceDir);
-      if($copy)
-      {
-        Log::info("Version creation complete");
-      }
-      else
-      {
-        throw new \Exception(
-          "Unable to copy from " .
-          "'" . $buildSource . "' to '" . $sourceDir . "'. " . $reattempt
-        );
-      }
+      Log::debug($process->getOutput());
+      $command = "tar -xvf $zipLoc -C $sourceDir";
+      Log::info($command);
+      $process = new Process($command);
+      $process->run();
+      Log::debug($process->getOutput());
+      $command = "rm $zipLoc";
+      Log::info($command);
+      $process = new Process($command);
+      $process->run();
+      Log::debug($process->getOutput());
     }
     return true;
   }

@@ -116,24 +116,24 @@ class PhpCsReport extends TemplatedViewModel
     $data = [];
     if(file_exists($this->_file))
     {
-      $xml = simplexml_load_file($this->_file);
+      $xml = simplexml_load_string(file_get_contents($this->_file));
       foreach($xml->file as $file)
       {
-        $fileName       = basename((string)$file['name']);
-        $fullFileName   = (string)$file['name'];
+        $fileName     = basename((string)$file['name']);
+        $fullFileName = (string)$file['name'];
 
         //get just the relative file name starting from src
-        $fullFileName = substr($fullFileName, strpos($fullFileName, 'src'));
+        $fullFileName   = substr($fullFileName, strpos($fullFileName, 'src'));
         $errors         = [];
         $filteredErrors = [];
         foreach($file->error as $error)
         {
           $e = new PhpCsError();
           $e->setLine((int)$error['line'])
-          ->setColumn((int)$error['column'])
-          ->setMessage((string)$error['message'])
-          ->setSource((string)$error['source'])
-          ->setFileName($fullFileName);
+            ->setColumn((int)$error['column'])
+            ->setMessage((string)$error['message'])
+            ->setSource((string)$error['source'])
+            ->setFileName($fullFileName);
 
           list($standard, $category, $subCategory, $type) = explode(
             '.',
@@ -141,9 +141,9 @@ class PhpCsReport extends TemplatedViewModel
           );
 
           $e->setStandard($standard)
-          ->setCategory($category)
-          ->setSubCategory($subCategory)
-          ->setType($type);
+            ->setCategory($category)
+            ->setSubCategory($subCategory)
+            ->setType($type);
 
           $errors[]                             = $e;
           $filteredErrors[$standard][]          = $e;

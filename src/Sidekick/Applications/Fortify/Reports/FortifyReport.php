@@ -15,9 +15,11 @@ abstract class FortifyReport
   public $filter;
   public $basePath;
 
-  public function __construct($buildId, $runId, $filter = null, $basePath = null)
+  public function __construct(
+    $buildId, $runId, $filter = null, $basePath = null
+  )
   {
-    $this->buildId    = $buildId;
+    $this->buildId  = $buildId;
     $this->runId    = $runId;
     $this->filter   = $filter;
     $this->basePath = $basePath;
@@ -25,7 +27,8 @@ abstract class FortifyReport
 
   public function getFileBase()
   {
-    return Container::config()->get('_cubex_')->getStr('project_base') . '../';
+    return dirname(Container::config()->get('_cubex_')->getStr('project_base'))
+    . DIRECTORY_SEPARATOR;
   }
 
   public static function getReportProviderClass($namespace)

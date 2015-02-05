@@ -26,7 +26,7 @@
     "bundl/debugger":            "*",
     "bundl/debugtoolbar":        "*",
     "themed/sidekick":           "*",
-    "phpseclib/phpseclib":       "*",
+    "phpseclib/phpseclib": "1.0.*@dev",
     "ircmaxell/password-compat": "*",
     "rmccue/requests":           "*",
     "symfony/yaml":              "*"

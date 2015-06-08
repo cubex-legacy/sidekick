@@ -14,6 +14,9 @@ class CommanderService extends BaseDeploymentService
 {
   public function deploy()
   {
+    // Timeout for running commands
+    $timeout = 600;
+
     $cfg       = (new DataHandler())->hydrate($this->_stage->configuration);
     $command   = $cfg->getStr("command", null);
     $exitCodes = $cfg->getArr("exit_codes", [0]);
@@ -83,6 +86,8 @@ class CommanderService extends BaseDeploymentService
 
       $start   = microtime(true);
       $process = new Process($cmd);
+      $process->setTimeout($timeout);
+      $process->setIdleTimeout($timeout);
       $process->run(
         function ($type, $buffer)
         {

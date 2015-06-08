@@ -66,7 +66,7 @@ class Build extends CliCommand
    * Number of seconds before a single process will timeout
    * @valuerequired
    */
-  public $timeout = 300;
+  public $timeout = 600;
 
   /**
    * Number of seconds before a single process will timeout (after no output)

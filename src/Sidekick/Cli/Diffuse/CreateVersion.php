@@ -269,7 +269,7 @@ class CreateVersion extends CliCommand
         "'" . $buildSource . "'. " . $reattempt
       );
     }
-    else
+    else if(!file_exists(build_path($buildSource, 'diffuse-disable-tgz')))
     {
       $zipLoc  = build_path($sourceDir, 'diffuse.tar.gz');
       $command = "tar -czvf $zipLoc -C $buildSource . --exclude-vcs";

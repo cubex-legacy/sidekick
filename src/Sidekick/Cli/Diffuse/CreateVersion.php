@@ -269,20 +269,12 @@ class CreateVersion extends CliCommand
         "'" . $buildSource . "'. " . $reattempt
       );
     }
-    else if(!file_exists(build_path($buildSource, 'diffuse-disable-tgz')))
+    else
     {
-      $zipLoc  = build_path($sourceDir, 'diffuse.tar.gz');
-      $command = "tar -czvf $zipLoc -C $buildSource . --exclude-vcs";
-      Log::info($command);
-      $process = new Process($command);
-      $process->run();
-      Log::debug($process->getOutput());
-      $command = "tar -xvf $zipLoc -C $sourceDir";
-      Log::info($command);
-      $process = new Process($command);
-      $process->run();
-      Log::debug($process->getOutput());
-      $command = "rm $zipLoc";
+      $command = 'rsync -av --exclude=.git --exclude=.gitignore '
+        . '--delete --delete-excluded '
+        . escapeshellarg($buildSource . '/') . ' ' . escapeshellarg($sourceDir);
+
       Log::info($command);
       $process = new Process($command);
       $process->run();

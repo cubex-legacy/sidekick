@@ -22,7 +22,7 @@
     "dflydev/markdown":          "*",
     "packaged/cassandrathrift":  "*",
     "cubex/nrpe":                "*",
-    "symfony/process":           "*",
+    "symfony/process":           "2.4.*",
     "bundl/debugger":            "*",
     "bundl/debugtoolbar":        "*",
     "themed/sidekick":           "*",

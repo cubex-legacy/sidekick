@@ -72,7 +72,7 @@ class Build extends CliCommand
    * Number of seconds before a single process will timeout (after no output)
    * @valuerequired
    */
-  public $idleTimeout = 120;
+  public $idleTimeout = 600;
 
   protected $_buildRunId;
   protected $_buildResult;

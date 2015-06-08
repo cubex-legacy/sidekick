@@ -21,6 +21,9 @@ class RsyncService extends BaseDeploymentService
 
   public function deploy()
   {
+    // Timeout for running the rsync command
+    $timeout = 1200;
+
     $cfg = (new DataHandler())->hydrate($this->_stage->configuration);
 
     //Base path to deploy code to (remote)
@@ -83,6 +86,8 @@ class RsyncService extends BaseDeploymentService
 
       $start = microtime(true);
       $proc  = new Process($cmd);
+      $proc->setTimeout($timeout);
+      $proc->setIdleTimeout($timeout);
       $proc->run(
         function ($type, $buffer)
         {

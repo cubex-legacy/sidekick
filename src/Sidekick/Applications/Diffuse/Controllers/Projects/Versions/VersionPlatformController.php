@@ -7,6 +7,7 @@ namespace Sidekick\Applications\Diffuse\Controllers\Projects\Versions;
 
 use Cubex\Core\Http\Redirect;
 use Cubex\Data\Transportable\TransportMessage;
+use Cubex\Facade\Auth;
 use Cubex\Facade\Session;
 use Cubex\Form\Form;
 use Cubex\Mapper\Database\RecordCollection;
@@ -200,7 +201,22 @@ class VersionPlatformController extends VersionsController
           return $this->renderIndex();
         }
       }
-      $action->saveChanges();
+
+      // check if user has previously approved anything on this version.
+      //// will stop user from approving things more than once per deployment phase.
+      $alreadyMadeAction = $action->loadWhere(
+        [
+          'user_id'     => Auth::user()->getId(),
+          'platform_id' => $this->getInt('platformId'),
+          'version_id'  => $this->getInt('versionId'),
+          'action_type' => ActionType::APPROVE
+        ]
+      );
+
+      if(!$alreadyMadeAction)
+      {
+        $action->saveChanges();
+      }
 
       switch($action->actionType)
       {

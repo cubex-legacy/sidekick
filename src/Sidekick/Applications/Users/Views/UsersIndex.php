@@ -9,6 +9,7 @@
 
 namespace Sidekick\Applications\Users\Views;
 
+use Cubex\Facade\Auth;
 use Cubex\View\TemplatedViewModel;
 
 class UsersIndex extends TemplatedViewModel
@@ -26,5 +27,18 @@ class UsersIndex extends TemplatedViewModel
   public function getUsers()
   {
     return $this->_users;
+  }
+
+  /**
+   * @return bool
+   */
+  public function canDelete()
+  {
+    return Auth::user()->getDetails()->user_role == 'administrator';
+  }
+
+  public function canEdit()
+  {
+    return Auth::user()->getDetails()->user_role == 'administrator';
   }
 }

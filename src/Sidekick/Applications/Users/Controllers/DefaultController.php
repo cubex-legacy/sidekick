@@ -5,12 +5,10 @@
 
 namespace Sidekick\Applications\Users\Controllers;
 
+use Cubex\Facade\Auth;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
-use Cubex\View\HtmlElement;
-use Cubex\View\RenderGroup;
 use Sidekick\Applications\Users\Views\UsersIndex;
-use Sidekick\Applications\Users\Views\UsersSidebar;
 use Sidekick\Components\Users\Mappers\User;
 
 class DefaultController extends UsersController
@@ -23,6 +21,10 @@ class DefaultController extends UsersController
 
   public function renderCreate()
   {
+    if(Auth::user()->getDetails()->user_role != 'administrator') {
+      Redirect::to('/P/users')->now();
+    }
+
     $form = new Form('usersForm', $this->appBaseUri() . '/create');
     $form->bindMapper(new User());
     return $form;
@@ -30,14 +32,20 @@ class DefaultController extends UsersController
 
   public function postCreate()
   {
-    $user = new User();
-    $user->hydrate($this->request()->postVariables());
-    $user->password = password_hash($user->password, PASSWORD_DEFAULT);
-    $user->saveChanges();
+    $msg = new \StdClass();
+    if(Auth::user()->getDetails()->user_role == 'administrator') {
+      $user = new User();
+      $user->hydrate($this->request()->postVariables());
+      $user->password = password_hash($user->password, PASSWORD_DEFAULT);
+      $user->saveChanges();
 
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'User was successfully created';
+      $msg->type = 'success';
+      $msg->text = 'User was successfully created';
+    } else {
+      $msg->type = 'error';
+      $msg->text = 'Your not allowed to do that.';
+    }
+
     Redirect::to($this->appBaseUri())->with('msg', $msg)->now();
   }
 

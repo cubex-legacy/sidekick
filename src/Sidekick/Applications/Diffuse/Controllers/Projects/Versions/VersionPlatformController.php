@@ -223,7 +223,7 @@ class VersionPlatformController extends VersionsController
       else
       {
         $msg->type = 'error';
-        $msg->message = 'Your can\'t approve this more than once..';
+        $msg->message = 'You can\'t approve this more than once..';
       }
 
       switch($action->actionType)

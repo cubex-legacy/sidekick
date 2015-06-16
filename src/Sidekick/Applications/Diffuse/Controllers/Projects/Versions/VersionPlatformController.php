@@ -213,9 +213,17 @@ class VersionPlatformController extends VersionsController
         ]
       );
 
+      $msg = new \StdClass();
       if(!$alreadyMadeAction)
       {
+        $msg->type = 'success';
+        $msg->message = 'Your approval has been logged.';
         $action->saveChanges();
+      }
+      else
+      {
+        $msg->type = 'error';
+        $msg->message = 'You can\'t approve this more than once..';
       }
 
       switch($action->actionType)
@@ -236,7 +244,7 @@ class VersionPlatformController extends VersionsController
           break;
       }
     }
-    return (new Redirect())->to($this->baseUri());
+    return (new Redirect())->to($this->baseUri())->with('msg', $msg);
   }
 
   protected function _buildForm(PlatformVersionState $platformState = null)

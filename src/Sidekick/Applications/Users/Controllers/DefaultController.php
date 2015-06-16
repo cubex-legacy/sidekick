@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Users\Controllers;
 use Cubex\Facade\Auth;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
+use Cubex\Form\FormElement;
 use Sidekick\Applications\Users\Views\UsersIndex;
 use Sidekick\Components\Users\Mappers\User;
 
@@ -52,9 +53,46 @@ class DefaultController extends UsersController
   public function renderEdit()
   {
     $userId = $this->getInt('userId');
-    $form   = new Form('usersForm', $this->appBaseUri() . '/update');
-    $form->bindMapper(new User($userId));
-    return $form;
+    $loggedInId = Auth::user()->getId();
+
+    if ($loggedInId == $userId) {
+      // can edit self.
+      $user = new User($userId);
+
+      $form   = new Form('usersForm', $this->appBaseUri() . '/update');
+      $form->addTextElement('username');
+      $form->getAttribute('username')->setData($user->username);
+
+      $form->addTextElement('display_name');
+      $form->getAttribute('display_name')->setData($user->displayName);
+
+      $form->addTextElement('email');
+      $form->getAttribute('email')->setData($user->email);
+
+      $form->addPasswordElement('password');
+
+      $form->addTextElement('phone_number');
+      $form->getAttribute('phone_number')->setData($user->phoneNumber);
+
+      $form->addSubmitElement('Update');
+    } elseif(Auth::user()->getDetails()->user_role == 'administrator') {
+      // edit anyone.
+      $form   = new Form('usersForm', $this->appBaseUri() . '/update');
+      $form->bindMapper(new User($userId));
+    }
+
+    if(isset($form))
+    {
+      return $form;
+    }
+    else
+    {
+      $message          = new \StdClass();
+      $message->type    = 'error';
+      $message->text = 'You cannot update another user';
+
+      Redirect::to('/P/users')->with('msg', $message)->now();
+    }
   }
 
   public function postUpdate()

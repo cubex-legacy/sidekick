@@ -6,11 +6,14 @@
  */
 ?>
 <h1>Users</h1>
-<a href="<?= $this->baseUri() . '/create'; ?>"
-   class="btn btn-success pull-right"
-   style="margin-top:-20px;">
-  <i class="icon-plus icon-white"></i>
-  Create User</a>
+<?php if($this->canCreate()): ?>
+  <a href="<?= $this->baseUri() . '/create'; ?>"
+     class="btn btn-success pull-right"
+     style="margin-top:-20px;">
+    <i class="icon-plus icon-white"></i>
+    Create User</a>
+<?php endif; ?>
+
 <div class="clearfix"></div>
 <div style="margin-top:10px;"></div>
 <?php if(Session::getFlash('msg')): ?>

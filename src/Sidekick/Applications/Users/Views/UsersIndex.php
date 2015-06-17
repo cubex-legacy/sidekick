@@ -37,7 +37,18 @@ class UsersIndex extends TemplatedViewModel
     return Auth::user()->getDetails()->user_role == 'administrator';
   }
 
+  /**
+   * @return bool
+   */
   public function canEdit()
+  {
+    return Auth::user()->getDetails()->user_role == 'administrator';
+  }
+
+  /**
+   * @return bool
+   */
+  public function canCreate()
   {
     return Auth::user()->getDetails()->user_role == 'administrator';
   }

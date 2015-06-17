@@ -277,6 +277,8 @@ class CreateVersion extends CliCommand
 
       Log::info($command);
       $process = new Process($command);
+      $process->setTimeout(600);
+      $process->setIdleTimeout(600);
       $process->run();
       Log::debug($process->getOutput());
     }

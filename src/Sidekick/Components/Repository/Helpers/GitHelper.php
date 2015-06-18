@@ -93,8 +93,7 @@ class GitHelper
 
     if($exists)
     {
-      $git = 'git -C ' . escapeshellarg($localPath) . ' ';
-      $pullProc = new Process($git . 'pull --rebase');
+      $pullProc = new Process('git pull --rebase', $localPath);
       $pullProc->run($callback);
       $pullRet = $pullProc->getExitCode();
       if($pullRet != 0)
@@ -108,7 +107,10 @@ class GitHelper
         );
       }
 
-      $checkoutProc = new Process($git . 'checkout ' . escapeshellarg($branch));
+      $checkoutProc = new Process(
+        'git checkout ' . escapeshellarg($branch),
+        $localPath
+      );
       $checkoutProc->run($callback);
       $checkoutRet = $checkoutProc->getExitCode();
       if($checkoutRet != 0)
@@ -167,7 +169,7 @@ class GitHelper
       );
     }
     $process = new Process(
-      'git -C ' . escapeshellarg($localRepoPath) . ' config remote.origin.url'
+      'git config remote.origin.url', $localRepoPath
     );
     $process->run();
     if($process->getExitCode() == 0)
@@ -193,8 +195,7 @@ class GitHelper
   private static function _setOriginUrl($localPath, $url)
   {
     $process = new Process(
-      'git -C ' . escapeshellarg($localPath) . ' remote set-url origin '
-      . escapeshellarg($url)
+      'git remote set-url origin ' . escapeshellarg($url), $localPath
     );
     $process->run();
     if($process->getExitCode() != 0)

@@ -26,6 +26,7 @@ use Sidekick\Components\Fortify\Mappers\BuildsProjects;
 use Sidekick\Components\Fortify\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Enums\RepositoryProvider;
+use Sidekick\Components\Repository\Helpers\GitHelper;
 use Sidekick\Components\Repository\Mappers\Branch;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Sidekick\Components\Repository\Mappers\CommitFile;
@@ -522,16 +523,12 @@ class Build extends CliCommand
       case RepositoryProvider::GIT:
         $this->_outputStep("Cloning Repo");
 
-        $cloneCommand = 'git clone -v';
-        $cloneCommand .= " $repository->fetchUrl";
-        $cloneCommand .= " --branch " . $branch->branch;
-        $cloneCommand .= " $location";
-
-        $process = new Process($cloneCommand);
-        $process->setTimeout($this->timeout);
-        $process->setIdleTimeout($this->idleTimeout);
-        $process->run([$log, 'writeBuffer']);
-        $log->exitCode = $process->getExitCode();
+        GitHelper::getCleanRepo(
+          $repository->fetchUrl,
+          $branch->branch,
+          $location,
+          $log
+        );
         break;
       default:
         throw new \Exception(

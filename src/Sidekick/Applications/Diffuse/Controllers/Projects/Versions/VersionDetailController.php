@@ -22,7 +22,10 @@ class VersionDetailController extends VersionsController
       $this->_version, $this->_platforms, $this->_platformStates
     );
 
-    if($this->_version->fromCommitHash !== null && $this->_version->toCommitHash !== null)
+    if(($this->_version->fromCommitHash !== null)
+      && ($this->_version->toCommitHash !== null)
+      && ($this->_version->fromCommitHash != $this->_version->toCommitHash)
+    )
     {
       $view->setCommits(
         Commit::collectionBetween(

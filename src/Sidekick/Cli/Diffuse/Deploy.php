@@ -48,156 +48,160 @@ class Deploy extends CliCommand
   public function execute()
   {
     $deployment = null;
-    if($this->deploymentId > 0)
+    try
     {
-      $deployment = new Deployment($this->deploymentId);
-      if(!$deployment->exists()
-        || !in_array($deployment->pending, [1, "1", true])
-      )
+      if($this->deploymentId > 0)
       {
-        throw new \Exception(
-          "The deployment you are trying to run is not pending, " .
-          "or does not exist."
-        );
-      }
-      else
-      {
-        $version  = new Version($deployment->versionId);
-        $platform = new Platform($deployment->platformId);
-        $project  = new Project($deployment->projectId);
-        $user     = new User($deployment->userId);
-      }
-    }
-
-    if($deployment === null)
-    {
-      $version = new Version($this->versionId);
-      if(!$version->exists())
-      {
-        throw new \Exception("The version specified does not exist");
-      }
-
-      $platform = new Platform($this->platformId);
-      if(!$platform->exists())
-      {
-        throw new \Exception("The platform specified does not exist");
-      }
-
-      $project = new Project($version->projectId);
-      if(!$project->exists())
-      {
-        throw new \Exception("The project specified does not exist");
-      }
-
-      $user = new User($this->userId);
-      if(!$user->exists())
-      {
-        throw new \Exception("The user specified does not exist");
-      }
-    }
-
-    $this->_createVersionDataFile($version);
-
-    if($deployment === null)
-    {
-      $deployment             = new Deployment();
-      $deployment->platformId = $platform->id();
-      $deployment->versionId  = $version->id();
-      $deployment->projectId  = $project->id();
-      $deployment->userId     = $user->id();
-    }
-
-    //Stop the deployment from being pending, to ensure it no longer gets
-    //picked up by the queue consumer
-
-    $deployment->pending   = false;
-    $deployment->startedAt = new \DateTime();
-    $deployment->saveChanges(); //Initiate deployment for the ID
-
-    $hosts = HostPlatform::collection(
-      [
-        "platform_id" => $platform->id(),
-        "project_id"  => $project->id()
-      ]
-    );
-
-    if(!$hosts->hasMappers())
-    {
-      $deployment->completed = 1;
-      $deployment->saveChanges();
-      throw new \Exception("No Hosts have been assigned to this platform");
-    }
-
-    $stages    = DeploymentStage::collection(
-      [
-        'platform_id' => $platform->id(),
-        'project_id'  => $project->id(),
-      ]
-    );
-    $passStage = true;
-    foreach($stages as $stage)
-    {
-      if(!$passStage)
-      {
-        $deployment->completed = 1;
-        $deployment->saveChanges();
-        throw new \Exception("Unable to proceed, as previous stage failed.");
-      }
-      /**
-       * @var $stage DeploymentStage
-       */
-      $deployService = $stage->serviceClass;
-      if(class_exists($deployService))
-      {
-        Log::info("Deploying with '$deployService'");
-        $diffuser = new $deployService($version, $stage);
-
-        if($diffuser instanceof IDeploymentService)
+        $deployment = new Deployment($this->deploymentId);
+        if(!$deployment->exists()
+          || !in_array($deployment->pending, [1, "1", true])
+        )
         {
-          foreach($hosts as $hostPlat)
-          {
-            /**
-             * @var $hostPlat \Sidekick\Components\Diffuse\Mappers\HostPlatform
-             */
-            $stageHost                    = new DeploymentStageHost();
-            $stageHost->serverId          = $hostPlat->serverId;
-            $stageHost->deploymentId      = $deployment->id();
-            $stageHost->deploymentStageId = $stage->id();
-            $diffuser->addHost($stageHost);
-          }
-
-          $diffuser->setUser($user);
-          $diffuser->deploy();
-
-          $hostResults = $diffuser->getHosts();
-          foreach($hostResults as $hostResult)
-          {
-            if($stage->requireAllHostsPass && !$hostResult->passed)
-            {
-              $passStage = false;
-            }
-            $hostResult->saveChanges();
-          }
+          throw new \Exception(
+            "The deployment you are trying to run is not pending, " .
+            "or does not exist."
+          );
+        }
+        else
+        {
+          $version = new Version($deployment->versionId);
+          $platform = new Platform($deployment->platformId);
+          $project = new Project($deployment->projectId);
+          $user = new User($deployment->userId);
         }
       }
-      else
+
+      if($deployment === null)
       {
+        $version = new Version($this->versionId);
+        if(!$version->exists())
+        {
+          throw new \Exception("The version specified does not exist");
+        }
+
+        $platform = new Platform($this->platformId);
+        if(!$platform->exists())
+        {
+          throw new \Exception("The platform specified does not exist");
+        }
+
+        $project = new Project($version->projectId);
+        if(!$project->exists())
+        {
+          throw new \Exception("The project specified does not exist");
+        }
+
+        $user = new User($this->userId);
+        if(!$user->exists())
+        {
+          throw new \Exception("The user specified does not exist");
+        }
+      }
+
+      $this->_createVersionDataFile($version);
+
+      if($deployment === null)
+      {
+        $deployment = new Deployment();
+        $deployment->platformId = $platform->id();
+        $deployment->versionId = $version->id();
+        $deployment->projectId = $project->id();
+        $deployment->userId = $user->id();
+      }
+
+      //Stop the deployment from being pending, to ensure it no longer gets
+      //picked up by the queue consumer
+
+      $deployment->pending = false;
+      $deployment->startedAt = new \DateTime();
+      $deployment->saveChanges(); //Initiate deployment for the ID
+
+      $hosts = HostPlatform::collection(
+        [
+          "platform_id" => $platform->id(),
+          "project_id"  => $project->id()
+        ]
+      );
+
+      if(!$hosts->hasMappers())
+      {
+        throw new \Exception("No Hosts have been assigned to this platform");
+      }
+
+      $stages = DeploymentStage::collection(
+        [
+          'platform_id' => $platform->id(),
+          'project_id'  => $project->id(),
+        ]
+      );
+      foreach($stages as $stage)
+      {
+        /**
+         * @var $stage DeploymentStage
+         */
+        $deployService = $stage->serviceClass;
+        if(class_exists($deployService))
+        {
+          Log::info("Deploying with '$deployService'");
+          $diffuser = new $deployService($version, $stage);
+
+          if($diffuser instanceof IDeploymentService)
+          {
+            foreach($hosts as $hostPlat)
+            {
+              /**
+               * @var $hostPlat \Sidekick\Components\Diffuse\Mappers\HostPlatform
+               */
+              $stageHost = new DeploymentStageHost();
+              $stageHost->serverId = $hostPlat->serverId;
+              $stageHost->deploymentId = $deployment->id();
+              $stageHost->deploymentStageId = $stage->id();
+              $diffuser->addHost($stageHost);
+            }
+
+            $diffuser->setUser($user);
+            $diffuser->deploy();
+
+            $hostResults = $diffuser->getHosts();
+            foreach($hostResults as $hostResult)
+            {
+              $hostResult->saveChanges();
+              if($stage->requireAllHostsPass && !$hostResult->passed)
+              {
+                throw new \Exception(
+                  'Failed deploying to host ' . $hostResult->server()->hostname
+                );
+              }
+            }
+          }
+        }
+        else
+        {
+          throw new \Exception("The class '$deployService' does not exist");
+        }
+      }
+
+      $stateId = [$platform->id(), $version->id()];
+      $state = new PlatformVersionState($stateId);
+      $state->platformId = $platform->id();
+      $state->versionId = $version->id();
+      $state->deploymentCount++;
+      $state->saveChanges();
+
+      $deployment->passed = 1;
+      $deployment->completed = 1;
+      $deployment->saveChanges();
+    }
+    catch(\Exception $e)
+    {
+      if($deployment !== null)
+      {
+        $deployment->passed = false;
         $deployment->completed = 1;
         $deployment->saveChanges();
-        throw new \Exception("The class '$deployService' does not exist");
       }
+      throw $e;
     }
-
-    $stateId           = [$platform->id(), $version->id()];
-    $state             = new PlatformVersionState($stateId);
-    $state->platformId = $platform->id();
-    $state->versionId  = $version->id();
-    $state->deploymentCount++;
-    $state->saveChanges();
-
-    $deployment->passed    = 1;
-    $deployment->completed = 1;
-    $deployment->saveChanges();
   }
 
   protected function _createVersionDataFile(Version $v)

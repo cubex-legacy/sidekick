@@ -19,17 +19,17 @@
     "php":                       ">=5.4.0",
     "cubex/cubex":               "*",
     "qubes/bootstrap":           "*",
-    "dflydev/markdown":          "*",
+    "dflydev/markdown":          "1.0.3",
     "packaged/cassandrathrift":  "*",
     "cubex/nrpe":                "*",
     "symfony/process":           "2.4.*",
     "bundl/debugger":            "*",
     "bundl/debugtoolbar":        "*",
     "themed/sidekick":           "*",
-    "phpseclib/phpseclib":       "*",
-    "ircmaxell/password-compat": "*",
-    "rmccue/requests":           "*",
-    "symfony/yaml":              "*"
+    "phpseclib/phpseclib":       "0.3.*",
+    "ircmaxell/password-compat": "1.0.*",
+    "rmccue/requests":           "1.6.*",
+    "symfony/yaml":              "2.7.*"
   },
   "autoload":          {
     "psr-0": {

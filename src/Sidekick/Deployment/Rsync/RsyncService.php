@@ -34,16 +34,17 @@ class RsyncService extends BaseDeploymentService
     }
 
     //-z optional (disable for lan sync)
-    $options = $cfg->getStr('options', 'z'); //Get options
+    $optionString = " -rltH";
+    $options = $cfg->getStr('options', '-z'); //Get options
     if(System::isWindows())
     {
       //--chmod=u=rwX,go=rX
       //--chmod=Du+rwx,og-w,Dog+rx,Fu+rw,Fog+r,F-x
-      $options .= " --chmod=Du+rwx,og-w,Dog+rx,Fu+rw,Fog+r,F-x";
+      $optionString .= " --chmod=Du+rwx,og-w,Dog+rx,Fu+rw,Fog+r,F-x " . $options;
     }
     else
     {
-      $options .= "p";
+      $optionString .= "p " . $options;
     }
 
     foreach($this->_hosts as $stageHost)
@@ -56,7 +57,7 @@ class RsyncService extends BaseDeploymentService
 
       //Automatically deploy with hard links
       $cmd = "rsync --rsh='ssh -p $host->sshPort'";
-      $cmd .= ' -rltH' . $options . ' --link-dest ';
+      $cmd .= $optionString . ' --link-dest ';
 
       //Remote Old Version Path
       $cmd .= build_path_unix(

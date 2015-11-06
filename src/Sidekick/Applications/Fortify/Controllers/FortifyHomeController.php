@@ -144,7 +144,7 @@ class FortifyHomeController extends FortifyController
     );
     $commits = $changes->buildCommitRange();
 
-    $repo = (new Project($projectId))->repository();
+    $repo = Source::loadWhere(["project_id" => $projectId]);
     if($repo)
     {
       $view = new BuildChanges($repo, $runId, $commits);

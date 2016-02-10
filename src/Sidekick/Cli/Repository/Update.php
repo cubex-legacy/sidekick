@@ -11,6 +11,7 @@ use Cubex\Facade\Queue;
 use Cubex\Helpers\Strings;
 use Cubex\I18n\TranslateTraits;
 use Cubex\Log\Log;
+use Cubex\Mapper\Database\RecordCollection;
 use Cubex\Queue\StdQueue;
 use Sidekick\Components\Repository\Mappers\Branch;
 use Sidekick\Components\Repository\Mappers\Commit;
@@ -200,14 +201,27 @@ class Update extends CliCommand
       $subject    = trim($subject);
       $message    = trim($message);
 
-      $commitO              = new Commit();
-      $commitO->branchId    = $this->_currentBranchId;
-      $commitO->commitHash  = $commitHash;
-      $commitO->author      = $author;
-      $commitO->committedAt = date("Y-m-d H:i:s", $date);
-      $commitO->subject     = $subject;
-      $commitO->message     = $message;
-      $commitO->saveChanges();
+      $alreadyInserted = Commit::loadWhere(
+        "commit_hash = %s AND branch_id = %d",
+        $commitHash,
+        $this->_currentBranchId
+      );
+
+      if($alreadyInserted)
+      {
+        Log::debug('Commit hash already there: ' . $commitHash . " branch:  $this->_currentBranchId");
+      }
+      else
+      {
+        $commitO              = new Commit();
+        $commitO->branchId    = $this->_currentBranchId;
+        $commitO->commitHash  = $commitHash;
+        $commitO->author      = $author;
+        $commitO->committedAt = date("Y-m-d H:i:s", $date);
+        $commitO->subject     = $subject;
+        $commitO->message     = $message;
+        $commitO->saveChanges();
+      }
 
       if($this->verbose)
       {

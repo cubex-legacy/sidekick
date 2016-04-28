@@ -14,6 +14,7 @@ use Sidekick\Applications\Projects\Forms\ProjectForm;
 use Sidekick\Applications\Projects\Views\ProjectsIndex;
 use Sidekick\Applications\Projects\Views\ProjectsSidebar;
 use Sidekick\Applications\Projects\Views\ProjectUsersList;
+use Sidekick\Components\Repository\Mappers\Repository;
 use Sidekick\Components\Users\Enums\UserRole;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
@@ -59,6 +60,11 @@ class DefaultController extends ProjectsController
         $project->parentId = $form->parent_id;
       }
       $project->saveChanges();
+
+      $postData['repo']['project_id'] = $project->id();
+      $repo = Repository::loadWhereOrNew(["project_id" => $project->id()]);
+      $repo->hydrate($postData['repo']);
+      $repo->saveChanges();
 
       $msg       = new \stdClass();
       $msg->type = 'success';

@@ -18,13 +18,13 @@ class GitHelper
    *
    * @param string   $repoUrl
    * @param string   $branch
-   * @param string   $localPath
+   * @param string   $buildSourceDir
    * @param BuildLog $log
    *
    * @throws \Exception
    */
   public static function getCleanRepo(
-    $repoUrl, $branch, $localPath, BuildLog $log = null
+    $repoUrl, $branch, $buildSourceDir, BuildLog $log = null
   )
   {
     $callback = $log ? [$log, 'writeBuffer'] : null;
@@ -32,15 +32,15 @@ class GitHelper
 
     static::getOrUpdateRepo($repoUrl, $branch, $cachePath, $log);
 
-    if(! file_exists($localPath))
+    if(! file_exists($buildSourceDir))
     {
-      mkdir($localPath, 0755, true);
+      mkdir($buildSourceDir, 0755, true);
     }
-    $localPath = realpath($localPath);
+    $buildSourceDir = realpath($buildSourceDir);
 
     $process = new Process(
-      'rsync -a ' . escapeshellarg(rtrim($cachePath, '/') . '/')
-      . ' ' . escapeshellarg(rtrim($localPath, '/') . '/')
+      'rsync -a --exclude \'.git\' ' . escapeshellarg(rtrim($cachePath, '/') . '/')
+      . ' ' . escapeshellarg(rtrim($buildSourceDir, '/') . '/')
     );
     $process->run($callback);
 
@@ -49,7 +49,7 @@ class GitHelper
     {
       throw new \Exception(
         'Error copying cached repository from ' . $cachePath . ' to '
-        . $localPath
+        . $buildSourceDir
       );
     }
   }
@@ -224,6 +224,6 @@ class GitHelper
       $subdir = substr($subdir, 0, -4);
     }
 
-    return build_path('/sidekick/repocache', $subdir);
+    return build_path('/sidekick/repos', $subdir);
   }
 }

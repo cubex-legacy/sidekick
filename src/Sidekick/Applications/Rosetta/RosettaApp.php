@@ -29,7 +29,7 @@ class RosettaApp extends ProjectAwareApplication
 
   public function getNavGroup()
   {
-    return "Rosetta";
+    return "Menu";
   }
 
   public function description()

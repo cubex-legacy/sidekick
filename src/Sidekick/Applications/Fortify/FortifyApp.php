@@ -28,7 +28,7 @@ class FortifyApp extends ProjectAwareApplication
 
   public function getNavGroup()
   {
-    return "Development";
+    return "Menu";
   }
 
   public function getRoutes()

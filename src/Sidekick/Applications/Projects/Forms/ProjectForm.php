@@ -26,10 +26,27 @@ class ProjectForm extends Form
 
   protected function _configure()
   {
-    $this->bindMapper(new Project($this->id));
+    //$this->bindMapper(new Project($this->id));
     $this->get('id')->setType(FormElement::HIDDEN);
     $this->get('name')->setType(FormElement::TEXT)->setRequired(true);
     $this->get('description')->setType(FormElement::TEXTAREA);
+
+    $this->addTextElement('repo[repository_type]');
+    $this->addTextElement('repo[name]');
+    $this->addTextAreaElement('repo[description]');
+    $this->addTextElement('repo[localpath]');
+    $this->addTextElement('repo[fetchurl]');
+    $this->addTextElement("repo[username]");
+    $this->addTextElement("repo[password]");
+
+    $this->get('repo[repository_type]')->setType(FormElement::TEXT)->setRequired(true)->defaultValue('git');
+    $this->get('repo[name]')->setType(FormElement::TEXT)->setRequired(true);
+    $this->get('repo[description]')->setType(FormElement::TEXTAREA);
+    $this->get('repo[localpath]')->setType(FormElement::TEXT)->setRequired(true);
+    $this->get('repo[fetchurl]')->setType(FormElement::TEXT)->setRequired(true);
+    $this->get("repo[username]")->addAttribute("autocomplete", "off");
+    $this->get("repo[password]")->addAttribute("autocomplete", "off");
+
     if($this->id === null)
     {
       $this->addSubmitElement('Create Project', 'submit');
@@ -39,4 +56,14 @@ class ProjectForm extends Form
       $this->addSubmitElement('Update Project', 'submit');
     }
   }
+
+  public function hydrate($data)
+  {
+    parent::hydrate($data);
+    foreach($data['repo'] as $k => $v)
+    {
+      $this->setData("repo[$k]", $v);
+    }
+  }
+
 }

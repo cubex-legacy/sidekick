@@ -36,11 +36,12 @@ class Branch extends RecordMapper
 
   public function getLocalPath()
   {
-    return build_path($this->repository()->localpath, $this->branch);
+    return $this->repository()->localpath;
+    //return build_path($this->repository()->localpath, $this->branch);
   }
 
   public function commits()
   {
     return $this->hasMany(new Commit());
   }
-} 
+}

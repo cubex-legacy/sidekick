@@ -5,11 +5,19 @@
  * @var $this \Sidekick\Applications\Overview\Views\ProjectSelector
  */
 ?>
+<h1>Projects</h1>
+<a href="<?= $this->appBaseUri() . '/P/projects/create-project'; ?>"
+   class="btn btn-success pull-right"
+   style="margin-top:-20px;">
+  <i class="icon-plus icon-white"></i>
+  Create Project</a>
+<div class="clearfix"></div>
+<?php if($this->sections()): ?>
 <table class="table table-striped table-condensed">
   <?php foreach($this->sections() as $section): ?>
     <thead>
     <tr>
-      <th colspan="3">
+      <th colspan="4">
         <h2><?= \Cubex\Helpers\Strings::titleize($section); ?></h2>
       </th>
     </tr>
@@ -17,14 +25,26 @@
       <th>PID</th>
       <th>Name</th>
       <th>Description</th>
+      <th></th>
     </tr>
     </thead>
     <?php foreach($this->projects($section) as $project): ?>
       <tr>
-        <td><a href="/P<?= $project->id(); ?>"><?= $project->id(); ?></a></td>
-        <td><a href="/P<?= $project->id(); ?>"><?= $project->name; ?></a></td>
+        <td><a href="/P<?= $project->id(); ?>/fortify"><?= $project->id(); ?></a></td>
+        <td><a href="/P<?= $project->id(); ?>/fortify"><?= $project->name; ?></a></td>
         <td><?= $project->description; ?></td>
+        <td>
+          <a href="/P<?= $project->id(); ?>/projects/edit/<?= $project->id(); ?>"
+             title="Edit"><i class="icon-edit"></i></a>
+          <a href="/P<?= $project->id(); ?>/projects/users/<?= $project->id(); ?>"
+             title="Users"><i class="icon-user"></i></a>
+          <a href="/P<?= $project->id(); ?>/projects/delete/<?= $project->id(); ?>"
+             title="Delete"><i class="icon-trash"></i>
+        </td>
       </tr>
     <?php endforeach; ?>
   <?php endforeach; ?>
 </table>
+<?php else: ?>
+<p>No projects found. <a href="<?= $this->appBaseUri() . '/P/projects/create-project'; ?>">Create a project now</a></p>
+<?php endif; ?>

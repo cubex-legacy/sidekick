@@ -28,14 +28,7 @@ class OverviewController extends BaseControl
     }
 
     $projects = Project::collection();
-    if($projects->hasMappers())
-    {
-      return new ProjectSelector($projects);
-    }
-    else
-    {
-      return new TemplatedView('Homepage', $this);
-    }
+    return new ProjectSelector($projects);
   }
 
   public function renderProject($projectId)

@@ -1,0 +1,9 @@
+.rosetta-results {
+  display: none;
+}
+.textarea, .approval {
+  cursor: pointer;
+}
+.approval {
+  width: 80px;
+}

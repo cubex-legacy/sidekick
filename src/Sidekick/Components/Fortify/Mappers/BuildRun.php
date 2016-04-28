@@ -34,6 +34,7 @@ class BuildRun extends RecordMapper
   public $commands;
 
   public $commitHash;
+  public $branch;
 
   protected function _configure()
   {

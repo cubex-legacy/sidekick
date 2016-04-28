@@ -33,7 +33,7 @@ class PhuseApp extends SidekickApplication
 
   public function getNavGroup()
   {
-    return "Development";
+    return "Menu";
   }
 
   public function name()

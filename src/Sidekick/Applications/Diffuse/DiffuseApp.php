@@ -43,7 +43,7 @@ class DiffuseApp extends ProjectAwareApplication
 
   public function getNavGroup()
   {
-    return "Development";
+    return "Menu";
   }
 
   public function getBundles()

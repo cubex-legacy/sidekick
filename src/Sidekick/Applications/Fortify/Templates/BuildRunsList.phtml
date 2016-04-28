@@ -7,9 +7,9 @@
 <table class="table table-striped table-bordered table-condensed">
   <tr class="info">
     <th>Run #</th>
+    <th>Branch</th>
     <th>Date</th>
     <th>Hash</th>
-    <th>Type</th>
     <th>Result</th>
     <th>Started</th>
     <th>Duration</th>
@@ -20,13 +20,18 @@
         <td>
           <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>"><?= $run->id(); ?></a>
         </td>
+        <td><?= $run->branch ?></td>
         <td><?= date('d M y', strtotime($run->createdAt)); ?></td>
         <td><?= substr($run->commitHash, 0, 8); ?></td>
-        <td><?= $run->buildType; ?></td>
         <td><?= $run->result; ?></td>
         <td><?= date('d M y H:i:s', strtotime($run->startTime)); ?></td>
         <td title="<?= $run->startTime; ?> - <?= $run->endTime; ?>">
           <?= $this->getDuration($run->endTime, $run->startTime); ?>
+        </td>
+        <td>
+          <a href="#">Deploy</a> |
+          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/changes">Changes</a> |
+          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/buildlog">View Log</a>
         </td>
       </tr>
     <?php endforeach; ?>

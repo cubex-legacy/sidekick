@@ -5,6 +5,8 @@ class FortifyHelper
 {
   public static function buildPath($buildId)
   {
+    //TODO change this to read from a config file, so we can be more flexible
+    //with the location of builds
     return dirname(WEB_ROOT) . '/builds/' . $buildId;
   }
 

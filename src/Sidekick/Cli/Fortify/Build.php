@@ -61,6 +61,12 @@ class Build extends CliCommand
    */
   public $patch;
 
+  /**
+   * The branch to build
+   * @valuerequired
+   */
+  public $branch = 'master';
+
   public $verbose;
 
   /**
@@ -79,7 +85,7 @@ class Build extends CliCommand
   protected $_buildResult;
   protected $_buildSourceDir;
   protected $_buildPath;
-  protected $_branch = 'master';
+
   protected $_commitHash;
 
   protected $_totalTests = 0;
@@ -104,6 +110,7 @@ class Build extends CliCommand
     $buildRun->buildId   = $build->id();
     $buildRun->projectId = $project->id();
     $buildRun->startTime = new \DateTime();
+    $buildRun->branch    = $this->branch;
     $buildRun->commands  = [];
     $this->_buildResult  = $buildRun->result = BuildResult::RUNNING;
     $buildRun->saveChanges();
@@ -124,9 +131,8 @@ class Build extends CliCommand
 
     $buildPath = FortifyHelper::buildPath($buildRun->id());
     mkdir($buildPath, 0777, true);
-    chdir($buildPath);
     $this->_buildPath      = $buildPath;
-    $this->_buildSourceDir = $build->sourceDirectory;
+    $this->_buildSourceDir = build_path($buildPath, $build->sourceDirectory);
 
     $buildRun->commands = array_merge($buildRun->commands, ['source']);
     $buildRun->endTime  = new \DateTime();
@@ -134,22 +140,14 @@ class Build extends CliCommand
 
     $repo = Repository::loadWhere(["project_id" => $projectId]);
 
-    $branch = Branch::loadWhere(["repository_id" => $repo->id()]);
+    $this->_downloadSourceCode($repo, $this->branch, $this->_buildSourceDir);
 
-    if($branch === null)
-    {
-      throw new \Exception("Branch Unavailable");
-    }
-
-    $this->_branch = $branch->branch;
-    $this->_downloadSourceCode($branch, $this->_buildSourceDir);
-
-    chdir($this->_buildSourceDir);
-    $process = new Process("git rev-parse --verify HEAD");
+    //TODO see if you can improve this, by getting the hash
+    $process = new Process("git rev-parse --verify HEAD", $repo->localpath);
     $process->setTimeout($this->timeout);
     $process->setIdleTimeout($this->idleTimeout);
     $process->run();
-    $this->_commitHash = $buildRun->commitHash = trim($process->getOutput());
+    $buildRun->commitHash = trim($process->getOutput());
     chdir($buildPath);
 
     if($this->patch !== null)
@@ -275,184 +273,43 @@ class Build extends CliCommand
 
     $runCommand = str_replace(
       [
-      '{sourcedirectory}',
-      '{CUBEX_BIN}',
-      '{CUBEX_ENV}',
-      '{PROJECT_ID}',
-      '{BUILD_ID}',
-      '{BUILD_RUN_ID}',
-      '{branch}'
+        '{sourcedirectory}',
+        '{CUBEX_BIN}',
+        '{CUBEX_ENV}',
+        '{PROJECT_ID}',
+        '{BUILD_ID}',
+        '{BUILD_RUN_ID}',
+        '{branch}'
       ],
       [
-      $this->_buildPath . DS . $this->_buildSourceDir,
-      CUBEX_PROJECT_ROOT . DS . 'cubex',
-      CUBEX_ENV,
-      (int)$this->project,
-      (int)$this->build,
-      (int)$this->_buildRunId,
-      $this->_branch
+        $this->_buildSourceDir,
+        CUBEX_PROJECT_ROOT . DS . 'cubex',
+        CUBEX_ENV,
+        (int)$this->project,
+        (int)$this->build,
+        (int)$this->_buildRunId,
+        $this->branch
       ],
       $runCommand
     );
 
-    if($command->fileSet !== FileSet::NONE)
+    $process = new Process($runCommand, $this->_buildSourceDir);
+    $process->setTimeout($this->timeout);
+    $process->setIdleTimeout($this->idleTimeout);
+    echo "\nRunning: " . $runCommand . "\n";
+    Log::debug("Running (with timeout $this->timeout) $runCommand");
+    try
     {
-      $command->fileSetDirectory = str_replace(
-        '{sourcedirectory}',
-        $this->_buildSourceDir,
-        $command->fileSetDirectory
+      $process->run([$log, 'writeBuffer']);
+    }
+    catch(\Exception $e)
+    {
+      Log::error(
+        "Command Exception (" . $e->getCode() . ') ' . $e->getMessage()
       );
-
-      $returnExitCode = -1;
-      $fileList       = null;
-
-      if($command->fileSet === FileSet::MODIFIED)
-      {
-        $commitIds = $this->buildCommitRange()
-        ->setColumns(['id'])
-        ->get()
-        ->loadedIds();
-
-        if($commitIds)
-        {
-          $files = CommitFile::collection()
-          ->whereIn('commit_id', $commitIds, 'd')
-          ->whereIn("change_type", ['A', 'M'])
-          ->setColumns(['file_path'])
-          ->get()
-          ->getUniqueField('file_path');
-
-          foreach($files as $file)
-          {
-            if(preg_match("/$command->filePattern/", $file))
-            {
-              $fileList[] = $command->fileSetDirectory . $file;
-            }
-          }
-        }
-      }
-      else
-      {
-        $fileList = $this->_getFullFilelisting(
-          $command->fileSetDirectory,
-          $command->filePattern
-        );
-      }
-
-      if($fileList)
-      {
-        foreach($fileList as $file)
-        {
-          if(!file_exists($file))
-          {
-            continue;
-          }
-
-          if(stristr($runCommand, '{iteratedFilePath}'))
-          {
-            $process = new Process(
-              str_replace(
-                '{iteratedFilePath}',
-                $file,
-                $runCommand
-              )
-            );
-          }
-          else
-          {
-            $process = new Process($runCommand . ' ' . $file);
-          }
-
-          $process->setTimeout($this->timeout);
-          $process->setIdleTimeout($this->idleTimeout);
-          Log::debug(
-            "Running (with timeout $this->timeout) $runCommand . ' ' . $file"
-          );
-          try
-          {
-            $process->run([$log, 'writeBuffer']);
-          }
-          catch(\Exception $e)
-          {
-            Log::error(
-              "Command Exception (" . $e->getCode() . ') ' . $e->getMessage()
-            );
-          }
-          $exitCode = $process->getExitCode();
-          Log::debug("Command finished with exit code $exitCode");
-          if($exitCode > $returnExitCode)
-          {
-            $returnExitCode = $exitCode;
-          }
-        }
-      }
-
-      if($returnExitCode === -1)
-      {
-        $returnExitCode = 0;
-      }
-
-      return $returnExitCode;
     }
-    else
-    {
-      $process = new Process($runCommand);
-      $process->setTimeout($this->timeout);
-      $process->setIdleTimeout($this->idleTimeout);
-      echo "\nRunning: " . $runCommand . "\n";
-      Log::debug("Running (with timeout $this->timeout) $runCommand");
-      try
-      {
-        $process->run([$log, 'writeBuffer']);
-      }
-      catch(\Exception $e)
-      {
-        Log::error(
-          "Command Exception (" . $e->getCode() . ') ' . $e->getMessage()
-        );
-      }
-      Log::debug("Command finished with exit code " . $process->getExitCode());
-      return $process->getExitCode();
-    }
-  }
-
-  /**
-   * @return \Cubex\Mapper\Database\RecordCollection
-   */
-  public function buildCommitRange()
-  {
-    $changes = new FortifyBuildChanges(
-      $this->project, $this->build, $this->_commitHash
-    );
-
-    return $changes->buildCommitRange();
-  }
-
-  protected function _getFullFilelisting($directory, $filePatten = '.*')
-  {
-    $files = [];
-
-    $recursive = new \RecursiveDirectoryIterator($directory);
-    foreach($recursive as $file)
-    {
-      /***
-       * @var $file \SplFileInfo
-       */
-      $filePath = $file->getRealPath();
-      if($file->isDir() && !in_array($file->getFilename(), ['.', '..']))
-      {
-        $files = array_merge(
-          $files,
-          $this->_getFullFilelisting($filePath, $filePatten)
-        );
-      }
-      else if(preg_match("/$filePatten/", $filePath))
-      {
-        $files[] = $filePath;
-      }
-    }
-
-    return $files;
+    Log::debug("Command finished with exit code " . $process->getExitCode());
+    return $process->getExitCode();
   }
 
   protected function _buildResults(BuildRun $buildRun)
@@ -476,7 +333,7 @@ class Build extends CliCommand
       'Start Time'     => $buildRun->startTime->format('Y-m-d H:i:s'),
       'End Time'       => $buildRun->endTime->format('Y-m-d H:i:s'),
       'Total Duration' => $buildRun->startTime->diff($buildRun->endTime)
-      ->format("%H:%I:%S"),
+        ->format("%H:%I:%S"),
     ];
 
     foreach($results as $name => $value)
@@ -504,7 +361,9 @@ class Build extends CliCommand
     echo "\n$lineSplitter\n\n";
   }
 
-  protected function _downloadSourceCode(Branch $branch, $location)
+  protected function _downloadSourceCode(
+    Repository $repo, $branch, $buildSourceDir
+  )
   {
     $log = new BuildLog();
     if($this->verbose)
@@ -516,23 +375,21 @@ class Build extends CliCommand
     $log->exitCode  = -1;
     $log->saveChanges();
 
-    $repository = $branch->repository();
-
-    switch($repository->repositoryType)
+    switch($repo->repositoryType)
     {
       case RepositoryProvider::GIT:
         $this->_outputStep("Cloning Repo");
 
         GitHelper::getCleanRepo(
-          $repository->fetchUrl,
-          $branch->branch,
-          $location,
+          $repo->fetchUrl,
+          $branch,
+          $buildSourceDir,
           $log
         );
         break;
       default:
         throw new \Exception(
-          "The repository type '" . $repository->repositoryType . "' " .
+          "The repository type '" . $repo->repositoryType . "' " .
           "is currently unsupported"
         );
     }

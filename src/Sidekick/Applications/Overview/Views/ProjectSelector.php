@@ -11,33 +11,36 @@ use Sidekick\Components\Projects\Mappers\Project;
 
 class ProjectSelector extends TemplatedViewModel
 {
-  protected $_projects;
+  protected $_projects = [];
 
   public function __construct(Collection $projects)
   {
-    foreach($projects as $project)
+    if($projects)
     {
-      /**
-       * @var $project Project
-       */
-      if(strstr($project->name, ':'))
+      foreach($projects as $project)
       {
-        list($section, $name) = explode(":", $project->name);
-        $project->name = $name;
-      }
-      else
-      {
-        $section = null;
-      }
+        /**
+         * @var $project Project
+         */
+        if(strstr($project->name, ':'))
+        {
+          list($section, $name) = explode(":", $project->name);
+          $project->name = $name;
+        }
+        else
+        {
+          $section = null;
+        }
 
-      if(!isset($this->_projects[$section]))
-      {
-        $this->_projects[$section] = [];
-      }
+        if(!isset($this->_projects[$section]))
+        {
+          $this->_projects[$section] = [];
+        }
 
-      $this->_projects[$section][] = $project;
+        $this->_projects[$section][] = $project;
+      }
+      ksort($this->_projects);
     }
-    ksort($this->_projects);
   }
 
   public function sections()

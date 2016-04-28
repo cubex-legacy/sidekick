@@ -27,11 +27,6 @@ class Update extends CliCommand
 {
   use TranslateTraits;
 
-  /**
-   * @required
-   * @valuerequired
-   */
-  public $branches;
   public $verbose;
 
   /**
@@ -63,38 +58,18 @@ class Update extends CliCommand
 
   public function execute()
   {
-    if($this->branches === 'all')
+    $repos = Repository::collection()->get();
+    foreach($repos as $repo)
     {
-      $branches = Branch::collection()->get()->loadedIds();
-    }
-    else
-    {
-      $branches = Strings::stringToRange($this->branches);
-    }
-
-    foreach($branches as $branchId)
-    {
-      $this->_currentBranchId   = $branchId;
-      $branch                   = new Branch($this->_currentBranchId);
-      $this->_currentBranch     = $branch;
-      $repo                     = $branch->repository();
       $this->_currentRepository = $repo;
-
-      if(!$branch->exists())
-      {
-        Log::error("The branch specified could not be located");
-        return;
-      }
-
       Log::info("Loading Repository: " . $repo->name);
 
-      if(!file_exists($branch->getLocalPath()))
+      if(!file_exists($repo->localpath))
       {
         Log::info("Attempting to clone repo");
         $cloneCommand = 'git clone -v';
         $cloneCommand .= " $repo->fetchUrl";
-        $cloneCommand .= " --branch " . $branch->branch;
-        $cloneCommand .= " " . $branch->getLocalPath();
+        $cloneCommand .= " " . $repo->localpath;
         Log::debug($cloneCommand);
 
         $process = new Process($cloneCommand);
@@ -105,15 +80,15 @@ class Update extends CliCommand
         }
       }
 
-      if(!file_exists($branch->getLocalPath()))
+      if(!file_exists($repo->localpath))
       {
         Log::error(
-          "The repo has not been checked out to: " . $branch->getLocalPath()
+          "The repo has not been checked out to: " . $repo->localpath
         );
         return;
       }
 
-      chdir($branch->getLocalPath());
+      chdir($repo->localpath);
       $process = new Process("git pull");
       $process->run(
         function ($type, $data)
@@ -129,9 +104,9 @@ class Update extends CliCommand
 
       Log::info("Repository up to date.");
 
-      Log::debug("Reading Commits");
+      //Log::debug("Reading Commits");
 
-      $this->_readCommits();
+      //$this->_readCommits();
     }
     Log::info("Repository Update Complete");
     echo "\n";

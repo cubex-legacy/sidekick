@@ -128,6 +128,16 @@ class Header extends ViewModel
       }
     }
 
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/build-configs',
+      'New menu',
+      'Build Configuration',
+      ''
+    );
+
     return new RenderGroup(
       '<a id="sidekick-logo" class="brand" href="/">',
       ('<img src="' . $this->imgUrl('/logo.png') . '"/></a>'),

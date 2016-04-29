@@ -29,7 +29,7 @@ class UsersApp extends SidekickApplication
 
   public function getNavGroup()
   {
-    return "Menu";
+    return "Users";
   }
 
   public function getBundles()

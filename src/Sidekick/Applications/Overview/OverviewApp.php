@@ -36,4 +36,12 @@ class OverviewApp extends SidekickApplication
   {
     return true;
   }
+
+  public function getRoutes()
+  {
+    return [
+      'build-configs/(.*)' => '\Sidekick\Applications\Fortify'
+        . '\Controllers\FortifyBuildsController',
+    ];
+  }
 }

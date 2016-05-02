@@ -15,6 +15,7 @@ use Sidekick\Applications\BaseApp\Views\MappersTable;
 use Sidekick\Applications\Fortify\Views\AddBuildCommandsForm;
 use Sidekick\Applications\Fortify\Views\BuildCommands;
 use Sidekick\Applications\Fortify\Views\FortifyForm;
+use Sidekick\Applications\Fortify\Views\FortifyMapperList;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 use Sidekick\Components\Fortify\Mappers\Command;
@@ -28,6 +29,32 @@ class FortifyBuildsController extends FortifyCrudController
     parent::__construct(
       new Build(),
       ['name', 'description', 'build_level', 'source_directory']
+    );
+  }
+
+  public function renderIndex($page = 1)
+  {
+    $collection = new RecordCollection($this->_mapper);
+    $collection->loadAll();
+
+    //cloning because if i count it loads the collection then i can't limit
+    $cloneToCount = clone $collection;
+    $count        = $cloneToCount->count();
+    $paginator    = $this->_getPaginator($page, $count, $this->_perPage);
+    $offset       = $paginator->getOffset();
+    $collection->setLimit($offset, $this->_perPage);
+
+    $mapperTable = new MappersTable(
+      $this->baseUri(), $collection, $this->_listColumns
+    );
+
+    return $this->createView(
+      new FortifyMapperList(
+        $this->_title,
+        $mapperTable,
+        $paginator,
+        $this->getAlert()
+      )
     );
   }
 

@@ -26,7 +26,6 @@ class ProjectForm extends Form
 
   protected function _configure()
   {
-    //$this->bindMapper(new Project($this->id));
     $this->get('id')->setType(FormElement::HIDDEN);
     $this->get('name')->setType(FormElement::TEXT)->setRequired(true);
     $this->get('description')->setType(FormElement::TEXTAREA);
@@ -39,11 +38,11 @@ class ProjectForm extends Form
     $this->addTextElement("repo[username]");
     $this->addTextElement("repo[password]");
 
-    $this->get('repo[repository_type]')->setType(FormElement::TEXT)->setRequired(true)->defaultValue('git');
-    $this->get('repo[name]')->setType(FormElement::TEXT)->setRequired(true);
-    $this->get('repo[description]')->setType(FormElement::TEXTAREA);
-    $this->get('repo[localpath]')->setType(FormElement::TEXT)->setRequired(true);
-    $this->get('repo[fetchurl]')->setType(FormElement::TEXT)->setRequired(true);
+    $this->get('repo[repository_type]')->setRequired(true)->defaultValue('git');
+    $this->get('repo[name]');
+    $this->get('repo[description]');
+    $this->get('repo[localpath]')->setRequired(true);
+    $this->get('repo[fetchurl]')->setRequired(true);
     $this->get("repo[username]")->addAttribute("autocomplete", "off");
     $this->get("repo[password]")->addAttribute("autocomplete", "off");
 

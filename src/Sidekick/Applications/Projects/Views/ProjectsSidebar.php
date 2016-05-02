@@ -26,7 +26,7 @@ class ProjectsSidebar extends ViewModel
   {
     $path      = $this->request()->path();
     $menuItems = [
-      'All Projects'   => $this->_appBaseUri,
+      'All Projects'   => $this->_appBaseUri.'/',
       'Create Project' => $this->_appBaseUri . '/create-project',
     ];
 

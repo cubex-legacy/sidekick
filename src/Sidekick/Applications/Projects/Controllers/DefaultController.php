@@ -11,6 +11,7 @@ use Cubex\Form\OptionBuilder;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Projects\Forms\ProjectForm;
+use Sidekick\Applications\Projects\Views\CreateProject;
 use Sidekick\Applications\Projects\Views\ProjectsIndex;
 use Sidekick\Applications\Projects\Views\ProjectsSidebar;
 use Sidekick\Applications\Projects\Views\ProjectUsersList;
@@ -22,24 +23,22 @@ use Sidekick\Components\Users\Mappers\User;
 
 class DefaultController extends ProjectsController
 {
-  public function preRender()
+  public function getSidebar()
   {
-    parent::preRender();
-    $this->requireCss('base');
-    $this->nest('sidebar', new ProjectsSidebar($this->appBaseUri()));
+    return null;
   }
 
   public function renderIndex()
   {
     $projects = Project::collection()->loadAll()
-                ->setOrderBy('name')->preFetch('parent');
+      ->setOrderBy('name')->preFetch('parent');
     return $this->createView(new ProjectsIndex($projects));
   }
 
   public function renderCreateProject()
   {
-    return new RenderGroup(
-      new HtmlElement('h1', [], 'Create Project'),
+    return new CreateProject(
+      'New Project',
       new ProjectForm($this->baseUri() . '/create-project')
     );
   }
@@ -62,7 +61,9 @@ class DefaultController extends ProjectsController
       $project->saveChanges();
 
       $postData['repo']['project_id'] = $project->id();
-      $repo = Repository::loadWhereOrNew(["project_id" => $project->id()]);
+      $repo                           = Repository::loadWhereOrNew(
+        ["project_id" => $project->id()]
+      );
       $repo->hydrate($postData['repo']);
       $repo->saveChanges();
 
@@ -97,8 +98,22 @@ class DefaultController extends ProjectsController
       $this->baseUri() . '/update-project', $projectId
     );
 
-    return new RenderGroup(
-      new HtmlElement('h1', [], 'Update Project'),
+    $project = new Project($projectId);
+
+    $repository = Repository::loadWhere(["projectId" => $projectId]);
+
+    $form->setData('id', $project->id());
+    $form->setData('name', $project->name);
+    $form->setData('description', $project->description);
+    $form->setData('repo[repository_type]', $repository->repository_type);
+    $form->setData('repo[description]', $repository->description);
+    $form->setData('repo[localpath]', $repository->localpath);
+    $form->setData('repo[fetchurl]', $repository->fetchurl);
+    $form->setData('repo[username]', $repository->username);
+    $form->setData('repo[password]', $repository->password);
+
+    return new CreateProject(
+      'Update Project',
       $form
     );
   }
@@ -147,6 +162,9 @@ class DefaultController extends ProjectsController
     $project   = new Project($projectId);
     $project->delete();
 
+    //delete corresponding repo
+    Repository::loadWhere(["projectId" => $projectId])->delete();
+
     $msg       = new \stdClass();
     $msg->type = 'success';
     $msg->text = 'Project was deleted successfully';
@@ -182,7 +200,7 @@ class DefaultController extends ProjectsController
 
     $project      = new Project($projectId);
     $projectUsers = ProjectUser::collection(['project_id' => $projectId])
-                    ->load();
+      ->load();
     $list         = $this->createView(new ProjectUsersList($projectUsers));
     return new RenderGroup(
       '<h1>' . $project->name . ': Project Members</h1>',

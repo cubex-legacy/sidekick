@@ -41,6 +41,10 @@ class ProjectsApp extends SidekickApplication
 
   public function getRoutes()
   {
+    return [
+      'build-configs/(.*)' => '\Sidekick\Applications\Fortify'
+        . '\Controllers\FortifyBuildsController',
+    ];
   }
 
   public function userPermitted($userRole)

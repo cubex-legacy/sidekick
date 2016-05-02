@@ -42,6 +42,8 @@ class OverviewApp extends SidekickApplication
     return [
       'build-configs/(.*)' => '\Sidekick\Applications\Fortify'
         . '\Controllers\FortifyBuildsController',
+      'o/(.*)' => '\Sidekick\Applications\Projects\Controllers\DefaultController'
     ];
+
   }
 }

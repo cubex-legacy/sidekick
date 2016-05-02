@@ -28,31 +28,7 @@
   <?php foreach($this->getProjects() as $project): ?>
     <tr>
       <td>
-        <a href=""><?= $project->name; ?></a>
-
-        <div class="jump-links">
-          <span>Jump to:</span>
-          <ul>
-            <?php if($project->repository() !== null): ?>
-            <li>
-              <a href="/P<?= $project->id() ?>/repository/commits/<?= $project->repository()->id(); ?>">
-                Repository
-              </a>
-            </li>
-            <?php endif; ?>
-            <li>
-              <a href="/P<?= $project->id() ?>/configurator/project/<?= $project->id(); ?>">
-                Configurator
-              </a>
-            </li>
-            <li>
-              <a href="/P<?= $project->id() ?>/fortify">Fortify</a>
-            </li>
-            <li>
-              <a href="/P<?= $project->id() ?>/scripture">Scripture</a>
-            </li>
-          </ul>
-        </div>
+        <a href="/P<?= $project->id(); ?>/fortify"><?= $project->name; ?></a>
       </td>
       <td><?= $project->description; ?></td>
       <td><?= date('d/M/Y', strtotime($project->updated_at)); ?></td>

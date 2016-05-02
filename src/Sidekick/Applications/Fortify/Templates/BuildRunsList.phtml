@@ -17,9 +17,7 @@
   <?php if($this->getBuildRuns()): ?>
     <?php foreach($this->getBuildRuns() as $run): ?>
       <tr class="<?= $this->textClass($run->result);  ?>">
-        <td>
-          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>"><?= $run->id(); ?></a>
-        </td>
+        <td><?= $run->id(); ?></td>
         <td><?= $run->branch ?></td>
         <td><?= date('d M y', strtotime($run->createdAt)); ?></td>
         <td><?= substr($run->commitHash, 0, 8); ?></td>

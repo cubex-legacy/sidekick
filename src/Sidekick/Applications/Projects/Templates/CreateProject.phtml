@@ -1,0 +1,37 @@
+<?php
+/**
+ * @author: oke.ugwu
+ *        Application: Projects
+ * @var $this \Sidekick\Applications\Projects\Views\ProjectsIndex
+ */
+?>
+<h1><?= $this->title() ?></h1>
+<div style="margin-top:10px;"></div>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
+    <?= Session::getFlash('msg')->text; ?>
+  </div>
+<?php endif; ?>
+
+<?= $this->form()->open(); ?>
+<?= $this->form()->formNameInput(); ?>
+<?= $this->form()->token(); ?>
+<div class="well">
+  <h2>Define Project</h2>
+  <?= $this->form()->getElement('id') ?>
+  <?= $this->form()->getElement('name') ?>
+  <?= $this->form()->getElement('description') ?>
+</div>
+<div class="well">
+  <h2>Define Project Repository</h2>
+  <?= $this->form()->getElement("repo[repository_type]")->setLabel('Type') ?>
+  <?= $this->form()->getElement("repo[description]")->setLabel('Description') ?>
+  <?= $this->form()->getElement("repo[localpath]")->setLabel('Local Path') ?>
+  <?= $this->form()->getElement("repo[fetchurl]")->setLabel('Fetch URL') ?>
+  <?= $this->form()->getElement("repo[username]")->setLabel('Username') ?>
+  <?= $this->form()->getElement("repo[password]")->setLabel('Password') ?>
+</div>
+
+<?= $this->form()->getElement('submit') ?>
+
+<?= $this->form()->close(); ?>

@@ -71,14 +71,14 @@ class BuildsPage extends ViewModel
   private function _filters($baseUri)
   {
     return new RenderGroup(
-      '<small>',
+      '<small> ',
       new HtmlElement(
         'a',
         [
         'href'  => $baseUri . '/fail',
         'class' => "pull-right cushion"
         ],
-        'Show Failed'
+        'Failed'
       ),
       new HtmlElement(
         'a',
@@ -86,7 +86,7 @@ class BuildsPage extends ViewModel
         'href'  => $baseUri . '/pass',
         'class' => "pull-right cushion"
         ],
-        'Show Passed'
+        'Passed'
       ),
       new HtmlElement(
         'a',
@@ -94,7 +94,7 @@ class BuildsPage extends ViewModel
         'href'  => $baseUri . '/running',
         'class' => "pull-right cushion"
         ],
-        'Show Running'
+        'Running'
       ),
       new HtmlElement(
         'a',
@@ -102,7 +102,14 @@ class BuildsPage extends ViewModel
         'href'  => $baseUri,
         'class' => "pull-right cushion"
         ],
-        'Show All'
+        'All'
+      ),
+      new HtmlElement(
+        'strong',
+        [
+          'class' => "pull-right cushion"
+        ],
+        'Show:'
       ),
       '</small>'
     );

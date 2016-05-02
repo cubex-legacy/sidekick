@@ -41,18 +41,11 @@ class Project extends \Cubex\Core\Project\Project
     {
       $this->_attemptProject();
     }
-    $this->addApplication('projects', new ProjectsApp());
+
     $this->addApplication('phuse', new PhuseApp());
-//    $this->addApplication('repository', new RepositoryApp());
-//    $this->addApplication('configurator', new ConfiguratorApp());
     $this->addApplication('fortify', new FortifyApp());
     $this->addApplication('diffuse', new DiffuseApp());
-    //$this->addApplication('dispatcher', new DispatcherApp());
-//    $this->addApplication('scripture', new ScriptureApp());
-//    $this->addApplication('docs', new DocsApp());
     $this->addApplication('users', new UsersApp());
-//    $this->addApplication('events', new EventoApp());
-//    $this->addApplication('notify', new NotifyApp());
     $this->addApplication('rosetta', new RosettaApp());
   }
 
@@ -181,7 +174,7 @@ class Project extends \Cubex\Core\Project\Project
   {
     if(Auth::loggedin())
     {
-      return new OverviewApp();
+      return new ProjectsApp();
     }
     else
     {

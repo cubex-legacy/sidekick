@@ -1,0 +1,14 @@
+.btn-success{
+  /*
+  text-shadow: none;
+  background: #67B96A;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  opacity: 1;
+  padding: 8px 20px;*/
+}
+.btn
+{
+  padding:5px 15px;
+}

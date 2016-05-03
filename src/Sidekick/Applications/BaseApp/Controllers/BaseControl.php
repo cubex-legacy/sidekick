@@ -41,7 +41,11 @@ class BaseControl extends WebpageController
   {
     $this->setTitle("");
     $this->requireCss('/base');
+    $this->requireCss('/bootstrap-overrides');
+    $this->requireCss('/remodal');
+    $this->requireCss('/remodal-theme');
     $this->requireJs("/hoverdrop");
+    $this->requireJs("/remodal");
 
     $this->tryNest("sidebar", $this->getSidebar());
     $this->tryNest("header", $this->getHeader());

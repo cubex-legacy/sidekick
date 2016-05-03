@@ -8,6 +8,7 @@ namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\Facade\Session;
 use Cubex\View\HtmlElement;
+use Cubex\View\Impart;
 use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
@@ -131,6 +132,10 @@ class BuildsPage extends ViewModel
 
     $project = new Project($this->_projectId);
 
+    $buildLink = $baseUri.'/build';
+    $branchAvailable = ['master', 'develop'];
+    $selectbranch = $this->_getSelectBranch($branchAvailable,$buildLink);
+
     return new RenderGroup(
       '<h1>' . $project->name . ' Builds</h1>',
       $this->_buttonGroup($baseUri),
@@ -139,8 +144,9 @@ class BuildsPage extends ViewModel
       new HtmlElement(
         'a',
         [
-        'href'  => $baseUri . '/build',
-        'class' => 'btn btn-success pull-right'
+        'href'  => '#run-build-modal',
+        'class' => 'btn btn-success pull-right',
+        'data-remodal-target' => 'run-build-modal'
         ],
         'Run Build'
       ),
@@ -148,6 +154,35 @@ class BuildsPage extends ViewModel
       '<h1>Build History</h1>',
       (new BuildRunsList($this->_buildRuns))->setHostController(
         $this->getHostController()
+      ),
+      new Impart(
+       sprintf(
+         '<div class="remodal" data-remodal-id="run-build-modal">
+  <button data-remodal-action="close" class="remodal-close"></button>
+   <div>Branch: %s </div>
+  <button data-remodal-action="cancel" class="btn btn-danger">Cancel</button>
+  <a href="%s" id="buildlink" class="btn btn-success ">Run Build</a> 
+  </div>', $selectbranch,$buildLink
+       )
+      )
+    );
+  }
+  private function _getSelectBranch($branchAvailable,$buildLink)
+  {
+    $branches = '';
+    foreach($branchAvailable as $branch)
+    {
+      $branches .= sprintf('<option value="%1$s">%1$s</option>', $branch);
+    }
+
+    return new Impart(
+      sprintf(
+        "<select 
+      onchange='
+      document.getElementById(\"buildlink\").href=\"%s?branch=\"+this.options[this.selectedIndex].value
+      '>%s</select>",
+        $buildLink,
+        $branches
       )
     );
   }

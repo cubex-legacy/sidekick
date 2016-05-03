@@ -71,7 +71,7 @@ class Project extends \Cubex\Core\Project\Project
   {
     //return [new DebuggerBundle()];
     return [
-      new DebugToolbarBundl()
+      //new DebugToolbarBundl()
     ];
   }
 

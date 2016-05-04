@@ -88,8 +88,7 @@ class Update extends CliCommand
         return;
       }
 
-      chdir($repo->localpath);
-      $process = new Process("git pull");
+      $process = new Process("git pull", $repo->localpath);
       $process->run(
         function ($type, $data)
         {
@@ -104,147 +103,39 @@ class Update extends CliCommand
 
       Log::info("Repository up to date.");
 
-      //Log::debug("Reading Commits");
+      Log::debug("Updating Branches");
 
-      //$this->_readCommits();
+      //get all branches
+      $this->_updateBranches($repo);
+
     }
     Log::info("Repository Update Complete");
-    echo "\n";
   }
 
-  protected function _readCommits()
+  private function _updateBranches($repo)
   {
-    $fromHash = '';
-    try
+    $process = new Process("git branch -a", $repo->localpath);
+    $process->run();
+    $output = explode("\n", $process->getOutput());
+    foreach($output as $line)
     {
-      $lastCommit = Commit::max(
-        "committed_at",
-        "%C = %d",
-        "branch_id",
-        $this->_currentBranchId
-      );
-    }
-    catch(\Exception $e)
-    {
-      $lastCommit = '';
-    }
-
-    if($lastCommit)
-    {
-      $latest = Commit::collection(
-        "%C = %d AND %C = %s",
-        'branch_id',
-        $this->_currentBranchId,
-        'committed_at',
-        $lastCommit
-      )->setOrderBy("id", "DESC")->setLimit(0, 1)->first();
-      /**
-       * @var $latest Commit
-       */
-
-      if($latest)
+      if($line && strpos($line, 'remotes/origin/HEAD') === false)
       {
-        $fromHash = "$latest->commitHash..";
-      }
-    }
-
-    $format  = "%H%n%cn%n%ct%n%s%n%b%x03";
-    $command = "git log --format=\"$format\" --reverse $fromHash";
-
-    $commitProcess = new Process($command);
-    $commitProcess->run();
-
-    $out         = $commitProcess->getOutput();
-    $commits     = explode(chr(03), $out);
-    $commitCount = 0;
-
-    foreach($commits as $commit)
-    {
-      $commit = explode("\n", trim($commit), 5);
-      if(count($commit) < 3)
-      {
-        continue;
-      }
-      $commit = array_pad($commit, 5, '');
-      list($commitHash, $author, $date, $subject, $message) = $commit;
-
-      $commitCount++;
-
-      $commitHash = trim($commitHash);
-      $author     = trim($author);
-      $date       = trim($date);
-      $subject    = trim($subject);
-      $message    = trim($message);
-
-      $alreadyInserted = Commit::loadWhere(
-        "commit_hash = %s AND branch_id = %d",
-        $commitHash,
-        $this->_currentBranchId
-      );
-
-      if($alreadyInserted)
-      {
-        Log::debug('Commit hash already there: ' . $commitHash . " branch:  $this->_currentBranchId");
-      }
-      else
-      {
-        $commitO              = new Commit();
-        $commitO->branchId    = $this->_currentBranchId;
-        $commitO->commitHash  = $commitHash;
-        $commitO->author      = $author;
-        $commitO->committedAt = date("Y-m-d H:i:s", $date);
-        $commitO->subject     = $subject;
-        $commitO->message     = $message;
-        $commitO->saveChanges();
-      }
-
-      if($this->verbose)
-      {
-        Log::info('Adding ' . $commitHash . " - $subject");
-      }
-
-      $command = "git diff-tree --no-commit-id -r --name-status " . $commitHash;
-
-      $diffProcess = new Process($command);
-      $diffProcess->run();
-
-      $changedFiles = explode("\n", $diffProcess->getOutput());
-      foreach($changedFiles as $file)
-      {
-        if(stristr($file, "\t"))
+        $line   = trim(str_replace('*', '', $line));
+        $branch = basename($line);
+        $existingBranch = Branch::collection()->loadWhere(
+          ['name' => $branch, 'repositoryId' => $repo->id()]
+        );
+        if($existingBranch->count() == 0)
         {
-          list($changeType, $filePath) = explode("\t", $file, 2);
-          $cFile             = new CommitFile();
-          $cFile->changeType = strtoupper(trim($changeType));
-          $cFile->commitId   = $commitO->id();
-          $cFile->filePath   = trim($filePath);
-          $cFile->saveChanges();
+          Log::debug("New Branch found: $branch");
+          $b               = new Branch();
+          $b->repositoryId = $repo->id();
+          $b->name         = $branch;
+          $b->branch       = $branch;
+          $b->saveChanges();
         }
       }
-    }
-
-    Log::info(
-      number_format($commitCount, 0) . $this->tp(
-        " Commit(s) added",
-        $commitCount
-      )
-    );
-
-    if($commitCount > 0 && $this->_currentBranch->commitBuildId > 0)
-    {
-      $queue = new StdQueue('buildRequest');
-      Log::info(
-        "Pushing to build queue " . $this->_currentBranch->commitBuildId .
-        " for Project " . $this->_currentRepository->projectId
-      );
-      Queue::push(
-        $queue,
-        [
-        'branchId'  => $this->_currentBranchId,
-        'projectId' => $this->_currentRepository->projectId,
-        'buildId'   => $this->_currentBranch->commitBuildId,
-        ]
-      );
     }
   }
 }

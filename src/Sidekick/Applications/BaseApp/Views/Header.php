@@ -138,6 +138,16 @@ class Header extends ViewModel
       ''
     );
 
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/manage-hosts',
+      'New menu',
+      'Manage Deployment Hosts',
+      ''
+    );
+
     return new RenderGroup(
       '<a id="sidekick-logo" class="brand" href="/">',
       ('<img src="' . $this->imgUrl('/logo.png') . '"/></a>'),

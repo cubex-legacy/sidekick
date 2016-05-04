@@ -9,12 +9,31 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
+use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Diffuse\Views\Platforms\PlatformIndex;
 use Sidekick\Components\Diffuse\Mappers\Platform;
 use Sidekick\Components\Fortify\Mappers\Build;
 
-class PlatformController extends DiffuseController
+class PlatformController extends BaseControl
 {
+  public function preRender()
+  {
+    parent::preRender();
+    $this->requireCss('diffuse');
+  }
+
+  public function getSidebar()
+  {
+    return new Sidebar(
+      $this->request()->path(3),
+      [
+        $this->appBaseUri() . '/manage-hosts'     => 'Manage Hosts',
+        $this->appBaseUri() . '/manage-platforms' => 'Manage Platforms',
+      ]
+    );
+  }
+
   public function renderIndex()
   {
     $platforms = Platform::collection()->loadAll();

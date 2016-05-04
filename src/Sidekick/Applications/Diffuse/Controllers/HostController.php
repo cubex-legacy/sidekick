@@ -9,11 +9,30 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 use Cubex\Facade\Redirect;
 use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
+use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Diffuse\Views\Hosts\HostsIndex;
 use Sidekick\Components\Servers\Mappers\Server;
 
-class HostController extends DiffuseController
+class HostController extends BaseControl
 {
+  public function preRender()
+  {
+    parent::preRender();
+    $this->requireCss('diffuse');
+  }
+
+  public function getSidebar()
+  {
+    return new Sidebar(
+      $this->request()->path(3),
+      [
+        $this->appBaseUri() . '/manage-hosts'     => 'Manage Hosts',
+        $this->appBaseUri() . '/manage-platforms' => 'Manage Platforms',
+      ]
+    );
+  }
+
   public function renderIndex()
   {
     $hosts = Server::collection()->loadAll();

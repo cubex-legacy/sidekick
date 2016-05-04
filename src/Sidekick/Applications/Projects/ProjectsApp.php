@@ -42,8 +42,12 @@ class ProjectsApp extends SidekickApplication
   public function getRoutes()
   {
     return [
-      'build-configs/(.*)' => '\Sidekick\Applications\Fortify'
+      'build-configs/(.*)'    => '\Sidekick\Applications\Fortify'
         . '\Controllers\FortifyBuildsController',
+      'manage-hosts/(.*)'     => '\Sidekick\Applications\Diffuse'
+        . '\Controllers\HostController',
+      'manage-platforms/(.*)' => '\Sidekick\Applications\Diffuse'
+        . '\Controllers\PlatformController',
     ];
   }
 

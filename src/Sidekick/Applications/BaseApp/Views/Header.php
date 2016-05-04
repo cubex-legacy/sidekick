@@ -75,7 +75,45 @@ class Header extends ViewModel
 
     ksort($structure);
 
-    foreach($structure as $group => $apps)
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/build-configs',
+      'New menu',
+      'Build Configuration',
+      ''
+    );
+
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/manage-hosts',
+      'New menu',
+      'Manage Deployment Hosts',
+      ''
+    );
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/phuse',
+      'New menu',
+      'Phuse',
+      ''
+    );
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/users',
+      'New menu',
+      'Users',
+      ''
+    );
+
+    /*foreach($structure as $group => $apps)
     {
       ksort($structure[$group]);
     }
@@ -126,27 +164,7 @@ class Header extends ViewModel
           ''
         );
       }
-    }
-
-    $navItems->addElement(
-      '',
-      '',
-      '',
-      '/build-configs',
-      'New menu',
-      'Build Configuration',
-      ''
-    );
-
-    $navItems->addElement(
-      '',
-      '',
-      '',
-      '/manage-hosts',
-      'New menu',
-      'Manage Deployment Hosts',
-      ''
-    );
+    }*/
 
     return new RenderGroup(
       '<a id="sidekick-logo" class="brand" href="/">',
@@ -159,7 +177,7 @@ class Header extends ViewModel
           <li><a href="/profile">',
       Auth::user()->getDetail("display_name", \Auth::getRawUsername()),
       '</a></li>
-      <li><a href="/logout">Logout</a></li>
+      <li><a href="/overview/logout">Logout</a></li>
     </ul>
   </div>'
     );

@@ -48,13 +48,37 @@ class FortifyBuildsController extends FortifyCrudController
       $this->baseUri(), $collection, $this->_listColumns
     );
 
-    return $this->createView(
+    $commands = Command::collection()->loadAll();
+
+    $mapperTable2 = new MappersTable(
+      $this->baseUri() . '/commands', $commands, ['name', 'command']
+    );
+
+    $buildsView = $this->createView(
       new FortifyMapperList(
         $this->_title,
         $mapperTable,
         $paginator,
+        $this->baseUri(),
         $this->getAlert()
       )
+    );
+
+    //TODO this is a hack. refactor this later
+    $this->setBaseUri('/'.$this->baseUri() . '/commands');
+    $commandsView = $this->createView(
+      new FortifyMapperList(
+        'Command',
+        $mapperTable2,
+        $paginator,
+        $this->baseUri(),
+        $this->getAlert()
+      )
+    );
+
+    return new RenderGroup(
+      $buildsView,
+      $commandsView
     );
   }
 

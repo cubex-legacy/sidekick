@@ -23,7 +23,7 @@ class DefaultController extends UsersController
   public function renderCreate()
   {
     if(Auth::user()->getDetails()->user_role != 'administrator') {
-      Redirect::to('/P/users')->now();
+      Redirect::to($this->baseUri())->now();
     }
 
     $form = new Form('usersForm', $this->appBaseUri() . '/create');

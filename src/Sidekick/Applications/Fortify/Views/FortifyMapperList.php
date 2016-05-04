@@ -13,11 +13,14 @@ use Cubex\View\ViewModel;
 
 class FortifyMapperList extends ViewModel
 {
-  public function __construct($listTitle, $mapperTable, $paginator, $alert = '')
+  public function __construct(
+    $listTitle, $mapperTable, $paginator, $baseUri, $alert = ''
+  )
   {
     $this->mapperTable = $mapperTable;
     $this->paginator   = $paginator;
     $this->alert       = $alert;
+    $this->baseUri     = $baseUri;
     $this->listTitle   = $listTitle;
   }
 
@@ -30,7 +33,7 @@ class FortifyMapperList extends ViewModel
     );
 
     $newButton->addElement(
-      $this->baseUri() . '/new',
+      $this->baseUri . '/new',
       'New ' . $this->listTitle
     );
 

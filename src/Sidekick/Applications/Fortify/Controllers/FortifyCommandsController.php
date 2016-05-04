@@ -43,6 +43,8 @@ class FortifyCommandsController extends FortifyCrudController
 
   public function renderNew()
   {
+    //TODO this is a hack. refactor this
+    $this->setBaseUri('/'.$this->baseUri());
     $view = $this->createView(new FortifyCommandForm($this->_mapper));
 
     return new RenderGroup(

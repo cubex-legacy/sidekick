@@ -214,6 +214,9 @@ class CreateVersion extends CliCommand
         $version->toCommitHash !== null
       )
       {
+        //TODO get changes from git directly
+        //git log --online fromCommitHash^..toCommitHash
+
         $commits = Commit::collectionBetween(
           $version->fromCommitHash,
           $version->toCommitHash,

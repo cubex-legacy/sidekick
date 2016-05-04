@@ -27,7 +27,7 @@
           <?= $this->getDuration($run->endTime, $run->startTime); ?>
         </td>
         <td>
-          <a href="#">Deploy</a> |
+          <a href="/P<?= $run->projectId ?>/diffuse">Deploy</a> |
           <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/changes">Changes</a> |
           <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/buildlog">View Log</a>
         </td>

@@ -140,7 +140,16 @@ class Build extends CliCommand
 
     $repo = Repository::loadWhere(["project_id" => $projectId]);
 
-    $this->_downloadSourceCode($repo, $this->branch, $this->_buildSourceDir);
+    $command = 'php "' . CUBEX_PROJECT_ROOT . DS . 'cubex" ';
+    $command .= "--cubex-env=" . CUBEX_ENV . " Cli.Repository.Update -r "
+      . $repo->id() . " --log-level debug";
+    $process = new Process($command);
+    $process->run();
+    if($process->getExitCode() != 0)
+    {
+      Log::error($process->getErrorOutput());
+      $buildRun->result = BuildResult::FAIL;
+    }
 
     //TODO see if you can improve this, by getting the hash
     $process = new Process("git rev-parse --verify HEAD", $repo->localpath);

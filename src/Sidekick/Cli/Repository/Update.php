@@ -46,6 +46,8 @@ class Update extends CliCommand
    */
   protected $_currentBranch;
 
+  public $repositoryId;
+
   public function longRun()
   {
     $this->_pidFile = new PidFile();
@@ -58,57 +60,75 @@ class Update extends CliCommand
 
   public function execute()
   {
-    $repos = Repository::collection()->get();
-    foreach($repos as $repo)
+    if($this->repositoryId == null)
     {
-      $this->_currentRepository = $repo;
-      Log::info("Loading Repository: " . $repo->name);
+      $repos = Repository::collection()->get();
+    }
+    else
+    {
+      $repos = Repository::collection()->loadWhere(
+        ['id' => (int)$this->repositoryId]
+      );
+    }
 
-      if(!file_exists($repo->localpath))
+    if($repos->hasMappers())
+    {
+      foreach($repos as $repo)
       {
-        Log::info("Attempting to clone repo");
-        $cloneCommand = 'git clone -v';
-        $cloneCommand .= " $repo->fetchUrl";
-        $cloneCommand .= " " . $repo->localpath;
-        Log::debug($cloneCommand);
+        $this->_currentRepository = $repo;
+        Log::info("Loading Repository: " . $repo->name);
 
-        $process = new Process($cloneCommand);
-        $process->run();
+        if(!file_exists($repo->localpath))
+        {
+          Log::info("Attempting to clone repo");
+          $cloneCommand = 'git clone -v';
+          $cloneCommand .= " $repo->fetchUrl";
+          $cloneCommand .= " " . $repo->localpath;
+          Log::debug($cloneCommand);
+
+          $process = new Process($cloneCommand);
+          $process->run();
+          if($this->verbose)
+          {
+            echo $process->getOutput();
+          }
+        }
+
+        if(!file_exists($repo->localpath))
+        {
+          Log::error(
+            "The repo has not been checked out to: " . $repo->localpath
+          );
+          continue;
+        }
+
+        $process = new Process("git pull", $repo->localpath);
+        $process->run(
+          function ($type, $data)
+          {
+            echo $data;
+          }
+        );
+
         if($this->verbose)
         {
           echo $process->getOutput();
         }
+
+        Log::info("Repository up to date.");
+
+        Log::debug("Updating Branches");
+
+        //get all branches
+        $this->_updateBranches($repo);
       }
-
-      if(!file_exists($repo->localpath))
-      {
-        Log::error(
-          "The repo has not been checked out to: " . $repo->localpath
-        );
-        continue;
-      }
-
-      $process = new Process("git pull", $repo->localpath);
-      $process->run(
-        function ($type, $data)
-        {
-          echo $data;
-        }
-      );
-
-      if($this->verbose)
-      {
-        echo $process->getOutput();
-      }
-
-      Log::info("Repository up to date.");
-
-      Log::debug("Updating Branches");
-
-      //get all branches
-      $this->_updateBranches($repo);
+      Log::info("Repository Update Complete");
     }
-    Log::info("Repository Update Complete");
+    else
+    {
+      Log::error("Repository not found");
+    }
+
   }
 
   private function _updateBranches($repo)
@@ -123,8 +143,8 @@ class Update extends CliCommand
         && strpos($line, 'remotes/origin/HEAD') === false
       )
       {
-        $line   = trim(str_replace('*', '', $line));
-        $branch = str_replace('remotes/origin', '', $line);
+        $line           = trim(str_replace('*', '', $line));
+        $branch         = str_replace('remotes/origin', '', $line);
         $existingBranch = Branch::collection()->loadWhere(
           ['name' => $branch, 'repositoryId' => $repo->id()]
         )->first();

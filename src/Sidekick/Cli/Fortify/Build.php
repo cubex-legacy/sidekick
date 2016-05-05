@@ -144,11 +144,27 @@ class Build extends CliCommand
     $command .= "--cubex-env=" . CUBEX_ENV . " Cli.Repository.Update -r "
       . $repo->id() . " --log-level debug";
     $process = new Process($command);
+
+    $log = new BuildLog();
+    if($this->verbose)
+    {
+      $log->enableOutput();
+    }
+    $log->setId($this->_buildRunId . '-gitpull');
+    $log->startTime = microtime(true);
+    $log->exitCode  = -1;
+    $log->saveChanges();
+
     $process->run();
     if($process->getExitCode() != 0)
     {
       Log::error($process->getErrorOutput());
       $buildRun->result = BuildResult::FAIL;
+      $buildRun->saveChanges();
+
+      $log->exitCode = $process->getExitCode();
+      $log->endTime  = microtime(true);
+      $log->saveChanges();
     }
 
     //TODO see if you can improve this, by getting the hash

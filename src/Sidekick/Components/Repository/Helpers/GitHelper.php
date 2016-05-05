@@ -30,7 +30,7 @@ class GitHelper
     $callback  = $log ? [$log, 'writeBuffer'] : null;
     $cachePath = self::_getCachePath($repoUrl);
 
-    static::checkoutBranch($branch, $cachePath);
+    static::checkoutBranch($branch, $cachePath, $log);
 
     if(!file_exists($buildSourceDir))
     {
@@ -67,7 +67,7 @@ class GitHelper
    * @throws InvalidRepositoryException
    * @throws \Exception
    */
-  public static function checkoutBranch($branch, $localPath)
+  public static function checkoutBranch($branch, $localPath, BuildLog $log)
   {
     if(file_exists($localPath))
     {
@@ -75,7 +75,7 @@ class GitHelper
         'git checkout ' . escapeshellarg($branch),
         $localPath
       );
-      $checkoutProc->run();
+      $checkoutProc->run([$log, 'writeBuffer']);
       $checkoutRet = $checkoutProc->getExitCode();
       if($checkoutRet != 0)
       {

@@ -150,12 +150,12 @@ class Build extends CliCommand
     {
       $log->enableOutput();
     }
-    $log->setId($this->_buildRunId . '-gitpull');
+    $log->setId($this->_buildRunId . '-Cli.Repository.Update');
     $log->startTime = microtime(true);
     $log->exitCode  = -1;
     $log->saveChanges();
 
-    $process->run();
+    $process->run([$log, 'writeBuffer']);
     if($process->getExitCode() != 0)
     {
       Log::error($process->getErrorOutput());
@@ -180,13 +180,6 @@ class Build extends CliCommand
       }
       catch(\Exception $e)
       {
-        $log = new BuildLog();
-        $log->setId($this->_buildRunId . '-downloadsource');
-        $log->startTime = microtime(true);
-        $log->endTime   = microtime(true);
-        $log->exitCode  = -1;
-        $log->saveChanges();
-
         //fail the build
         $buildRun->result = BuildResult::FAIL;
         $buildRun->saveChanges();

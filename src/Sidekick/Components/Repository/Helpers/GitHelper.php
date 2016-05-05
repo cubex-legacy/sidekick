@@ -27,19 +27,21 @@ class GitHelper
     $repoUrl, $branch, $buildSourceDir, BuildLog $log = null
   )
   {
-    $callback = $log ? [$log, 'writeBuffer'] : null;
+    $callback  = $log ? [$log, 'writeBuffer'] : null;
     $cachePath = self::_getCachePath($repoUrl);
 
-    //static::getOrUpdateRepo($repoUrl, $branch, $cachePath, $log);
+    static::checkoutBranch($branch, $cachePath);
 
-    if(! file_exists($buildSourceDir))
+    if(!file_exists($buildSourceDir))
     {
       mkdir($buildSourceDir, 0755, true);
     }
     $buildSourceDir = realpath($buildSourceDir);
 
     $process = new Process(
-      'rsync -a --exclude \'.git\' ' . escapeshellarg(rtrim($cachePath, '/') . '/')
+      'rsync -a --exclude \'.git\' ' . escapeshellarg(
+        rtrim($cachePath, '/') . '/'
+      )
       . ' ' . escapeshellarg(rtrim($buildSourceDir, '/') . '/')
     );
     $process->run($callback);
@@ -65,17 +67,54 @@ class GitHelper
    * @throws InvalidRepositoryException
    * @throws \Exception
    */
+  public static function checkoutBranch($branch, $localPath)
+  {
+    if(file_exists($localPath))
+    {
+      $checkoutProc = new Process(
+        'git checkout ' . escapeshellarg($branch),
+        $localPath
+      );
+      $checkoutProc->run();
+      $checkoutRet = $checkoutProc->getExitCode();
+      if($checkoutRet != 0)
+      {
+        throw new \Exception(
+          'Error checking out branch ' . $branch . ' in repository at '
+          . $localPath
+        );
+      }
+    }
+    else
+    {
+      throw new \Exception(
+        'Cached Repository does not exist ' . $localPath
+      );
+    }
+  }
+
+  /**
+   * Clone or pull a repo
+   *
+   * @param          $remoteUrl
+   * @param          $branch
+   * @param          $localPath
+   * @param BuildLog $log
+   *
+   * @throws InvalidRepositoryException
+   * @throws \Exception
+   */
   public static function getOrUpdateRepo(
     $remoteUrl, $branch, $localPath, BuildLog $log = null
   )
   {
     $parentDir = dirname($localPath);
-    if(! file_exists($parentDir))
+    if(!file_exists($parentDir))
     {
       mkdir($parentDir, 0755, true);
     }
     $localPath = build_path(realpath($parentDir), basename($localPath));
-    $callback = $log ? [$log, 'writeBuffer'] : null;
+    $callback  = $log ? [$log, 'writeBuffer'] : null;
 
     $exists = false;
     try
@@ -162,7 +201,7 @@ class GitHelper
     {
       throw new RepositoryNotFoundException($localRepoPath . ' does not exist');
     }
-    if(! file_exists($localRepoPath . '/.git'))
+    if(!file_exists($localRepoPath . '/.git'))
     {
       throw new InvalidRepositoryException(
         $localRepoPath . ' exists but is not a git repository'
@@ -216,7 +255,7 @@ class GitHelper
    */
   private static function _getCachePath($repoUrl)
   {
-    $parts = explode(':', $repoUrl);
+    $parts  = explode(':', $repoUrl);
     $subdir = count($parts) > 1 ? $parts[1] : $parts[0];
 
     if(substr($subdir, -4) == '.git')

@@ -165,10 +165,33 @@ class Build extends CliCommand
       $log->exitCode = $process->getExitCode();
       $log->endTime  = microtime(true);
       $log->saveChanges();
+
+      return;
     }
     else
     {
-      $this->_downloadSourceCode($repo, $this->branch, $this->_buildSourceDir);
+      try
+      {
+        $this->_downloadSourceCode(
+          $repo,
+          $this->branch,
+          $this->_buildSourceDir
+        );
+      }
+      catch(\Exception $e)
+      {
+        $log = new BuildLog();
+        $log->setId($this->_buildRunId . '-downloadsource');
+        $log->startTime = microtime(true);
+        $log->endTime   = microtime(true);
+        $log->exitCode  = -1;
+        $log->saveChanges();
+
+        //fail the build
+        $buildRun->result = BuildResult::FAIL;
+        $buildRun->saveChanges();
+        return;
+      }
     }
 
     //TODO see if you can improve this, by getting the hash

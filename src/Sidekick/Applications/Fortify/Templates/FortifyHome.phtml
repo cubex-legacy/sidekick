@@ -16,6 +16,7 @@
     <th>Started</th>
     <th>Duration</th>
     <th>Status</th>
+    <th style="min-width:8em"> </th>
   </tr>
   <?php foreach($this->getBuildRuns() as $b): ?>
     <tr class="<?= $this->textClass($b->result);  ?>">
@@ -31,6 +32,7 @@
       <td><?= date('d M Y @ H:i:s', strtotime($b->start_time)) ?></td>
       <td><?= $this->getDuration($b->end_time, $b->start_time) ?></td>
       <td><?= ucfirst($b->result) ?></td>
+      <td><a class="btn btn-success" href="/P<?= $b->project_id ?>/fortify">New Build</a></td>
     </tr>
   <?php endforeach; ?>
 </table>

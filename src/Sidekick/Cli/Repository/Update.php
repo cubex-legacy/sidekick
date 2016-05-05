@@ -85,7 +85,7 @@ class Update extends CliCommand
         Log::error(
           "The repo has not been checked out to: " . $repo->localpath
         );
-        return;
+        continue;
       }
 
       $process = new Process("git pull", $repo->localpath);

@@ -107,7 +107,6 @@ class Update extends CliCommand
 
       //get all branches
       $this->_updateBranches($repo);
-
     }
     Log::info("Repository Update Complete");
   }
@@ -119,14 +118,16 @@ class Update extends CliCommand
     $output = explode("\n", $process->getOutput());
     foreach($output as $line)
     {
-      if($line && strpos($line, 'remotes/origin/HEAD') === false)
+      if($line && starts_with($line, 'remotes')
+        && strpos($line, 'remotes/origin/HEAD') === false
+      )
       {
         $line   = trim(str_replace('*', '', $line));
         $branch = basename($line);
         $existingBranch = Branch::collection()->loadWhere(
           ['name' => $branch, 'repositoryId' => $repo->id()]
-        );
-        if($existingBranch->count() == 0)
+        )->first();
+        if(!$existingBranch)
         {
           Log::debug("New Branch found: $branch");
           $b               = new Branch();

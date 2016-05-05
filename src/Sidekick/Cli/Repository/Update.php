@@ -116,6 +116,7 @@ class Update extends CliCommand
     $process = new Process("git branch -a", $repo->localpath);
     $process->run();
     $output = explode("\n", $process->getOutput());
+    //TODO clean up old branches that might have been deleted
     foreach($output as $line)
     {
       if($line && starts_with($line, 'remotes')
@@ -123,7 +124,7 @@ class Update extends CliCommand
       )
       {
         $line   = trim(str_replace('*', '', $line));
-        $branch = basename($line);
+        $branch = str_replace('remotes/origin', '', $line);
         $existingBranch = Branch::collection()->loadWhere(
           ['name' => $branch, 'repositoryId' => $repo->id()]
         )->first();

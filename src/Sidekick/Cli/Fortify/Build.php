@@ -188,7 +188,7 @@ class Build extends CliCommand
     }
 
     //TODO see if you can improve this, by getting the hash
-    $process = new Process("git rev-parse --verify HEAD", $repo->localpath);
+    $process = new Process("git rev-parse $this->branch", $repo->localpath);
     $process->setTimeout($this->timeout);
     $process->setIdleTimeout($this->idleTimeout);
     $process->run();

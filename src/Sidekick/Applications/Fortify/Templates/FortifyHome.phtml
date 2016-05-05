@@ -6,10 +6,11 @@
  * @var $this \Sidekick\Applications\Fortify\Views\FortifyHome
  */
 ?>
-<h1>Fortify Home</h1>
+<h1>Overview (Latest Builds)</h1>
 <table class="table">
   <tr>
     <th>Project</th>
+    <th>Branch</th>
     <th>Commit Hash</th>
     <th>Build Type</th>
     <th>Started</th>
@@ -20,10 +21,11 @@
     <tr class="<?= $this->textClass($b->result);  ?>">
       <td>
         <a
-          href="<?= $this->appBaseUri() ?>/<?= $b->build_id ?>/<?= $b->id; ?>">
+          href="/P<?= $b->project_id ?>/fortify/<?= $b->build_id ?>/<?= $b->id; ?>">
           <?= $this->project($b->project_id)->name; ?>: Build #<?= $b->id; ?>
         </a>
       </td>
+      <td><?= $b->branch ?></td>
       <td><?= substr($b->commit_hash, 0, 8) ?></td>
       <td><?= $this->build($b->build_id)->name; ?></td>
       <td><?= date('d M Y @ H:i:s', strtotime($b->start_time)) ?></td>

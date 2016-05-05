@@ -138,7 +138,7 @@ class BuildsPage extends ViewModel
 
     return new RenderGroup(
       '<h1>' . $project->name . ' Builds</h1>',
-      $this->_buttonGroup($baseUri),
+//      $this->_buttonGroup($baseUri),
       $this->_tabs(),
       $alert,
       new HtmlElement(
@@ -161,7 +161,7 @@ class BuildsPage extends ViewModel
   <button data-remodal-action="close" class="remodal-close"></button>
    <div>Branch: %s </div>
   <button data-remodal-action="cancel" class="btn btn-danger">Cancel</button>
-  <a href="%s" id="buildlink" class="btn btn-success ">Run Build</a> 
+  <a href="%s" id="buildlink" class="btn btn-success ">Run Build</a>
   </div>', $selectbranch,$buildLink
        )
       )
@@ -177,7 +177,7 @@ class BuildsPage extends ViewModel
 
     return new Impart(
       sprintf(
-        "<select 
+        "<select
       onchange='
       document.getElementById(\"buildlink\").href=\"%s?branch=\"+this.options[this.selectedIndex].value
       '>%s</select>",

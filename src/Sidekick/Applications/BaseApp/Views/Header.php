@@ -79,6 +79,16 @@ class Header extends ViewModel
       '',
       '',
       '',
+      '/overview',
+      'New menu',
+      'Overview',
+      ''
+    );
+
+    $navItems->addElement(
+      '',
+      '',
+      '',
       '/build-configs',
       'New menu',
       'Build Configuration',

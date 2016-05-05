@@ -8,9 +8,11 @@ namespace Sidekick\Applications\Overview\Controllers;
 use Cubex\Facade\Redirect;
 use Cubex\View\TemplatedView;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
+use Sidekick\Applications\Fortify\Views\FortifyHome;
 use Sidekick\Applications\Overview\Views\ProjectOverview;
 use Sidekick\Applications\Overview\Views\ProjectSelector;
 use Sidekick\Applications\Overview\Views\Releases;
+use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Fortify\Mappers\CommitBuild;
 use Sidekick\Components\Fortify\Mappers\CommitBuildInsight;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -21,6 +23,12 @@ class OverviewController extends BaseControl
 {
   public function renderIndex()
   {
+    $builds = BuildRun::getLatestProjectBuilds();
+    return new FortifyHome($builds);
+  }
+
+  /*public function renderIndex()
+  {
     $projectId = $this->application()->project()->getProjectId();
     if($projectId > 0)
     {
@@ -29,7 +37,7 @@ class OverviewController extends BaseControl
 
     $projects = Project::collection();
     return new ProjectSelector($projects);
-  }
+  }*/
 
   public function renderProject($projectId)
   {

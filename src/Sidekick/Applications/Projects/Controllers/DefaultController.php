@@ -135,6 +135,13 @@ class DefaultController extends ProjectsController
       }
       $project->saveChanges();
 
+      $postData['repo']['project_id'] = $project->id();
+      $repo                           = Repository::loadWhereOrNew(
+        ["project_id" => $project->id()]
+      );
+      $repo->hydrate($postData['repo']);
+      $repo->saveChanges();
+
       $msg       = new \stdClass();
       $msg->type = 'success';
       $msg->text = 'Project was successfully updated';

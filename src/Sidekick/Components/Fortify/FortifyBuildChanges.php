@@ -10,6 +10,7 @@ use Sidekick\Components\Fortify\Enums\BuildResult;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Repository\Mappers\Branch;
 use Sidekick\Components\Repository\Mappers\Commit;
+use Sidekick\Components\Repository\Mappers\Repository;
 use Sidekick\Components\Repository\Mappers\Source;
 
 class FortifyBuildChanges
@@ -34,9 +35,9 @@ class FortifyBuildChanges
   {
     $lastCommitHash = BuildRun::collection(
       [
-      'project_id' => $this->projectId,
-      'build_id'   => $this->buildId,
-      'result'     => BuildResult::PASS
+        'project_id' => $this->projectId,
+        'build_id'   => $this->buildId,
+        'result'     => BuildResult::PASS
       ]
     );
     if($this->runId !== null)
@@ -45,17 +46,24 @@ class FortifyBuildChanges
     }
 
     $range = array();
-    $repo = Source::loadWhere(["project_id" => $this->projectId]);
+    $repo  = Repository::collection()->loadWhere(
+      ["project_id" => $this->projectId]
+    )->first();
     if($repo)
     {
-      $branch   = Branch::loadWhere(["repository_id" => $repo->id()]);
-      $branchId = $branch->id();
-
       $lastCommitHash = $lastCommitHash
         ->setOrderBy("created_at", 'DESC')
-        ->setColumns(['commit_hash'])
+        ->setColumns(['commit_hash', 'branch'])
         ->setLimit(0, 1)
         ->first();
+
+      $branch   = Branch::loadWhere(
+        [
+          "repository_id" => $repo->id(),
+          'branch'        => idp($lastCommitHash, 'branch', 'master')
+        ]
+      );
+      $branchId = $branch->id();
 
       $findCommits = [
         $this->_commitHash,

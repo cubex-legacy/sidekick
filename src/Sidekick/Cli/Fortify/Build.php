@@ -130,7 +130,7 @@ class Build extends CliCommand
     Log::notice("Build ID: " . $this->_buildRunId);
 
     $buildPath = FortifyHelper::buildPath($buildRun->id());
-    mkdir($buildPath, 0777, true);
+    mkdir($buildPath . '/logs', 0777, true);
     $this->_buildPath      = $buildPath;
     $this->_buildSourceDir = build_path($buildPath, $build->sourceDirectory);
 
@@ -308,7 +308,8 @@ class Build extends CliCommand
         '{PROJECT_ID}',
         '{BUILD_ID}',
         '{BUILD_RUN_ID}',
-        '{branch}'
+        '{branch}',
+        '{build_log_dir}'
       ],
       [
         $this->_buildSourceDir,
@@ -317,7 +318,8 @@ class Build extends CliCommand
         (int)$this->project,
         (int)$this->build,
         (int)$this->_buildRunId,
-        $this->branch
+        $this->branch,
+        $this->_buildPath . DS . 'logs'
       ],
       $runCommand
     );

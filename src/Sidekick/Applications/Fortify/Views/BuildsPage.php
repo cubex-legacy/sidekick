@@ -187,7 +187,7 @@ class BuildsPage extends ViewModel
       sprintf(
         "<select
       onchange='
-      document.getElementById(\"buildlink\").href=\"%s/\"+this.options[this.selectedIndex].value
+      document.getElementById(\"buildlink\").href=\"%s?branch=\"+this.options[this.selectedIndex].value
       '>%s</select>",
         $buildLink,
         $branches

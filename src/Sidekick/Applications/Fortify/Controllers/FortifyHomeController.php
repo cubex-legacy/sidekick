@@ -255,8 +255,7 @@ class FortifyHomeController extends FortifyController
   public function build()
   {
     $buildId = $this->getInt('buildType');
-    $branch  = $this->getStr('branch', 'master');
-
+    $branch  = $this->request()->getVariables('branch', 'master');
     try
     {
       $queue = new StdQueue('buildRequest');
@@ -347,7 +346,6 @@ class FortifyHomeController extends FortifyController
       new StdRoute('', 'fortify'),
       new StdRoute(':buildType', 'fortify'),
       new StdRoute(':buildType/repository', 'repo'),
-      new StdRoute(':buildType/build/:branch', 'build'),
       new StdRoute(':buildType/build', 'build'),
       new StdRoute(':buildType/:runId@num/', 'buildDetails'),
       new StdRoute(':buildType/:runId@num/buildlog', 'buildLog'),

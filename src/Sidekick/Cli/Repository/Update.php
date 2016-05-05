@@ -142,23 +142,25 @@ class Update extends CliCommand
     //TODO clean up old branches that might have been deleted
     foreach($output as $line)
     {
-      if($line && starts_with($line, 'remotes')
-        && strpos($line, 'remotes/origin/HEAD') === false
+      if($line && strpos($line, 'remotes/origin/HEAD') === false
       )
       {
         $line           = trim(str_replace('*', '', $line));
-        $branch         = str_replace('remotes/origin', '', $line);
-        $existingBranch = Branch::collection()->loadWhere(
-          ['name' => $branch, 'repositoryId' => $repo->id()]
-        )->first();
-        if(!$existingBranch)
+        if(starts_with($line, 'remotes'))
         {
-          Log::debug("New Branch found: $branch");
-          $b               = new Branch();
-          $b->repositoryId = $repo->id();
-          $b->name         = $branch;
-          $b->branch       = $branch;
-          $b->saveChanges();
+          $branch         = str_replace('remotes/origin/', '', $line);
+          $existingBranch = Branch::collection()->loadWhere(
+            ['name' => $branch, 'repositoryId' => $repo->id()]
+          )->first();
+          if(!$existingBranch)
+          {
+            Log::debug("New Branch found: $branch");
+            $b               = new Branch();
+            $b->repositoryId = $repo->id();
+            $b->name         = $branch;
+            $b->branch       = $branch;
+            $b->saveChanges();
+          }
         }
       }
     }

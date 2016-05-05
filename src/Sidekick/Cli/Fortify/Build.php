@@ -166,6 +166,10 @@ class Build extends CliCommand
       $log->endTime  = microtime(true);
       $log->saveChanges();
     }
+    else
+    {
+      $this->_downloadSourceCode($repo, $this->branch, $this->_buildSourceDir);
+    }
 
     //TODO see if you can improve this, by getting the hash
     $process = new Process("git rev-parse --verify HEAD", $repo->localpath);

@@ -30,7 +30,7 @@ class GitHelper
     $callback = $log ? [$log, 'writeBuffer'] : null;
     $cachePath = self::_getCachePath($repoUrl);
 
-    static::getOrUpdateRepo($repoUrl, $branch, $cachePath, $log);
+    //static::getOrUpdateRepo($repoUrl, $branch, $cachePath, $log);
 
     if(! file_exists($buildSourceDir))
     {

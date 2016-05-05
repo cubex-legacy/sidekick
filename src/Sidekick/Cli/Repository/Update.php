@@ -46,6 +46,9 @@ class Update extends CliCommand
    */
   protected $_currentBranch;
 
+  /**
+   * @valuerequired
+   */
   public $repositoryId;
 
   public function longRun()

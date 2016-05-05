@@ -16,7 +16,7 @@ class GitHelper
    * This is better for our deployments than using a fresh clone because
    * it prevents the file timestamps from changing on every build
    *
-   * @param string   $repoUrl
+   * @param string   $localpath
    * @param string   $branch
    * @param string   $buildSourceDir
    * @param BuildLog $log
@@ -24,13 +24,12 @@ class GitHelper
    * @throws \Exception
    */
   public static function getCleanRepo(
-    $repoUrl, $branch, $buildSourceDir, BuildLog $log = null
+    $localPath, $branch, $buildSourceDir, BuildLog $log = null
   )
   {
     $callback  = $log ? [$log, 'writeBuffer'] : null;
-    $cachePath = self::_getCachePath($repoUrl);
 
-    static::checkoutBranch($branch, $cachePath, $log);
+    static::checkoutBranch($branch, $localPath, $log);
 
     if(!file_exists($buildSourceDir))
     {
@@ -40,7 +39,7 @@ class GitHelper
 
     $process = new Process(
       'rsync -a --exclude \'.git\' ' . escapeshellarg(
-        rtrim($cachePath, '/') . '/'
+        rtrim($localPath, '/') . '/'
       )
       . ' ' . escapeshellarg(rtrim($buildSourceDir, '/') . '/')
     );
@@ -50,7 +49,7 @@ class GitHelper
     if($retval != 0)
     {
       throw new \Exception(
-        'Error copying cached repository from ' . $cachePath . ' to '
+        'Error copying cached repository from ' . $localPath . ' to '
         . $buildSourceDir
       );
     }

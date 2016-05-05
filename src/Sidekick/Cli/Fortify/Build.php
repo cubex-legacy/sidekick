@@ -428,7 +428,7 @@ class Build extends CliCommand
         $this->_outputStep("Cloning Repo");
 
         GitHelper::getCleanRepo(
-          $repo->fetchUrl,
+          $repo->localpath,
           $branch,
           $buildSourceDir,
           $log

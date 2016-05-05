@@ -59,6 +59,8 @@ class FortifyCommandsController extends FortifyCrudController
     $this->requireJs('addField');
     $this->_mapper->load($id);
 
+    //TODO this is a hack. refactor this
+    $this->setBaseUri('/'.$this->baseUri());
     $view    = $this->createView(new FortifyCommandForm($this->_mapper));
     $example = new CommandExample($this->_mapper, true);
 

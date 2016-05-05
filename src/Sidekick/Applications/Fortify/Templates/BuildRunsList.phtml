@@ -27,9 +27,13 @@
           <?= $this->getDuration($run->endTime, $run->startTime); ?>
         </td>
         <td>
+          <?php if($run->result == 'pass'): ?>
           <a href="/P<?= $run->projectId ?>/diffuse">Deploy</a> |
-          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/changes">Changes</a> |
+          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/changes">Changes</a>
+          <?php endif; ?>
+          <?php if($run->result != 'pass'): ?>
           <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/buildlog">View Log</a>
+          <?php endif; ?>
         </td>
       </tr>
     <?php endforeach; ?>

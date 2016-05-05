@@ -254,14 +254,19 @@ class FortifyHomeController extends FortifyController
    */
   public function build()
   {
-    $buildId   = $this->getInt('buildType');
+    $buildId = $this->getInt('buildType');
+    $branch  = $this->getStr('branch', 'master');
 
     try
     {
       $queue = new StdQueue('buildRequest');
       Queue::push(
         $queue,
-        ['projectId' => $this->getProjectId(), 'buildId' => $buildId]
+        [
+          'projectId' => $this->getProjectId(),
+          'buildId'   => $buildId,
+          'branch'    => $branch
+        ]
       );
 
       $msg       = new \stdClass();
@@ -280,11 +285,11 @@ class FortifyHomeController extends FortifyController
       $msg       = new \stdClass();
       $msg->type = 'error';
       $msg->text = 'Your Build Request could not be processed.' .
-      'More than one Repository is linked to this build type';
+        'More than one Repository is linked to this build type';
     }
 
     Redirect::to($this->baseUri() . '/' . $buildId)
-    ->with('msg', $msg)->now();
+      ->with('msg', $msg)->now();
   }
 
   private function _addCommandToView(
@@ -342,6 +347,7 @@ class FortifyHomeController extends FortifyController
       new StdRoute('', 'fortify'),
       new StdRoute(':buildType', 'fortify'),
       new StdRoute(':buildType/repository', 'repo'),
+      new StdRoute(':buildType/build/:branch', 'build'),
       new StdRoute(':buildType/build', 'build'),
       new StdRoute(':buildType/:runId@num/', 'buildDetails'),
       new StdRoute(':buildType/:runId@num/buildlog', 'buildLog'),

@@ -13,6 +13,7 @@ use Cubex\View\Partial;
 use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Repository\Mappers\Branch;
 
 class BuildsPage extends ViewModel
 {
@@ -76,32 +77,32 @@ class BuildsPage extends ViewModel
       new HtmlElement(
         'a',
         [
-        'href'  => $baseUri . '/fail',
-        'class' => "pull-right cushion"
+          'href'  => $baseUri . '/fail',
+          'class' => "pull-right cushion"
         ],
         'Failed'
       ),
       new HtmlElement(
         'a',
         [
-        'href'  => $baseUri . '/pass',
-        'class' => "pull-right cushion"
+          'href'  => $baseUri . '/pass',
+          'class' => "pull-right cushion"
         ],
         'Passed'
       ),
       new HtmlElement(
         'a',
         [
-        'href'  => $baseUri . '/running',
-        'class' => "pull-right cushion"
+          'href'  => $baseUri . '/running',
+          'class' => "pull-right cushion"
         ],
         'Running'
       ),
       new HtmlElement(
         'a',
         [
-        'href'  => $baseUri,
-        'class' => "pull-right cushion"
+          'href'  => $baseUri,
+          'class' => "pull-right cushion"
         ],
         'All'
       ),
@@ -131,22 +132,26 @@ class BuildsPage extends ViewModel
     }
 
     $project = new Project($this->_projectId);
+    $repo    = $project->repositories()->first();
 
-    $buildLink = $baseUri.'/build';
-    $branchAvailable = ['master', 'develop'];
-    $selectbranch = $this->_getSelectBranch($branchAvailable,$buildLink);
+    $branchAvailable = Branch::collection()
+      ->loadWhere(['repository_id' => $repo->id()])
+      ->getUniqueField('name');
+
+    $buildLink       = $baseUri . '/build';
+    $selectbranch    = $this->_getSelectBranch($branchAvailable, $buildLink);
 
     return new RenderGroup(
       '<h1>' . $project->name . ' Builds</h1>',
-//      $this->_buttonGroup($baseUri),
+      //      $this->_buttonGroup($baseUri),
       $this->_tabs(),
       $alert,
       new HtmlElement(
         'a',
         [
-        'href'  => '#run-build-modal',
-        'class' => 'btn btn-success pull-right',
-        'data-remodal-target' => 'run-build-modal'
+          'href'                => '#run-build-modal',
+          'class'               => 'btn btn-success pull-right',
+          'data-remodal-target' => 'run-build-modal'
         ],
         'Run Build'
       ),
@@ -156,18 +161,21 @@ class BuildsPage extends ViewModel
         $this->getHostController()
       ),
       new Impart(
-       sprintf(
-         '<div class="remodal" data-remodal-id="run-build-modal">
+        sprintf(
+          '<div class="remodal" data-remodal-id="run-build-modal">
   <button data-remodal-action="close" class="remodal-close"></button>
    <div>Branch: %s </div>
   <button data-remodal-action="cancel" class="btn btn-danger">Cancel</button>
   <a href="%s" id="buildlink" class="btn btn-success ">Run Build</a>
-  </div>', $selectbranch,$buildLink
-       )
+  </div>',
+          $selectbranch,
+          $buildLink
+        )
       )
     );
   }
-  private function _getSelectBranch($branchAvailable,$buildLink)
+
+  private function _getSelectBranch($branchAvailable, $buildLink)
   {
     $branches = '';
     foreach($branchAvailable as $branch)
@@ -179,7 +187,7 @@ class BuildsPage extends ViewModel
       sprintf(
         "<select
       onchange='
-      document.getElementById(\"buildlink\").href=\"%s?branch=\"+this.options[this.selectedIndex].value
+      document.getElementById(\"buildlink\").href=\"%s/\"+this.options[this.selectedIndex].value
       '>%s</select>",
         $buildLink,
         $branches

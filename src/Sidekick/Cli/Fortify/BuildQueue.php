@@ -53,12 +53,13 @@ class BuildQueue extends CliCommand
     else
     {
       $buildIds = Build::collection(['build_level' => BuildLevel::BUILD])
-      ->get()->loadedIds();
+        ->get()->loadedIds();
     }
 
     Log::debug("Build IDs Available: " . implode(',', $buildIds));
 
     $project = $data->projectId;
+    $branch  = isset($data->branch) ? $data->branch : 'master';
 
     foreach($buildIds as $buildId)
     {
@@ -71,6 +72,8 @@ class BuildQueue extends CliCommand
         $buildId,
         '-p',
         $project,
+        '--branch',
+        $branch,
         '--echo-level',
         $this->_logger->getEchoLevel(),
         '--log-level',

@@ -48,6 +48,8 @@ class ProjectsApp extends SidekickApplication
         . '\Controllers\FortifyBuildsController',
       'manage-hosts/(.*)'     => '\Sidekick\Applications\Diffuse'
         . '\Controllers\HostController',
+      'projects/(.*)'     => '\Sidekick\Applications\Projects'
+        . '\Controllers\DefaultController',
     ];
   }
 

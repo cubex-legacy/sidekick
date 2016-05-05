@@ -43,6 +43,7 @@ class Project extends \Cubex\Core\Project\Project
     }
 
     $this->addApplication('phuse', new PhuseApp());
+    $this->addApplication('projects', new ProjectsApp());
     $this->addApplication('fortify', new FortifyApp());
     $this->addApplication('diffuse', new DiffuseApp());
     $this->addApplication('users', new UsersApp());
@@ -174,7 +175,7 @@ class Project extends \Cubex\Core\Project\Project
   {
     if(Auth::loggedin())
     {
-      return new ProjectsApp();
+      return new OverviewApp();
     }
     else
     {

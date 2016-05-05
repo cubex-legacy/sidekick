@@ -79,9 +79,9 @@ class Header extends ViewModel
       '',
       '',
       '',
-      '/overview',
+      '/projects',
       'New menu',
-      'Overview',
+      'Projects',
       ''
     );
 

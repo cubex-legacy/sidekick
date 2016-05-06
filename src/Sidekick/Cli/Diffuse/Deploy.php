@@ -160,6 +160,7 @@ class Deploy extends CliCommand
               $deployBase,
               $server->sshUser,
               $server->getConnPreference(),
+              $server->hostname,
               $server->sshPort,
               $server->ipv4,
               $server->ipv6,

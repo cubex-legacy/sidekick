@@ -52,6 +52,8 @@ class DeploymentView extends TemplatedViewModel
       (new OptionBuilder($this->_platforms))->getOptions()
     );
 
+    $this->_form->addTextElement('deploy_base', $this->_project->deployBase);
+
     foreach($this->hosts() as $host)
     {
       $this->_form->addCheckboxElement(

@@ -15,7 +15,11 @@ use Sidekick\Components\Diffuse\Mappers\HostPlatform;
 use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
+use Sidekick\Components\Fortify\FortifyHelper;
+use Sidekick\Components\Fortify\Mappers\Build;
+use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Servers\Mappers\Server;
 use Sidekick\Components\Users\Mappers\User;
 use Sidekick\Deployment\IDeploymentService;
 
@@ -64,25 +68,27 @@ class Deploy extends CliCommand
         }
         else
         {
-          $version = new Version($deployment->versionId);
-          $platform = new DeploymentConfig($deployment->platformId);
-          $project = new Project($deployment->projectId);
-          $user = new User($deployment->userId);
+          $version   = new BuildRun($deployment->versionId);
+          $depConfig = new DeploymentConfig($deployment->platformId);
+          $project   = new Project($deployment->projectId);
+          $user      = new User($deployment->userId);
         }
       }
 
       if($deployment === null)
       {
-        $version = new Version($this->versionId);
+        $version = new BuildRun($this->versionId);
         if(!$version->exists())
         {
           throw new \Exception("The version specified does not exist");
         }
 
-        $platform = new DeploymentConfig($this->platformId);
-        if(!$platform->exists())
+        $depConfig = new DeploymentConfig($this->platformId);
+        if(!$depConfig->exists())
         {
-          throw new \Exception("The platform specified does not exist");
+          throw new \Exception(
+            "The deployment config specified does not exist"
+          );
         }
 
         $project = new Project($version->projectId);
@@ -98,105 +104,78 @@ class Deploy extends CliCommand
         }
       }
 
-      $this->_createVersionDataFile($version);
+      //$this->_createVersionDataFile($version);
 
       if($deployment === null)
       {
-        $deployment = new Deployment();
-        $deployment->platformId = $platform->id();
-        $deployment->versionId = $version->id();
-        $deployment->projectId = $project->id();
-        $deployment->userId = $user->id();
+        $deployment             = new Deployment();
+        $deployment->platformId = $depConfig->id();
+        $deployment->versionId  = $version->id();
+        $deployment->projectId  = $project->id();
+        $deployment->userId     = $user->id();
       }
 
       //Stop the deployment from being pending, to ensure it no longer gets
       //picked up by the queue consumer
 
-      $deployment->pending = false;
+      //$deployment->pending = false;
       $deployment->startedAt = new \DateTime();
       $deployment->saveChanges(); //Initiate deployment for the ID
 
-      $hosts = HostPlatform::collection(
-        [
-          "platform_id" => $platform->id(),
-          "project_id"  => $project->id()
-        ]
+      $servers   = Server::collection()->loadIds(
+        json_decode($deployment->hosts)
       );
-
-      if(!$hosts->hasMappers())
-      {
-        throw new \Exception("No Hosts have been assigned to this platform");
-      }
-
-      $stages = DeploymentStep::collection(
-        [
-          'platform_id' => $platform->id(),
-          'project_id'  => $project->id(),
-        ]
+      $steps     = DeploymentStep::collection(
+        ['platform_id' => $depConfig->id()]
       );
-      foreach($stages as $stage)
+      $buildPath = FortifyHelper::buildPath($version->id());
+
+      //work out build directory
+      $build          = new Build($version->buildId);
+      $buildSourceDir = build_path($buildPath, $build->sourceDirectory);
+
+      $deployBase = '/home/backends/finance';
+
+      foreach($servers as $server)
       {
-        /**
-         * @var $stage DeploymentStep
-         */
-        $deployService = $stage->serviceClass;
-        if(class_exists($deployService))
+        foreach($steps as $step)
         {
-          Log::info("Deploying with '$deployService'");
-          $diffuser = new $deployService($version, $stage);
+          echo "Running $step->name ($step->command) ON Server: " . $server->hostname . PHP_EOL;
 
-          if($diffuser instanceof IDeploymentService)
-          {
-            foreach($hosts as $hostPlat)
-            {
-              /**
-               * @var $hostPlat \Sidekick\Components\Diffuse\Mappers\HostPlatform
-               */
-              $stageHost = new DeploymentStageHost();
-              $stageHost->serverId = $hostPlat->serverId;
-              $stageHost->deploymentId = $deployment->id();
-              $stageHost->deploymentStageId = $stage->id();
-              $diffuser->addHost($stageHost);
-            }
+          $command = str_replace(
+            ['{buildSource}', '{hostPort}', '{deployBase}'],
+            [$buildSourceDir, $server->sshPort, $deployBase],
+            $step->command
+          );
 
-            $diffuser->setUser($user);
-            $diffuser->deploy();
-
-            $hostResults = $diffuser->getHosts();
-            foreach($hostResults as $hostResult)
-            {
-              $hostResult->saveChanges();
-              if($stage->requireAllHostsPass && !$hostResult->passed)
-              {
-                throw new \Exception(
-                  'Failed deploying to host ' . $hostResult->server()->hostname
-                );
-              }
-            }
-          }
-        }
-        else
-        {
-          throw new \Exception("The class '$deployService' does not exist");
+          $sh                    = new DeploymentStageHost();
+          $sh->deploymentId      = $deployment->id();
+          $sh->deploymentStageId = $step->id();
+          $sh->serverId          = $server->id();
+          $sh->command           = $command;
+          $sh->passed            = 'TODO';
+          $sh->stdOut            = 'TODO';
+          $sh->stdErr            = 'TODO';
+          $sh->log               = 'TODO';
+          $sh->saveChanges();
         }
       }
-
-      $stateId = [$platform->id(), $version->id()];
+      /*$stateId = [$depConfig->id(), $version->id()];
       $state = new PlatformVersionState($stateId);
-      $state->platformId = $platform->id();
+      $state->platformId = $depConfig->id();
       $state->versionId = $version->id();
       $state->deploymentCount++;
       $state->saveChanges();
 
       $deployment->passed = 1;
       $deployment->completed = 1;
-      $deployment->saveChanges();
+      $deployment->saveChanges();*/
     }
     catch(\Exception $e)
     {
       if($deployment !== null)
       {
-        $deployment->passed = false;
+        $deployment->passed    = false;
         $deployment->completed = 1;
         $deployment->saveChanges();
       }

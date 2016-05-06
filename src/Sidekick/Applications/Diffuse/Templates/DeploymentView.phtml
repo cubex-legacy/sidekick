@@ -18,6 +18,7 @@
     <?= $this->form()->getElement('buildId'); ?>
     <p>Select Deployment Config: <br/><?= $this->form()->getElement('platformId'); ?></p>
 
+    <p>Deploy Base: <br/><?= $this->form()->getElement('deploy_base') ?></p>
     <p>Choose Servers:</p>
     <?php foreach($this->hosts() as $host): ?>
       <p class="pull-left" style="padding:10px; text-align: center;">

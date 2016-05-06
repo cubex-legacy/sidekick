@@ -17,6 +17,7 @@ class ProjectForm extends Form
   public $name;
   public $parent_id;
   public $description;
+  public $deploy_base;
 
   public function __construct($action = '', $id = null)
   {
@@ -29,6 +30,7 @@ class ProjectForm extends Form
     $this->get('id')->setType(FormElement::HIDDEN);
     $this->get('name')->setType(FormElement::TEXT)->setRequired(true);
     $this->get('description')->setType(FormElement::TEXTAREA);
+    $this->get('deploy_base')->setType(FormElement::TEXT);
 
     $this->addTextElement('repo[repository_type]');
     $this->addTextElement('repo[name]');

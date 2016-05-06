@@ -54,6 +54,7 @@ class DefaultController extends ProjectsController
       $project              = new Project();
       $project->name        = $form->name;
       $project->description = $form->description;
+      $project->deployBase  = $form->deploy_base;
       if($form->parent_id > 0)
       {
         $project->parentId = $form->parent_id;
@@ -105,6 +106,7 @@ class DefaultController extends ProjectsController
     $form->setData('id', $project->id());
     $form->setData('name', $project->name);
     $form->setData('description', $project->description);
+    $form->setData('deploy_base', $project->deployBase);
     $form->setData('repo[repository_type]', $repository->repository_type);
     $form->setData('repo[description]', $repository->description);
     $form->setData('repo[localpath]', $repository->localpath);
@@ -129,6 +131,7 @@ class DefaultController extends ProjectsController
       $project              = new Project($postData['id']);
       $project->name        = $form->name;
       $project->description = $form->description;
+      $project->deployBase  = $form->deploy_base;
       if($form->parent_id > 0)
       {
         $project->parentId = $form->parent_id;

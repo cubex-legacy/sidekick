@@ -28,9 +28,9 @@
 
   foreach($this->getDeploymentlist() as $deplyment)
   {
-    $project = new \Sidekick\Components\Projects\Mappers\Project($deplyment->project_id);
-    $b = new \Sidekick\Components\Fortify\Mappers\BuildRun($deplyment->version_id);
-    $user = new \Sidekick\Components\Users\Mappers\User($deplyment->user_id);
+    $project = new \Sidekick\Components\Projects\Mappers\Project($deplyment->projectIid);
+    $b = new \Sidekick\Components\Fortify\Mappers\BuildRun($deplyment->versionId);
+    $user = new \Sidekick\Components\Users\Mappers\User($deplyment->userId);
     $hosts = json_decode($deplyment->hosts);
     $hostnames = [];
 
@@ -49,8 +49,10 @@
       <td>
         <?php $exploded = explode(":", $project->name); ?>
         <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
+        <?php $link = $this->getProject() ? "/P$deplyment->projectId/diffuse/$b->buildId" : "/P$deplyment->projectId/diffuse/deployments" ?>
+
         <a
-          href="/P<?= $deplyment->project_id ?>/diffuse/deployments">
+          href="<?php echo $link ?>">
 
           <?= isset($exploded[1]) ? $exploded[1] : $exploded[0]; ?>  
         </a>
@@ -58,7 +60,7 @@
       <td>
 
         <a
-          href="/P<?= $deplyment->project_id ?>/fortify/<?= $b->build_id ?>/<?= $b->id; ?>">
+          href="/P<?= $deplyment->projectId ?>/fortify/<?= $b->buildId ?>/<?= $b->id; ?>">
            #<?= $b->id; ?>
         </a>
       </td>

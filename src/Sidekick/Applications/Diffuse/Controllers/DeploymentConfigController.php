@@ -198,7 +198,7 @@ class DeploymentConfigController extends DiffuseController
     $step->delete();
 
     $redirectUrl = $this->baseUri() . '/' . $this->getInt('configId')
-      . '/steps/' . $stepId;
+      . '/steps';
     Redirect::to($redirectUrl)->with(
       'msg',
       new TransportMessage('success', 'Deployment Step deleted successfully')

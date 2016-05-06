@@ -30,10 +30,12 @@ class FortifyApp extends ProjectAwareApplication
   {
     return "Menu";
   }
-
+  
   public function getRoutes()
   {
     return [
+      'build-configs/commands/(.*)'    => 'FortifyCommandsController',
+      'build-configs/(.*)'    => 'FortifyBuildsController',
       'builds/(.*)'        => 'FortifyBuildsController',
       'commands/(.*)'      => 'FortifyCommandsController',
       'buildCommands/(.*)' => 'FortifyBuildCommandsController',

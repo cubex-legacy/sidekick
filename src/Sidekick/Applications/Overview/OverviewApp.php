@@ -39,19 +39,7 @@ class OverviewApp extends SidekickApplication
 
   public function getRoutes()
   {
-    return [
-      'build-configs/commands/(.*)'    => '\Sidekick\Applications\Fortify'
-        . '\Controllers\FortifyCommandsController',
-      'build-configs/(.*)'    => '\Sidekick\Applications\Fortify'
-        . '\Controllers\FortifyBuildsController',
-      'manage-hosts/(.*)'     => '\Sidekick\Applications\Diffuse'
-        . '\Controllers\HostController',
-      'manage-configs/(.*)'     => '\Sidekick\Applications\Diffuse'
-        . '\Controllers\PlatformController',
-      'manage-configs-steps/(.*)'     => '\Sidekick\Applications\Diffuse'
-        . '\Controllers\Projects\Configuration\DeploymentController',
-      'projects/(.*)'     => '\Sidekick\Applications\Projects'
-        . '\Controllers\DefaultController',
+    return [ 
     ];
   }
 }

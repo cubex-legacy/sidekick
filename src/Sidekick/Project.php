@@ -151,6 +151,40 @@ class Project extends \Cubex\Core\Project\Project
       $app->setBaseUri('/' . 'sourcecode');
       return $app;
     }
+    if(preg_match('/build-configs/i', $path))
+    {
+      $app = new FortifyApp();
+      $app->setBaseUri('/' . 'fortify');
+      return $app;
+    }
+    if(preg_match('/build-configs/i', $path))
+    {
+      $app = new FortifyApp();
+      $app->setBaseUri('/' . 'fortify');
+      return $app;
+    }
+    if(preg_match('/manage-hosts/i', $path))
+    {
+      $app = new DiffuseApp();
+
+      $app->setBaseUri('/' . 'diffuse');
+      return $app;
+    }
+    if(preg_match('/manage-platforms/i', $path))
+    {
+      $app = new DiffuseApp();
+
+      $app->setBaseUri('/' . 'diffuse');
+      return $app;
+    }
+    if(preg_match('/projects/i', $path))
+    {
+
+      $app = new ProjectsApp();
+
+      $app->setBaseUri('/' . 'projects');
+      return $app;
+    }
 
     $apps = $this->getApplications();
     foreach($apps as $appPath => $app)

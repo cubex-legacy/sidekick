@@ -15,6 +15,8 @@ class DiffuseApp extends ProjectAwareApplication
   public function getRoutes()
   {
     return [
+      'manage-hosts/(.*)'     => 'HostController',
+      'manage-platforms/(.*)'     => 'PlatformController',
       '/hosts/(.*)'          => 'HostController',
       '/platforms/(.*)'      => 'PlatformController',
       '/configuration'       => [

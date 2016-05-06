@@ -89,7 +89,7 @@ class Header extends ViewModel
       '',
       '',
       '',
-      '/build-configs',
+      '/fortify/build-configs',
       'New menu',
       'Build Configuration',
       ''
@@ -99,7 +99,7 @@ class Header extends ViewModel
       '',
       '',
       '',
-      '/manage-hosts',
+      '/diffuse/manage-hosts',
       'New menu',
       'Manage Deployment Hosts',
       ''

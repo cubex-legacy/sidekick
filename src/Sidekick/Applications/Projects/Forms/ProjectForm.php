@@ -56,9 +56,9 @@ class ProjectForm extends Form
     }
   }
 
-  public function hydrate($data)
+  public function hydrate(array $data, $setUnmodified = false, $createAttributes = false, $raw = true)
   {
-    parent::hydrate($data);
+    parent::hydrate($data, $setUnmodified, $createAttributes, $raw);
     foreach($data['repo'] as $k => $v)
     {
       $this->setData("repo[$k]", $v);

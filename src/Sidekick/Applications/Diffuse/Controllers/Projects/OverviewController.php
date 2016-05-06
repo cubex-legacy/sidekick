@@ -82,7 +82,7 @@ class OverviewController extends ProjectAwareBaseControl
   public function renderDeployments()
   {
     $deployments = Deployment::collection();
-    $project = new Project();
+    $project = null;
     if($this->_projectId)
     {
       $project = new Project($this->_projectId);
@@ -95,7 +95,7 @@ class OverviewController extends ProjectAwareBaseControl
     {
       $deployments = Deployment::conn()->getKeyedRows(
         'SELECT id FROM (
-         SELECT * FROM diffuse_deployments WHERE pending != 1 ORDER BY id DESC) AS sub GROUP BY project_id'
+         SELECT * FROM diffuse_deployments /*WHERE pending != 1*/ ORDER BY id DESC) AS sub GROUP BY project_id'
       );
       $deployments = Deployment::collection()->loadWhere("id IN (%s)", implode("','",$deployments ));
     }

@@ -64,7 +64,7 @@ class OverviewController extends ProjectAwareBaseControl
     $deployment->projectId  = $this->_projectId;
     $deployment->versionId  = $this->getInt("buildId"); //this is now build id. todo rename field
     $deployment->userId     = \Auth::user()->getId();
-    $deployment->hosts      = json_encode($postData['deploymentHosts']);
+    $deployment->hosts      = json_encode(array_keys($postData['deploymentHosts']));
     $deployment->comment    = $postData['comment'];
 
     $deployment->saveChanges();

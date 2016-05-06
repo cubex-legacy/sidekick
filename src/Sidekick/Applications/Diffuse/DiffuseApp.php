@@ -17,6 +17,7 @@ class DiffuseApp extends ProjectAwareApplication
     return [
       'manage-configs/(.*)'  => 'DeploymentConfigController',
       '/hosts/(.*)'          => 'HostController',
+      '/deployments'         =>  'Projects\OverviewController@deployments',
       '/platforms/(.*)'      => 'PlatformController',
       '/configuration'       => [
         '/approval/(.*)' => 'Projects\Configuration\ApprovalController',

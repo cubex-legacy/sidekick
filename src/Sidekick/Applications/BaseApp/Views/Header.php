@@ -83,15 +83,6 @@ class Header extends ViewModel
       'Builds',
       ''
     );
-    $navItems->addElement(
-      '',
-      '',
-      '',
-      '/projects',
-      'New menu',
-      'Projects',
-      ''
-    );
 
     $navItems->addElement(
       '',
@@ -107,11 +98,32 @@ class Header extends ViewModel
       '',
       '',
       '',
-      '/diffuse/hosts',
+      '/projects',
       'New menu',
-      'Manage Deployment Hosts',
+      'Projects',
       ''
     );
+
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/diffuse/deployments',
+      'New menu',
+      'Deployments',
+      ''
+    );
+
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/diffuse/hosts',
+      'New menu',
+      'Deployment Hosts',
+      ''
+    );
+
     $navItems->addElement(
       '',
       '',

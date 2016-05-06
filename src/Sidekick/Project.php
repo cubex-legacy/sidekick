@@ -79,8 +79,8 @@ class Project extends \Cubex\Core\Project\Project
   public function getApplication(Request $req)
   {
     if((isset($_SERVER['HTTP_X_PURPOSE'])
-    && $_SERVER['HTTP_X_PURPOSE'] == 'preview')
-    || $req->path() == '/preview'
+        && $_SERVER['HTTP_X_PURPOSE'] == 'preview')
+      || $req->path() == '/preview'
     )
     {
       return new PreviewApp();
@@ -184,6 +184,16 @@ class Project extends \Cubex\Core\Project\Project
       $app->setBaseUri('/' . 'diffuse');
       return $app;
     }
+
+    if(substr($path, 0,8) == '/diffuse' )
+    {
+
+      $app = new DiffuseApp();
+
+      $app->setBaseUri('/' . 'diffuse');
+      return $app;
+    }
+
     if(preg_match('/projects/i', $path))
     {
 

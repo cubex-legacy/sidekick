@@ -24,6 +24,7 @@ class Deployment extends RecordMapper
   public $passed = false;
   public $comment;
   public $hosts;
+  public $deployBase;
 
   public function platform()
   {

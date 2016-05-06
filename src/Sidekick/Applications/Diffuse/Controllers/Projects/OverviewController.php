@@ -72,6 +72,7 @@ class OverviewController extends ProjectAwareBaseControl
     $deployment->userId     = \Auth::user()->getId();
     $deployment->hosts      = json_encode(array_keys($postData['deploymentHosts']));
     $deployment->comment    = $postData['comment'];
+    $deployment->deployBase = $postData['deploy_base'];
 
     $deployment->saveChanges();
 

@@ -189,11 +189,11 @@ class Deploy extends CliCommand
       $state->platformId = $depConfig->id();
       $state->versionId = $version->id();
       $state->deploymentCount++;
-      $state->saveChanges();
+      $state->saveChanges();*/
 
       $deployment->passed = 1;
       $deployment->completed = 1;
-      $deployment->saveChanges();*/
+      $deployment->saveChanges();
     }
     catch(\Exception $e)
     {

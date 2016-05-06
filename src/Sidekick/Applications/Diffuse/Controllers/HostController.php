@@ -35,6 +35,8 @@ class HostController extends BaseControl
 
   public function renderIndex()
   {
+    //TODO this is hack, refactor later
+    $this->setBaseUri('/'.$this->baseUri());
     $hosts = Server::collection()->loadAll();
     return $this->createView(new HostsIndex($hosts));
   }

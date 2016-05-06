@@ -20,13 +20,6 @@ class DiffuseController extends ProjectAwareBaseControl
 
   public function getSidebar()
   {
-    return new Sidebar(
-      $this->request()->path(3),
-      [
-      $this->appBaseUri() . ''           => 'Available Versions',
-      $this->appBaseUri() . '/platforms' => 'Manage Platforms',
-      $this->appBaseUri() . '/hosts'     => 'Manage Hosts'
-      ]
-    );
+    return null;
   }
 }

@@ -131,7 +131,9 @@ class DeploymentConfigController extends DiffuseController
   public function renderNewSteps()
   {
     $stage = new DeploymentStep();
-    return new ManageDeploymentStepsView($stage);
+    $view = new ManageDeploymentStepsView($stage);
+    $view->configId = $this->getInt('configId');
+    return $view;
   }
 
   public function postNewSteps()

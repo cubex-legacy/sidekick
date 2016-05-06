@@ -20,6 +20,7 @@ use Sidekick\Components\Projects\Mappers\Project;
 class ManageDeploymentStepsView extends TemplatedViewModel
 {
   protected $_step;
+  public $configId;
 
   public function __construct($step = null)
   {
@@ -36,6 +37,7 @@ class ManageDeploymentStepsView extends TemplatedViewModel
   {
     $form = new DeploymentStageForm();
     $form->hydrateFromMapper($this->_step);
+    $form->platformId = $this->configId;
 
     $buttonText = 'Create';
     if($this->_step->exists())

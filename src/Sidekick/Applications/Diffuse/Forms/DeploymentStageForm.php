@@ -33,7 +33,8 @@ class DeploymentStageForm extends Form
 
     $this->addSelectElement(
       "platformId",
-      (new OptionBuilder(DeploymentConfig::collection()))->getOptions()
+      (new OptionBuilder(DeploymentConfig::collection()))->getOptions(),
+      $this->platformId
     );
 
     $this->_attribute("platformId")->setLabel("Deployment Configuration");

@@ -34,6 +34,7 @@ class OverviewController extends ProjectAwareBaseControl
 
   public function renderIndex()
   {
+    $this->requireJs('deploymentPage');
     $project = new Project($this->_projectId);
     if($project->exists())
     {

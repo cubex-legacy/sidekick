@@ -24,21 +24,29 @@
     $groups = [];
     foreach($this->hosts() as $host):
       //bit of magic to group them
-      $groups[$host->name][] = $host;
+      $groups[$host->name][] = $host->id;
      endforeach; ?>
 
-    <?php foreach($groups as $group => $hosts):?>
+    <?php
+    foreach($groups as $group => $hosts):
+
+      ?>
       <div class="clearfix"></div>
-      <h3 ><?= $group ?></h3>
+      <h3 ><?= $group ?> <input id="group-<?php echo $group; ?>" type="checkbox"></h3>
       <?php
       foreach($hosts as $host):
       ?>
 
-    <p class="pull-left" style="padding:10px; text-align: center;">
-        <?= $this->form()->getElement("deploymentHosts[$host->id]") ?>
+       <p class="pull-left" style="padding:10px; text-align: center;">
+        <?= $this->form()->getElement("deploymentHosts[$host]") ?>
       </p>
       <?php endforeach; ?>
     <?php endforeach; ?>
+
+    <script>
+
+      var hostGroups = JSON.parse('<?= json_encode($groups); ?>');
+    </script>
     <div class="clearfix"></div>
   </div>
 <p>Comment:<br/><?= $this->form()->getElement('comment') ?></p>

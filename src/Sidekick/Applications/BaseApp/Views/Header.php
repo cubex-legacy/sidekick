@@ -74,7 +74,15 @@ class Header extends ViewModel
     $path = $this->request()->path();
 
     ksort($structure);
-
+    $navItems->addElement(
+      '',
+      '',
+      '',
+      '/',
+      'New menu',
+      'Builds',
+      ''
+    );
     $navItems->addElement(
       '',
       '',

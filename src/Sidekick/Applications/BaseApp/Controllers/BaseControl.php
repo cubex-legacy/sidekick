@@ -40,9 +40,9 @@ class BaseControl extends WebpageController
   public function preRender()
   {
     $this->setTitle("");
-    $this->requireCss('/theme-overrides');
-    $this->requireCss('/bootstrap-overrides');
     $this->requireCss('/base');
+    $this->requireCss('/bootstrap-overrides');
+    $this->requireCss('/theme-overrides');
     $this->requireCss('/remodal');
     $this->requireCss('/remodal-theme');
     $this->requireJs("/hoverdrop");

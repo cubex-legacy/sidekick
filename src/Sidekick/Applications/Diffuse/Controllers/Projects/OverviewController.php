@@ -24,6 +24,11 @@ class OverviewController extends ProjectAwareBaseControl
     $this->_projectId = $this->getProjectId();
   }
 
+  public function getSidebar()
+  {
+    return null;
+  }
+
   public function renderIndex()
   {
     $project = new Project($this->_projectId);

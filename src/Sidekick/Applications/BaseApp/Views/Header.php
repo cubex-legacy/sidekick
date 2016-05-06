@@ -99,7 +99,7 @@ class Header extends ViewModel
       '',
       '',
       '',
-      '/diffuse/manage-hosts',
+      '/diffuse/hosts',
       'New menu',
       'Manage Deployment Hosts',
       ''

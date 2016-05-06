@@ -23,7 +23,7 @@ class DiffuseController extends BaseControl
     return new Sidebar(
       $this->request()->path(3),
       [
-        $this->appBaseUri() . '/manage-hosts'     => 'Manage Hosts',
+        $this->appBaseUri() . '/hosts'     => 'Manage Hosts',
         $this->appBaseUri() . '/manage-configs' => 'Manage Configuration',
       ]
     );

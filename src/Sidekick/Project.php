@@ -157,20 +157,27 @@ class Project extends \Cubex\Core\Project\Project
       $app->setBaseUri('/' . 'fortify');
       return $app;
     }
-    if(preg_match('/build-configs/i', $path))
+    if(preg_match('/manage-steps/i', $path))
     {
-      $app = new FortifyApp();
-      $app->setBaseUri('/' . 'fortify');
+      $app = new DiffuseApp();
+      $app->setBaseUri('/' . 'diffuse');
       return $app;
     }
-    if(preg_match('/manage-hosts/i', $path))
+    if(preg_match('/manage-configs/i', $path))
     {
       $app = new DiffuseApp();
 
       $app->setBaseUri('/' . 'diffuse');
       return $app;
     }
-    if(preg_match('/manage-platforms/i', $path))
+    if(preg_match('/hosts/i', $path))
+    {
+      $app = new DiffuseApp();
+
+      $app->setBaseUri('/' . 'diffuse');
+      return $app;
+    }
+    if(preg_match('/platforms/i', $path))
     {
       $app = new DiffuseApp();
 

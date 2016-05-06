@@ -9,10 +9,10 @@ use Cubex\Cli\CliCommand;
 use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\HostPlatform;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -65,7 +65,7 @@ class Deploy extends CliCommand
         else
         {
           $version = new Version($deployment->versionId);
-          $platform = new Platform($deployment->platformId);
+          $platform = new DeploymentConfig($deployment->platformId);
           $project = new Project($deployment->projectId);
           $user = new User($deployment->userId);
         }
@@ -79,7 +79,7 @@ class Deploy extends CliCommand
           throw new \Exception("The version specified does not exist");
         }
 
-        $platform = new Platform($this->platformId);
+        $platform = new DeploymentConfig($this->platformId);
         if(!$platform->exists())
         {
           throw new \Exception("The platform specified does not exist");
@@ -128,7 +128,7 @@ class Deploy extends CliCommand
         throw new \Exception("No Hosts have been assigned to this platform");
       }
 
-      $stages = DeploymentStage::collection(
+      $stages = DeploymentStep::collection(
         [
           'platform_id' => $platform->id(),
           'project_id'  => $project->id(),
@@ -137,7 +137,7 @@ class Deploy extends CliCommand
       foreach($stages as $stage)
       {
         /**
-         * @var $stage DeploymentStage
+         * @var $stage DeploymentStep
          */
         $deployService = $stage->serviceClass;
         if(class_exists($deployService))

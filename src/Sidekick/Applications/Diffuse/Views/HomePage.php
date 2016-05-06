@@ -11,7 +11,7 @@ namespace Sidekick\Applications\Diffuse\Views;
 
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Enums\ApprovalState;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -98,7 +98,7 @@ class HomePage extends TemplatedViewModel
       {
         $hasAllRequestedStates = false;
       }
-      $platform                  = new Platform($state->platformId);
+      $platform                  = new DeploymentConfig($state->platformId);
       $stateObj[$platform->name] = $state->state;
     }
     if(!$hasRequestedState || ($allPlatforms && !$hasAllRequestedStates))

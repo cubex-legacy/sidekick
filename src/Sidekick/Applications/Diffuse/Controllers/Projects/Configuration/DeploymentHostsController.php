@@ -14,7 +14,7 @@ use
 Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentHostsView;
 use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
 use Sidekick\Components\Diffuse\Mappers\HostPlatform;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Servers\Mappers\Server;
 
@@ -25,7 +25,7 @@ class DeploymentHostsController extends DiffuseController
     $projectId = $this->getProjectId();
     $project   = new Project($projectId);
     $hosts     = Server::collection();
-    $platforms = Platform::orderedCollection();
+    $platforms = DeploymentConfig::orderedCollection();
 
     return new RenderGroup(
       $this->createView(new ProjectNav($this->appBaseUri(), $project)),

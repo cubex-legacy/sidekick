@@ -11,7 +11,7 @@ use Cubex\View\RenderGroup;
 use Cubex\View\ViewModel;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use Sidekick\Applications\Diffuse\Views\Projects\Versions\VersionNav;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 
@@ -22,7 +22,7 @@ class VersionsController extends DiffuseController
    */
   protected $_version;
   /**
-   * @var Platform[]|RecordCollection
+   * @var DeploymentConfig[]|RecordCollection
    */
   protected $_platforms;
   /**
@@ -34,7 +34,7 @@ class VersionsController extends DiffuseController
   {
     parent::preProcess();
     $this->_version        = new Version($this->getInt("versionId"));
-    $this->_platforms      = Platform::orderedCollection();
+    $this->_platforms      = DeploymentConfig::orderedCollection();
     $this->_platformStates = PlatformVersionState::collection(
       ['version_id' => $this->_version->id()]
     );

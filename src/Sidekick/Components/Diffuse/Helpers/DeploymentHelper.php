@@ -7,7 +7,7 @@
 namespace Sidekick\Components\Diffuse\Helpers;
 
 use Cubex\Foundation\Container;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
 
 class DeploymentHelper
 {
@@ -51,7 +51,7 @@ class DeploymentHelper
 
   public static function getRelevantServiceClassOptions($projectId, $platformId)
   {
-    $availableServiceClasses = DeploymentStage::collection()
+    $availableServiceClasses = DeploymentStep::collection()
     ->load(
       [
       'project_id'  => $projectId,

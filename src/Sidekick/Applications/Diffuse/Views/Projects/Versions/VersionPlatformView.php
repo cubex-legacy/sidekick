@@ -17,7 +17,7 @@ use Sidekick\Components\Diffuse\Helpers\VersionApproval;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformProjectConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
@@ -45,7 +45,7 @@ class VersionPlatformView extends TemplatedViewModel
    */
   protected $_projectUsers;
   /**
-   * @var Platform[]|RecordCollection
+   * @var DeploymentConfig[]|RecordCollection
    */
   protected $_requiredPlatforms;
   /**
@@ -58,7 +58,7 @@ class VersionPlatformView extends TemplatedViewModel
   protected $_platformConfig;
 
   public function __construct(
-    Platform $platform, $actions, $deployments, $approvals,
+    DeploymentConfig $platform, $actions, $deployments, $approvals,
     PlatformVersionState $platformState, PlatformProjectConfig $platformConfig
   )
   {

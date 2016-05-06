@@ -6,14 +6,15 @@
 namespace Sidekick\Applications\Diffuse\Controllers\Projects;
 
 use Cubex\View\RenderGroup;
+use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use Sidekick\Applications\Diffuse\Views\Projects\OverviewView;
 use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
 
-class OverviewController extends DiffuseController
+class OverviewController extends ProjectAwareBaseControl
 {
   protected $_projectId;
 
@@ -32,7 +33,7 @@ class OverviewController extends DiffuseController
       return new RenderGroup(
         $this->createView(new ProjectNav($this->appBaseUri(), $project)),
         $this->createView(
-          new OverviewView($project, $versions, Platform::orderedCollection())
+          new OverviewView($project, $versions, DeploymentConfig::collection())
         )
       );
     }

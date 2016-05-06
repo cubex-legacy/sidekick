@@ -14,7 +14,7 @@ use
 Sidekick\Applications\Diffuse\Views\Projects\Configuration\ApprovalConfigurationView;
 use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 use Sidekick\Components\Enums\Consistency;
@@ -24,7 +24,7 @@ class ApprovalController extends DiffuseController
   public function renderIndex()
   {
     $project   = new Project($this->getProjectId());
-    $platforms = Platform::orderedCollection();
+    $platforms = DeploymentConfig::orderedCollection();
     $approvals = ApprovalConfiguration::collection(
       ['project_id' => $project->id()]
     );

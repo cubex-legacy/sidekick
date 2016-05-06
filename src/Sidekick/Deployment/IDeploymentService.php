@@ -5,7 +5,7 @@
 
 namespace Sidekick\Deployment;
 
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Users\Mappers\User;
@@ -14,9 +14,9 @@ interface IDeploymentService
 {
   /**
    * @param Version         $version
-   * @param DeploymentStage $stage
+   * @param DeploymentStep $stage
    */
-  public function __construct(Version $version, DeploymentStage $stage);
+  public function __construct(Version $version, DeploymentStep $stage);
 
   /**
    * @param DeploymentStageHost $host

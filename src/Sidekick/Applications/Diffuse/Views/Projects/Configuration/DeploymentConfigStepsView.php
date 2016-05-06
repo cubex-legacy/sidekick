@@ -8,24 +8,17 @@ namespace Sidekick\Applications\Diffuse\Views\Projects\Configuration;
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;
 use Cubex\View\TemplatedViewModel;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
 
-class DeploymentConfigurationView extends TemplatedViewModel
+class DeploymentConfigStepsView extends TemplatedViewModel
 {
-  protected $_project;
-  protected $_platforms;
+  protected $_platform;
   protected $_stages;
 
-  public function __construct($project, $platforms, $stages)
+  public function __construct($platform, $stages)
   {
-    $this->_project   = $project;
-    $this->_platforms = $platforms;
+    $this->_platform = $platform;
     $this->_stages    = $stages;
-  }
-
-  public function project()
-  {
-    return $this->_project;
   }
 
   public function stages()
@@ -33,9 +26,9 @@ class DeploymentConfigurationView extends TemplatedViewModel
     return $this->_stages;
   }
 
-  public function platforms()
+  public function platform()
   {
-    return $this->_platforms;
+    return $this->_platform;
   }
 
   public function className($str)
@@ -44,11 +37,10 @@ class DeploymentConfigurationView extends TemplatedViewModel
     return end($parts);
   }
 
-  public function platformStages($platformId)
+  public function deploymentSteps($platformId)
   {
-    return DeploymentStage::collection(
+    return DeploymentStep::collection(
       [
-      'project_id'  => $this->_project->id(),
       'platform_id' => $platformId
       ]
     )->setOrderBy('order');

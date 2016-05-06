@@ -7,7 +7,7 @@ namespace Sidekick\Applications\Diffuse\Controllers;
 
 use Cubex\Core\Http\Response;
 Use Sidekick\Applications\Diffuse\Views\HomePage;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -90,7 +90,7 @@ class DefaultController extends DiffuseController
       {
         $hasAllRequestedStates = false;
       }
-      $platform                    = new Platform($state->platformId);
+      $platform                    = new DeploymentConfig($state->platformId);
       $stateObj->{$platform->name} = $state->state;
     }
     if(!$hasRequestedState || ($allPlatforms && !$hasAllRequestedStates))

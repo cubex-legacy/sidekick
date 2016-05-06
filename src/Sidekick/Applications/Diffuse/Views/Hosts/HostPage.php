@@ -16,7 +16,7 @@ class HostPage extends TemplatedViewModel
    */
   public $host;
   /**
-   * @var $hostPlatforms \Sidekick\Components\Diffuse\Mappers\Platform[]
+   * @var $hostPlatforms \Sidekick\Components\Diffuse\Mappers\DeploymentConfig[]
    */
   public $platforms;
   /**

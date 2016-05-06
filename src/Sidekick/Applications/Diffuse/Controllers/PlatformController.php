@@ -11,11 +11,11 @@ use Cubex\Form\Form;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Controllers\BaseControl;
 use Sidekick\Applications\BaseApp\Views\Sidebar;
-use Sidekick\Applications\Diffuse\Views\Platforms\PlatformIndex;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Applications\Diffuse\Views\Platforms\DeploymentConfigurationIndex;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Fortify\Mappers\Build;
 
-class PlatformController extends BaseControl
+class PlatformController extends DiffuseController
 {
   public function preRender()
   {
@@ -23,46 +23,28 @@ class PlatformController extends BaseControl
     $this->requireCss('diffuse');
   }
 
-  public function getSidebar()
-  {
-    return new Sidebar(
-      $this->request()->path(3),
-      [
-        $this->appBaseUri() . '/manage-hosts'     => 'Manage Hosts',
-        $this->appBaseUri() . '/manage-platforms' => 'Manage Platforms',
-      ]
-    );
-  }
-
   public function renderIndex()
   {
-    $platforms = Platform::collection()->loadAll();
-    return $this->createView(new PlatformIndex($platforms));
+    $platforms = DeploymentConfig::collection()->loadAll();
+    return $this->createView(new DeploymentConfigurationIndex($platforms));
   }
 
   public function renderCreate()
   {
-    $build     = Build::collection()->loadAll()->getKeyPair('id', 'name');
-    $platforms = Platform::collection()->loadAll()->getKeyPair("id", "name");
-
     $form = new Form('createPlatform', '');
     $form->addTextElement('name');
     $form->addTextareaElement('description');
-    $form->addCheckboxElements('requiredBuilds', '', $build);
-    $form->addCheckboxElements('requiredPlatforms', '', $platforms);
     $form->addSubmitElement('Create');
-    $form->getElement('requiredBuilds')->setLabel('Required Builds');
-    $form->getElement('requiredPlatforms')->setLabel('Required Platforms');
 
     return new RenderGroup(
-      '<h1>Create Platform</h1>',
+      '<h1>Create Deployment Configuration</h1>',
       $form
     );
   }
 
   public function postCreate()
   {
-    $platform = new Platform();
+    $platform = new DeploymentConfig();
     $platform->hydrate($this->request()->postVariables());
     $platform->saveChanges();
 
@@ -79,41 +61,22 @@ class PlatformController extends BaseControl
   public function renderEdit()
   {
     $platformId    = $this->getInt('platformId');
-    $platform      = new Platform($platformId);
-    $build         = Build::collection()->loadAll()->getKeyPair('id', 'name');
-    $platforms     = Platform::collection()->loadAll()->getKeyPair(
-      "id",
-      "name"
-    );
-    $selectedBuild = [];
-    if(is_array($platform->requiredBuilds))
-    {
-      $selectedBuild = Build::collection()->loadIds($platform->requiredBuilds)
-      ->getUniqueField('id');
-    }
+    $platform      = new DeploymentConfig($platformId);
 
     $form = new Form('editPlatform', '');
     $form->addHiddenElement('id', $platform->id());
     $form->addTextElement('name', $platform->name);
     $form->addTextareaElement('description', $platform->description);
-    $form->addCheckboxElements('requiredBuilds', $selectedBuild, $build);
-    $form->addCheckboxElements(
-      'requiredPlatforms',
-      $platform->requiredPlatforms,
-      $platforms
-    );
     $form->addSubmitElement('Update');
-    $form->getElement('requiredBuilds')->setLabel('Required Builds');
-    $form->getElement('requiredPlatforms')->setLabel('Required Platforms');
     return new RenderGroup(
-      '<h1>Edit Platform</h1>',
+      '<h1>Edit Deployment Configuration</h1>',
       $form
     );
   }
 
   public function postEdit()
   {
-    $platform = new Platform();
+    $platform = new DeploymentConfig();
     $platform->hydrateFromUnserialized($this->request()->postVariables());
     $platform->saveChanges();
 
@@ -130,7 +93,7 @@ class PlatformController extends BaseControl
   public function renderDelete()
   {
     $platformId = $this->getInt('platformId');
-    $platform   = new Platform($platformId);
+    $platform   = new DeploymentConfig($platformId);
     $platform->delete();
 
     $msg       = new \stdClass();

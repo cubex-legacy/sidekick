@@ -5,7 +5,7 @@
 
 namespace Sidekick\Deployment;
 
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Users\Mappers\User;
@@ -23,7 +23,7 @@ abstract class BaseDeploymentService implements IDeploymentService
    */
   protected $_hosts;
 
-  public function __construct(Version $version, DeploymentStage $stage)
+  public function __construct(Version $version, DeploymentStep $stage)
   {
     $this->_version = $version;
     $this->_stage   = $stage;

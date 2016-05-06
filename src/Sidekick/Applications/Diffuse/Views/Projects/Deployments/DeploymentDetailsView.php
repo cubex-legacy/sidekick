@@ -32,7 +32,7 @@ class DeploymentDetailsView extends TemplatedViewModel
   }
 
   /**
-   * @return \Sidekick\Components\Diffuse\Mappers\DeploymentStage
+   * @return \Sidekick\Components\Diffuse\Mappers\DeploymentStep
    */
   public function getDeploymentStages()
   {

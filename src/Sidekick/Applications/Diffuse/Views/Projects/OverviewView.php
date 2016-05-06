@@ -9,7 +9,7 @@ use Cubex\Mapper\Database\RecordCollection;
 use Cubex\View\HtmlElement;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Enums\ApprovalState;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
 
@@ -22,7 +22,7 @@ class OverviewView extends TemplatedViewModel
   /**
    * @param Version[]|RecordCollection  $versions
    * @param Project                     $project
-   * @param Platform[]|RecordCollection $platforms
+   * @param DeploymentConfig[]|RecordCollection $platforms
    */
   public function __construct(Project $project, $versions, $platforms)
   {

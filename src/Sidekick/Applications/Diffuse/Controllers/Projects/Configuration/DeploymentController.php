@@ -13,44 +13,48 @@ use Cubex\Routing\Templates\ResourceTemplate;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use
-Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationOptionsView;
+  Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationOptionsView;
 use
-Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigurationView;
+  Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigStepsView;
 use
-Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStagesView;
-use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
-use Sidekick\Components\Diffuse\Mappers\Platform;
-use Sidekick\Components\Projects\Mappers\Project;
+  Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStepsView;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 
 class DeploymentController extends DiffuseController
 {
   public function renderIndex()
   {
-    $projectId = $this->getProjectId();
-    $project   = new Project($projectId);
-    $stages    = DeploymentStage::collection(['project_id' => $projectId]);
-    $platforms = Platform::orderedCollection();
+    if($this->getInt('id'))
+    {
+      $stages    = DeploymentStep::collection();
+      $platforms = DeploymentConfig::collection()->loadOneWhere(
+        ['id' => $this->getInt('id')]
+      );
 
-    return new RenderGroup(
-      $this->createView(new ProjectNav($this->appBaseUri(), $project)),
-      $this->createView(
-        new DeploymentConfigurationView($project, $platforms, $stages)
-      )
-    );
+      return new RenderGroup(
+        $this->createView(
+          new DeploymentConfigStepsView($platforms, $stages)
+        )
+      );
+    }
+    else
+    {
+      echo "You need to select a deployment config to add steps to";
+    }
   }
 
   public function renderNew()
   {
-    $stage = new DeploymentStage();
-    return new ManageDeploymentStagesView($stage);
+    $stage = new DeploymentStep();
+    return new ManageDeploymentStepsView($stage);
   }
 
   public function postNew()
   {
     $this->_createOrUpdate();
 
-    Redirect::to($this->baseUri())->with(
+    Redirect::to('/' . $this->baseUri())->with(
       'msg',
       new TransportMessage('success', 'Deployment Stage created successfully')
     )->now();
@@ -59,9 +63,9 @@ class DeploymentController extends DiffuseController
   public function renderEdit()
   {
     $stageId = $this->getInt("id");
-    $stage   = new DeploymentStage($stageId);
+    $stage   = new DeploymentStep($stageId);
 
-    return new ManageDeploymentStagesView($stage);
+    return new ManageDeploymentStepsView($stage);
   }
 
   public function postEdit()
@@ -78,43 +82,32 @@ class DeploymentController extends DiffuseController
   {
     $postData = $this->request()->postVariables();
 
-    //Create configuration object
-    $config = new \StdClass();
-    foreach($postData["configuration"] as $key => $value)
-    {
-      $config->$key = $value;
-    }
-
     if($postData['id'])
     {
-      $stage = new DeploymentStage($postData["id"]);
+      $step = new DeploymentStep($postData["id"]);
     }
     else
     {
-      $stage = new DeploymentStage();
+      $step = new DeploymentStep();
       //get max order and plus one it
-      $projectId    = $this->getProjectId();
-      $lastStage    = DeploymentStage::collection(
+      $lastStep    = DeploymentStep::collection(
         [
-        'project_id'  => $projectId,
-        'platform_id' => $postData['platformId']
+          'platform_id' => $postData['platformId']
         ]
       )->setOrderBy('order', 'DESC')->first();
-      $stage->order = idp($lastStage, "order", 0) + 1;
+      $step->order = idp($lastStep, "order", 0) + 1;
     }
 
-    $stage->platformId          = $postData["platformId"];
-    $stage->projectId           = $this->getProjectId();
-    $stage->serviceClass        = $postData["serviceClass"];
-    $stage->requireAllHostsPass = $postData["requireAllHostsPass"];
-    $stage->configuration       = $config;
-    $stage->saveChanges();
+    $step->platformId = $postData["platformId"];
+    $step->name       = $postData["name"];
+    $step->command    = $postData["command"];
+    $step->saveChanges();
   }
 
   public function renderDestroy()
   {
     $stageId = $this->getInt("id");
-    $stage   = new DeploymentStage($stageId);
+    $stage   = new DeploymentStep($stageId);
     $stage->delete();
 
     Redirect::to($this->baseUri())->with(
@@ -123,41 +116,25 @@ class DeploymentController extends DiffuseController
     )->now();
   }
 
-  public function postConfigOptions()
-  {
-    $serviceClass = $this->request()->postVariables('serviceClass');
-
-    $stageId = $this->getInt("id");
-    $stage   = new DeploymentStage($stageId);
-
-    return new Response(
-      new DeploymentConfigurationOptionsView(
-        $serviceClass,
-        $stage->configuration
-      )
-    );
-  }
-
   public function renderOrder()
   {
     $stageId    = $this->getInt('id');
-    $projectId  = $this->getProjectId();
     $platformId = $this->getInt('platformId');
     $direction  = $this->getStr('direction');
 
-    $stage    = new DeploymentStage($stageId);
+    $stage    = new DeploymentStep($stageId);
     $oldOrder = $stage->order;
 
-    $lastOrder = DeploymentStage::collection(
-      ['project_id' => $projectId, 'platform_id' => $platformId]
+    $lastOrder = DeploymentStep::collection(
+      ['platform_id' => $platformId]
     )->count();
 
     if($oldOrder == 1 && $direction == 'up'
-    || $oldOrder == $lastOrder && $direction == 'down'
+      || $oldOrder == $lastOrder && $direction == 'down'
     )
     {
       // Invalid Order Action
-      Redirect::to($this->baseUri())->now();
+      Redirect::to('/' . $this->baseUri())->now();
     }
     else
     {
@@ -176,11 +153,10 @@ class DeploymentController extends DiffuseController
 
       if($swapOrder !== null)
       {
-        $swapStage = DeploymentStage::collection()->loadWhere(
+        $swapStage = DeploymentStep::collection()->loadWhere(
           [
-          'project_id'  => $projectId,
-          'platform_id' => $platformId,
-          'order'       => $swapOrder
+            'platform_id' => $platformId,
+            'order'       => $swapOrder
           ]
         )->first();
         if($swapStage !== null)
@@ -193,16 +169,13 @@ class DeploymentController extends DiffuseController
         $stage->saveChanges();
       }
     }
-    Redirect::to($this->baseUri())->now();
+    Redirect::to('/' . $this->baseUri() . '/' . $platformId . '/steps')->now();
   }
 
   public function getRoutes()
   {
     $routes = ResourceTemplate::getRoutes();
-    array_unshift(
-      $routes,
-      new StdRoute('/getConfigurationOptions', 'configOptions')
-    );
+    $routes[] = new StdRoute('/:id/steps', 'index');
     $routes[] = new StdRoute('/:id/getConfigurationOptions', 'configOptions');
     $routes[] = new StdRoute('/:id/:platformId/order/:direction', 'order');
     return $routes;

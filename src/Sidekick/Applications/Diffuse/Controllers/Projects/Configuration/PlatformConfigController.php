@@ -13,7 +13,7 @@ use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use
 Sidekick\Applications\Diffuse\Views\Projects\Configuration\PlatformConfigurationView;
 use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformProjectConfig;
 use Sidekick\Components\Projects\Mappers\Project;
 
@@ -22,7 +22,7 @@ class PlatformConfigController extends DiffuseController
   public function renderIndex()
   {
     $project   = new Project($this->getProjectId());
-    $platforms = Platform::orderedCollection();
+    $platforms = DeploymentConfig::orderedCollection();
     $configs   = PlatformProjectConfig::collection(
       ['project_id' => $project->id()]
     );

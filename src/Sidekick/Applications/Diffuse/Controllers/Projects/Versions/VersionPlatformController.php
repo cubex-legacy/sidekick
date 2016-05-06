@@ -19,7 +19,7 @@ use Sidekick\Components\Diffuse\Helpers\VersionApproval;
 use Sidekick\Components\Diffuse\Mappers\Action;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformProjectConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
@@ -31,7 +31,7 @@ class VersionPlatformController extends VersionsController
   public function renderIndex()
   {
     $platformId = $this->getInt("platformId");
-    $platform   = new Platform($platformId);
+    $platform   = new DeploymentConfig($platformId);
 
     $actions = Action::collection(
       ['version_id' => $this->_version->id(), 'platform_id' => $platformId]
@@ -90,7 +90,7 @@ class VersionPlatformController extends VersionsController
       $platformView->setRequiredPlatforms(
         array_map(
           '\Cubex\Helpers\Strings::titleize',
-          Platform::collection()->loadIds($reqPlatforms)
+          DeploymentConfig::collection()->loadIds($reqPlatforms)
             ->getUniqueField("name")
         )
       );

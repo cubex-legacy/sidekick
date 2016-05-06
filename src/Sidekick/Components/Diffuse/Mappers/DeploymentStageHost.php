@@ -43,11 +43,11 @@ class DeploymentStageHost extends RecordMapper
   }
 
   /**
-   * @return DeploymentStage
+   * @return DeploymentStep
    */
   public function deploymentStage()
   {
-    return $this->belongsTo(new DeploymentStage());
+    return $this->belongsTo(new DeploymentStep());
   }
 
   /**

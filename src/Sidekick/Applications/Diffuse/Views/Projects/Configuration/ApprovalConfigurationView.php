@@ -9,7 +9,7 @@ use Cubex\Form\Form;
 use Cubex\Mapper\Database\RecordCollection;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Diffuse\Mappers\ApprovalConfiguration;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Projects\Mappers\ProjectUser;
 
@@ -24,7 +24,7 @@ class ApprovalConfigurationView extends TemplatedViewModel
   /**
    * @param Project                                  $project
    * @param RecordCollection|ApprovalConfiguration[] $approvalConfigs
-   * @param RecordCollection|Platform[]              $platforms
+   * @param RecordCollection|DeploymentConfig[]              $platforms
    * @param RecordCollection|ProjectUser[]           $users
    */
   public function __construct(

@@ -8,7 +8,7 @@ namespace Sidekick\Applications\Diffuse\Views\Projects\Versions;
 use Cubex\Mapper\Database\RecordCollection;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Enums\ApprovalState;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Repository\Mappers\Commit;
@@ -85,7 +85,7 @@ class VersionDetailsView extends TemplatedViewModel
     foreach($this->_platforms as $platform)
     {
       /**
-       * @var $platform Platform
+       * @var $platform DeploymentConfig
        */
       $state    = $this->getPlatformState($platform->id());
       $progress = 'none';

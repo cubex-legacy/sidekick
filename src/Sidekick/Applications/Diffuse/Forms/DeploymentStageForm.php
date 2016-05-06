@@ -10,7 +10,7 @@ use Cubex\Form\Form;
 use Cubex\Form\FormElement;
 use Cubex\Form\OptionBuilder;
 use Sidekick\Components\Diffuse\Helpers\DeploymentHelper;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Projects\Mappers\Project;
 
 class DeploymentStageForm extends Form
@@ -18,8 +18,7 @@ class DeploymentStageForm extends Form
   public $id;
   public $name;
   public $platformId;
-  public $serviceClass;
-  public $requireAllHostsPass;
+  public $command;
   protected $_mapper;
 
   public function __construct($action = '')
@@ -34,15 +33,13 @@ class DeploymentStageForm extends Form
 
     $this->addSelectElement(
       "platformId",
-      (new OptionBuilder(Platform::orderedCollection()))->getOptions()
+      (new OptionBuilder(DeploymentConfig::collection()))->getOptions()
     );
 
     $this->_attribute("platformId")->setLabel("Platform");
 
-    $serviceClassOptions = DeploymentHelper::getServiceClassOptions();
-    $serviceClassOptions = ["" => '-SELECT-'] + $serviceClassOptions;
+    $this->addTextElement('name');
+    $this->addTextareaElement('command');
 
-    $this->addSelectElement("serviceClass", $serviceClassOptions);
-    $this->addSelectElement("requireAllHostsPass", ["No", "Yes"]);
   }
 }

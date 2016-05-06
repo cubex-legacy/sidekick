@@ -17,7 +17,7 @@ use Sidekick\Applications\Diffuse\Forms\DeploymentStageForm;
 use Sidekick\Components\Diffuse\Helpers\DeploymentHelper;
 use Sidekick\Components\Projects\Mappers\Project;
 
-class ManageDeploymentStagesView extends TemplatedViewModel
+class ManageDeploymentStepsView extends TemplatedViewModel
 {
   protected $_stage;
 

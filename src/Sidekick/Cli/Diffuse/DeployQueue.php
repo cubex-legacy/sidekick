@@ -13,7 +13,7 @@ use Cubex\Log\Log;
 use Cubex\Queue\CallableQueueConsumer;
 use Cubex\Queue\StdQueue;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Symfony\Component\Process\Process;
 
@@ -63,7 +63,7 @@ class DeployQueue extends CliCommand
     $versionId  = $data->versionId;
 
     $version  = new Version($versionId);
-    $platform = new Platform($platformId);
+    $platform = new DeploymentConfig($platformId);
 
     Log::info("Entering Deployment for : " . $version->project()->name);
     Log::info(

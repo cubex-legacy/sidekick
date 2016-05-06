@@ -9,7 +9,7 @@ use Bundl\Debugger\DebuggerBundle;
 use Cubex\Cli\CliCommand;
 use Sidekick\Components\Diffuse\Enums\VersionType;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
-use Sidekick\Components\Diffuse\Mappers\Platform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Deployment\Rsync\RsyncService;
 

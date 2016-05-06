@@ -9,7 +9,7 @@ use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
 use
   Sidekick\Applications\Diffuse\Views\Projects\Deployments\DeploymentDetailsView;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStage;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
 
 class DeploymentController extends DiffuseController
@@ -23,7 +23,7 @@ class DeploymentController extends DiffuseController
       ['deployment_id' => $deploymentId]
     );
 
-    $deploymentStages = DeploymentStage::collection(
+    $deploymentStages = DeploymentStep::collection(
       [
         'platform_id' => $deployment->platformId,
         'project_id'  => $this->getProjectId()

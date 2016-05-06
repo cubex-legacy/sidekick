@@ -26,7 +26,7 @@ class Deployment extends RecordMapper
 
   public function platform()
   {
-    return new Platform($this->platformId);
+    return new DeploymentConfig($this->platformId);
   }
 
   public function user()

@@ -9,7 +9,7 @@ namespace Sidekick\Applications\Diffuse\Views\Platforms;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Fortify\Mappers\Build;
 
-class PlatformIndex extends TemplatedViewModel
+class DeploymentConfigurationIndex extends TemplatedViewModel
 {
   protected $_platforms;
 
@@ -18,7 +18,7 @@ class PlatformIndex extends TemplatedViewModel
     $this->_platforms = $platforms;
   }
 
-  public function getPlatforms()
+  public function getDeploymentConfigs()
   {
     return $this->_platforms;
   }

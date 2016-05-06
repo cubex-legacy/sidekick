@@ -28,7 +28,7 @@
 
   foreach($this->getDeploymentlist() as $deplyment)
   {
-    $project = new \Sidekick\Components\Projects\Mappers\Project($deplyment->projectIid);
+    $project = new \Sidekick\Components\Projects\Mappers\Project($deplyment->projectId);
     $b = new \Sidekick\Components\Fortify\Mappers\BuildRun($deplyment->versionId);
     $user = new \Sidekick\Components\Users\Mappers\User($deplyment->userId);
     $hosts = json_decode($deplyment->hosts);

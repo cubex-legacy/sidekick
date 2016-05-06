@@ -21,12 +21,15 @@
   <?php foreach($this->getBuildRuns() as $b): ?>
     <tr class="<?= $this->textClass($b->result);  ?>">
       <td>
+        <?php $exploded = explode(":", $this->project($b->project_id)->name); ?>
+        <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
         <a
           href="/P<?= $b->project_id ?>/fortify/<?= $b->build_id ?>/<?= $b->id; ?>">
-          <?= $this->project($b->project_id)->name; ?>: Build #<?= $b->id; ?>
+
+          <?= isset($exploded[1]) ? $exploded[1] : $exploded[0]; ?>: #<?= $b->id; ?>
         </a>
       </td>
-      <td><?= $b->branch ?></td>
+      <td  ><?= substr($b->branch,0,20 ) ?></td>
       <td><?= substr($b->commit_hash, 0, 8) ?></td>
       <td><?= $this->build($b->build_id)->name; ?></td>
       <td><?= date('d M Y @ H:i:s', strtotime($b->start_time)) ?></td>

@@ -65,7 +65,7 @@ class DeploymentView extends TemplatedViewModel
 
       $this->_form->getElement(
         "deploymentHosts[$host->id]"
-      )->setLabel($host->name);
+      )->setLabel($host->hostname);
     }
 
     $this->_form->addTextAreaElement('comment');

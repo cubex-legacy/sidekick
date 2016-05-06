@@ -2,7 +2,7 @@
 /**
  * Author: oke.ugwu
  * Date: 28/08/13 18:25
- * @var $this \Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentHostsView
+ * @var $this \Sidekick\Applications\Diffuse\Views\DeploymentView
  */
 ?>
 <h2>Deploy Project - <?= $this->project()->name ?></h2>
@@ -20,14 +20,24 @@
 
     <p>Deploy Base: <br/><?= $this->form()->getElement('deploy_base') ?></p>
     <p>Choose Servers:</p>
-    <?php foreach($this->hosts() as $host): 
+    <?php
+    $groups = [];
+    foreach($this->hosts() as $host):
       //bit of magic to group them
-      $split = explode($host->, )
+      $groups[$host->name][] = $host;
+     endforeach; ?>
+
+    <?php foreach($groups as $group => $hosts):?>
       
+      <h3><?= $group ?></h3>
+      <?php
+      foreach($hosts as $host):
       ?>
-      <p class="pull-left" style="padding:10px; text-align: center;">
+
+    <p class="pull-left" style="padding:10px; text-align: center;">
         <?= $this->form()->getElement("deploymentHosts[$host->id]") ?>
       </p>
+      <?php endforeach; ?>
     <?php endforeach; ?>
     <div class="clearfix"></div>
   </div>

@@ -14,6 +14,7 @@ use Sidekick\Components\Users\Mappers\User;
 class Deployment extends RecordMapper
 {
   public $versionId;
+  public $buildId;
   public $platformId;
   public $userId;
   public $projectId;

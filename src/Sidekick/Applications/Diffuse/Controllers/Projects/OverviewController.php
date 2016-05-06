@@ -70,7 +70,7 @@ class OverviewController extends ProjectAwareBaseControl
     $deployment->pending    = true;
     $deployment->platformId = $postData["platformId"]; //TODO rename to deploymentConfigId
     $deployment->projectId  = $this->_projectId;
-    $deployment->versionId  = $this->getInt("buildId"); //this is now build id. todo rename field
+    $deployment->buildId  = $this->getInt("buildId");
     $deployment->userId     = \Auth::user()->getId();
     $deployment->hosts      = json_encode(array_keys($postData['deploymentHosts']));
     $deployment->comment    = $postData['comment'];
@@ -114,7 +114,7 @@ class OverviewController extends ProjectAwareBaseControl
     return new DeploymentStagesView($deployments, new Deployment($deploymentId));
   }
 
-  
+
   public function getRoutes()
   {
     return [

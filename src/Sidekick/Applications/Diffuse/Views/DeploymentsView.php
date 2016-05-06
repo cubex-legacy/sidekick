@@ -36,14 +36,14 @@ class DeploymentsView extends TemplatedViewModel
   {
     return $this->_deploymentlist;
   }
-  public function textClass($result)
+  public function textClass($deployment)
   {
     $return = "text-info";
-    if($result == 'fail')
+    if($deployment->passed && !$deployment->pending)
     {
       $return = "text-error";
     }
-    elseif($result == 'pass')
+    elseif($deployment->passed)
     {
       $return = "text-success";
     }

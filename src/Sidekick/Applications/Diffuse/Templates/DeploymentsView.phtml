@@ -46,7 +46,7 @@
 
 
     ?>
-    <tr class="<?= $this->textClass($deplyment->passed);  ?>">
+    <tr class="<?= $this->textClass($deplyment);  ?>">
       <td>
         <?php $exploded = explode(":", $project->name); ?>
         <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
@@ -67,7 +67,7 @@
       </td>
       <td><?= substr($b->branch,0,20 ) ?></td>
       <td><?= implode(', ', $hostnames) ?></td>
-      <td><?= ucfirst($b->result) ?></td>
+      <td><?= $deplyment->passed ? 'Passed' : ($deplyment->pending ? 'Pending' : 'Failed'); ?></td>
       <td><?= ucfirst($user->username) ?></td>
       <td><?= ucfirst($deplyment->updatedAt) ?></td>
     </tr>

@@ -20,7 +20,11 @@
 
     <p>Deploy Base: <br/><?= $this->form()->getElement('deploy_base') ?></p>
     <p>Choose Servers:</p>
-    <?php foreach($this->hosts() as $host): ?>
+    <?php foreach($this->hosts() as $host): 
+      //bit of magic to group them
+      $split = explode($host->, )
+      
+      ?>
       <p class="pull-left" style="padding:10px; text-align: center;">
         <?= $this->form()->getElement("deploymentHosts[$host->id]") ?>
       </p>

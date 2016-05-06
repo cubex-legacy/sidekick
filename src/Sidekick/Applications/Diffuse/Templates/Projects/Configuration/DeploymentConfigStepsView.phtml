@@ -3,7 +3,7 @@
  * @var $this Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentConfigStepsView
  */
 ?>
-<h2>Deployment Configuration Steps</h2>
+<h2><?= \Cubex\Helpers\Strings::titleize($this->platform()->name) ?>: Configuration Steps</h2>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
     <?php echo Session::getFlash('msg')->message; ?>
@@ -15,7 +15,6 @@
     <i class="icon-white icon-plus"></i> Add Deployment Step</a>
 </p>
 <?php $platform = $this->platform() ?>
-  <h2><?= \Cubex\Helpers\Strings::titleize($platform->name) ?></h2>
   <table class="table table-striped table-bordered table-condensed">
     <thead>
     <tr>

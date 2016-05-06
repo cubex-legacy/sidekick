@@ -15,7 +15,7 @@ class DiffuseApp extends ProjectAwareApplication
   public function getRoutes()
   {
     return [
-      'manage-configs/(.*)' => 'DeploymentConfigController',
+      'manage-configs/(.*)'  => 'DeploymentConfigController',
       '/hosts/(.*)'          => 'HostController',
       '/platforms/(.*)'      => 'PlatformController',
       '/configuration'       => [
@@ -34,6 +34,7 @@ class DiffuseApp extends ProjectAwareApplication
         '/(.*)'                   => 'Projects\Versions\VersionDetailController',
       ],
       '/'                    => 'Projects\OverviewController',
+      '/:buildId@num'        => 'Projects\OverviewController',
     ];
   }
 

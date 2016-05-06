@@ -28,7 +28,7 @@
         </td>
         <td>
           <?php if($run->result == 'pass'): ?>
-          <a href="/P<?= $run->projectId ?>/diffuse">Deploy</a> |
+          <a href="/P<?= $run->projectId ?>/diffuse/<?= $run->id() ?>">Deploy</a> |
           <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/changes">Changes</a>
           <?php endif; ?>
           <?php if($run->result != 'pass'): ?>

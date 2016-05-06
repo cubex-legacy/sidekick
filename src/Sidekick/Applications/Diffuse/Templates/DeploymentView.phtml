@@ -15,6 +15,7 @@
 <?= $this->form()->token() ?>
 <?= $this->form()->formNameInput() ?>
   <div>
+    <?= $this->form()->getElement('buildId'); ?>
     <p>Select Deployment Config: <br/><?= $this->form()->getElement('platformId'); ?></p>
 
     <p>Choose Servers:</p>
@@ -25,5 +26,6 @@
     <?php endforeach; ?>
     <div class="clearfix"></div>
   </div>
+<p>Comment:<br/><?= $this->form()->getElement('comment') ?></p>
 <?= $this->form()->getElement('submit') ?>
 <?= $this->form()->close() ?>

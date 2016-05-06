@@ -10,18 +10,20 @@ use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
 
-class DeploymentHostsView extends TemplatedViewModel
+class DeploymentView extends TemplatedViewModel
 {
   protected $_project;
   protected $_hosts;
   protected $_platforms;
   protected $_form;
+  protected $_buildRun;
 
-  public function __construct($project, $hosts, $platforms)
+  public function __construct($project, $hosts, $platforms, $buildRun)
   {
     $this->_project   = $project;
     $this->_hosts     = $hosts;
     $this->_platforms = $platforms;
+    $this->_buildRun  = $buildRun;
   }
 
   public function hosts()
@@ -43,6 +45,8 @@ class DeploymentHostsView extends TemplatedViewModel
     $this->_form = new Form('deploymentHosts');
     $this->_form->setDefaultElementTemplate('{{input}}');
 
+    $this->_form->addHiddenElement('buildId', $this->_buildRun->id());
+
     $this->_form->addSelectElement(
       "platformId",
       (new OptionBuilder($this->_platforms))->getOptions()
@@ -62,6 +66,7 @@ class DeploymentHostsView extends TemplatedViewModel
       )->setLabel($host->name);
     }
 
+    $this->_form->addTextAreaElement('comment');
     $this->_form->addSubmitElement('Deploy');
 
     return $this->_form;

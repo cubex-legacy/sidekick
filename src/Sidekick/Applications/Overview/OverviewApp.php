@@ -46,6 +46,8 @@ class OverviewApp extends SidekickApplication
         . '\Controllers\FortifyBuildsController',
       'manage-hosts/(.*)'     => '\Sidekick\Applications\Diffuse'
         . '\Controllers\HostController',
+      'manage-platforms/(.*)'     => '\Sidekick\Applications\Diffuse'
+        . '\Controllers\PlatformController',
       'projects/(.*)'     => '\Sidekick\Applications\Projects'
         . '\Controllers\DefaultController',
     ];

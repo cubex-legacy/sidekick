@@ -22,6 +22,7 @@ use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Servers\Mappers\Server;
 use Sidekick\Components\Users\Mappers\User;
 use Sidekick\Deployment\IDeploymentService;
+use Symfony\Component\Process\Process;
 
 class Deploy extends CliCommand
 {
@@ -167,15 +168,17 @@ class Deploy extends CliCommand
           );
 
           echo "Running $step->name ($command) ON Server: " . $server->hostname . PHP_EOL;
+          $process = new Process($command);
+          $process->run();
 
           $sh                    = new DeploymentStageHost();
           $sh->deploymentId      = $deployment->id();
           $sh->deploymentStageId = $step->id();
           $sh->serverId          = $server->id();
           $sh->command           = $command;
-          $sh->passed            = 'TODO';
-          $sh->stdOut            = 'TODO';
-          $sh->stdErr            = 'TODO';
+          $sh->passed            = $process->getExitCode() == 0;
+          $sh->stdOut            = $process->getOutput();
+          $sh->stdErr            = $process->getErrorOutput();
           $sh->log               = 'TODO';
           $sh->saveChanges();
         }

@@ -22,10 +22,10 @@ class DeploymentHostsController extends DiffuseController
 {
   public function renderIndex()
   {
-    $projectId = $this->getProjectId();
+    $projectId = 1; //$this->getProjectId();
     $project   = new Project($projectId);
     $hosts     = Server::collection();
-    $platforms = DeploymentConfig::orderedCollection();
+    $platforms = DeploymentConfig::collection();
 
     return new RenderGroup(
       $this->createView(new ProjectNav($this->appBaseUri(), $project)),

@@ -8,11 +8,13 @@ namespace Sidekick\Applications\Diffuse\Controllers\Projects;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
 use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
+use Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentHostsView;
 use Sidekick\Applications\Diffuse\Views\Projects\OverviewView;
 use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
 use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
+use Sidekick\Components\Servers\Mappers\Server;
 
 class OverviewController extends ProjectAwareBaseControl
 {
@@ -28,14 +30,23 @@ class OverviewController extends ProjectAwareBaseControl
     $project = new Project($this->_projectId);
     if($project->exists())
     {
-      $versions = Version::collection(['project_id' => $this->_projectId])
+      $hosts     = Server::collection();
+      $configs = DeploymentConfig::collection();
+
+      return new RenderGroup(
+        $this->createView(
+          new DeploymentHostsView($project, $hosts, $configs)
+        )
+      );
+
+      /*$versions = Version::collection(['project_id' => $this->_projectId])
       ->setOrderBy("id", "DESC")->setLimit(0, 50)->preFetch("platformStates");
       return new RenderGroup(
         $this->createView(new ProjectNav($this->appBaseUri(), $project)),
         $this->createView(
           new OverviewView($project, $versions, DeploymentConfig::collection())
         )
-      );
+      );*/
     }
     else
     {

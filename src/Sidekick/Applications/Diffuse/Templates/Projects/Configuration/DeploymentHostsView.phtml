@@ -5,7 +5,7 @@
  * @var $this \Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentHostsView
  */
 ?>
-<h2>Deployment Hosts</h2>
+<h2>Deploy Project - <?= $this->project()->name ?></h2>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
     <?php echo Session::getFlash('msg')->message; ?>
@@ -14,18 +14,16 @@
 <?= $this->form()->open() ?>
 <?= $this->form()->token() ?>
 <?= $this->form()->formNameInput() ?>
-<?php foreach($this->platforms() as $platform): ?>
-  <h2><?= \Cubex\Helpers\Strings::titleize($platform->name) ?></h2>
   <div>
+    <p>Select Deployment Config: <br/><?= $this->form()->getElement('platformId'); ?></p>
+
+    <p>Choose Servers:</p>
     <?php foreach($this->hosts() as $host): ?>
       <p class="pull-left" style="padding:10px; text-align: center;">
-        <?= $this->form()->getElement(
-          "deploymentHosts[$platform->id][$host->id]"
-        ) ?>
+        <?= $this->form()->getElement("deploymentHosts[$host->id]") ?>
       </p>
     <?php endforeach; ?>
     <div class="clearfix"></div>
   </div>
-<?php endforeach; ?>
 <?= $this->form()->getElement('submit') ?>
 <?= $this->form()->close() ?>

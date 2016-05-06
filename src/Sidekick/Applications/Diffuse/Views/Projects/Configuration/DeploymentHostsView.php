@@ -7,9 +7,8 @@
 namespace Sidekick\Applications\Diffuse\Views\Projects\Configuration;
 
 use Cubex\Form\Form;
+use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
-use Qubes\Bootstrap\Label;
-use Sidekick\Components\Diffuse\Mappers\HostPlatform;
 
 class DeploymentHostsView extends TemplatedViewModel
 {
@@ -43,41 +42,33 @@ class DeploymentHostsView extends TemplatedViewModel
     }
     $this->_form = new Form('deploymentHosts');
     $this->_form->setDefaultElementTemplate('{{input}}');
-    foreach($this->platforms() as $platform)
+
+    $this->_form->addSelectElement(
+      "platformId",
+      (new OptionBuilder($this->_platforms))->getOptions()
+    );
+
+    foreach($this->hosts() as $host)
     {
-      foreach($this->hosts() as $host)
-      {
-        $hp = new HostPlatform(
-          [
-          $platform->id(),
-          $this->_project->id(),
-          $host->id
-          ]
-        );
+      $this->_form->addCheckboxElement(
+        "deploymentHosts[$host->id]",
+        false,
+        true,
+        FORM::LABEL_BEFORE
+      );
 
-        $this->_form->addCheckboxElement(
-          "deploymentHosts[$platform->id][$host->id]",
-          ($hp->exists()) ? true : false,
-          true,
-          FORM::LABEL_BEFORE
-        );
-
-        $this->_form->getElement(
-          "deploymentHosts[$platform->id][$host->id]"
-        )->setLabel($host->name);
-      }
+      $this->_form->getElement(
+        "deploymentHosts[$host->id]"
+      )->setLabel($host->name);
     }
-    $this->_form->addSubmitElement('Save');
+
+    $this->_form->addSubmitElement('Deploy');
 
     return $this->_form;
   }
 
-  public function getHosts($platformId)
+  public function project()
   {
-    $hosts = HostPlatform::collection(
-      ['project_id' => $this->_project->id(), 'platform_id' => $platformId]
-    );
-
-    return $hosts;
+    return $this->_project;
   }
 }

@@ -14,12 +14,13 @@
 
 <table class="table">
   <tr>
-    <th>Project</th>
+    <th> </th>
     <th>Build Number</th>
     <th>Branch</th>
     <th>Hosts</th>
     <th>Status</th>
     <th>User</th>
+    <th>Date</th>
   </tr>
   <?php
   /***
@@ -49,12 +50,12 @@
       <td>
         <?php $exploded = explode(":", $project->name); ?>
         <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
-        <?php $link = $this->getProject() ? "/P$deplyment->projectId/diffuse/$b->buildId" : "/P$deplyment->projectId/diffuse/deployments" ?>
+        <?php $link = $this->getProject() ? "/P$deplyment->projectId/diffuse/deployments/$deplyment->id/stages" : "/P$deplyment->projectId/diffuse/deployments"; ?>
 
         <a
           href="<?php echo $link ?>">
 
-          <?= isset($exploded[1]) ? $exploded[1] : $exploded[0]; ?>  
+          <?= isset($exploded[1]) ? $exploded[1] : $exploded[0]; ?> #<?= $deplyment->id(); ?>
         </a>
       </td>
       <td>
@@ -68,6 +69,7 @@
       <td><?= implode(', ', $hostnames) ?></td>
       <td><?= ucfirst($b->result) ?></td>
       <td><?= ucfirst($user->username) ?></td>
+      <td><?= ucfirst($deplyment->updatedAt) ?></td>
     </tr>
   <?php } ?>
 </table>

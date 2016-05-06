@@ -1,0 +1,41 @@
+<?php
+/**
+ * Author: oke.ugwu
+ * Date: 28/08/13 18:25
+ * @var $this \Sidekick\Applications\Diffuse\Views\DeploymentStagesView
+ */
+?>
+<h2>Deployments <?= $this->getDeployment()->id(); ?></h2>
+<?php if(Session::getFlash('msg')): ?>
+  <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
+    <?php echo Session::getFlash('msg')->message; ?>
+  </div>
+<?php endif; ?>
+
+<table class="table">
+  <tr>
+    <th>Command</th>
+    <th>Date</th>
+    <th>Log</th>
+    <th>Server</th>
+  </tr>
+  <?php
+  /***
+   * @var $deplyment \Sidekick\Components\Diffuse\Mappers\DeploymentStageHost
+   */
+  foreach($this->getDeploymentlist() as $command)
+  {   
+    $server = new \Sidekick\Components\Servers\Mappers\Server($command->serverId);
+    ?>
+    <tr class=" ">
+      <td> 
+        <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
+
+        <?php echo $command->command; ?>
+      </td>
+      <td><?php echo $command->updated_at; ?></td>
+      <td><?php echo $command->log; ?></td>
+      <td><?php echo $server->name; ?></td>
+    </tr>
+  <?php } ?>
+</table>

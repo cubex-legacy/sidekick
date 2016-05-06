@@ -130,8 +130,8 @@ class DeploymentConfigController extends DiffuseController
 
   public function renderNewSteps()
   {
-    $stage = new DeploymentStep();
-    $view = new ManageDeploymentStepsView($stage);
+    $stage          = new DeploymentStep();
+    $view           = new ManageDeploymentStepsView($stage);
     $view->configId = $this->getInt('configId');
     return $view;
   }
@@ -210,14 +210,14 @@ class DeploymentConfigController extends DiffuseController
   public function renderOrderSteps()
   {
     $stepId     = $this->getInt('stepId');
-    $platformId = $this->getInt('platformId');
+    $configId = $this->getInt('configId');
     $direction  = $this->getStr('direction');
 
     $stage    = new DeploymentStep($stepId);
     $oldOrder = $stage->order;
 
     $lastOrder = DeploymentStep::collection(
-      ['platform_id' => $platformId]
+      ['platform_id' => $configId]
     )->count();
 
     if($oldOrder == 1 && $direction == 'up'
@@ -225,7 +225,7 @@ class DeploymentConfigController extends DiffuseController
     )
     {
       // Invalid Order Action
-      Redirect::to($this->baseUri())->now();
+      Redirect::to($this->baseUri() . '/' . $configId . '/steps')->now();
     }
     else
     {
@@ -246,7 +246,7 @@ class DeploymentConfigController extends DiffuseController
       {
         $swapStage = DeploymentStep::collection()->loadWhere(
           [
-            'platform_id' => $platformId,
+            'platform_id' => $configId,
             'order'       => $swapOrder
           ]
         )->first();
@@ -260,19 +260,20 @@ class DeploymentConfigController extends DiffuseController
         $stage->saveChanges();
       }
     }
-    Redirect::to($this->baseUri() . '/' . $platformId . '/steps')->now();
+    Redirect::to($this->baseUri() . '/' . $configId . '/steps')->now();
   }
 
   public function getRoutes()
   {
     return [
-      '/create'                         => 'create',
-      '/:platformId/edit'               => 'edit',
-      '/:platformId/delete'             => 'delete',
-      '/:configId/steps'                => 'stepsIndex',
-      '/:configId/steps/new'            => 'newSteps',
-      '/:configId/steps/:stepId/edit'   => 'editSteps',
-      '/:configId/steps/:stepId/delete' => 'destroySteps',
+      '/create'                                   => 'create',
+      '/:platformId/edit'                         => 'edit',
+      '/:platformId/delete'                       => 'delete',
+      '/:configId/steps'                          => 'stepsIndex',
+      '/:configId/steps/new'                      => 'newSteps',
+      '/:configId/steps/:stepId/edit'             => 'editSteps',
+      '/:configId/steps/:stepId/delete'           => 'destroySteps',
+      '/:configId/steps/:stepId/order/:direction' => 'orderSteps',
     ];
   }
 }

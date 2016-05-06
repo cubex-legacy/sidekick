@@ -32,13 +32,13 @@
         <td>
           <?php if($step->order > 1): ?>
             <a href="<?= $this->baseUri(
-            ) ?>/<?= $step->id ?>/<?= $step->platformId ?>/order/up"
+            ) ?>/<?= $step->platformId ?>/steps/<?= $step->id ?>/order/up"
                class="btn" style="display:block; width:10px;">
               <i class="icon icon-arrow-up"></i></a>
           <?php endif; ?>
           <?php if($step->order != $this->deploymentSteps($platform->id())->count()): ?>
             <a href="<?= $this->baseUri(
-            ) ?>/<?= $step->id ?>/<?= $step->platformId ?>/order/down"
+            ) ?>/<?= $step->platformId ?>/steps/<?= $step->id ?>/order/down"
                class="btn" style="display:block; width:10px;">
               <i class="icon icon-arrow-down"></i></a>
           <?php endif; ?>

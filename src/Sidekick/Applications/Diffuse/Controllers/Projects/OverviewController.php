@@ -90,14 +90,16 @@ class OverviewController extends ProjectAwareBaseControl
       $project = new Project($this->_projectId);
       if($project->exists())
       {
-        $deployments = Deployment::collection()->loadWhere("project_id = %d", $this->_projectId);
+        $deployments = Deployment::collection()->loadWhere("project_id = %d", $this->_projectId)->setOrderBy(
+          'project_id', 'DESC'
+        );
       }
     }
     else
     {
       $deployments = Deployment::conn()->getKeyedRows(
         'SELECT id FROM (
-         SELECT * FROM diffuse_deployments /*WHERE pending != 1*/ ORDER BY id DESC) AS sub GROUP BY project_id'
+         SELECT * FROM diffuse_deployments ORDER BY id DESC) AS sub GROUP BY project_id'
       );
       $deployments = Deployment::collection()->loadWhere("id IN (%s)", implode("','",$deployments ));
     }

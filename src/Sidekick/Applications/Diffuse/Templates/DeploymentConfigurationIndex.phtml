@@ -15,7 +15,7 @@
 <div style="margin-top:10px;"></div>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?= Session::getFlash('msg')->type; ?>">
-    <?= Session::getFlash('msg')->text; ?>
+    <?= Session::getFlash('msg')->message; ?>
   </div>
 <?php endif; ?>
 <table class="table table-striped table-bordered table-hover">
@@ -28,7 +28,7 @@
   <?php foreach($this->getDeploymentConfigs() as $config): ?>
     <tr>
       <td>
-        <a href="/diffuse/manage-configs/steps/<?= $config->id() ?>"><?= $config->name; ?></a>
+        <a href="/diffuse/manage-configs/<?= $config->id() ?>/steps"><?= $config->name; ?></a>
       </td>
       <td><?= $config->description; ?></td>
       <td><?= date('d/M/Y', strtotime($config->updated_at)); ?></td>

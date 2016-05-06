@@ -109,11 +109,11 @@ class DeploymentConfigController extends DiffuseController
 
   public function renderStepsIndex()
   {
-    if($this->getInt('id'))
+    if($this->getInt('configId'))
     {
       $stages    = DeploymentStep::collection();
       $platforms = DeploymentConfig::collection()->loadOneWhere(
-        ['id' => $this->getInt('id')]
+        ['id' => $this->getInt('configId')]
       );
 
       return new RenderGroup(
@@ -138,15 +138,18 @@ class DeploymentConfigController extends DiffuseController
   {
     $this->_createOrUpdateSteps();
 
-    Redirect::to($this->baseUri())->with(
+    $redirectUrl = $this->baseUri() . '/' . $this->getInt('configId')
+      . '/steps';
+
+    Redirect::to($redirectUrl)->with(
       'msg',
-      new TransportMessage('success', 'Deployment Stage created successfully')
+      new TransportMessage('success', 'Deployment Step created successfully')
     )->now();
   }
 
   public function renderEditSteps()
   {
-    $stepId = $this->getInt("id");
+    $stepId = $this->getInt("stepId");
     $step   = new DeploymentStep($stepId);
 
     return new ManageDeploymentStepsView($step);
@@ -158,7 +161,7 @@ class DeploymentConfigController extends DiffuseController
 
     Redirect::to($this->baseUri())->with(
       'msg',
-      new TransportMessage('success', 'Deployment Stage updated successfully')
+      new TransportMessage('success', 'Deployment Step updated successfully')
     )->now();
   }
 
@@ -190,23 +193,25 @@ class DeploymentConfigController extends DiffuseController
 
   public function renderDestroySteps()
   {
-    $stageId = $this->getInt("id");
-    $stage   = new DeploymentStep($stageId);
-    $stage->delete();
+    $stepId = $this->getInt("stepId");
+    $step   = new DeploymentStep($stepId);
+    $step->delete();
 
-    Redirect::to($this->baseUri())->with(
+    $redirectUrl = $this->baseUri() . '/' . $this->getInt('configId')
+      . '/steps/' . $stepId;
+    Redirect::to($redirectUrl)->with(
       'msg',
-      new TransportMessage('success', 'Stage deleted successfully')
+      new TransportMessage('success', 'Deployment Step deleted successfully')
     )->now();
   }
 
   public function renderOrderSteps()
   {
-    $stageId    = $this->getInt('id');
+    $stepId     = $this->getInt('stepId');
     $platformId = $this->getInt('platformId');
     $direction  = $this->getStr('direction');
 
-    $stage    = new DeploymentStep($stageId);
+    $stage    = new DeploymentStep($stepId);
     $oldOrder = $stage->order;
 
     $lastOrder = DeploymentStep::collection(
@@ -259,13 +264,13 @@ class DeploymentConfigController extends DiffuseController
   public function getRoutes()
   {
     return [
-      '/create'             => 'create',
-      '/:platformId/edit'   => 'edit',
-      '/:platformId/delete' => 'delete',
-      '/steps/new'          => 'newSteps',
-      '/steps/:id'          => 'stepsIndex',
-      '/steps/:id/edit'     => 'editSteps',
-      '/steps/:id/delete'   => 'destroySteps',
+      '/create'                         => 'create',
+      '/:platformId/edit'               => 'edit',
+      '/:platformId/delete'             => 'delete',
+      '/:configId/steps'                => 'stepsIndex',
+      '/:configId/steps/new'            => 'newSteps',
+      '/:configId/steps/:stepId/edit'   => 'editSteps',
+      '/:configId/steps/:stepId/delete' => 'destroySteps',
     ];
   }
 }

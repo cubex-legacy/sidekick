@@ -11,7 +11,7 @@
 <?php endif; ?>
 <p class="pull-right">
   <a class="btn btn-success"
-     href="<?= $this->baseUri() ?>/steps/new">
+     href="<?= $this->baseUri() ?>/<?= $this->platform()->id() ?>/steps/new">
     <i class="icon-white icon-plus"></i> Add Deployment Step</a>
 </p>
 <?php $platform = $this->platform() ?>
@@ -44,9 +44,9 @@
           <?php endif; ?>
         </td>
         <td>
-          <a href="<?= $this->baseUri() ?>/steps/<?= $step->id ?>/edit"><i
+          <a href="<?= $this->baseUri() ?>/<?= $this->platform()->id() ?>/steps/<?= $step->id ?>/edit"><i
               class="icon icon-edit"></i></a>
-          <a href="<?= $this->baseUri() ?>/steps/<?= $step->id ?>/delete"><i
+          <a href="<?= $this->baseUri() ?>/<?= $this->platform()->id() ?>/steps/<?= $step->id ?>/delete"><i
               class="icon icon-trash"></i></a>
         </td>
       </tr>

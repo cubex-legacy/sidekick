@@ -68,7 +68,7 @@ class Deploy extends CliCommand
         }
         else
         {
-          $version   = new BuildRun($deployment->versionId);
+          $version   = new BuildRun($deployment->buildId);
           $depConfig = new DeploymentConfig($deployment->platformId);
           $project   = new Project($deployment->projectId);
           $user      = new User($deployment->userId);
@@ -134,19 +134,39 @@ class Deploy extends CliCommand
       $build          = new Build($version->buildId);
       $buildSourceDir = build_path($buildPath, $build->sourceDirectory);
 
-      $deployBase = '/home/backends/finance';
+      $deployBase = build_path($deployment->deployBase, $version->id());
 
+      /**
+       * @var Server $server
+       */
       foreach($servers as $server)
       {
         foreach($steps as $step)
         {
-          echo "Running $step->name ($step->command) ON Server: " . $server->hostname . PHP_EOL;
-
           $command = str_replace(
-            ['{buildSource}', '{hostPort}', '{deployBase}'],
-            [$buildSourceDir, $server->sshPort, $deployBase],
+            [
+              '{buildSource}',
+              '{deployBase}',
+              '{username}',
+              '{server}',
+              '{hostname}',
+              '{sshport}',
+              '{ipv4}',
+              '{ipv6}',
+            ],
+            [
+              $buildSourceDir,
+              $deployBase,
+              $server->sshUser,
+              $server->getConnPreference(),
+              $server->sshPort,
+              $server->ipv4,
+              $server->ipv6,
+            ],
             $step->command
           );
+
+          echo "Running $step->name ($command) ON Server: " . $server->hostname . PHP_EOL;
 
           $sh                    = new DeploymentStageHost();
           $sh->deploymentId      = $deployment->id();

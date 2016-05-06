@@ -39,7 +39,8 @@ class OverviewApp extends SidekickApplication
 
   public function getRoutes()
   {
-    return [ 
+    return [
+
     ];
   }
 }

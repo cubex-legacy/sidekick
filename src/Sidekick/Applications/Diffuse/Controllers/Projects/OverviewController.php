@@ -7,12 +7,8 @@ namespace Sidekick\Applications\Diffuse\Controllers\Projects;
 
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
-use Sidekick\Applications\Diffuse\Controllers\DiffuseController;
-use Sidekick\Applications\Diffuse\Views\Projects\Configuration\DeploymentHostsView;
-use Sidekick\Applications\Diffuse\Views\Projects\OverviewView;
-use Sidekick\Applications\Diffuse\Views\Projects\ProjectNav;
+use Sidekick\Applications\Diffuse\Views\DeploymentHostsView;
 use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
-use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Servers\Mappers\Server;
 
@@ -52,5 +48,10 @@ class OverviewController extends ProjectAwareBaseControl
     {
       throw new \Exception("You seem to have stumbed upon.... nothing.");
     }
+  }
+
+  public function postIndex()
+  {
+    die("process");
   }
 }

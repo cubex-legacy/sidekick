@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace Sidekick\Applications\Diffuse\Views\Projects\Configuration;
+namespace Sidekick\Applications\Diffuse\Views;
 
 use Cubex\Form\Form;
 use Cubex\Form\FormElement;
@@ -19,26 +19,26 @@ use Sidekick\Components\Projects\Mappers\Project;
 
 class ManageDeploymentStepsView extends TemplatedViewModel
 {
-  protected $_stage;
+  protected $_step;
 
-  public function __construct($stage = null)
+  public function __construct($step = null)
   {
-    $this->_stage = $stage;
+    $this->_step = $step;
     $this->requireJs("stageConfig");
   }
 
-  public function stage()
+  public function step()
   {
-    return $this->_stage;
+    return $this->_step;
   }
 
   public function form()
   {
     $form = new DeploymentStageForm();
-    $form->hydrateFromMapper($this->_stage);
+    $form->hydrateFromMapper($this->_step);
 
     $buttonText = 'Create';
-    if($this->_stage->exists())
+    if($this->_step->exists())
     {
       $buttonText = 'Update';
       $form->getElement('platformId')->setType(FormElement::HIDDEN);

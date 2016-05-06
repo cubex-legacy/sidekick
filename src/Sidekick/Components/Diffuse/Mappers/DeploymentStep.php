@@ -22,14 +22,13 @@ class DeploymentStep extends RecordMapper
   /**
    * @return DeploymentConfig
    */
-  public function platform()
+  public function config()
   {
-    return $this->belongsTo(new DeploymentConfig());
+    return $this->belongsTo(new DeploymentConfig(), 'platform_id');
   }
 
   public function getTableName($plural = true)
   {
     return "diffuse_deployment_stages";
   }
-
 }

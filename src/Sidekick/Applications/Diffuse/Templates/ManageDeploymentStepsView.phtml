@@ -7,15 +7,15 @@
  * @var $this \Sidekick\Applications\Diffuse\Views\Projects\Configuration\ManageDeploymentStepsView
  */
 ?>
-<h2><?= (!$this->stage()->exists()) ? "Add" : "Edit" ?> Deployment Step</h2>
+<h2><?= (!$this->step()->exists()) ? "Add" : "Edit" ?> Deployment Step</h2>
 <?php $form = $this->form(); ?>
 <?= $form->open(); ?>
 <?= $form->formNameInput(); ?>
 <?= $form->token(); ?>
 <?= $form->getElement("id"); ?>
-<?php if($this->stage()->exists()): ?>
+<?php if($this->step()->exists()): ?>
 <h3>Platform: <?= \Cubex\Helpers\Strings::titleize(
-    $this->stage()->platform()->name
+    $this->step()->config()->name
   ); ?></h3>
 <?php endif; ?>
 <?= $form->getElement("platformId"); ?>

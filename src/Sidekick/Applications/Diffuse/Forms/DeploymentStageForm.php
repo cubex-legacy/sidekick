@@ -36,7 +36,7 @@ class DeploymentStageForm extends Form
       (new OptionBuilder(DeploymentConfig::collection()))->getOptions()
     );
 
-    $this->_attribute("platformId")->setLabel("Platform");
+    $this->_attribute("platformId")->setLabel("Deployment Configuration");
 
     $this->addTextElement('name');
     $this->addTextareaElement('command');

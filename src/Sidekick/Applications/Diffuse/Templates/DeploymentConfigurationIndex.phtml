@@ -28,7 +28,7 @@
   <?php foreach($this->getDeploymentConfigs() as $config): ?>
     <tr>
       <td>
-        <a href="/manage-configs-steps/<?= $config->id() ?>/steps"><?= $config->name; ?></a>
+        <a href="/diffuse/manage-configs/steps/<?= $config->id() ?>"><?= $config->name; ?></a>
       </td>
       <td><?= $config->description; ?></td>
       <td><?= date('d/M/Y', strtotime($config->updated_at)); ?></td>

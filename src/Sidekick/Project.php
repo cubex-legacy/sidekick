@@ -157,7 +157,7 @@ class Project extends \Cubex\Core\Project\Project
       $app->setBaseUri('/' . 'fortify');
       return $app;
     }
-    if(preg_match('/manage-steps/i', $path))
+    if(preg_match('/manage-configs-steps/i', $path))
     {
       $app = new DiffuseApp();
       $app->setBaseUri('/' . 'diffuse');

@@ -27,7 +27,7 @@ class RollbarService extends BaseDeploymentService
 
     Log::info(
       'https://api.rollbar.com/api/1/deploy/' . $this->_version->format(
-      ) . '/' . $this->_stage->platform()->name
+      ) . '/' . $this->_stage->config()->name
     );
 
     foreach($this->_hosts as $stageHost)

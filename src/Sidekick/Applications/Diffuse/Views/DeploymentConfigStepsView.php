@@ -3,7 +3,7 @@
  * @author  brooke.bryan
  */
 
-namespace Sidekick\Applications\Diffuse\Views\Projects\Configuration;
+namespace Sidekick\Applications\Diffuse\Views;
 
 use Cubex\View\HtmlElement;
 use Cubex\View\RenderGroup;

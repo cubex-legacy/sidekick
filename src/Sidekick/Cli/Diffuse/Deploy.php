@@ -128,7 +128,7 @@ class Deploy extends CliCommand
       );
       $steps     = DeploymentStep::collection(
         ['platform_id' => $depConfig->id()]
-      );
+      )->setOrderBy('order', 'ASC');
       $buildPath = FortifyHelper::buildPath($version->id());
 
       //work out build directory

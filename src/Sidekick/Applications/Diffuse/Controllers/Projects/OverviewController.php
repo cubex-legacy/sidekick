@@ -78,7 +78,7 @@ class OverviewController extends ProjectAwareBaseControl
 
       $deployment->saveChanges();
 
-      Redirect::to('/P' . $this->_projectId . '/diffuse/')->now();
+      Redirect::to('/P' . $this->_projectId . '/diffuse/deployments')->now();
     }
     else
     {

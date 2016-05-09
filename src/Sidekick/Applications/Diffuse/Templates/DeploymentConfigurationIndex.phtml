@@ -33,7 +33,7 @@
       </td>
       <td><?= $config->description; ?></td>
       <td><?= date('d/M/Y', strtotime($config->updated_at)); ?></td>
-      <td style="display:none">
+      <td>
         <a href="/diffuse/manage-configs/<?= $config->id() ?>/steps"><i class="icon-plus"></i>  Add Steps </a>
         <a href="<?= $this->baseUri() . '/' . $config->id; ?>/edit"
            title="Edit"><i class="icon-edit"></i> Edit</a>

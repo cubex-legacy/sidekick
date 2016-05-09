@@ -71,37 +71,47 @@ class OverviewController extends ProjectAwareBaseControl
     $deployment->pending    = true;
     $deployment->platformId = $postData["platformId"]; //TODO rename to deploymentConfigId
     $deployment->projectId  = $this->_projectId;
-    $deployment->buildId  = $this->getInt("buildId");
+    $deployment->buildId    = $this->getInt("buildId");
     $deployment->userId     = \Auth::user()->getId();
-    $deployment->hosts      = json_encode(array_keys($postData['deploymentHosts']));
+    $deployment->hosts      = json_encode(
+      array_keys($postData['deploymentHosts'])
+    );
     $deployment->comment    = $postData['comment'];
     $deployment->deployBase = $postData['deploy_base'];
 
     $deployment->saveChanges();
 
-    Redirect::to('/P'.$this->_projectId.'/diffuse/deployments')->now();
+    Redirect::to('/P' . $this->_projectId . '/diffuse/deployments')->now();
   }
 
   public function renderDeployments()
   {
     $deployments = Deployment::collection();
-    $project = null;
+    $project     = null;
     if($this->_projectId)
     {
       $project = new Project($this->_projectId);
       if($project->exists())
       {
-        $deployments = Deployment::collection()->loadWhere("project_id = %d", $this->_projectId)->setOrderBy(
-          'created_at', 'DESC'
+        $deployments = Deployment::collection()->loadWhere(
+          "project_id = %d",
+          $this->_projectId
+        )->setOrderBy(
+          'created_at',
+          'DESC'
         )->setLimit(0, 20);
       }
     }
     else
     {
-      $deployments = Deployment::conn()->getKeyedRows(
-        'SELECT max(id) as id FROM diffuse_deployments GROUP BY project_id ORDER BY id DESC LIMIT 20'
+      $deploymentIds = Deployment::conn()->getKeyedRows(
+        'SELECT max(id) as id FROM diffuse_deployments '
+        . 'GROUP BY project_id'
       );
-      $deployments = Deployment::collection()->loadWhere("id IN (%s)", implode("','",$deployments ));
+
+      $deployments = Deployment::collection()->loadIds(
+        array_keys($deploymentIds)
+      )->setOrderBy('created_at', 'DESC');
     }
 
     return new DeploymentsView($deployments, $project);
@@ -110,12 +120,15 @@ class OverviewController extends ProjectAwareBaseControl
   public function renderDeploymentStages()
   {
     $deploymentId = $this->getInt('id');
-    $deployments = DeploymentStageHost::collection()->loadWhere("deployment_id = %d", $deploymentId);
+    $deployments  = DeploymentStageHost::collection()->loadWhere(
+      "deployment_id = %d",
+      $deploymentId
+    );
 
-
-    return new DeploymentStagesView($deployments, new Deployment($deploymentId));
+    return new DeploymentStagesView(
+      $deployments, new Deployment($deploymentId)
+    );
   }
-
 
   public function getRoutes()
   {

@@ -15,6 +15,8 @@ use Sidekick\Applications\Diffuse\Views\DeploymentView;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\DeploymentLog;
+use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
+use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Servers\Mappers\Server;
@@ -61,7 +63,8 @@ class OverviewController extends ProjectAwareBaseControl
     $postData = $this->request()->postVariables();
     if(isset($postData['platformId']) && (int)$postData['platformId'] > 0
       && count($postData['deploymentHosts'])
-      && !empty($postData['deploy_base']))
+      && !empty($postData['deploy_base'])
+    )
     {
       //create a new deployment
       $deployment             = new Deployment();
@@ -77,6 +80,24 @@ class OverviewController extends ProjectAwareBaseControl
       $deployment->deployBase = $postData['deploy_base'];
 
       $deployment->saveChanges();
+
+      //TODO refactor how versions work. This has been put here to
+      //make our new deployment work with out version errors
+      //get the latest version
+      $latestVersion               = Version::collection()
+        ->loadWhere(['project_id' => $this->_projectId])
+        ->setOrderBy('id', 'DESC')
+        ->first();
+      $latestVersion->versionState = 'approved';
+      $latestVersion->SaveChanges();
+
+      $stateId           = [$postData["platformId"], $latestVersion->id()];
+      $state             = new PlatformVersionState($stateId);
+      $state->platformId = $postData["platformId"];
+      $state->versionId  = $latestVersion->id();
+      $state->deploymentCount++;
+      $state->state = 'approved';
+      $state->saveChanges();
 
       Redirect::to('/P' . $this->_projectId . '/diffuse/deployments')->now();
     }

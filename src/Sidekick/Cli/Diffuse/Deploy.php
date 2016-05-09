@@ -131,9 +131,6 @@ class Deploy extends CliCommand
       //work out build directory
       $build          = new Build($version->buildId);
       $buildSourceDir = build_path($buildPath, $build->sourceDirectory);
-
-      $deployBase = build_path($deployment->deployBase, $version->id());
-
       /**
        * @var Server $server
        */
@@ -151,21 +148,23 @@ class Deploy extends CliCommand
               '{sshport}',
               '{ipv4}',
               '{ipv6}',
+              '{buildId}'
             ],
             [
               $buildSourceDir,
-              $deployBase,
+              $deployment->deployBase,
               $server->sshUser,
               $server->getConnPreference(),
               $server->hostname,
               $server->sshPort,
               $server->ipv4,
               $server->ipv6,
+              $version->id()
             ],
             $step->command
           );
 
-          echo "Running $step->name ($command) ON Server: " . $server->hostname . PHP_EOL;
+          echo "Running $step->name ($command) on " . $server->hostname . PHP_EOL;
           $process = new Process($command);
           $process->run();
 

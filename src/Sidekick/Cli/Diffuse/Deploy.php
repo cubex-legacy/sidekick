@@ -152,7 +152,7 @@ class Deploy extends CliCommand
             ],
             [
               $buildSourceDir,
-              $deployment->deployBase,
+              rtrim($deployment->deployBase, '/'),
               $server->sshUser,
               $server->getConnPreference(),
               $server->hostname,

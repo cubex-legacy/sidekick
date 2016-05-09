@@ -31,16 +31,21 @@
     foreach($groups as $group => $hosts):
 
       ?>
-      <div class="clearfix"></div>
-      <h3 ><?= $group ?> <input id="group-<?php echo $group; ?>" type="checkbox"></h3>
+
+      <div class="pull-left" style="  border: 1px solid #ddd;
+    margin: 10px;
+    padding: 10px;
+    min-height: 200px;">
+      <h3 class="hostsHead"><?= $group ?> <input class="headCheckBox" id="group-<?php echo $group; ?>" type="checkbox"></h3>
       <?php
       foreach($hosts as $host):
       ?>
 
-       <p class="pull-left" style="padding:10px; text-align: center;">
+       <p class="hostsList pull-left" style=" padding:10px; text-align: center;">
         <?= $this->form()->getElement("deploymentHosts[$host]") ?>
       </p>
       <?php endforeach; ?>
+      </div>
     <?php endforeach; ?>
 
     <script>

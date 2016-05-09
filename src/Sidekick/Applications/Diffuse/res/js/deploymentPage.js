@@ -11,8 +11,15 @@ $(document).ready(function(){
     var arr = hostGroups[id.replace('group-','')];
     for(a in arr){
 
-      $('[name="deploymentHosts['+arr[a]+']"]').attr('checked', this.checked ? 'true' : false);
-    };
+      $('[name="deploymentHosts['+arr[a]+']"]').prop('checked', $(this).prop("checked"));
+    }
+  });
+  $('.hostsHead').on('click', function(){
+    $($(this).parents()[0]).find('.hostsList').css('display','block');
+  });
+
+  $('[name^="deploymentHosts["').on('click', function(){ 
+    $($(this).parents()[1]).find('.headCheckBox').prop("checked", false);
   });
 });
 

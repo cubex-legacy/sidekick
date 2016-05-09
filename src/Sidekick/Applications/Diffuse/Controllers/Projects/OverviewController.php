@@ -92,15 +92,14 @@ class OverviewController extends ProjectAwareBaseControl
       if($project->exists())
       {
         $deployments = Deployment::collection()->loadWhere("project_id = %d", $this->_projectId)->setOrderBy(
-          'project_id', 'DESC'
-        );
+          'created_at', 'DESC'
+        )->setLimit(0, 20);
       }
     }
     else
     {
       $deployments = Deployment::conn()->getKeyedRows(
-        'SELECT id FROM (
-         SELECT * FROM diffuse_deployments ORDER BY id DESC) AS sub GROUP BY project_id'
+        'SELECT max(id) as id FROM diffuse_deployments GROUP BY project_id ORDER BY id DESC LIMIT 20'
       );
       $deployments = Deployment::collection()->loadWhere("id IN (%s)", implode("','",$deployments ));
     }

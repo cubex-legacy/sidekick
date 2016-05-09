@@ -37,9 +37,11 @@ class BuildRunPage extends ViewModel
       $this->_run->result
     );
 
-    $pageHeader = '<h1><a href="/P' . $this->_run->project_id
-      . '/fortify">Build #' . $this->_run->id() . ' <small>'
-      . ucfirst($this->_build->name) . ' Build</small></a></h1>';
+    $pageHeader = '<a href="/P' . $this->_run->project_id . '/fortify"><-- Build List</a>
+     <h1>Build #' . $this->_run->id() . ' <small>'
+      . ucfirst($this->_build->name) . ' Build</small> 
+      <a class=" btn btn-success" href="/P' . $this->_run->project_id . '/diffuse/' . $this->_run->id()
+      . '"> Deploy </a> </h1>';
 
     return new RenderGroup(
       $resultDiv,

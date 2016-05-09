@@ -40,10 +40,9 @@
       foreach($hosts as $h)
       {
         $host = new \Sidekick\Components\Servers\Mappers\Server($h);
-        $hostnames[] = $host->name;
+        $hostnames[] = $host->hostname;
       }
     }
-
 
     ?>
     <tr class="<?= $this->textClass($deplyment);  ?>">

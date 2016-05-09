@@ -29,15 +29,16 @@
   <?php foreach($this->getDeploymentConfigs() as $config): ?>
     <tr>
       <td>
-        <a href="/diffuse/manage-configs/<?= $config->id() ?>/steps"><?= $config->name; ?></a>
+       <?= $config->name; ?>
       </td>
       <td><?= $config->description; ?></td>
       <td><?= date('d/M/Y', strtotime($config->updated_at)); ?></td>
-      <td>
+      <td style="display:none">
+        <a href="/diffuse/manage-configs/<?= $config->id() ?>/steps"><i class="icon-plus"></i>  Add Steps </a>
         <a href="<?= $this->baseUri() . '/' . $config->id; ?>/edit"
-           title="Edit"><i class="icon-edit"></i></a>
+           title="Edit"><i class="icon-edit"></i> Edit</a>
         <a href="<?= $this->baseUri() . '/' . $config->id; ?>/delete"
-           title="Delete"><i class="icon-trash"></i></a>
+           title="Delete"><i class="icon-trash"></i> Delete</a>
       </td>
     </tr>
   <?php endforeach; ?>

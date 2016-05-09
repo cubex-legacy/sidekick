@@ -193,6 +193,7 @@ class Deploy extends CliCommand
 
       $deployment->passed = 1;
       $deployment->completed = 1;
+      $deployment->pending = 0;
       $deployment->saveChanges();
     }
     catch(\Exception $e)
@@ -201,6 +202,7 @@ class Deploy extends CliCommand
       {
         $deployment->passed    = false;
         $deployment->completed = 1;
+        $deployment->pending = 0;
         $deployment->saveChanges();
       }
       throw $e;

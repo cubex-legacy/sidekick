@@ -39,7 +39,7 @@ class DeploymentsView extends TemplatedViewModel
   public function textClass($deployment)
   {
     $return = "text-info";
-    if($deployment->passed && !$deployment->pending)
+    if(!$deployment->passed && !$deployment->pending)
     {
       $return = "text-error";
     }

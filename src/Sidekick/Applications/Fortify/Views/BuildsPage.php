@@ -180,7 +180,11 @@ class BuildsPage extends ViewModel
     $branches = '';
     foreach($branchAvailable as $branch)
     {
-      $branches .= sprintf('<option value="%1$s">%1$s</option>', $branch);
+      $branches .= sprintf(
+        '<option value="%1$s" %2$s>%1$s</option>',
+        $branch,
+        $branch == 'master' ? 'selected' : ''
+      );
     }
 
     return new Impart(

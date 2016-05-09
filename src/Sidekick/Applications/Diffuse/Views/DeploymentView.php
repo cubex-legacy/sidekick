@@ -44,7 +44,6 @@ class DeploymentView extends TemplatedViewModel
     }
     $this->_form = new Form('deploymentHosts');
     $this->_form->setDefaultElementTemplate('{{input}}');
-
     $this->_form->addHiddenElement('buildId', $this->_buildRun->id());
 
     $options = (new OptionBuilder($this->_platforms))->getOptions();

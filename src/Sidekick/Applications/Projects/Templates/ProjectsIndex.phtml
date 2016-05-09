@@ -21,16 +21,15 @@
 <table class="table table-striped table-bordered table-hover">
   <tr class="info">
     <th>Name</th>
-    <th>Description</th>
     <th>Last Update</th>
     <th></th>
   </tr>
   <?php foreach($this->getProjects() as $project): ?>
     <tr>
-      <td>
+      <td style="width:80%;">
         <a href="/P<?= $project->id(); ?>/fortify"><?= $project->name; ?></a>
+        <p><em><small><?= $project->description; ?></small></em></p>
       </td>
-      <td><?= $project->description; ?></td>
       <td><?= date('d/M/Y', strtotime($project->updated_at)); ?></td>
       <td>
         <a href="<?= $this->appBaseUri() . '/edit/' . $project->id(); ?>"

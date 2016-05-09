@@ -63,26 +63,30 @@ class FortifyBuildChanges
           'branch'        => idp($lastCommitHash, 'branch', 'master')
         ]
       );
-      $branchId = $branch->id();
 
-      $findCommits = [
-        $this->_commitHash,
-        idp($lastCommitHash, "commitHash")
-      ];
-
-      $commitIds = Commit::collection()
-        ->whereIn('commit_hash', $findCommits)
-        ->whereEq('branch_id', $branchId)
-        ->setColumns(['commit_hash', 'branch_id', 'id'])
-        ->get();
-
-      $range = Commit::collection();
-      if(count($commitIds->loadedIds()) == 2)
+      if($branch)
       {
-        $range->whereBetween("id", $commitIds->loadedIds());
+        $branchId = $branch->id();
+
+        $findCommits = [
+          $this->_commitHash,
+          idp($lastCommitHash, "commitHash")
+        ];
+
+        $commitIds = Commit::collection()
+          ->whereIn('commit_hash', $findCommits)
+          ->whereEq('branch_id', $branchId)
+          ->setColumns(['commit_hash', 'branch_id', 'id'])
+          ->get();
+
+        $range = Commit::collection();
+        if(count($commitIds->loadedIds()) == 2)
+        {
+          $range->whereBetween("id", $commitIds->loadedIds());
+        }
+        $range->whereEq("branch_id", $branchId)
+          ->setOrderBy('committed_at', 'DESC');
       }
-      $range->whereEq("branch_id", $branchId)
-        ->setOrderBy('committed_at', 'DESC');
     }
 
     return $range;

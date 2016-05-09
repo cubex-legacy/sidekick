@@ -21,5 +21,24 @@ $(document).ready(function(){
   $('[name^="deploymentHosts["').on('click', function(){ 
     $($(this).parents()[1]).find('.headCheckBox').prop("checked", false);
   });
+
+  setInterval(function(){
+    $('.hostsContainer').each(function(){
+      var container = $(this);
+      var active = false;
+      $(this).find('input[type="checkbox"]').each(function(){
+        if($(this).prop('checked')){
+          active = true
+        }
+      });
+      if(active){
+        container.addClass('activeDeployHost');
+      }else
+      {
+        container.removeClass('activeDeployHost');
+      }
+
+    });}, 1000);
+
 });
 

@@ -31,11 +31,18 @@
     foreach($groups as $group => $hosts):
 
       ?>
-
-      <div class="pull-left" style="  border: 1px solid #ddd;
-    margin: 10px;
-    padding: 10px;
-    min-height: 200px;">
+      <style>
+        .activeDeployHost{
+          background: #EDFFE0;
+        } 
+        .hostsContainer{
+         border: 1px solid #ddd;
+         margin: 10px;
+         padding: 10px;
+         min-height: 200px;
+       }
+      </style>
+      <div class="pull-left hostsContainer" style="  ">
       <h3 class="hostsHead"><?= $group ?> <input class="headCheckBox" id="group-<?php echo $group; ?>" type="checkbox"></h3>
       <?php
       foreach($hosts as $host):

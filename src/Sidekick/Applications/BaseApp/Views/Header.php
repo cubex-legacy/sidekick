@@ -55,15 +55,18 @@ class Header extends ViewModel
       ''
     );
 
-    $navItems->addElement(
-      '',
-      '',
-      '',
-      '/fortify/build-configs',
-      'New menu',
-      'Build Configs',
-      ''
-    );
+    if(Auth::user()->getDetails()->user_role == 'administrator')
+    {
+      $navItems->addElement(
+        '',
+        '',
+        '',
+        '/fortify/build-configs',
+        'New menu',
+        'Build Configs',
+        ''
+      );
+    }
 
     $navItems->addElement(
       '',
@@ -74,35 +77,38 @@ class Header extends ViewModel
       'Deployments',
       ''
     );
+    if(Auth::user()->getDetails()->user_role == 'administrator')
+    {
+      $navItems->addElement(
+        '',
+        '',
+        '',
+        '/diffuse/hosts',
+        'New menu',
+        'Deployment Configs',
+        ''
+      );
 
-    $navItems->addElement(
-      '',
-      '',
-      '',
-      '/diffuse/hosts',
-      'New menu',
-      'Deployment Configs',
-      ''
-    );
+      $navItems->addElement(
+        '',
+        '',
+        '',
+        '/phuse',
+        'New menu',
+        'Phuse',
+        ''
+      );
 
-    $navItems->addElement(
-      '',
-      '',
-      '',
-      '/phuse',
-      'New menu',
-      'Phuse',
-      ''
-    );
-    $navItems->addElement(
-      '',
-      '',
-      '',
-      '/users',
-      'New menu',
-      'Users',
-      ''
-    );
+      $navItems->addElement(
+        '',
+        '',
+        '',
+        '/users',
+        'New menu',
+        'Users',
+        ''
+      );
+    }
 
     return new RenderGroup(
       '<a id="sidekick-logo" class="brand" href="/">',

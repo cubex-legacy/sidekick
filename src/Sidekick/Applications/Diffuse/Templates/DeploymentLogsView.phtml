@@ -2,7 +2,7 @@
 /**
  * Author: oke.ugwu
  * Date: 28/08/13 18:25
- * @var $this \Sidekick\Applications\Diffuse\Views\DeploymentStagesView
+ * @var $this \Sidekick\Applications\Diffuse\Views\DeploymentLogsView
  */
 ?>
 <h2>Deployment #<?= $this->getDeployment()->id(); ?></h2>
@@ -22,9 +22,9 @@
   </tr>
   <?php
   /***
-   * @var $deplyment \Sidekick\Components\Diffuse\Mappers\DeploymentStageHost
+   * @var $deplyment \Sidekick\Components\Diffuse\Mappers\DeploymentLog
    */
-  foreach($this->getDeploymentlist() as $command)
+  foreach($this->getDeploymentLogs() as $command)
   {
     $server = new \Sidekick\Components\Servers\Mappers\Server($command->serverId);
     ?>

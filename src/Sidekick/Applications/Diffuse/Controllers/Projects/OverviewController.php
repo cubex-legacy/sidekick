@@ -8,12 +8,12 @@ namespace Sidekick\Applications\Diffuse\Controllers\Projects;
 use Cubex\Facade\Redirect;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
-use Sidekick\Applications\Diffuse\Views\DeploymentStagesView;
+use Sidekick\Applications\Diffuse\Views\DeploymentLogsView;
 use Sidekick\Applications\Diffuse\Views\DeploymentsView;
 use Sidekick\Applications\Diffuse\Views\DeploymentView;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
+use Sidekick\Components\Diffuse\Mappers\DeploymentLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Servers\Mappers\Server;
@@ -117,16 +117,16 @@ class OverviewController extends ProjectAwareBaseControl
     return new DeploymentsView($deployments, $project);
   }
 
-  public function renderDeploymentStages()
+  public function renderDeploymentLogs()
   {
     $deploymentId = $this->getInt('id');
-    $deployments  = DeploymentStageHost::collection()->loadWhere(
+    $deploymentLogs  = DeploymentLog::collection()->loadWhere(
       "deployment_id = %d",
       $deploymentId
     );
 
-    return new DeploymentStagesView(
-      $deployments, new Deployment($deploymentId)
+    return new DeploymentLogsView(
+      $deploymentLogs, new Deployment($deploymentId)
     );
   }
 

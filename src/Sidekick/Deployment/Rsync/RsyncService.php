@@ -10,7 +10,7 @@ use Cubex\Data\Handler\DataHandler;
 use Cubex\Helpers\System;
 use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
+use Sidekick\Components\Diffuse\Mappers\DeploymentLog;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Enums\ApprovalState;
 use Sidekick\Deployment\BaseDeploymentService;

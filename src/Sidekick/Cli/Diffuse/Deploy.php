@@ -10,10 +10,8 @@ use Cubex\Log\Log;
 use Sidekick\Components\Diffuse\Helpers\VersionHelper;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
-use Sidekick\Components\Diffuse\Mappers\HostPlatform;
+use Sidekick\Components\Diffuse\Mappers\DeploymentLog;
 use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
-use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\FortifyHelper;
 use Sidekick\Components\Fortify\Mappers\Build;
@@ -21,7 +19,6 @@ use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Servers\Mappers\Server;
 use Sidekick\Components\Users\Mappers\User;
-use Sidekick\Deployment\IDeploymentService;
 use Symfony\Component\Process\Process;
 
 class Deploy extends CliCommand
@@ -172,7 +169,7 @@ class Deploy extends CliCommand
           $process = new Process($command);
           $process->run();
 
-          $sh                    = new DeploymentStageHost();
+          $sh                    = new DeploymentLog();
           $sh->deploymentId      = $deployment->id();
           $sh->deploymentStageId = $step->id();
           $sh->serverId          = $server->id();

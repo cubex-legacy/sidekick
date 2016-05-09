@@ -6,7 +6,7 @@
 namespace Sidekick\Deployment;
 
 use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
+use Sidekick\Components\Diffuse\Mappers\DeploymentLog;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Users\Mappers\User;
 
@@ -19,7 +19,7 @@ abstract class BaseDeploymentService implements IDeploymentService
   protected $_version;
   protected $_stage;
   /**
-   * @var DeploymentStageHost[]
+   * @var DeploymentLog[]
    */
   protected $_hosts;
 
@@ -30,18 +30,18 @@ abstract class BaseDeploymentService implements IDeploymentService
   }
 
   /**
-   * @param DeploymentStageHost $host
+   * @param DeploymentLog $host
    *
    * @return self
    */
-  public function addHost(DeploymentStageHost $host)
+  public function addHost(DeploymentLog $host)
   {
     $this->_hosts[$host->serverId] = $host;
     return $this;
   }
 
   /**
-   * @return DeploymentStageHost[]
+   * @return DeploymentLog[]
    */
   public function getHosts()
   {
@@ -51,7 +51,7 @@ abstract class BaseDeploymentService implements IDeploymentService
   /**
    * @param $serverId
    *
-   * @return DeploymentStageHost
+   * @return DeploymentLog
    */
   public function getHost($serverId)
   {

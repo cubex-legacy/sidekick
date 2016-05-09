@@ -10,14 +10,14 @@ use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
 
-class DeploymentStagesView extends TemplatedViewModel
+class DeploymentLogsView extends TemplatedViewModel
 {
-  protected $_deploymentlist; 
+  protected $_deploymentLogs;
   protected $_deployment;
 
-  public function __construct($deploymentlist, $deployment)
+  public function __construct($deploymentLogs, $deployment)
   {
-    $this->_deploymentlist = $deploymentlist; 
+    $this->_deploymentLogs = $deploymentLogs;
     $this->_deployment = $deployment;
   }
 
@@ -27,14 +27,14 @@ class DeploymentStagesView extends TemplatedViewModel
   public function getDeployment()
   {
     return $this->_deployment;
-  }   
+  }
 
   /**
    * @return null
    */
-  public function getDeploymentlist()
+  public function getDeploymentLogs()
   {
-    return $this->_deploymentlist;
+    return $this->_deploymentLogs;
   }
   public function textClass($result)
   {

@@ -8,7 +8,7 @@ namespace Sidekick\Components\Diffuse\Mappers;
 use Cubex\Mapper\Database\RecordMapper;
 use Sidekick\Components\Servers\Mappers\Server;
 
-class DeploymentStageHost extends RecordMapper
+class DeploymentLog extends RecordMapper
 {
   protected $_idType = self::ID_COMPOSITE;
 

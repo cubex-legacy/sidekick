@@ -49,7 +49,7 @@
       <td>
         <?php $exploded = explode(":", $project->name); ?>
         <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
-        <?php $link = $this->getProject() ? "/P$deplyment->projectId/diffuse/deployments/$deplyment->id/stages" : "/P$deplyment->projectId/diffuse/deployments"; ?>
+        <?php $link = $this->getProject() ? "/P$deplyment->projectId/diffuse/deployments/$deplyment->id/logs" : "/P$deplyment->projectId/diffuse/deployments"; ?>
 
         <a
           href="<?php echo $link ?>">

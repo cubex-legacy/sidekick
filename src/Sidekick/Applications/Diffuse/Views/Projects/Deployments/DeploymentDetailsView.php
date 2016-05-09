@@ -40,7 +40,7 @@ class DeploymentDetailsView extends TemplatedViewModel
   }
 
   /**
-   * @return \Sidekick\Components\Diffuse\Mappers\DeploymentStageHost[]
+   * @return \Sidekick\Components\Diffuse\Mappers\DeploymentLog[]
    */
   public function getDeploymentDetail()
   {

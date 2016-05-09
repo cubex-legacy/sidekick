@@ -6,7 +6,7 @@
 namespace Sidekick\Deployment;
 
 use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
-use Sidekick\Components\Diffuse\Mappers\DeploymentStageHost;
+use Sidekick\Components\Diffuse\Mappers\DeploymentLog;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Users\Mappers\User;
 
@@ -19,21 +19,21 @@ interface IDeploymentService
   public function __construct(Version $version, DeploymentStep $stage);
 
   /**
-   * @param DeploymentStageHost $host
+   * @param DeploymentLog $host
    *
    * @return self
    */
-  public function addHost(DeploymentStageHost $host);
+  public function addHost(DeploymentLog $host);
 
   /**
-   * @return DeploymentStageHost[]
+   * @return DeploymentLog[]
    */
   public function getHosts();
 
   /**
    * @param $serverId
    *
-   * @return DeploymentStageHost
+   * @return DeploymentLog
    */
   public function getHost($serverId);
 

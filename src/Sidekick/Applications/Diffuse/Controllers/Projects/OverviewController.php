@@ -5,6 +5,7 @@
 
 namespace Sidekick\Applications\Diffuse\Controllers\Projects;
 
+use Cubex\Data\Transportable\TransportMessage;
 use Cubex\Facade\Redirect;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Controllers\ProjectAwareBaseControl;
@@ -48,14 +49,6 @@ class OverviewController extends ProjectAwareBaseControl
           new DeploymentView($project, $hosts, $configs, $buildRun)
         )
       );
-      /*$versions = Version::collection(['project_id' => $this->_projectId])
-      ->setOrderBy("id", "DESC")->setLimit(0, 50)->preFetch("platformStates");
-      return new RenderGroup(
-        $this->createView(new ProjectNav($this->appBaseUri(), $project)),
-        $this->createView(
-          new OverviewView($project, $versions, DeploymentConfig::collection())
-        )
-      );*/
     }
     else
     {
@@ -66,22 +59,40 @@ class OverviewController extends ProjectAwareBaseControl
   public function postIndex()
   {
     $postData = $this->request()->postVariables();
-    //create a new deployment
-    $deployment             = new Deployment();
-    $deployment->pending    = true;
-    $deployment->platformId = $postData["platformId"]; //TODO rename to deploymentConfigId
-    $deployment->projectId  = $this->_projectId;
-    $deployment->buildId    = $this->getInt("buildId");
-    $deployment->userId     = \Auth::user()->getId();
-    $deployment->hosts      = json_encode(
-      array_keys($postData['deploymentHosts'])
-    );
-    $deployment->comment    = $postData['comment'];
-    $deployment->deployBase = $postData['deploy_base'];
+    if(isset($postData['platformId']) && (int)$postData['platformId'] > 0
+      && count($postData['deploymentHosts'])
+      && !empty($postData['deploy_base']))
+    {
+      //create a new deployment
+      $deployment             = new Deployment();
+      $deployment->pending    = true;
+      $deployment->platformId = $postData["platformId"]; //TODO rename to deploymentConfigId
+      $deployment->projectId  = $this->_projectId;
+      $deployment->buildId    = $this->getInt("buildId");
+      $deployment->userId     = \Auth::user()->getId();
+      $deployment->hosts      = json_encode(
+        array_keys($postData['deploymentHosts'])
+      );
+      $deployment->comment    = $postData['comment'];
+      $deployment->deployBase = $postData['deploy_base'];
 
-    $deployment->saveChanges();
+      $deployment->saveChanges();
 
-    Redirect::to('/P' . $this->_projectId . '/diffuse/deployments')->now();
+      Redirect::to('/P' . $this->_projectId . '/diffuse/')->now();
+    }
+    else
+    {
+      $redirectUrl = '/P' . $this->_projectId . '/diffuse/'
+        . $this->getInt('buildId');
+      Redirect::to($redirectUrl)->with(
+        'msg',
+        new TransportMessage(
+          'error',
+          'Please make sure you have selected a deployment configuration'
+          . ' and at least one server'
+        )
+      )->now();
+    }
   }
 
   public function renderDeployments()
@@ -119,8 +130,8 @@ class OverviewController extends ProjectAwareBaseControl
 
   public function renderDeploymentLogs()
   {
-    $deploymentId = $this->getInt('id');
-    $deploymentLogs  = DeploymentLog::collection()->loadWhere(
+    $deploymentId   = $this->getInt('id');
+    $deploymentLogs = DeploymentLog::collection()->loadWhere(
       "deployment_id = %d",
       $deploymentId
     );

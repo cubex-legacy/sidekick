@@ -47,11 +47,10 @@ class DeploymentView extends TemplatedViewModel
 
     $this->_form->addHiddenElement('buildId', $this->_buildRun->id());
 
-    $this->_form->addSelectElement(
-      "platformId",
-      (new OptionBuilder($this->_platforms))->getOptions()
-    );
+    $options = (new OptionBuilder($this->_platforms))->getOptions();
+    $options = [0 => 'Select a Config'] + $options;
 
+    $this->_form->addSelectElement("platformId", $options);
     $this->_form->addTextElement('deploy_base', $this->_project->deployBase);
 
     foreach($this->hosts() as $host)

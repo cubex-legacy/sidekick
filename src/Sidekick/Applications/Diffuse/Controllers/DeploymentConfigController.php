@@ -161,7 +161,10 @@ class DeploymentConfigController extends DiffuseController
   {
     $this->_createOrUpdateSteps();
 
-    Redirect::to($this->baseUri())->with(
+    $redirectUrl = $this->baseUri() . '/' . $this->getInt('configId')
+      . '/steps';
+
+    Redirect::to($redirectUrl)->with(
       'msg',
       new TransportMessage('success', 'Deployment Step updated successfully')
     )->now();

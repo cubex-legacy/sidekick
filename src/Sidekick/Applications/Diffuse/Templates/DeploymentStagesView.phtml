@@ -5,7 +5,7 @@
  * @var $this \Sidekick\Applications\Diffuse\Views\DeploymentStagesView
  */
 ?>
-<h2>Deployments <?= $this->getDeployment()->id(); ?></h2>
+<h2>Deployment #<?= $this->getDeployment()->id(); ?></h2>
 <?php if(Session::getFlash('msg')): ?>
   <div class="alert alert-<?php echo Session::getFlash('msg')->type; ?>">
     <?php echo Session::getFlash('msg')->message; ?>
@@ -25,7 +25,7 @@
    * @var $deplyment \Sidekick\Components\Diffuse\Mappers\DeploymentStageHost
    */
   foreach($this->getDeploymentlist() as $command)
-  {   
+  {
     $server = new \Sidekick\Components\Servers\Mappers\Server($command->serverId);
     ?>
     <tr class=" ">
@@ -36,7 +36,7 @@
       <td><?php echo $command->updated_at; ?></td>
       <td><?php echo $command->log; ?></td>
       <td><?php echo $command->stdErr; ?></td>
-      <td><?php echo $server->name; ?></td>
+      <td><?php echo $server->hostname; ?></td>
     </tr>
   <?php } ?>
 </table>

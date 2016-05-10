@@ -16,7 +16,6 @@
     <th>Started</th>
     <th>Duration</th>
     <th>Status</th>
-    <th style="min-width:8em"> </th>
   </tr>
   <?php foreach($this->getBuildRuns() as $b): ?>
     <tr class="<?= $this->textClass($b->result);  ?>">
@@ -28,6 +27,7 @@
 
           <?= isset($exploded[1]) ? $exploded[1] : $exploded[0]; ?>: #<?= $b->id; ?>
         </a>
+        <div class="pull-right"><a class="btn btn-success btn-small" href="/P<?= $b->project_id ?>/fortify">New Build</a></div>
       </td>
       <td  ><?= substr($b->branch,0,20 ) ?></td>
       <td><?= substr($b->commit_hash, 0, 8) ?></td>
@@ -35,7 +35,6 @@
       <td><?= date('d M Y @ H:i:s', strtotime($b->start_time)) ?></td>
       <td><?= $this->getDuration($b->end_time, $b->start_time) ?></td>
       <td><?= ucfirst($b->result) ?></td>
-      <td><a class="btn btn-success" href="/P<?= $b->project_id ?>/fortify">New Build</a></td>
     </tr>
   <?php endforeach; ?>
 </table>

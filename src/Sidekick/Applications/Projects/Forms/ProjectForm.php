@@ -51,10 +51,18 @@ class ProjectForm extends Form
     if($this->id === null)
     {
       $this->addSubmitElement('Create Project', 'submit');
+      $this->getElement('submit')->addAttribute(
+        'class',
+        'btn btn-success'
+      );
     }
     else
     {
       $this->addSubmitElement('Update Project', 'submit');
+      $this->getElement('submit')->addAttribute(
+        'class',
+        'btn btn-primary'
+      );
     }
   }
 

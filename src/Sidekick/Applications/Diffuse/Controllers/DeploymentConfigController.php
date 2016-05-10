@@ -36,7 +36,10 @@ class DeploymentConfigController extends DiffuseController
     $form->addTextElement('name');
     $form->addTextareaElement('description');
     $form->addSubmitElement('Create');
-
+    $form->getElement('submit')->addAttribute(
+      'class',
+      'btn btn-success'
+    );
     return new RenderGroup(
       '<h1>Create Deployment Configuration</h1>',
       $form
@@ -68,6 +71,10 @@ class DeploymentConfigController extends DiffuseController
     $form->addTextElement('name', $platform->name);
     $form->addTextareaElement('description', $platform->description);
     $form->addSubmitElement('Update');
+    $form->getElement('submit')->addAttribute(
+      'class',
+      'btn btn-primary'
+    );
     return new RenderGroup(
       '<h1>Edit Deployment Configuration</h1>',
       $form

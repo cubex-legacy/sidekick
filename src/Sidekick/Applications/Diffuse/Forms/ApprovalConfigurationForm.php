@@ -55,10 +55,18 @@ class ApprovalConfigurationForm extends Form
     if($this->role == null)
     {
       $this->addSubmitElement('Save');
+      $this->getElement('submit')->addAttribute(
+        'class',
+        'btn btn-success'
+      );
     }
     else
     {
       $this->addSubmitElement('Update');
+      $this->getElement('submit')->addAttribute(
+        'class',
+        'btn btn-primary'
+      );
       //attach on change events to form field
       //makes an ajax call to update field
       $this->getElement('consistencyLevel')->addAttribute(

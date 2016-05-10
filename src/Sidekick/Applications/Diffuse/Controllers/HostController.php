@@ -37,6 +37,10 @@ class HostController extends DiffuseController
     $form->addTextElement('ipv4');
     $form->addTextElement('ipv6');
     $form->addSubmitElement('Create');
+    $form->getElement('submit')->addAttribute(
+      'class',
+      'btn btn-success'
+    );
 
     return new RenderGroup(
       '<h1>Create Platform</h1>',
@@ -73,7 +77,10 @@ class HostController extends DiffuseController
     $form->addTextElement('sshUser', $host->sshUser);
     $form->addNumberElement('sshPort', $host->sshPort);
     $form->addSubmitElement('Update');
-
+    $form->getElement('submit')->addAttribute(
+      'class',
+      'btn btn-primary'
+    );
     return new RenderGroup(
       '<h1>Edit Host</h1>',
       $form

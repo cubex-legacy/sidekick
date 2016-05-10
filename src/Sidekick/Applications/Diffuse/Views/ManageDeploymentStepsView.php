@@ -38,17 +38,27 @@ class ManageDeploymentStepsView extends TemplatedViewModel
     $form = new DeploymentStageForm();
     $form->hydrateFromMapper($this->_step);
     $form->platformId = $this->configId;
-
-    $buttonText = 'Create';
+ 
     if($this->_step->exists())
     {
-      $buttonText = 'Update';
       $form->platformId = $this->_step->platformId;
       $form->getElement('platformId')->setType(FormElement::HIDDEN);
+      $form->addSubmitElement('Update');
+      $form->getElement('submit')->addAttribute(
+        'class',
+        'btn btn-primary'
+      );
+    }
+    else
+    {
+      $form->addSubmitElement('Create');
+      $form->getElement('submit')->addAttribute(
+        'class',
+        'btn btn-success'
+      );
     }
 
-    $form->addSubmitElement($buttonText);
-    $form->getElement('submit')->addAttribute('class', 'btn');
+    $form->getElement('submit')->addAttribute('class', 'btn btn-primary');
 
     return $form;
   }

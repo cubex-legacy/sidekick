@@ -20,6 +20,7 @@
     <th>Subject</th>
     <th>Author</th>
   </tr>
+  <?php if($this->getCommits()): ?>
   <?php foreach($this->getCommits() as $c): ?>
     <tr>
       <td>
@@ -32,4 +33,9 @@
       <td><?php echo $c->author; ?></td>
     </tr>
   <?php endforeach; ?>
+  <?php else: ?>
+  <tr>
+    <td colspan="4">No changes between current build and previous build</td>
+  </tr>
+  <?php endif; ?>
 </table>

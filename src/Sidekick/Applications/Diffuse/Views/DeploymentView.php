@@ -94,7 +94,7 @@ class DeploymentView extends TemplatedViewModel
         {
           if(in_array($host->id, $lastDeployHosts))
           {
-            $this->_form->getElement("deploymentHosts[$host->id]")->setDat(
+            $this->_form->getElement("deploymentHosts[$host->id]")->setData(
               true
             );
           }

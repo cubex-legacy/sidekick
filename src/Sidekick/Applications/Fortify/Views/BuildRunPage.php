@@ -31,17 +31,24 @@ class BuildRunPage extends ViewModel
 
   private function _header()
   {
+    $deploy = '';
+    if($this->_run->result == 'pass')
+    {
+      $deploy = '<br />
+        <a class=" btn btn-success btn-small" href="/P'
+        . $this->_run->project_id . '/diffuse/' . $this->_run->id()
+        . '"> Deploy <i class="icon-play"></i></a>';
+    }
+
     $resultDiv = new HtmlElement(
       'div',
       ['class' => 'pull-right build-result build-' . $this->_run->result],
-      $this->_run->result
+      $this->_run->result . $deploy
     );
 
-    $pageHeader = '<a href="/P' . $this->_run->project_id . '/fortify"><-- Build List</a>
+    $pageHeader = '<a href="/P' . $this->_run->project_id . '/fortify"><i class="icon-arrow-left"></i> Project Builds</a>
      <h1>Build #' . $this->_run->id() . ' <small>'
-      . ucfirst($this->_build->name) . ' Build</small> 
-      <a class=" btn btn-success" href="/P' . $this->_run->project_id . '/diffuse/' . $this->_run->id()
-      . '"> Deploy </a> </h1>';
+      . ucfirst($this->_build->name) . ' Build</small> </h1>';
 
     return new RenderGroup(
       $resultDiv,

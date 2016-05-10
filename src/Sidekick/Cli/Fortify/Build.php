@@ -196,7 +196,7 @@ class Build extends CliCommand
     $buildRun->commitHash = trim($process->getOutput());
 
     //store build changes
-    $this->_storeBuildChanges($buildRun, $repo->loclpath);
+    $this->_storeBuildChanges($buildRun, $repo->localpath);
 
     chdir($buildPath);
 

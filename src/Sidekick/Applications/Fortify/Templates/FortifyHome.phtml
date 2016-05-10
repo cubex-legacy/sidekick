@@ -16,9 +16,19 @@
     <th>Started</th>
     <th>Duration</th>
     <th>Status</th>
+    <th>Deployed</th>
   </tr>
   <?php
-  foreach($this->getBuildRuns() as $b): ?>
+  foreach($this->getBuildRuns() as $b):
+     $deploy = \Sidekick\Components\Diffuse\Mappers\Deployment::collection()->loadWhere(
+       "build_id=%d", $b->build_id
+     );
+    $deployed = '';
+    if($deploy->first())
+    {
+      $deployed = $deploy->first()->updatedAt;
+    }
+    ?>
     <tr class="<?= $this->textClass($b->result);  ?>">
       <td>
         <?php $exploded = explode(":", $this->project($b->project_id)->name); ?>
@@ -36,6 +46,7 @@
       <td><?= date('d M Y @ H:i:s', strtotime($b->start_time)) ?></td>
       <td><?= $this->getDuration($b->end_time, $b->start_time) ?></td>
       <td><?= ucfirst($b->result) ?></td>
+      <td><?= $deployed ?></td>
     </tr>
   <?php endforeach; ?>
 </table>

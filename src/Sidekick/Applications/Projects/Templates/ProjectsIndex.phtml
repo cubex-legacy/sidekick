@@ -22,23 +22,22 @@
   <tr class="info">
     <th>Name</th>
     <th>Last Update</th>
-    <th></th>
   </tr>
   <?php foreach($this->getProjects() as $project): ?>
     <tr>
       <td style="width:80%;">
-        <a href="/P<?= $project->id(); ?>/fortify"><?= $project->name; ?></a>
+        <?= $project->name; ?>       <div class="pull-right actions"><a href="/P<?= $project->id(); ?>/fortify"
+                                        title="Edit"><i class="icon-plus"></i> Builds</a> |
+        <a href="<?= $this->appBaseUri() . '/edit/' . $project->id(); ?>"
+           title="Edit"><i class="icon-edit"></i> Edit</a> |
+        <a href="<?= $this->appBaseUri() . '/users/' . $project->id(); ?>"
+           title="Users"><i class="icon-user"></i> Users</a> |
+        <a href="<?= $this->appBaseUri() . '/delete/' . $project->id(); ?>"
+           title="Delete"><i class="icon-trash"></i> Delete</a></div>
         <p><em><small><?= $project->description; ?></small></em></p>
       </td>
       <td><?= date('d/M/Y', strtotime($project->updated_at)); ?></td>
-      <td>
-        <a href="<?= $this->appBaseUri() . '/edit/' . $project->id(); ?>"
-           title="Edit"><i class="icon-edit"></i></a><br/>
-        <a href="<?= $this->appBaseUri() . '/users/' . $project->id(); ?>"
-           title="Users"><i class="icon-user"></i></a><br/>
-        <a href="<?= $this->appBaseUri() . '/delete/' . $project->id(); ?>"
-           title="Delete"><i class="icon-trash"></i></a>
-      </td>
+
     </tr>
   <?php endforeach; ?>
 </table>

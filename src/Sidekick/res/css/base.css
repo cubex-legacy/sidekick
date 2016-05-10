@@ -38,3 +38,8 @@
 .action-box.info {
   border-color: #4BB1CF;
 }
+.actions a
+{
+  color:#333;
+  font-size:0.9em;
+}

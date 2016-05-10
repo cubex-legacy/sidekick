@@ -47,7 +47,7 @@ class BaseControl extends WebpageController
     $this->requireCss('/remodal-theme');
     $this->requireJs("/hoverdrop");
     $this->requireJs("/remodal");
-    $this->requireJs("/confirmDelete");
+    $this->requireJs("/main");
 
     $this->tryNest("sidebar", $this->getSidebar());
     $this->tryNest("header", $this->getHeader());

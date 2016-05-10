@@ -506,23 +506,25 @@ class Build extends CliCommand
   private function _storeBuildChanges(BuildRun $buildRun)
   {
     $lastBuildRun = BuildRun::collection()->loadWhere(
-      "id > %d AND branch = %s",
+      "id < %d AND build_id = %d AND branch = %s",
       $buildRun->id(),
+      $buildRun->buildId,
       $buildRun->branch
     )->setOrderBy('id', 'DESC')->first();
 
-    $lastCommitHash = $lastBuildRun->commitHash;
-
     $format  = "%H%n%cn%n%ct%n%s%n%b%x03";
-    $command = "git log --format=\"$format\" --reverse "
-      . "$lastCommitHash^..$buildRun->commitHash";
+    $command = "git log --format=\"$format\" --reverse -n1000";
+    if($lastBuildRun)
+    {
+      $lastCommitHash = $lastBuildRun->commitHash;
+      $command .= " $lastCommitHash^..$buildRun->commitHash";
+    }
 
     $commitProcess = new Process($command);
     $commitProcess->run();
 
-    $out         = $commitProcess->getOutput();
-    $commits     = explode(chr(03), $out);
-    $commitCount = 0;
+    $out     = $commitProcess->getOutput();
+    $commits = explode(chr(03), $out);
 
     foreach($commits as $commit)
     {
@@ -534,20 +536,12 @@ class Build extends CliCommand
       $commit = array_pad($commit, 5, '');
       list($commitHash, $author, $date, $subject, $message) = $commit;
 
-      $commitCount++;
-
-      $commitHash = trim($commitHash);
-      $author     = trim($author);
-      $date       = trim($date);
-      $subject    = trim($subject);
-      $message    = trim($message);
-
       $change              = new BuildChanges();
-      $change->commitHash  = $commitHash;
-      $change->author      = $author;
-      $change->committedAt = date("Y-m-d H:i:s", $date);
-      $change->subject     = $subject;
-      $change->message     = $message;
+      $change->commitHash  = trim($commitHash);
+      $change->author      = trim($author);
+      $change->committedAt = date("Y-m-d H:i:s", trim($date));
+      $change->subject     = trim($subject);
+      $change->message     = trim($message);
       $change->buildRunId  = $buildRun->id();
       $change->branch      = $buildRun->branch;
       $change->saveChanges();

@@ -49,13 +49,12 @@ class DeploymentConfigController extends DiffuseController
     $platform->hydrate($this->request()->postVariables());
     $platform->saveChanges();
 
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Deployment Config was successfully created - ';
-
     Redirect::to($this->baseUri())->with(
       'msg',
-      $msg
+      new TransportMessage(
+        'success',
+        'Deployment Config was successfully created'
+      )
     )->now();
   }
 
@@ -81,13 +80,12 @@ class DeploymentConfigController extends DiffuseController
     $platform->hydrateFromUnserialized($this->request()->postVariables());
     $platform->saveChanges();
 
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Deployment Configuration was successfully updated - ';
-
     Redirect::to($this->baseUri())->with(
       'msg',
-      $msg
+      new TransportMessage(
+        'success',
+        'Deployment Configuration was successfully updated'
+      )
     )->now();
   }
 
@@ -97,13 +95,12 @@ class DeploymentConfigController extends DiffuseController
     $platform   = new DeploymentConfig($platformId);
     $platform->delete();
 
-    $msg       = new \stdClass();
-    $msg->type = 'success';
-    $msg->text = 'Deployment Configuration was successfully deleted';
-
     Redirect::to($this->baseUri())->with(
       'msg',
-      $msg
+      new TransportMessage(
+        'success',
+        'Deployment Configuration was successfully deleted'
+      )
     )->now();
   }
 
@@ -212,9 +209,9 @@ class DeploymentConfigController extends DiffuseController
 
   public function renderOrderSteps()
   {
-    $stepId     = $this->getInt('stepId');
-    $configId = $this->getInt('configId');
-    $direction  = $this->getStr('direction');
+    $stepId    = $this->getInt('stepId');
+    $configId  = $this->getInt('configId');
+    $direction = $this->getStr('direction');
 
     $stage    = new DeploymentStep($stepId);
     $oldOrder = $stage->order;

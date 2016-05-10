@@ -99,8 +99,20 @@ class DeploymentConfigController extends DiffuseController
   public function renderDelete()
   {
     $platformId = $this->getInt('platformId');
-    $platform   = new DeploymentConfig($platformId);
-    $platform->delete();
+    $config   = new DeploymentConfig($platformId);
+    $config->delete();
+
+    $steps = DeploymentStep::collection()->loadWhere(
+      ['platform_id' => $platformId]
+    );
+
+    if($steps->hasMappers())
+    {
+      foreach($steps as $step)
+      {
+        $step->delete();
+      }
+    }
 
     Redirect::to($this->baseUri())->with(
       'msg',

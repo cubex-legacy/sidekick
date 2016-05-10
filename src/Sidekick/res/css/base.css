@@ -44,6 +44,15 @@
   margin-left: 1em;
   font-size:0.9em;
 }
+
+td .actionsHover
+{
+  display:none;
+}
+td:hover .actionsHover
+{
+  display:block;
+}
 .row-azure {
   background-color: #F3F8FF;
 }

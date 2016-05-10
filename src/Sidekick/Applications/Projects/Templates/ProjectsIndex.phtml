@@ -26,7 +26,7 @@
   <?php foreach($this->getProjects() as $project): ?>
     <tr>
       <td style="width:80%;">
-        <?= $project->name; ?>       <div class="pull-right actions"><a href="/P<?= $project->id(); ?>/fortify"
+        <?= $project->name; ?>       <div class="pull-right actions actionsHover"><a href="/P<?= $project->id(); ?>/fortify"
                                         title="Edit"><i class="icon-plus"></i> Builds</a>
         <a href="<?= $this->appBaseUri() . '/edit/' . $project->id(); ?>"
            title="Edit"><i class="icon-edit"></i> Edit</a>

@@ -77,21 +77,27 @@ class DeploymentView extends TemplatedViewModel
 
     if($lastDeployment)
     {
-      $this->_form->getElement('platformId')->setDefault(
+      $this->_form->getElement('platformId')->setData(
         $lastDeployment->platformId
       );
-      $this->_form->getElement('deploy_base')->setDefault(
-        $lastDeployment->deployBase
-      );
+      if($lastDeployment->deployBase)
+      {
+        $this->_form->getElement('deploy_base')->setData(
+          $lastDeployment->deployBase
+        );
+      }
 
       $lastDeployHosts = json_decode($lastDeployment->hosts);
-      foreach($this->hosts() as $host)
+      if(is_array($lastDeployHosts))
       {
-        if(in_array($host->id(), $lastDeployHosts))
+        foreach($this->hosts() as $host)
         {
-          $this->_form->getElement("deploymentHosts[$host->id]")->setDefault(
-            true
-          );
+          if(in_array($host->id, $lastDeployHosts))
+          {
+            $this->_form->getElement("deploymentHosts[$host->id]")->setDat(
+              true
+            );
+          }
         }
       }
     }

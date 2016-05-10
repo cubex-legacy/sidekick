@@ -520,7 +520,7 @@ class Build extends CliCommand
       $command = "git log --format=\"$format\" --reverse";
       $command .= " $lastCommitHash^..$buildRun->commitHash";
 
-      $commitProcess = new Process($command);
+      $commitProcess = new Process($command, $this->_buildSourceDir);
       $commitProcess->run();
 
       $out     = $commitProcess->getOutput();

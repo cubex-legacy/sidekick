@@ -12,7 +12,6 @@
     <th>Project</th>
     <th>Branch</th>
     <th>Commit Hash</th>
-    <th>Build Type</th>
     <th>Started</th>
     <th>Duration</th>
     <th>Status</th>
@@ -21,7 +20,7 @@
   <?php
   foreach($this->getBuildRuns() as $b):
      $deploy = \Sidekick\Components\Diffuse\Mappers\Deployment::collection()->loadWhere(
-       "build_id=%d", $b->build_id
+       "build_id=%d", $b->id
      );
     $deployed = '';
     if($deploy->first())
@@ -42,7 +41,6 @@
       </td>
       <td  ><?= substr($b->branch,0,20 ) ?></td>
       <td><?= substr($b->commit_hash, 0, 8) ?></td>
-      <td><?= $this->build($b->build_id)->name; ?></td>
       <td><?= date('d M Y @ H:i:s', strtotime($b->start_time)) ?></td>
       <td><?= $this->getDuration($b->end_time, $b->start_time) ?></td>
       <td><?= ucfirst($b->result) ?></td>

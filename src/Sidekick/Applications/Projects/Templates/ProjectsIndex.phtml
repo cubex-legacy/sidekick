@@ -27,11 +27,11 @@
     <tr>
       <td style="width:80%;">
         <?= $project->name; ?>       <div class="pull-right actions"><a href="/P<?= $project->id(); ?>/fortify"
-                                        title="Edit"><i class="icon-plus"></i> Builds</a> |
+                                        title="Edit"><i class="icon-plus"></i> Builds</a>
         <a href="<?= $this->appBaseUri() . '/edit/' . $project->id(); ?>"
-           title="Edit"><i class="icon-edit"></i> Edit</a> |
+           title="Edit"><i class="icon-edit"></i> Edit</a>
         <a href="<?= $this->appBaseUri() . '/users/' . $project->id(); ?>"
-           title="Users"><i class="icon-user"></i> Users</a> |
+           title="Users"><i class="icon-user"></i> Users</a>
         <a href="<?= $this->appBaseUri() . '/delete/' . $project->id(); ?>"
            title="Delete"><i class="icon-trash"></i> Delete</a></div>
         <p><em><small><?= $project->description; ?></small></em></p>

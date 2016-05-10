@@ -196,7 +196,7 @@ class Build extends CliCommand
     $buildRun->commitHash = trim($process->getOutput());
 
     //store build changes
-    $this->_storeBuildChanges($buildRun);
+    $this->_storeBuildChanges($buildRun, $repo->loclpath);
 
     chdir($buildPath);
 
@@ -503,7 +503,7 @@ class Build extends CliCommand
     echo Shell::colourText("\n  $message\n", Shell::COLOUR_FOREGROUND_CYAN);
   }
 
-  private function _storeBuildChanges(BuildRun $buildRun)
+  private function _storeBuildChanges(BuildRun $buildRun, $repoPath)
   {
     $lastBuildRun = BuildRun::collection()->loadWhere(
       "id < %d AND build_id = %d AND branch = %s",
@@ -520,7 +520,7 @@ class Build extends CliCommand
       $command = "git log --format=\"$format\" --reverse";
       $command .= " $lastCommitHash^..$buildRun->commitHash";
 
-      $commitProcess = new Process($command, $this->_buildSourceDir);
+      $commitProcess = new Process($command, $repoPath);
       $commitProcess->run();
 
       $out     = $commitProcess->getOutput();

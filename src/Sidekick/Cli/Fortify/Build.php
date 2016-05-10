@@ -512,39 +512,42 @@ class Build extends CliCommand
       $buildRun->branch
     )->setOrderBy('id', 'DESC')->first();
 
-    $format  = "%H%n%cn%n%ct%n%s%n%b%x03";
-    $command = "git log -n1000 --format=\"$format\" --reverse";
+    $commits = [];
     if($lastBuildRun && $lastBuildRun->commitHash != $buildRun->commitHash)
     {
       $lastCommitHash = $lastBuildRun->commitHash;
+      $format  = "%H%n%cn%n%ct%n%s%n%b%x03";
+      $command = "git log --format=\"$format\" --reverse";
       $command .= " $lastCommitHash^..$buildRun->commitHash";
+
+      $commitProcess = new Process($command);
+      $commitProcess->run();
+
+      $out     = $commitProcess->getOutput();
+      $commits = explode(chr(03), $out);
     }
 
-    $commitProcess = new Process($command);
-    $commitProcess->run();
-
-    $out     = $commitProcess->getOutput();
-    $commits = explode(chr(03), $out);
-
-    foreach($commits as $commit)
+    if($commits)
     {
-      $commit = explode("\n", trim($commit), 5);
-      if(count($commit) < 3)
+      foreach($commits as $commit)
       {
-        continue;
-      }
-      $commit = array_pad($commit, 5, '');
-      list($commitHash, $author, $date, $subject, $message) = $commit;
+        $commit = explode("\n", trim($commit), 5);
+        if(count($commit) < 3)
+        {
+          continue;
+        }
+        $commit = array_pad($commit, 5, '');
+        list($commitHash, $author, $date, $subject, $message) = $commit;
 
-      $change              = new BuildChanges();
-      $change->commitHash  = trim($commitHash);
-      $change->author      = trim($author);
-      $change->committedAt = date("Y-m-d H:i:s", trim($date));
-      $change->subject     = trim($subject);
-      $change->message     = trim($message);
-      $change->buildRunId  = $buildRun->id();
-      $change->branch      = $buildRun->branch;
-      $change->saveChanges();
+        $change              = new BuildChanges();
+        $change->commitHash  = trim($commitHash);
+        $change->author      = trim($author);
+        $change->committedAt = date("Y-m-d H:i:s", trim($date));
+        $change->subject     = trim($subject);
+        $change->message     = trim($message);
+        $change->buildRunId  = $buildRun->id();
+        $change->saveChanges();
+      }
     }
   }
 }

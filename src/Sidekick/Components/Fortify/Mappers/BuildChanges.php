@@ -16,7 +16,6 @@ class BuildChanges extends RecordMapper
   public $author;
   public $committedAt;
   public $buildRunId;
-  public $branch;
 
   public function getTableName($plural = true)
   {

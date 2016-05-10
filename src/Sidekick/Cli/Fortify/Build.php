@@ -18,6 +18,7 @@ use Sidekick\Components\Fortify\Enums\BuildResult;
 use Sidekick\Components\Fortify\Enums\FileSet;
 use Sidekick\Components\Fortify\FortifyBuildChanges;
 use Sidekick\Components\Fortify\FortifyHelper;
+use Sidekick\Components\Fortify\Mappers\BuildChanges;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -193,6 +194,10 @@ class Build extends CliCommand
     $process->setIdleTimeout($this->idleTimeout);
     $process->run();
     $buildRun->commitHash = trim($process->getOutput());
+
+    //store build changes
+    $this->_storeBuildChanges($buildRun);
+
     chdir($buildPath);
 
     if($this->patch !== null)
@@ -496,5 +501,56 @@ class Build extends CliCommand
   protected function _outputStep($message)
   {
     echo Shell::colourText("\n  $message\n", Shell::COLOUR_FOREGROUND_CYAN);
+  }
+
+  private function _storeBuildChanges(BuildRun $buildRun)
+  {
+    $lastBuildRun = BuildRun::collection()->loadWhere(
+      "id > %d AND branch = %s",
+      $buildRun->id(),
+      $buildRun->branch
+    )->setOrderBy('id', 'DESC')->first();
+
+    $lastCommitHash = $lastBuildRun->commitHash;
+
+    $format  = "%H%n%cn%n%ct%n%s%n%b%x03";
+    $command = "git log --format=\"$format\" --reverse "
+      . "$lastCommitHash^..$buildRun->commitHash";
+
+    $commitProcess = new Process($command);
+    $commitProcess->run();
+
+    $out         = $commitProcess->getOutput();
+    $commits     = explode(chr(03), $out);
+    $commitCount = 0;
+
+    foreach($commits as $commit)
+    {
+      $commit = explode("\n", trim($commit), 5);
+      if(count($commit) < 3)
+      {
+        continue;
+      }
+      $commit = array_pad($commit, 5, '');
+      list($commitHash, $author, $date, $subject, $message) = $commit;
+
+      $commitCount++;
+
+      $commitHash = trim($commitHash);
+      $author     = trim($author);
+      $date       = trim($date);
+      $subject    = trim($subject);
+      $message    = trim($message);
+
+      $change              = new BuildChanges();
+      $change->commitHash  = $commitHash;
+      $change->author      = $author;
+      $change->committedAt = date("Y-m-d H:i:s", $date);
+      $change->subject     = $subject;
+      $change->message     = $message;
+      $change->buildRunId  = $buildRun->id();
+      $change->branch      = $buildRun->branch;
+      $change->saveChanges();
+    }
   }
 }

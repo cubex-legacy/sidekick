@@ -10,9 +10,10 @@
     <th>Branch</th>
     <th>Date</th>
     <th>Hash</th>
-    <th>Result</th>
     <th>Started</th>
     <th>Duration</th>
+    <th>Result</th>
+    <th></th>
   </tr>
   <?php if($this->getBuildRuns()): ?>
     <?php foreach($this->getBuildRuns() as $run): ?>
@@ -21,19 +22,22 @@
         <td><?= $run->branch ?></td>
         <td><?= date('d M y', strtotime($run->createdAt)); ?></td>
         <td><?= substr($run->commitHash, 0, 8); ?></td>
-        <td><?= $run->result; ?></td>
         <td><?= date('d M y H:i:s', strtotime($run->startTime)); ?></td>
         <td title="<?= $run->startTime; ?> - <?= $run->endTime; ?>">
           <?= $this->getDuration($run->endTime, $run->startTime); ?>
         </td>
+        <td><?= $run->result; ?></td>
         <td>
+          <div class="actions">
           <?php if($run->result == 'pass'): ?>
-          <a href="/P<?= $run->projectId ?>/diffuse/<?= $run->id() ?>">Deploy</a> |
-          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/changes">Changes</a>
+          <a href="/P<?= $run->projectId ?>/diffuse/<?= $run->id() ?>"><i class="icon-play"></i> Deploy</a>
+          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/changes"><i class="icon-list"></i> Changes</a>
           <?php endif; ?>
           <?php if($run->result != 'pass'): ?>
-          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/buildlog">View Log</a>
-          <?php endif; ?>
+          <a href="<?= $this->appBaseUri() ?>/<?= $run->buildId ?>/<?= $run->id() ?>/buildlog"><i class="icon-align-left"></i> View Log</a>
+
+        <?php endif; ?>
+          </div>
         </td>
       </tr>
     <?php endforeach; ?>

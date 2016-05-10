@@ -48,7 +48,7 @@
     <tr class="<?= $this->textClass($deplyment);  ?>">
       <td>
         <?php $exploded = explode(":", $project->name); ?>
-        <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
+        <span class="label label-info"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
         <?php $link = $this->getProject() ? "/P$deplyment->projectId/diffuse/deployments/$deplyment->id/logs" : "/P$deplyment->projectId/diffuse/deployments"; ?>
 
         <a

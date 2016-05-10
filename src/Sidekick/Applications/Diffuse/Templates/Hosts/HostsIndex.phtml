@@ -20,8 +20,8 @@
 <?php endif; ?>
 <table class="table table-striped table-bordered table-hover">
   <tr class="info">
-    <th>Name</th>
     <th>Host Name</th>
+    <th>Group</th>
     <th>Ipv 4</th>
     <th>Ipv 6</th>
     <th>SSH Port</th>
@@ -29,8 +29,8 @@
   </tr>
   <?php foreach($this->getHosts() as $host): ?>
     <tr>
-      <td><?= $host->name; ?></td>
       <td><?= $host->hostname; ?></td>
+      <td><?= $host->name; ?></td>
       <td><?= $host->ipv4; ?></td>
       <td><?= $host->ipv6; ?></td>
       <td><?= $host->sshPort; ?></td>

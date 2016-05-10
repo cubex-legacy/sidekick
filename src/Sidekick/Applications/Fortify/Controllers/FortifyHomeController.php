@@ -139,24 +139,12 @@ class FortifyHomeController extends FortifyController
     $basePath   = $this->request()->path(4);
     $currentTab = $this->request()->offsetPath(4);
 
-    $changes = new FortifyBuildChanges(
-      $projectId, $buildId, $buildRun->commitHash, $runId
-    );
-    $commits = $changes->buildCommitRange();
-
-    $repo = Source::loadWhere(["project_id" => $projectId]);
-    if($repo)
-    {
-      $view = new BuildChanges($repo, $runId, $commits);
-    }
-    else
-    {
-      $view = new RenderGroup(
-        new HtmlElement(
-          'h3', ['class' => 'text-error'], 'No Repo is linked to this project'
-        )
+    $commits = \Sidekick\Components\Fortify\Mappers\BuildChanges::collection()
+      ->loadWhere(
+        ['build_run_id' => $runId]
       );
-    }
+
+    $view = new BuildChanges($runId, $commits);
 
     return new BuildRunPage($view, $buildRun, $build, $basePath, $currentTab);
   }

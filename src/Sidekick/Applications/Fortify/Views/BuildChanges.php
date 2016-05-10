@@ -16,9 +16,8 @@ class BuildChanges extends TemplatedViewModel
   protected $_repo;
   protected $_commits;
 
-  public function __construct(Source $repo, $runId, $commits)
+  public function __construct($runId, $commits)
   {
-    $this->_repo    = $repo;
     $this->runId    = $runId;
     $this->_commits = $commits;
   }
@@ -37,20 +36,5 @@ class BuildChanges extends TemplatedViewModel
   public function getRepo()
   {
     return $this->_repo;
-  }
-
-  public function getCommitUrl($commit)
-  {
-    $diffusionBase = $this->getRepo()->diffusionBaseUri;
-    if(!empty($diffusionBase))
-    {
-      return $diffusionBase . $commit->commitHash;
-    }
-    else
-    {
-      return "/P" . $this->getRepo(
-      )->projectId . "/repository/commits/" . $commit->repository_id .
-      "/" . $this->runId . "/" . $commit->id();
-    }
   }
 }

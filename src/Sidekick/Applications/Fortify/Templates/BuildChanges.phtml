@@ -23,9 +23,7 @@
   <?php foreach($this->getCommits() as $c): ?>
     <tr>
       <td>
-        <a href="<?= $this->getCommitUrl($c) ?>">
           <?php echo substr($c->commitHash, 0, 8); ?>
-        </a>
       </td>
       <td>
         <?php echo date('d/M/Y H:i', strtotime($c->committedAt)); ?>

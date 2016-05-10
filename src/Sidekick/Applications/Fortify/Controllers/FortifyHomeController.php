@@ -335,7 +335,7 @@ class FortifyHomeController extends FortifyController
       new StdRoute(':buildType', 'fortify'),
       new StdRoute(':buildType/repository', 'repo'),
       new StdRoute(':buildType/build', 'build'),
-      new StdRoute(':buildType/:runId@num/', 'buildDetails'),
+      new StdRoute(':buildType/:runId@num/', 'changes'),
       new StdRoute(':buildType/:runId@num/buildlog', 'buildLog'),
       new StdRoute(
         ':buildType/:runId@num/buildlog/:commandId',

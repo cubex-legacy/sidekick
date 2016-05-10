@@ -60,8 +60,7 @@ class BuildRunPage extends ViewModel
   private function _tabs()
   {
     $tabs = [
-      'Home'      => '',
-      'Changes'   => 'changes',
+      'Changes'   => '',
       'Build Log' => 'buildlog'
     ];
 

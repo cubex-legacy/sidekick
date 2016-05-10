@@ -19,7 +19,9 @@
          class="control"
          onclick="toggle('#<?= md5($commandRun->command->command); ?>');">
         <?= ($commandRun->passed) ? '+' : '-' ?></a>
-      <?= $commandRun->command->name ?></p>
+      <?= $commandRun->command->name ?>  <a
+        href="./<?= $commandRun->command->id() ?>" title="Command Report">  View Report
+      </a></p>
 
     <div id="<?= md5($commandRun->command->command) ?>"
          class="cmdOutput <?= ($commandRun->passed) ? 'hide' : '' ?>">

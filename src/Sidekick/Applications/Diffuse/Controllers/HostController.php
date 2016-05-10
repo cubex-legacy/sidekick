@@ -30,10 +30,10 @@ class HostController extends DiffuseController
 
   public function renderCreate()
   {
-
     $form = new Form('createPlatform', '');
-    $form->addTextElement('name');
     $form->addTextElement('hostname');
+    $form->addTextElement('name');
+    $form->getElement('name')->setLabel('Group');
     $form->addTextElement('ipv4');
     $form->addTextElement('ipv6');
     $form->addSubmitElement('Create');
@@ -70,8 +70,9 @@ class HostController extends DiffuseController
 
     $form = new Form('editPlatform', '');
     $form->addHiddenElement('id', $host->id());
-    $form->addTextElement('name', $host->name);
     $form->addTextElement('hostname', $host->hostname);
+    $form->addTextElement('name', $host->name);
+    $form->getElement('name')->setLabel('Group');
     $form->addTextElement('ipv4', $host->ipv4);
     $form->addTextElement('ipv6', $host->ipv6);
     $form->addTextElement('sshUser', $host->sshUser);

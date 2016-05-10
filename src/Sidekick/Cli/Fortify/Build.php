@@ -513,8 +513,8 @@ class Build extends CliCommand
     )->setOrderBy('id', 'DESC')->first();
 
     $format  = "%H%n%cn%n%ct%n%s%n%b%x03";
-    $command = "git log --format=\"$format\" --reverse -n1000";
-    if($lastBuildRun)
+    $command = "git log -n1000 --format=\"$format\" --reverse";
+    if($lastBuildRun && $lastBuildRun->commitHash != $buildRun->commitHash)
     {
       $lastCommitHash = $lastBuildRun->commitHash;
       $command .= " $lastCommitHash^..$buildRun->commitHash";

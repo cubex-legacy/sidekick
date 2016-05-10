@@ -23,8 +23,9 @@
     <th>Name</th>
     <th>Last Update</th>
   </tr>
-  <?php foreach($this->getProjects() as $project): ?>
-    <tr>
+  <?php $i =1 ;
+  foreach($this->getProjects() as $project): ?>
+    <tr class="<?= ($i %2 == 1 ? ' row-azure' : '');  ?>">
       <td style="width:80%;">
         <?= $project->name; ?>       <div class="pull-right actions"><a href="/P<?= $project->id(); ?>/fortify"
                                         title="Edit"><i class="icon-plus"></i> Builds</a>
@@ -39,5 +40,5 @@
       <td><?= date('d/M/Y', strtotime($project->updated_at)); ?></td>
 
     </tr>
-  <?php endforeach; ?>
+  <?php $i++; endforeach; ?>
 </table>

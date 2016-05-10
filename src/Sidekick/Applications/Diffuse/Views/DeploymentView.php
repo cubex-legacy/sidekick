@@ -9,6 +9,7 @@ namespace Sidekick\Applications\Diffuse\Views;
 use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Diffuse\Mappers\Deployment;
 
 class DeploymentView extends TemplatedViewModel
 {
@@ -20,10 +21,10 @@ class DeploymentView extends TemplatedViewModel
 
   public function __construct($project, $hosts, $platforms, $buildRun)
   {
-    $this->_project   = $project;
-    $this->_hosts     = $hosts;
+    $this->_project = $project;
+    $this->_hosts = $hosts;
     $this->_platforms = $platforms;
-    $this->_buildRun  = $buildRun;
+    $this->_buildRun = $buildRun;
   }
 
   public function hosts()
@@ -68,6 +69,32 @@ class DeploymentView extends TemplatedViewModel
 
     $this->_form->addTextAreaElement('comment');
     $this->_form->addSubmitElement('Deploy');
+
+    //get previous deployment for this project and pre-populate form
+    $lastDeployment = Deployment::collection()->loadWhere(
+      ['project_id' => $this->_project->id()]
+    )->setOrderBy('id', 'DESC')->first();
+
+    if($lastDeployment)
+    {
+      $this->_form->getElement('platformId')->setDefault(
+        $lastDeployment->platformId
+      );
+      $this->_form->getElement('deploy_base')->setDefault(
+        $lastDeployment->deployBase
+      );
+
+      $lastDeployHosts = json_decode($lastDeployment->hosts);
+      foreach($this->hosts() as $host)
+      {
+        if(in_array($host->id(), $lastDeployHosts))
+        {
+          $this->_form->getElement("deploymentHosts[$host->id]")->setDefault(
+            true
+          );
+        }
+      }
+    }
 
     return $this->_form;
   }

@@ -43,8 +43,7 @@ class FortifyCommandsController extends FortifyCrudController
 
   public function renderNew()
   {
-    //TODO this is a hack. refactor this
-    $this->setBaseUri('/'.$this->baseUri());
+    $this->setBaseUri($this->baseUri());
     $view = $this->createView(new FortifyCommandForm($this->_mapper));
 
     return new RenderGroup(
@@ -59,8 +58,7 @@ class FortifyCommandsController extends FortifyCrudController
     $this->requireJs('addField');
     $this->_mapper->load($id);
 
-    //TODO this is a hack. refactor this
-    $this->setBaseUri('/'.$this->baseUri());
+    $this->setBaseUri($this->baseUri());
     $view    = $this->createView(new FortifyCommandForm($this->_mapper));
     $example = new CommandExample($this->_mapper, true);
 

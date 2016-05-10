@@ -128,12 +128,13 @@ class CreateVersion extends CliCommand
 
       Log::info("New Version: $versionFormat");
 
-      $version->major     = $major;
-      $version->minor     = $minor;
-      $version->build     = $build;
-      $version->revision  = $revision;
-      $version->type      = $this->type;
-      $version->projectId = $this->projectId;
+      $version->major        = $major;
+      $version->minor        = $minor;
+      $version->build        = $build;
+      $version->revision     = $revision;
+      $version->type         = $this->type;
+      $version->projectId    = $this->projectId;
+      $version->versionState = ApprovalState::APPROVED;
       $version->saveChanges();
 
       Log::info("Version Created: ID " . $version->id());

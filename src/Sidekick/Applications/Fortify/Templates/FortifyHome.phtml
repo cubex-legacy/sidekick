@@ -7,7 +7,7 @@
  */
 ?>
 <h1>Overview (Latest Builds)</h1>
-<table class="table">
+<table class="table table-striped">
   <tr>
     <th>Project</th>
     <th>Branch</th>
@@ -18,9 +18,8 @@
     <th>Status</th>
   </tr>
   <?php
-  $i =1;
   foreach($this->getBuildRuns() as $b): ?>
-    <tr class="<?= $this->textClass($b->result) . ($i %2 == 1 ? ' row-azure' : '');  ?>">
+    <tr class="<?= $this->textClass($b->result);  ?>">
       <td>
         <?php $exploded = explode(":", $this->project($b->project_id)->name); ?>
         <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
@@ -38,5 +37,5 @@
       <td><?= $this->getDuration($b->end_time, $b->start_time) ?></td>
       <td><?= ucfirst($b->result) ?></td>
     </tr>
-  <?php $i++; endforeach; ?>
+  <?php endforeach; ?>
 </table>

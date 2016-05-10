@@ -12,7 +12,7 @@
   </div>
 <?php endif; ?>
 
-<table class="table">
+<table class="table table-striped">
   <tr>
     <th> </th>
     <th>Build Number</th>
@@ -26,7 +26,7 @@
   /***
    * @var $deplyment \Sidekick\Components\Diffuse\Mappers\Deployment
    */
-  $i =1;
+
   foreach($this->getDeploymentlist() as $deplyment)
   {
     $project = new \Sidekick\Components\Projects\Mappers\Project($deplyment->projectId);
@@ -45,7 +45,7 @@
     }
 
     ?>
-    <tr class="<?= $this->textClass($deplyment). ($i %2 == 1 ? ' row-azure' : '');  ?>;  ?>">
+    <tr class="<?= $this->textClass($deplyment);  ?>">
       <td>
         <?php $exploded = explode(":", $project->name); ?>
         <span class="label label-default"><?= isset($exploded[1]) ? $exploded[0] : ''; ?></span>&nbsp;&nbsp;
@@ -70,5 +70,5 @@
       <td><?= ucfirst($user->username) ?></td>
       <td><?= ucfirst($deplyment->updatedAt) ?></td>
     </tr>
-  <?php $i++; } ?>
+  <?php } ?>
 </table>

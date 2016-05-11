@@ -16,9 +16,33 @@
 <?= $this->form()->formNameInput() ?>
   <div>
     <?= $this->form()->getElement('buildId'); ?>
-    <?php if($this->form()->getElement('configId')->type() != 'hidden'): ?>
+
+    <?php
+    $hasConfigAssigned = $this->form()->getElement('configId')->type() == 'hidden';
+    if(!$hasConfigAssigned): ?>
     <p>Select Deployment Config: <br/><?php endif; ?>
-      <?= $this->form()->getElement('configId'); ?></p>
+      <?= $this->form()->getElement('configId'); ?>
+
+      <a href="#" id="stepsToggle" class="pull-right" onclick="document.getElementById('steps').style.display='block'">
+        Show Steps<i class="icon-arrow-right"></i> </a>
+    <div class="clearfix"></div>
+    <div id="steps" class="well pull-right" style="display:none;">
+      <?php
+       foreach($this->getSteps() as $platformId => $steps)
+       { ?>
+         <ol style="<?= $hasConfigAssigned ? '' : 'display:none' ?>" id="steps-<?= $platformId; ?>">
+         <?php
+         foreach($steps as $step)
+         {
+           echo "<li>" . $step->command . '</li>';
+         }?>
+        </ol>
+        <?php
+       }
+      ?>
+
+    </div>
+    </p>
 
     <p>Deploy Base: <span class="text-error">Only change this if you know what you are doing!</span><br/><?= $this->form()->getElement('deploy_base') ?></p>
     <p>Choose Servers:</p>

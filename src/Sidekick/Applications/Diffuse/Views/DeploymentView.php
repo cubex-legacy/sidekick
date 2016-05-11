@@ -26,8 +26,9 @@ class DeploymentView extends TemplatedViewModel
   protected $_form;
   protected $_buildRun;
   protected $_deploymentChanges;
+  protected $_steps;
 
-  public function __construct($project, $hosts, $deploymentConfigs, $buildRun)
+  public function __construct($project, $hosts, $deploymentConfigs, $buildRun, $steps)
   {
     $this->_project = $project;
     $this->_hosts = $hosts;
@@ -54,8 +55,14 @@ class DeploymentView extends TemplatedViewModel
         );
       }
     }
+    $this->_steps = $steps;
   }
 
+  public function getSteps()
+  {
+    return !empty($this->_steps) ? $this->_steps : [];
+  }
+  
   public function getDeploymentChanges()
   {
     return !empty($this->_deploymentChanges) ? $this->_deploymentChanges : array();

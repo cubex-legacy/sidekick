@@ -15,6 +15,7 @@ use Sidekick\Applications\Diffuse\Views\DeploymentView;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Diffuse\Mappers\DeploymentLog;
+use Sidekick\Components\Diffuse\Mappers\DeploymentStep;
 use Sidekick\Components\Diffuse\Mappers\PlatformVersionState;
 use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
@@ -43,12 +44,26 @@ class OverviewController extends ProjectAwareBaseControl
     {
       $hosts   = Server::collection();
       $configs = DeploymentConfig::collection();
-
+      if((int)$project->deploymentConfigId > 0)
+      {
+        $configs->loadWhere('id=%d', (int)$project->deploymentConfigId);
+      }
       $buildRun = new BuildRun($this->getInt('buildId'));
+      $deploySteps= [];
+      foreach($configs as $config)
+      {
+        $steps = DeploymentStep::collection()
+          ->loadWhere('platform_id = %d', $config->id)
+          ->setOrderBy('order', 'ASC');
+        foreach($steps as $step)
+        {
+          $deploySteps[$config->id][] = $step;
+        }
 
+      }
       return new RenderGroup(
         $this->createView(
-          new DeploymentView($project, $hosts, $configs, $buildRun)
+          new DeploymentView($project, $hosts, $configs, $buildRun, $deploySteps)
         )
       );
     }

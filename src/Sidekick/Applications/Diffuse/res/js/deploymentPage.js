@@ -40,5 +40,15 @@ $(document).ready(function(){
 
     });}, 1000);
 
+  function showSteps(configId)
+  {
+    var stepsID = 'steps-' + configId;
+    document.getElementById(stepsID).style.display= 'block';
+    $('#'+stepsID).siblings().css('display', 'none');
+  }
+
+  $('[name="configId"]').on('change', function(){
+    showSteps(this.options[this.selectedIndex].value);
+  }); 
 });
 

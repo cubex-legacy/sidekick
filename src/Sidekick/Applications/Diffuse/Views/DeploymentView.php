@@ -34,7 +34,12 @@ class DeploymentView extends TemplatedViewModel
 
     if($lastDeployedBuild)
     {
-      $this->_deploymentChanges = $this->_getChangesFromBuildsNotDeployed($lastDeployedBuild, $buildRun->branch, $project->id());
+      $this->_builds = $this->_getBuildsNotDeployed($lastDeployedBuild, $buildRun->branch, $project->id());
+
+      if(!empty($this->_builds))
+      {
+        $this->_deploymentChanges = $this->_getChangesFromBuilds($this->_builds);
+      }
     }
   }
 
@@ -42,12 +47,21 @@ class DeploymentView extends TemplatedViewModel
   {
     return $this->_deploymentChanges;
   }
-  
-  protected function _getChangesFromBuildsNotDeployed($lastBuildDeployed, $branch, $project)
+  protected function _getBuildsNotDeployed($lastBuildDeployed, $branch, $project)
+  {
+    $query = sprintf(
+      "SELECT id FROM fortify_build_runs WHERE id > %d AND branch = '%s' AND project_id = %d ",
+      $lastBuildDeployed, $branch, $project
+    );
+    return BuildRun::conn()->getKeyedRows(
+      $query
+    );
+  }
+
+  protected function _getChangesFromBuilds($buildRunIds)
   {
     return BuildChanges::collection()->loadWhere(
-      "build_run_id > %d AND branch = %s AND project = %d ",
-      $lastBuildDeployed, $branch, $project
+      "build_run_id IN(" . implode(",", $buildRunIds) . ')'
     );
   }
   /**

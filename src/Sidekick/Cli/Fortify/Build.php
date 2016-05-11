@@ -506,14 +506,15 @@ class Build extends CliCommand
   private function _storeBuildChanges(BuildRun $buildRun, $repoPath)
   {
     $lastBuildRun = BuildRun::collection()->loadWhere(
-      "id < %d AND build_id = %d AND branch = %s",
+      "id < %d AND build_id = %d AND branch = %s AND project_id = %d",
       $buildRun->id(),
       $buildRun->buildId,
-      $buildRun->branch
+      $buildRun->branch,
+      $buildRun->projectId
     )->setOrderBy('id', 'DESC')->first();
 
     $commits = [];
-    if($lastBuildRun && $lastBuildRun->commitHash != $buildRun->commitHash)
+    if($lastBuildRun) // && $lastBuildRun->commitHash != $buildRun->commitHash)
     {
       $lastCommitHash = $lastBuildRun->commitHash;
       $format  = "%H%n%cn%n%ct%n%s%n%b%x03";

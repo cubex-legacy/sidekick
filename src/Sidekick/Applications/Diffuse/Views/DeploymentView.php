@@ -125,6 +125,7 @@ class DeploymentView extends TemplatedViewModel
 
     $this->_form->addTextAreaElement('comment');
     $this->_form->addSubmitElement('Deploy');
+    $this->_form->getElement('submit')->addAttribute('class', 'btn btn-success');
 
     //get previous deployment for this project and pre-populate form
     $lastDeployment = Deployment::collection()->loadWhere(

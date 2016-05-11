@@ -64,13 +64,20 @@
     </script>
     <div class="clearfix"></div>
   </div>
-<div class="well">
+<div class="">
   <h3>Changes:</h3>
+  <table class="table table-striped table-bordered">
   <?php foreach($this->getDeploymentChanges() as $change){
     ?>
-    <p><?= $change->subject; ?>  <?= $change->author; ?>  <?= $change->committed_at; ?> <?= substr($change->commit_hash, 0,8); ?></p>
+    <tr>
+      <td><?= $change->subject; ?> </td>
+      <td><?= $change->author; ?> </td>
+      <td><?= date('y-m-d H:i', strtotime($change->committed_at)); ?> </td>
+      <td> <?= substr($change->commit_hash, 0,8); ?></td>
+    </tr>
     <?php
   }  ?>
+  </table>
 </div>
 <p>Comment:<br/><?= $this->form()->getElement('comment') ?></p>
 

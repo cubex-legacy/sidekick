@@ -513,7 +513,8 @@ class Build extends CliCommand
   private function _storeBuildChanges(BuildRun $buildRun, $repoPath)
   {
     $lastBuildRun = BuildRun::collection()->loadWhere(
-      "id < %d AND build_id = %d AND branch = %s AND project_id = %d",
+      "id < %d AND build_id = %d AND branch = %s "
+      ."AND project_id = %d AND result != 'running'",
       $buildRun->id(),
       $buildRun->buildId,
       $buildRun->branch,

@@ -18,27 +18,36 @@ class DeploymentView extends TemplatedViewModel
 {
   protected $_project;
   protected $_hosts;
-  protected $_platforms;
+  protected $deploymentConfigs;
   protected $_form;
   protected $_buildRun;
   protected $_deploymentChanges;
 
-  public function __construct($project, $hosts, $platforms, $buildRun)
+  public function __construct($project, $hosts, $deploymentConfigs, $buildRun)
   {
-    $this->_project = $project;
-    $this->_hosts = $hosts;
-    $this->_platforms = $platforms;
-    $this->_buildRun = $buildRun;
+    $this->_project          = $project;
+    $this->_hosts            = $hosts;
+    $this->deploymentConfigs = $deploymentConfigs;
+    $this->_buildRun         = $buildRun;
 
-    $lastDeployedBuild = $this->_getLastDeployedBuildId($buildRun->branch, $project->id());
+    $lastDeployedBuild = $this->_getLastDeployedBuildId(
+      $buildRun->branch,
+      $project->id()
+    );
 
     if($lastDeployedBuild)
     {
-      $this->_builds = $this->_getBuildsNotDeployed($lastDeployedBuild, $buildRun->branch, $project->id());
+      $this->_builds = $this->_getBuildsNotDeployed(
+        $lastDeployedBuild,
+        $buildRun->branch,
+        $project->id()
+      );
 
       if(!empty($this->_builds))
       {
-        $this->_deploymentChanges = $this->_getChangesFromBuilds($this->_builds);
+        $this->_deploymentChanges = $this->_getChangesFromBuilds(
+          $this->_builds
+        );
       }
     }
   }
@@ -47,11 +56,16 @@ class DeploymentView extends TemplatedViewModel
   {
     return !empty($this->_deploymentChanges) ? $this->_deploymentChanges : array();
   }
-  protected function _getBuildsNotDeployed($lastBuildDeployed, $branch, $project)
+
+  protected function _getBuildsNotDeployed($lastBuildDeployed, $branch, $project
+  )
   {
     $query = sprintf(
-      "SELECT id FROM fortify_build_runs WHERE id > %d AND branch = '%s' AND project_id = %d ",
-      $lastBuildDeployed, $branch, $project
+      "SELECT id FROM fortify_build_runs WHERE id > %d "
+      . "AND branch = '%s' AND project_id = %d",
+      $lastBuildDeployed,
+      $branch,
+      $project
     );
     return BuildRun::conn()->getKeyedRows(
       $query
@@ -64,6 +78,7 @@ class DeploymentView extends TemplatedViewModel
       "build_run_id IN(" . implode(",", $buildRunIds) . ')'
     );
   }
+
   /**
    * @param      $branch
    * @param null $maxid
@@ -88,9 +103,9 @@ class DeploymentView extends TemplatedViewModel
     return $this->_hosts;
   }
 
-  public function platforms()
+  public function deploymentConfigs()
   {
-    return $this->_platforms;
+    return $this->deploymentConfigs;
   }
 
   public function form()
@@ -103,7 +118,7 @@ class DeploymentView extends TemplatedViewModel
     $this->_form->setDefaultElementTemplate('{{input}}');
     $this->_form->addHiddenElement('buildId', $this->_buildRun->id());
 
-    $options = (new OptionBuilder($this->_platforms))->getOptions();
+    $options = (new OptionBuilder($this->deploymentConfigs))->getOptions();
     $options = [0 => 'Select a Config'] + $options;
 
     $this->_form->addSelectElement("platformId", $options);
@@ -125,7 +140,10 @@ class DeploymentView extends TemplatedViewModel
 
     $this->_form->addTextAreaElement('comment');
     $this->_form->addSubmitElement('Deploy');
-    $this->_form->getElement('submit')->addAttribute('class', 'btn btn-success');
+    $this->_form->getElement('submit')->addAttribute(
+      'class',
+      'btn btn-success'
+    );
 
     //get previous deployment for this project and pre-populate form
     $lastDeployment = Deployment::collection()->loadWhere(

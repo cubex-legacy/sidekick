@@ -53,9 +53,9 @@ $(document).ready(function(){
 
   $('#stepsToggle').on('click', function(){
     document.getElementById('steps').style.display='block';
-    if(typeof $('[name="configId"]').options !== 'undefined')
+    if($('[name="configId"]').val())
     {
-      showSteps($('[name="configId"]').options[this.selectedIndex].value);
+      showSteps($('[name="configId"]').val());
     }
   })
 });

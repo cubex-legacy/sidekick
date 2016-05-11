@@ -30,7 +30,7 @@
       <?php
        foreach($this->getSteps() as $platformId => $steps)
        { ?>
-         <ol style="<?= $hasConfigAssigned ? '' : 'display:none' ?>" id="steps-<?= $platformId; ?>">
+         <ol style="display:none" id="steps-<?= $platformId; ?>">
          <?php
          foreach($steps as $step)
          {

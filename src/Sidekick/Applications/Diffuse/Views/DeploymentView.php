@@ -53,9 +53,10 @@ class DeploymentView extends TemplatedViewModel
       "SELECT id FROM fortify_build_runs WHERE id > %d AND branch = '%s' AND project_id = %d ",
       $lastBuildDeployed, $branch, $project
     );
-    return BuildRun::conn()->getKeyedRows(
+    $result = BuildRun::conn()->getKeyedRows(
       $query
     );
+    return empty($result) ? array() : $result;
   }
 
   protected function _getChangesFromBuilds($buildRunIds)

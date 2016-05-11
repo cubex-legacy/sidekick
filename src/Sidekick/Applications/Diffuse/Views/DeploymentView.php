@@ -30,10 +30,11 @@ class DeploymentView extends TemplatedViewModel
     $this->_platforms = $platforms;
     $this->_buildRun = $buildRun;
 
-    $lastDeployment = $this->_getLastDeploymentWithSameBranch($buildRun->branch, $project->id());
-    if($lastDeployment)
+    $lastDeployedBuild = $this->_getLastDeployedBuildId($buildRun->branch, $project->id());
+
+    if($lastDeployedBuild)
     {
-      $this->_deploymentChanges = $this->_getBuildsNotDeployed($lastDeployment->buildId, $buildRun->branch, $project->id());
+      $this->_deploymentChanges = $this->_getChangesFromBuildsNotDeployed($lastDeployedBuild, $buildRun->branch, $project->id());
     }
   }
 
@@ -42,10 +43,10 @@ class DeploymentView extends TemplatedViewModel
     return $this->_deploymentChanges;
   }
   
-  protected function _getBuildsNotDeployed($lastBuildDeployed, $branch, $project)
+  protected function _getChangesFromBuildsNotDeployed($lastBuildDeployed, $branch, $project)
   {
     return BuildChanges::collection()->loadWhere(
-      "id > %d AND branch = %s AND project = %d ",
+      "build_run_id > %d AND branch = %s AND project = %d ",
       $lastBuildDeployed, $branch, $project
     );
   }
@@ -55,32 +56,15 @@ class DeploymentView extends TemplatedViewModel
    *
    * @return Deployment|bool
    */
-  protected function _getLastDeploymentWithSameBranch($branch, $projectId, $maxid = null)
+  protected function _getLastDeployedBuildId($branch, $projectId, $maxid = null)
   {
-    if($maxid)
+
+    $lastDeployment = Deployment::collection()
+      ->loadWhere('project_id = %d AND branch=%s', $projectId, $branch)
+      ->setOrderBy('id', 'DESC')->first();
+    if($lastDeployment)
     {
-      $lastDeployment = Deployment::collection()
-        ->loadWhere('id < %d AND project_id = %d', $maxid, $projectId)
-        ->setOrderBy('id', 'DESC')->setLimit(1);
-    }
-    else
-    {
-      $lastDeployment = Deployment::collection()
-        ->loadWhere('project_id = %d', $projectId)
-        ->setOrderBy('id', 'DESC')->setLimit(1);
-    }
-    if($lastDeployment->first())
-    {
-      $maxid = $lastDeployment->first()->id();
-      $buildRun = new BuildRun($lastDeployment->buildId);
-      if($buildRun->branch == $branch)
-      {
-        return $lastDeployment->first();
-      }
-      else
-      {
-        return $this->_getLastDeploymentWithSameBranch($branch,$projectId, $maxid);
-      }
+      return $lastDeployment->buildId;
     }
     return false;
   }

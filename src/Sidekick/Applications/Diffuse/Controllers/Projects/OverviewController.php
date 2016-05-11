@@ -79,6 +79,9 @@ class OverviewController extends ProjectAwareBaseControl
       $deployment->comment    = $postData['comment'];
       $deployment->deployBase = $postData['deploy_base'];
 
+      $br = new BuildRun($deployment->buildId);
+      $deployment->branch = $br->branch;
+
       $deployment->saveChanges();
 
       //TODO refactor how versions work. This has been put here to

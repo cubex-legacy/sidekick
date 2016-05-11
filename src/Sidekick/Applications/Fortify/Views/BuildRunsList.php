@@ -34,7 +34,12 @@ class BuildRunsList extends TemplatedViewModel
    */
   public function getBuildUser($build)
   {
-    return new User($build->user_id);
+    if(isset($build->user_id) && (int)$build->user_id > 0)
+    {
+      return (new User($build->user_id))->username;
+    }
+
+    return '--';
   }
 
   public function getDuration($endDate, $startDate)

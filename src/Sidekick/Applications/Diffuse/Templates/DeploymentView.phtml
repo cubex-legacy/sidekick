@@ -64,10 +64,15 @@
     </script>
     <div class="clearfix"></div>
   </div>
-
+<div>
+  <?php foreach($this->getDeploymentChanges() as $change){
+    ?>
+    <p><?= $change->subject; ?>  <?= $change->author; ?>  <?= $change->committed_at; ?></p>
+    <?php
+  }  ?>
+</div>
 <p>Comment:<br/><?= $this->form()->getElement('comment') ?></p>
+
 
 <?= $this->form()->getElement('submit') ?>
 <?= $this->form()->close() ?>
-
-<?php var_dump_json($this->getDeploymentChanges()); var_dump($this->getDeploymentChanges());  ?>

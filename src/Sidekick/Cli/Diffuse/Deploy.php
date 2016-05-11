@@ -113,10 +113,6 @@ class Deploy extends CliCommand
         $deployment->userId     = $user->id();
       }
 
-      //Stop the deployment from being pending, to ensure it no longer gets
-      //picked up by the queue consumer
-
-      //$deployment->pending = false;
       $deployment->startedAt = new \DateTime();
       $deployment->saveChanges(); //Initiate deployment for the ID
 
@@ -131,66 +127,77 @@ class Deploy extends CliCommand
       //work out build directory
       $build          = new Build($version->buildId);
       $buildSourceDir = build_path($buildPath, $build->sourceDirectory);
-      /**
-       * @var Server $server
-       */
-      foreach($servers as $server)
+
+      if(file_exists($buildSourceDir))
       {
-        foreach($steps as $step)
+        /**
+         * @var Server $server
+         */
+        foreach($servers as $server)
         {
-          $command = str_replace(
-            [
-              '{buildSource}',
-              '{deployBase}',
-              '{username}',
-              '{server}',
-              '{hostname}',
-              '{sshport}',
-              '{ipv4}',
-              '{ipv6}',
-              '{buildId}'
-            ],
-            [
-              $buildSourceDir,
-              rtrim($deployment->deployBase, '/'),
-              $server->sshUser,
-              $server->getConnPreference(),
-              $server->hostname,
-              $server->sshPort,
-              $server->ipv4,
-              $server->ipv6,
-              $version->id()
-            ],
-            $step->command
-          );
+          foreach($steps as $step)
+          {
+            $command = str_replace(
+              [
+                '{buildSource}',
+                '{deployBase}',
+                '{username}',
+                '{server}',
+                '{hostname}',
+                '{sshport}',
+                '{ipv4}',
+                '{ipv6}',
+                '{buildId}'
+              ],
+              [
+                $buildSourceDir,
+                rtrim($deployment->deployBase, '/'),
+                $server->sshUser,
+                $server->getConnPreference(),
+                $server->hostname,
+                $server->sshPort,
+                $server->ipv4,
+                $server->ipv6,
+                $version->id()
+              ],
+              $step->command
+            );
 
-          echo "Running $step->name ($command) on " . $server->hostname . PHP_EOL;
-          $process = new Process($command);
-          $process->run();
+            echo "Running $step->name ($command) on " . $server->hostname . PHP_EOL;
+            $process = new Process($command);
+            $process->run();
 
-          $sh                    = new DeploymentLog();
-          $sh->deploymentId      = $deployment->id();
-          $sh->deploymentStageId = $step->id();
-          $sh->serverId          = $server->id();
-          $sh->command           = $command;
-          $sh->passed            = $process->getExitCode() == 0;
-          $sh->stdOut            = $process->getOutput();
-          $sh->stdErr            = $process->getErrorOutput();
-          $sh->log               = 'TODO';
-          $sh->saveChanges();
+            $sh                    = new DeploymentLog();
+            $sh->deploymentId      = $deployment->id();
+            $sh->deploymentStageId = $step->id();
+            $sh->serverId          = $server->id();
+            $sh->command           = $command;
+            $sh->passed            = $process->getExitCode() == 0;
+            $sh->stdOut            = $process->getOutput();
+            $sh->stdErr            = $process->getErrorOutput();
+            $sh->log               = 'TODO';
+            $sh->saveChanges();
+          }
         }
-      }
-      /*$stateId = [$depConfig->id(), $version->id()];
-      $state = new PlatformVersionState($stateId);
-      $state->platformId = $depConfig->id();
-      $state->versionId = $version->id();
-      $state->deploymentCount++;
-      $state->saveChanges();*/
 
-      $deployment->passed = 1;
-      $deployment->completed = 1;
-      $deployment->pending = 0;
-      $deployment->saveChanges();
+        $deployment->passed    = 1;
+        $deployment->completed = 1;
+        //Stop the deployment from being pending, to ensure it no longer gets
+        //picked up by the queue consumer
+        $deployment->pending   = 0;
+        $deployment->saveChanges();
+      }
+      else
+      {
+        Log::error(
+          "Cannot deploy build #$version->id. "
+          . "Artifact does no longer exist at $buildSourceDir"
+        );
+        $deployment->passed    = false;
+        $deployment->completed = 0;
+        $deployment->pending   = 0;
+        $deployment->saveChanges();
+      }
     }
     catch(\Exception $e)
     {
@@ -198,7 +205,7 @@ class Deploy extends CliCommand
       {
         $deployment->passed    = false;
         $deployment->completed = 1;
-        $deployment->pending = 0;
+        $deployment->pending   = 0;
         $deployment->saveChanges();
       }
       throw $e;

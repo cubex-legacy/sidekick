@@ -71,11 +71,11 @@ class DeploymentView extends TemplatedViewModel
     }
     if($lastDeployment->first())
     {
-      $maxid = $lastDeployment->id();
+      $maxid = $lastDeployment->first()->id();
       $buildRun = new BuildRun($lastDeployment->buildId);
       if($buildRun->branch == $branch)
       {
-        return $lastDeployment;
+        return $lastDeployment->first();
       }
       else
       {

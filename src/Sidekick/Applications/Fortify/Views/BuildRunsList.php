@@ -11,6 +11,7 @@ namespace Sidekick\Applications\Fortify\Views;
 
 use Cubex\Helpers\DateTimeHelper;
 use Cubex\View\TemplatedViewModel;
+use Sidekick\Components\Users\Mappers\User;
 
 class BuildRunsList extends TemplatedViewModel
 {
@@ -24,6 +25,16 @@ class BuildRunsList extends TemplatedViewModel
   public function getBuildRuns()
   {
     return $this->_buildRuns;
+  }
+
+  /**
+   * @param $build
+   *
+   * @return User
+   */
+  public function getBuildUser($build)
+  {
+    return new User($build->user_id);
   }
 
   public function getDuration($endDate, $startDate)

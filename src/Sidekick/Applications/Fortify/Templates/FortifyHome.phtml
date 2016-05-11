@@ -15,6 +15,7 @@
     <th>Started</th>
     <th>Duration</th>
     <th>Status</th>
+    <th>Author</th>
     <th>Deployed</th>
   </tr>
   <?php
@@ -44,6 +45,7 @@
       <td><?= date('d M Y @ H:i:s', strtotime($b->start_time)) ?></td>
       <td><?= $this->getDuration($b->end_time, $b->start_time) ?></td>
       <td><?= ucfirst($b->result) ?></td>
+      <td><?= ucfirst($this->getBuildUser($b)) ?></td>
       <td><?= $deployed ?></td>
     </tr>
   <?php endforeach; ?>

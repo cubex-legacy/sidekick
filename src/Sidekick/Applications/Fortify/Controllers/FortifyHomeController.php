@@ -60,7 +60,7 @@ class FortifyHomeController extends FortifyController
     $allBuilds = BuildRun::collection($collectionFilter)->setOrderBy(
       'created_at',
       'DESC'
-    )->setLimit(0, 20);
+    )->setLimit(0, 30);
 
     return new BuildsPage($projectId, $buildType, $builds, $allBuilds);
   }

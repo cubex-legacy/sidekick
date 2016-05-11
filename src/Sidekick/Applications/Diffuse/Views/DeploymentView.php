@@ -13,9 +13,13 @@ use Sidekick\Components\Diffuse\Mappers\Deployment;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildChanges;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
+use Sidekick\Components\Projects\Mappers\Project;
 
 class DeploymentView extends TemplatedViewModel
 {
+  /**
+   * @var Project $_project
+   */
   protected $_project;
   protected $_hosts;
   protected $deploymentConfigs;
@@ -25,10 +29,10 @@ class DeploymentView extends TemplatedViewModel
 
   public function __construct($project, $hosts, $deploymentConfigs, $buildRun)
   {
-    $this->_project          = $project;
-    $this->_hosts            = $hosts;
+    $this->_project = $project;
+    $this->_hosts = $hosts;
     $this->deploymentConfigs = $deploymentConfigs;
-    $this->_buildRun         = $buildRun;
+    $this->_buildRun = $buildRun;
 
     $lastDeployedBuild = $this->_getLastDeployedBuildId(
       $buildRun->branch,
@@ -80,12 +84,12 @@ class DeploymentView extends TemplatedViewModel
   }
 
   /**
-   * @param      $branch
-   * @param null $maxid
+   * @param $branch
+   * @param $projectId
    *
-   * @return Deployment|bool
+   * @return bool
    */
-  protected function _getLastDeployedBuildId($branch, $projectId, $maxid = null)
+  protected function _getLastDeployedBuildId($branch, $projectId)
   {
 
     $lastDeployment = Deployment::collection()
@@ -118,10 +122,20 @@ class DeploymentView extends TemplatedViewModel
     $this->_form->setDefaultElementTemplate('{{input}}');
     $this->_form->addHiddenElement('buildId', $this->_buildRun->id());
 
-    $options = (new OptionBuilder($this->deploymentConfigs))->getOptions();
-    $options = [0 => 'Select a Config'] + $options;
+    if((int)$this->_project->deploymentConfigId <= 0)
+    {
+      $options = (new OptionBuilder($this->deploymentConfigs))->getOptions();
+      $options = [0 => 'Select a Config'] + $options;
+      $this->_form->addSelectElement("configId", $options);
+    }
+    else
+    {
+      $this->_form->addHiddenElement(
+        'configId',
+        $this->_project->deploymentConfigId
+      );
+    }
 
-    $this->_form->addSelectElement("platformId", $options);
     $this->_form->addTextElement('deploy_base', $this->_project->deployBase);
 
     foreach($this->hosts() as $host)
@@ -152,9 +166,13 @@ class DeploymentView extends TemplatedViewModel
 
     if($lastDeployment)
     {
-      $this->_form->getElement('platformId')->setData(
-        $lastDeployment->platformId
-      );
+      if((int)$this->_project->deploymentConfigId <= 0)
+      {
+        $this->_form->getElement('configId')->setData(
+          $lastDeployment->platformId
+        );
+      }
+
       if($lastDeployment->deployBase)
       {
         $this->_form->getElement('deploy_base')->setData(

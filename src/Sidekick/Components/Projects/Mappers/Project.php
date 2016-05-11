@@ -16,6 +16,7 @@ class Project extends RecordMapper
   public $parentId;
   public $description;
   public $deployBase;
+  public $deploymentConfigId;
 
   public static function getProjects($projectId = null)
   {

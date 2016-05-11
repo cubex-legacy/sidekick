@@ -9,6 +9,8 @@ namespace Sidekick\Applications\Projects\Forms;
 use Cubex\Data\Validator\Validator;
 use Cubex\Form\Form;
 use Cubex\Form\FormElement;
+use Cubex\Form\OptionBuilder;
+use Sidekick\Components\Diffuse\Mappers\DeploymentConfig;
 use Sidekick\Components\Projects\Mappers\Project;
 
 class ProjectForm extends Form
@@ -18,6 +20,7 @@ class ProjectForm extends Form
   public $parent_id;
   public $description;
   public $deploy_base;
+  public $deployment_config_id;
 
   public function __construct($action = '', $id = null)
   {
@@ -31,6 +34,16 @@ class ProjectForm extends Form
     $this->get('name')->setType(FormElement::TEXT)->setRequired(true);
     $this->get('description')->setType(FormElement::TEXTAREA);
     $this->get('deploy_base')->setType(FormElement::TEXT);
+
+    $configs = DeploymentConfig::collection();
+    $options = [0 => 'Select a Config'];
+    if($configs->hasMappers())
+    {
+      $options += (new OptionBuilder($configs))->getOptions();
+    }
+
+    $this->addSelectElement("deployment_config_id", $options);
+    $this->get('deployment_config_id')->setLabel('Deployment Config');
 
     $this->addTextElement('repo[repository_type]');
     $this->addTextElement('repo[name]');

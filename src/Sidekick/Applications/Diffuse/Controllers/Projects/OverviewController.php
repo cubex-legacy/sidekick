@@ -61,7 +61,7 @@ class OverviewController extends ProjectAwareBaseControl
   public function postIndex()
   {
     $postData = $this->request()->postVariables();
-    if(isset($postData['platformId']) && (int)$postData['platformId'] > 0
+    if(isset($postData['configId']) && (int)$postData['configId'] > 0
       && count($postData['deploymentHosts'])
       && !empty($postData['deploy_base'])
     )
@@ -69,7 +69,7 @@ class OverviewController extends ProjectAwareBaseControl
       //create a new deployment
       $deployment             = new Deployment();
       $deployment->pending    = true;
-      $deployment->platformId = $postData["platformId"]; //TODO rename to deploymentConfigId
+      $deployment->platformId = $postData["configId"];
       $deployment->projectId  = $this->_projectId;
       $deployment->buildId    = $this->getInt("buildId");
       $deployment->userId     = \Auth::user()->getId();
@@ -94,9 +94,9 @@ class OverviewController extends ProjectAwareBaseControl
       $latestVersion->versionState = 'approved';
       $latestVersion->SaveChanges();
 
-      $stateId           = [$postData["platformId"], $latestVersion->id()];
+      $stateId           = [$postData["configId"], $latestVersion->id()];
       $state             = new PlatformVersionState($stateId);
-      $state->platformId = $postData["platformId"];
+      $state->platformId = $postData["configId"];
       $state->versionId  = $latestVersion->id();
       $state->deploymentCount++;
       $state->state = 'approved';

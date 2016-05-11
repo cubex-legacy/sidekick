@@ -16,9 +16,11 @@
 <?= $this->form()->formNameInput() ?>
   <div>
     <?= $this->form()->getElement('buildId'); ?>
-    <p>Select Deployment Config: <br/><?= $this->form()->getElement('platformId'); ?></p>
+    <?php if($this->form()->getElement('configId')->type() != 'hidden'): ?>
+    <p>Select Deployment Config: <br/><?php endif; ?>
+      <?= $this->form()->getElement('configId'); ?></p>
 
-    <p>Deploy Base: <br/><?= $this->form()->getElement('deploy_base') ?></p>
+    <p>Deploy Base: <span class="text-error">Only change this if you know what you are doing!</span><br/><?= $this->form()->getElement('deploy_base') ?></p>
     <p>Choose Servers:</p>
     <?php
     $groups = [];
@@ -34,7 +36,7 @@
       <style>
         .activeDeployHost{
           background: #EDFFE0;
-        } 
+        }
         .hostsContainer{
          border: 1px solid #ddd;
          margin: 10px;

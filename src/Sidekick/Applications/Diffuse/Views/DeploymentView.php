@@ -45,7 +45,7 @@ class DeploymentView extends TemplatedViewModel
 
   public function getDeploymentChanges()
   {
-    return $this->_deploymentChanges ? $this->_deploymentChanges : array();
+    return !empty($this->_deploymentChanges) ? $this->_deploymentChanges : array();
   }
   protected function _getBuildsNotDeployed($lastBuildDeployed, $branch, $project)
   {

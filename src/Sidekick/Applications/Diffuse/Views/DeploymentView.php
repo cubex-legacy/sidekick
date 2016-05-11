@@ -45,7 +45,7 @@ class DeploymentView extends TemplatedViewModel
 
   public function getDeploymentChanges()
   {
-    return $this->_deploymentChanges;
+    return $this->_deploymentChanges ? $this->_deploymentChanges : array();
   }
   protected function _getBuildsNotDeployed($lastBuildDeployed, $branch, $project)
   {
@@ -53,10 +53,9 @@ class DeploymentView extends TemplatedViewModel
       "SELECT id FROM fortify_build_runs WHERE id > %d AND branch = '%s' AND project_id = %d ",
       $lastBuildDeployed, $branch, $project
     );
-    $result = BuildRun::conn()->getKeyedRows(
+    return BuildRun::conn()->getKeyedRows(
       $query
     );
-    return empty($result) ? array() : $result;
   }
 
   protected function _getChangesFromBuilds($buildRunIds)

@@ -49,6 +49,14 @@ $(document).ready(function(){
 
   $('[name="configId"]').on('change', function(){
     showSteps(this.options[this.selectedIndex].value);
-  }); 
+  });
+
+  $('#stepsToggle').on('click', function(){
+    document.getElementById('steps').style.display='block';
+    if(typeof $('[name="configId"]').options !== 'undefined')
+    {
+      showSteps($('[name="configId"]').options[this.selectedIndex].value);
+    }
+  })
 });
 

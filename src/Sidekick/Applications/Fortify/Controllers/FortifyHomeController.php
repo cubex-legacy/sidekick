@@ -252,7 +252,8 @@ class FortifyHomeController extends FortifyController
         [
           'projectId' => $this->getProjectId(),
           'buildId'   => $buildId,
-          'branch'    => $branch
+          'branch'    => $branch,
+          'userId'    => \Auth::user()->getId()
         ]
       );
 

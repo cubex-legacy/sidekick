@@ -68,6 +68,12 @@ class Build extends CliCommand
    */
   public $branch = 'master';
 
+  /**
+   * The user who triggered thebuild
+   * @valuerequired
+   */
+  public $userId;
+
   public $verbose;
 
   /**
@@ -112,6 +118,7 @@ class Build extends CliCommand
     $buildRun->projectId = $project->id();
     $buildRun->startTime = new \DateTime();
     $buildRun->branch    = $this->branch;
+    $buildRun->userId    = $this->userId;
     $buildRun->commands  = [];
     $this->_buildResult  = $buildRun->result = BuildResult::RUNNING;
     $buildRun->saveChanges();
@@ -517,8 +524,8 @@ class Build extends CliCommand
     if($lastBuildRun && $lastBuildRun->commitHash != $buildRun->commitHash)
     {
       $lastCommitHash = $lastBuildRun->commitHash;
-      $format  = "%H%n%cn%n%ct%n%s%n%b%x03";
-      $command = "git log --format=\"$format\" --reverse";
+      $format         = "%H%n%cn%n%ct%n%s%n%b%x03";
+      $command        = "git log --format=\"$format\" --reverse";
       $command .= " $lastCommitHash..$buildRun->commitHash";
 
       $commitProcess = new Process($command, $repoPath);

@@ -74,6 +74,8 @@ class BuildQueue extends CliCommand
         $project,
         '--branch',
         $branch,
+        '--userId',
+        (int)$data->userId,
         '--echo-level',
         $this->_logger->getEchoLevel(),
         '--log-level',

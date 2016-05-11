@@ -514,7 +514,7 @@ class Build extends CliCommand
     )->setOrderBy('id', 'DESC')->first();
 
     $commits = [];
-    if($lastBuildRun) // && $lastBuildRun->commitHash != $buildRun->commitHash)
+    if($lastBuildRun && $lastBuildRun->commitHash != $buildRun->commitHash)
     {
       $lastCommitHash = $lastBuildRun->commitHash;
       $format  = "%H%n%cn%n%ct%n%s%n%b%x03";

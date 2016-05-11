@@ -10,6 +10,9 @@ use Cubex\Form\Form;
 use Cubex\Form\OptionBuilder;
 use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Diffuse\Mappers\Deployment;
+use Sidekick\Components\Fortify\Mappers\Build;
+use Sidekick\Components\Fortify\Mappers\BuildChanges;
+use Sidekick\Components\Fortify\Mappers\BuildRun;
 
 class DeploymentView extends TemplatedViewModel
 {
@@ -18,6 +21,7 @@ class DeploymentView extends TemplatedViewModel
   protected $_platforms;
   protected $_form;
   protected $_buildRun;
+  protected $_deploymentChanges;
 
   public function __construct($project, $hosts, $platforms, $buildRun)
   {
@@ -25,6 +29,60 @@ class DeploymentView extends TemplatedViewModel
     $this->_hosts = $hosts;
     $this->_platforms = $platforms;
     $this->_buildRun = $buildRun;
+
+    $lastDeployment = $this->_getLastDeploymentWithSameBranch($buildRun->branch, $project->id());
+    if($lastDeployment)
+    {
+      $this->_deploymentChanges = $this->_getBuildsNotDeployed($lastDeployment->buildId, $buildRun->branch, $project->id());
+    }
+  }
+
+  public function getDeploymentChanges()
+  {
+    return $this->_deploymentChanges;
+  }
+  
+  protected function _getBuildsNotDeployed($lastBuildDeployed, $branch, $project)
+  {
+    return BuildChanges::collection()->loadWhere(
+      "id > %d AND branch = %s AND project = %d ",
+      $lastBuildDeployed, $branch, $project
+    );
+  }
+  /**
+   * @param      $branch
+   * @param null $maxid
+   *
+   * @return Deployment|bool
+   */
+  protected function _getLastDeploymentWithSameBranch($branch, $projectId, $maxid = null)
+  {
+    if($maxid)
+    {
+      $lastDeployment = Deployment::collection()
+        ->loadWhere('id < %d AND project_id = %d', $maxid, $projectId)
+        ->setOrderBy('id', 'DESC')->setLimit(1);
+    }
+    else
+    {
+      $lastDeployment = Deployment::collection()
+        ->loadWhere('project_id = %d', $projectId)
+        ->setOrderBy('id', 'DESC')->setLimit(1);
+    }
+    if($lastDeployment->first())
+    {
+      $maxid = $lastDeployment->id();
+      $buildRun = new BuildRun($lastDeployment->buildId);
+      if($buildRun->branch == $branch)
+      {
+        return $lastDeployment;
+      }
+      else
+      {
+        return $this->_getLastDeploymentWithSameBranch($branch,$projectId, $maxid);
+      }
+    }
+    return false;
   }
 
   public function hosts()

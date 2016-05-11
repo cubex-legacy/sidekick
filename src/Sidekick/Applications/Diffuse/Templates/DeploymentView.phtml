@@ -64,6 +64,10 @@
     </script>
     <div class="clearfix"></div>
   </div>
+
 <p>Comment:<br/><?= $this->form()->getElement('comment') ?></p>
+
 <?= $this->form()->getElement('submit') ?>
 <?= $this->form()->close() ?>
+
+<?php var_dump_json($this->getDeploymentChanges()); var_dump($this->getDeploymentChanges());  ?>

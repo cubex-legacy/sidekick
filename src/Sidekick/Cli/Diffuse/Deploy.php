@@ -147,7 +147,8 @@ class Deploy extends CliCommand
                 '{sshport}',
                 '{ipv4}',
                 '{ipv6}',
-                '{buildId}'
+                '{buildId}',
+                '{monitGroup}'
               ],
               [
                 $buildSourceDir,
@@ -158,7 +159,8 @@ class Deploy extends CliCommand
                 $server->sshPort,
                 $server->ipv4,
                 $server->ipv6,
-                $version->id()
+                $version->id(),
+                $project->monitGroup
               ],
               $step->command
             );
@@ -184,7 +186,7 @@ class Deploy extends CliCommand
         $deployment->completed = 1;
         //Stop the deployment from being pending, to ensure it no longer gets
         //picked up by the queue consumer
-        $deployment->pending   = 0;
+        $deployment->pending = 0;
         $deployment->saveChanges();
       }
       else

@@ -56,6 +56,7 @@ class DefaultController extends ProjectsController
       $project->description        = $form->description;
       $project->deployBase         = $form->deploy_base;
       $project->deploymentConfigId = $form->deployment_config_id;
+      $project->monitGroup         = $form->monit_group;
       if($form->parent_id > 0)
       {
         $project->parentId = $form->parent_id;
@@ -109,6 +110,7 @@ class DefaultController extends ProjectsController
     $form->setData('description', $project->description);
     $form->setData('deploy_base', $project->deployBase);
     $form->setData('deployment_config_id', $project->deploymentConfigId);
+    $form->setData('monit_group', $project->monitGroup);
     $form->setData('repo[repository_type]', $repository->repository_type);
     $form->setData('repo[description]', $repository->description);
     $form->setData('repo[localpath]', $repository->localpath);
@@ -135,6 +137,7 @@ class DefaultController extends ProjectsController
       $project->description        = $form->description;
       $project->deployBase         = $form->deploy_base;
       $project->deploymentConfigId = $form->deployment_config_id;
+      $project->monitGroup         = $form->monit_group;
       if($form->parent_id > 0)
       {
         $project->parentId = $form->parent_id;

@@ -21,6 +21,7 @@ class ProjectForm extends Form
   public $description;
   public $deploy_base;
   public $deployment_config_id;
+  public $monit_group;
 
   public function __construct($action = '', $id = null)
   {
@@ -44,6 +45,7 @@ class ProjectForm extends Form
 
     $this->addSelectElement("deployment_config_id", $options);
     $this->get('deployment_config_id')->setLabel('Deployment Config');
+    $this->addTextElement('monit_group');
 
     $this->addTextElement('repo[repository_type]');
     $this->addTextElement('repo[name]');

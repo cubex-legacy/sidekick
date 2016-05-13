@@ -17,7 +17,7 @@ use Sidekick\Applications\Fortify\Views\AddBuildCommandsForm;
 use Sidekick\Applications\Fortify\Views\BuildCommands;
 use Sidekick\Applications\Fortify\Views\FortifyForm;
 use Sidekick\Applications\Fortify\Views\FortifyMapperList;
-use Sidekick\Applications\Fortify\Views\ProjectBuilds;
+use Sidekick\Applications\Fortify\Views\ProjectBuildsView;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
 use Sidekick\Components\Fortify\Mappers\ProjectBuilds;
@@ -108,7 +108,7 @@ class FortifyBuildsController extends FortifyCrudController
     $projects      = Project::collection();
     $projectBuilds = ProjectBuilds::collection();
 
-    return new ProjectBuilds($projects, $builds, $projectBuilds);
+    return new ProjectBuildsView($projects, $builds, $projectBuilds);
   }
 
   public function postProjects()

@@ -10,7 +10,7 @@ use Cubex\View\TemplatedViewModel;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Projects\Mappers\Project;
 
-class ProjectBuilds extends TemplatedViewModel
+class ProjectBuildsView extends TemplatedViewModel
 {
   protected $_projects;
   protected $_builds;

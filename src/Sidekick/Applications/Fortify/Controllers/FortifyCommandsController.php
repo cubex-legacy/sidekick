@@ -12,6 +12,7 @@ namespace Sidekick\Applications\Fortify\Controllers;
 use Cubex\Mapper\Database\RecordCollection;
 use Cubex\View\RenderGroup;
 use Sidekick\Applications\BaseApp\Views\MappersTable;
+use Sidekick\Applications\BaseApp\Views\Sidebar;
 use Sidekick\Applications\Fortify\Views\CommandExample;
 use Sidekick\Applications\Fortify\Views\FortifyCommandForm;
 use Sidekick\Components\Fortify\Mappers\Command;
@@ -26,6 +27,18 @@ class FortifyCommandsController extends FortifyCrudController
     parent::__construct(
       new Command(),
       ['id', 'name', 'command']
+    );
+  }
+
+  public function getSidebar()
+  {
+    return new Sidebar(
+      $this->request()->path(3),
+      [
+        $this->appBaseUri() . '/build-configs/builds'     => 'Builds',
+        $this->appBaseUri() . '/build-configs/commands' => 'Commands',
+        $this->appBaseUri() . '/build-configs/projects' => 'Project Builds',
+      ]
     );
   }
 

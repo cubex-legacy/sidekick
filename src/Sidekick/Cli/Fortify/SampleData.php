@@ -11,7 +11,7 @@ use Sidekick\Components\Fortify\Enums\FileSet;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
-use Sidekick\Components\Fortify\Mappers\BuildsProjects;
+use Sidekick\Components\Fortify\Mappers\ProjectBuilds;
 use Sidekick\Components\Fortify\Mappers\Patch;
 use Sidekick\Components\Projects\Mappers\Project;
 use Sidekick\Components\Repository\Enums\RepositoryProvider;
@@ -208,7 +208,7 @@ class SampleData extends CliCommand
       $source->localpath      = $buildInfo['localpath'];
       $source->saveChanges();
 
-      $proBuild                = new BuildsProjects([$build, $project]);
+      $proBuild                = new ProjectBuilds([$build, $project]);
       $proBuild->buildSourceId = $source->id();
       $proBuild->saveChanges();
     }

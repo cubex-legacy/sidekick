@@ -28,7 +28,7 @@ use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildLog;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
 use Sidekick\Components\Fortify\Mappers\BuildsCommands;
-use Sidekick\Components\Fortify\Mappers\BuildsProjects;
+use Sidekick\Components\Fortify\Mappers\ProjectBuilds;
 use Sidekick\Components\Fortify\Mappers\Command;
 use Sidekick\Components\Helpers\BuildCommandsHelper;
 use Sidekick\Components\Projects\Mappers\Project;
@@ -55,7 +55,12 @@ class FortifyHomeController extends FortifyController
       $collectionFilter['result'] = $resultFilter;
     }
 
-    $builds = Build::collection()->loadAll();
+    $projectBuildIds = ProjectBuilds::collection()->loadWhere(
+      ['project_id' => $projectId]
+    )->getFieldValues('build_id');
+
+    $builds = Build::collection()->loadIds($projectBuildIds);
+
     //list all build runs
     $allBuilds = BuildRun::collection($collectionFilter)->setOrderBy(
       'created_at',
@@ -215,7 +220,7 @@ class FortifyHomeController extends FortifyController
     $projectId = $this->getProjectId();
     $buildId   = $this->getInt('buildType');
 
-    $buildRepo = BuildsProjects::collection()->loadOneWhere(
+    $buildRepo = ProjectBuilds::collection()->loadOneWhere(
       ['project_id' => $projectId, 'build_id' => $buildId]
     );
 

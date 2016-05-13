@@ -15,7 +15,7 @@ use Sidekick\Components\Diffuse\Mappers\Version;
 use Sidekick\Components\Fortify\FortifyHelper;
 use Sidekick\Components\Fortify\Mappers\Build;
 use Sidekick\Components\Fortify\Mappers\BuildRun;
-use Sidekick\Components\Fortify\Mappers\BuildsProjects;
+use Sidekick\Components\Fortify\Mappers\ProjectBuilds;
 use Sidekick\Components\Repository\Mappers\Commit;
 use Symfony\Component\Process\Process;
 
@@ -173,7 +173,7 @@ class CreateVersion extends CliCommand
     {
       if($version->repoId < 1)
       {
-        $buildProject = new BuildsProjects(
+        $buildProject = new ProjectBuilds(
           [$buildRun->buildId, $version->projectId]
         );
         if($buildProject->exists())

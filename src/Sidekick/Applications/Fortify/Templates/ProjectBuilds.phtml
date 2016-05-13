@@ -1,0 +1,26 @@
+<?php
+/**
+ * @author: oke.ugwu
+ * @var $this Sidekick\Applications\Fortify\Views\ProjectBuilds
+ */
+?>
+<h1>Configure Project Builds</h1>
+<table class="table table-striped table-bordered table-condensed">
+  <tr class="info">
+    <th>Project</th>
+    <?php foreach($this->getBuilds() as $build): ?>
+    <th><?= $build->name ?></th>
+    <?php endforeach; ?>
+  </tr>
+    <?php foreach($this->getProjects() as $project): ?>
+      <tr class="">
+        <td><?= $project->name; ?></td>
+      <?php foreach($this->getBuilds() as $build): ?>
+        <td><input type="checkbox"
+                   value="<?= $project->id() ?>-<?= $build->id() ?>"
+                   class="projectBuild" <?= $this->projectHasBuild($project->id(), $build->id())? 'checked="checked"' : ''; ?> >
+        </td>
+        <?php endforeach ?>
+      </tr>
+    <?php endforeach; ?>
+</table>

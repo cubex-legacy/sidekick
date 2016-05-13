@@ -61,7 +61,7 @@ class Header extends ViewModel
         '',
         '',
         '',
-        '/fortify/build-configs',
+        '/fortify/build-configs/builds',
         'New menu',
         'Build Configs',
         ''

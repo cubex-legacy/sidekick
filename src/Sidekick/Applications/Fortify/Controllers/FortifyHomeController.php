@@ -46,20 +46,20 @@ class FortifyHomeController extends FortifyController
   public function renderFortify()
   {
     $projectId    = $this->getProjectId();
-    $buildType    = $this->getInt('buildType', 1);
     $resultFilter = $this->getStr('result');
-
-    $collectionFilter = ['build_id' => $buildType, 'project_id' => $projectId];
-    if($resultFilter !== null)
-    {
-      $collectionFilter['result'] = $resultFilter;
-    }
 
     $projectBuildIds = ProjectBuilds::collection()->loadWhere(
       ['project_id' => $projectId]
     )->getFieldValues('build_id');
 
     $builds = Build::collection()->loadIds($projectBuildIds);
+
+    $buildType    = $this->getInt('buildType', idx($projectBuildIds, 0, 1));
+    $collectionFilter = ['build_id' => $buildType, 'project_id' => $projectId];
+    if($resultFilter !== null)
+    {
+      $collectionFilter['result'] = $resultFilter;
+    }
 
     //list all build runs
     $allBuilds = BuildRun::collection($collectionFilter)->setOrderBy(

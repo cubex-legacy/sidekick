@@ -30,16 +30,18 @@ class FortifyApp extends ProjectAwareApplication
   {
     return "Menu";
   }
-  
+
   public function getRoutes()
   {
     return [
-      'build-configs/commands/(.*)'    => 'FortifyCommandsController',
-      'build-configs/(.*)'    => 'FortifyBuildsController',
-      'builds/(.*)'        => 'FortifyBuildsController',
-      'commands/(.*)'      => 'FortifyCommandsController',
-      'buildCommands/(.*)' => 'FortifyBuildCommandsController',
-      'repository/(.*)'    => 'FortifyRepositoryController'
+      'build-configs'               => 'FortifyBuildsController',
+      'build-configs/builds/(.*)'   => 'FortifyBuildsController',
+      'build-configs/commands'      => 'FortifyBuildsController@renderCommandsIndex',
+      'build-configs/commands/(.*)' => 'FortifyCommandsController',
+      'build-configs/projects'      => 'FortifyBuildsController@renderProjects',
+      'build-configs/aprojects'     => 'FortifyBuildsController@postProjects',
+      'buildCommands/(.*)'          => 'FortifyBuildCommandsController',
+      'repository/(.*)'             => 'FortifyRepositoryController'
     ];
   }
 

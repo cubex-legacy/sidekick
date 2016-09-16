@@ -63,6 +63,11 @@
           href="/P<?= $deplyment->projectId ?>/fortify/<?= $b->buildId ?>/<?= $b->id; ?>">
            #<?= $b->id; ?>
         </a>
+
+        <a class="btn btn-small" style="padding:1px 5px"
+          href="/P<?= $deplyment->projectId ?>/fortify/<?= $b->buildId ?>">
+          New Build
+        </a>
       </td>
       <td><?= substr($b->branch,0,20 ) ?></td>
       <td><?= implode(', ', $hostnames) ?></td>

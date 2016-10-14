@@ -27,6 +27,7 @@ class DeploymentView extends TemplatedViewModel
   protected $_buildRun;
   protected $_deploymentChanges;
   protected $_steps;
+  protected $_lastDeployedBuild;
 
   public function __construct($project, $hosts, $deploymentConfigs, $buildRun, $steps)
   {
@@ -35,15 +36,15 @@ class DeploymentView extends TemplatedViewModel
     $this->deploymentConfigs = $deploymentConfigs;
     $this->_buildRun = $buildRun;
 
-    $lastDeployedBuild = $this->_getLastDeployedBuildId(
+    $this->_lastDeployedBuild = $this->_getLastDeployedBuildId(
       $buildRun->branch,
       $project->id()
     );
 
-    if($lastDeployedBuild)
+    if($this->_lastDeployedBuild)
     {
       $this->_builds = $this->_getBuildsNotDeployed(
-        $lastDeployedBuild,
+        $this->_lastDeployedBuild,
         $buildRun->branch,
         $project->id()
       );
@@ -55,7 +56,21 @@ class DeploymentView extends TemplatedViewModel
         );
       }
     }
+    else
+    {
+      $this->_deploymentChanges = $this->_getChangesFromBuilds(
+        [$this->_buildRun]
+      );
+    }
     $this->_steps = $steps;
+  }
+
+  /**
+   * @return boolean
+   */
+  public function getLastDeployedBuild()
+  {
+    return $this->_lastDeployedBuild;
   }
 
   public function getSteps()

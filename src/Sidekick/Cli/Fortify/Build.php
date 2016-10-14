@@ -535,6 +535,25 @@ class Build extends CliCommand
       $out     = $commitProcess->getOutput();
       $commits = explode(chr(03), $out);
     }
+    elseif(!$lastBuildRun)
+    {
+      //branch not being built before, get all commit for branch
+      //@todo origin might be master or whatever
+      //http://stackoverflow.com/questions/15948202/how-can-i-find-the-first-commit-of-a-branch
+      $command        = "git rev-list ^master {$buildRun->branch} | tail -n 1";
+      $commitProcess = new Process($command, $repoPath);
+      $commitProcess->run();
+      $startingCommit     = $commitProcess->getOutput();
+      if(!empty($startingCommit))
+      {
+        $command .= " $startingCommit..$buildRun->commitHash";
+
+        $commitProcess = new Process($command, $repoPath);
+        $commitProcess->run();
+        $out     = $commitProcess->getOutput();
+        $commits = explode(chr(03), $out);
+      }
+    }
 
     if($commits)
     {

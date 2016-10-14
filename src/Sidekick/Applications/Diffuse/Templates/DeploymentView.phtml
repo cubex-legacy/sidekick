@@ -91,7 +91,11 @@
     <div class="clearfix"></div>
   </div>
 <div class="">
-  <h3>Changes:</h3>
+  <h3>Changes:
+      (<?= $this->getLastDeployedBuild() ?
+      ' from builid ' . $this->getLastDeployedBuild() :
+      ' No previous deployed build on this branch'; ?>)
+  </h3>
   <table class="table table-striped table-bordered">
   <?php foreach($this->getDeploymentChanges() as $change){
     ?>
